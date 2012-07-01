@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<node name="__mask_B" author="mesh">
+	<help>__mask_B arbitrary output variable (AOV)</help>
+	<input>
+		<property name="in" type="float" default="0" />
+		<property name="mult" type="float" default="1" />
+	</input>
+	<output>
+	  <property name="out" type="float" default="0"/>
+		<property name="__mask_B" type="float" default="0" detail="varying" provider="primitive"/>
+	</output>
+	<code><![CDATA[float $(out) = $(in) * $(mult); __mask_B = $(out); ]]>
+	</code>
+	<preview>
+		<shader type="surface">
+			<code><![CDATA[Ci = color( $(out) ); Oi = 1;]]></code>
+		</shader>
+	</preview>		
+</node>

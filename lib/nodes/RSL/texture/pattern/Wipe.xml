@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<node name="Wipe" author="mesh">
+	<help></help>
+	<input>
+		<property name="input" type="float" default="1">
+		</property>
+		
+		<property name="direction" type="string" default="S" subtype="selector" range="S:T" >
+		</property>
+		
+		<property name="tspace" type="float" default="0">
+		</property>
+		
+		<property name="bspace" type="float" default="1">
+		</property>
+		
+		<property name="invert" type="float" default="1" subtype="switch">
+		<help>Performs an inversion of the results as defined by 1 - result. 
+			Behavior will vary with the setting of the Abs and Clamp parameters.
+		</help>
+		</property>
+		
+		<property name="Q" type="point"/>	
+		<property name="dQu" type="vector"/>	
+		<property name="dQv" type="vector"/>	
+		
+	</input>
+	<output>
+		<property name="result" type="float"/>		
+	</output>
+	<internal>
+	<variable name="x"/>	
+	<variable name="y"/>	
+	<variable name="magnitude"/>
+	<variable name="dampzone"/>
+	</internal>
+	<code>
+<![CDATA[
+
+  float $(x) = xcomp( $(Q) ); 
+  float $(y) = ycomp( $(Q) ); 
+  
+  if ( $(direction) == "T" ) 
+  {
+    $(x) = ycomp( $(Q) ); 
+    $(y) = xcomp( $(Q) ); 
+  } 
+    
+  float $(magnitude) = $(input);
+  float $(dampzone) = $(bspace) - $(tspace); 
+  
+  if ( $(y) > $(tspace) ) 
+  { 
+    if ( $(y) < ( $(tspace) + $(dampzone) ) )  
+      $(magnitude) *= ( $(y) - $(tspace) ) / $(dampzone) ; 
+  } 
+  else
+    $(magnitude) = 0;
+  
+  $(result) = $(magnitude); 
+    
+  if( $(invert) ) 
+    $(result) = 1 - $(result);
+             
+	
+]]>
+	</code>
+</node>

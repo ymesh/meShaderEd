@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+
+<node name="me_ImageFileC" label="ImageFileC" author="mesh">
+	<help>Color image file with alpha</help>
+	
+	<input>
+		<property name="defColor" type="color" default="color(0, 0, 0)">
+		<help></help>
+		</property>
+		<property name="defFloat" type="float" default="1">
+		<help></help>
+		</property>
+		<property name="File" type="string" detail="uniform" default="" provider="external" subtype="file"
+		  range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" >
+		<help></help>
+		</property>
+		
+		<property name="fillOutside" type="float" detail="uniform" default="0" subtype="switch">
+		<help></help>
+		</property>
+		<property name="alphaOp" type="float" detail="uniform" default="0" subtype="selector" range="None=0:Apply=1:Multiply=2:Divide=3"/>
+		<property name="filter" type="string" detail="uniform" default="gaussian" subtype="selector" range="box:triangle:b-spline:radial-bspline:gaussian:sinc:disk"/>
+		<property name="SFilt" type="float" detail="uniform" default="1"/>
+		<property name="TFilt" type="float" detail="uniform" default="1"/>
+		<property name="lerp" type="float" detail="uniform" default="1" subtype="switch"/>
+		<property name="Pt" type="point"/>
+	</input>
+	<output>
+		<property name="colorResult" type="color"/>	
+		<property name="floatResult" type="float"/>	
+	</output>
+	<internal>
+	<variable name="x"/>
+	<variable name="y"/>
+	</internal>
+	<code><![CDATA[
+	$(colorResult) = $(defColor);
+  $(floatResult) = $(defFloat);
+  
+  float $(x) = xcomp( $(Pt) );
+  float $(y) = ycomp( $(Pt) );
+	
+  if ( $(File) != "" ) 
+  {
+		$(colorResult) = color texture(
+			$(File), 
+			$(x),
+			$(y),
+			"swidth", $(SFilt),
+			"twidth", $(TFilt),
+			"filter", $(filter),
+			"lerp", $(lerp) );
+			
+		if ( $(alphaOp) != 0 ) /* "nop" */
+		{
+			uniform float nChannels = 3;
+			textureinfo( $(File), "channels", nChannels );
+			
+			if ( nChannels > 3 )
+			{
+				$(floatResult) = float texture(
+							$(File)[3],
+							$(x),
+							$(y),
+							"swidth", $(SFilt),
+							"twidth", $(TFilt),
+							"filter", $(filter),
+							"lerp", $(lerp) );
+				if ( $(alphaOp) == 2 )
+				{
+				  $(colorResult) *= $(floatResult);
+				}
+				if ( $(alphaOp) == 3 ) /* assume AlphaOp == "unassociated" */
+				{
+					if( $(floatResult) != 0 )
+					{
+						$(colorResult) /= $(floatResult);
+						$(colorResult) = clamp( $(colorResult), color(0), color(1) );
+					}
+				}
+			}
+				 
+			/*	if ( fillOutside  == 1 ) */
+			$(colorResult) = mix( $(defColor), $(colorResult), $(floatResult) ); 
+		}
+		if ( ( $(fillOutside) == 1 ) && ( $(x) < 0 || $(x) > 1 || $(y) < 0 || $(y) > 1) )   
+				$(colorResult) = $(defColor);
+	} 
+	 
+  ]]>
+	</code>
+</node>

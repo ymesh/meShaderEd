@@ -1,0 +1,16 @@
+<?xml version="1.0"?> 
+
+<node name="diffuse" author="Konstantin Kharitonov">
+	<help>Diffuse returns the diffuse component of the lighting model.</help>
+	<input>
+		<property name="N" type="normal"/>		
+	</input>
+	<output>
+		<property name="outColor" type="color"/>		
+	</output>
+	<code>
+<![CDATA[
+$(outColor) = diffuse($(N));
+]]>
+	</code>
+</node>

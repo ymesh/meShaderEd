@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<node name="me_RaytraceShadow" name="RaytraceShadow" author="mesh">
+	<help>Provides ray traced shadows. RaytraceShadow must be connected to "Shadow" input in light shader</help>
+	<input>
+	  <property name="TraceSet" type="string" default="" detail="uniform"/>
+	    
+	  <property name="Samples" type="float" default="16" detail="uniform"/>
+	  <property name="SampleCone" type="float" default="0" detail="uniform"/>
+	  <property name="SampleBase" type="float" default="1" detail="uniform"/>
+	  <property name="Bias" type="float" default="0" detail="uniform"/>
+	  	  
+	  <property name="DirectionalShadows" type="float" default="1" detail="uniform" subtype="switch"/>
+	  <property name="areashape" type="string" default="off" detail="uniform" subtype="selector" range="off:disk:line:cylinder:sphere:rectangle"/>
+	  <property name="arealength" type="float" default="1" detail="uniform"/>
+	  <property name="arearadiusheight" type="float" default="1" detail="uniform"/>
+	     
+	</input>  
+	<output>
+		<property name="result" type="color" default="color( 0, 0, 0 )"/>	
+	</output>
+	<include>
+	  <file name="pxslRayUtil.h"/>
+	</include>	
+	<internal>
+	  <variable name="Pl"/>
+	  <variable name="xsamples"/>
+	</internal>
+	<code><![CDATA[
+	extern vector L;
+	extern point Ps;
+	point $(Pl);
+	
+	if ( $(DirectionalShadows) == 1 ) 
+    $(Pl) = Ps - 100000 * L;
+  else
+    $(Pl) = point "shader" (0,0,0);
+  
+  uniform float $(xsamples) = pxslGetRaySamples( $(Samples) );
+  if ( $(xsamples) > 0 )
+  {
+    if ( $(areashape) == "off" )
+    {
+      $(result) = color(1) - transmission( Ps, $(Pl),
+				    "subset", $(TraceSet),
+				    "label", "shadow",
+				    "samples", $(xsamples),
+				    "samplebase", $(SampleBase),
+				    "samplecone", $(SampleCone) * radians(5),
+				    "bias", $(Bias)
+				    );
+    }
+    else
+    {
+      uniform float nsamples, msamples, m, n;
+			pxslShapeSamples( $(areashape), $(xsamples), $(arealength), $(arearadiusheight),	 nsamples, msamples);
+			$(result) = 0;
+			for ( m = 0 ; m < msamples ; m += 1 ) 
+			{
+			    for ( n = 0 ; n < nsamples ; n += 1 ) 
+			    {
+				    $(Pl) = pxslPointOnShape( $(areashape), $(arealength), $(arearadiusheight), n, nsamples, m, msamples );
+				    $(result) += color(1) - transmission( Ps, $(Pl),
+							"subset", $(TraceSet),
+							"label", "shadow",
+							"samples", 1,
+							"samplebase", $(SampleBase),
+							"samplecone", 0,
+							"bias", $(Bias)
+							);
+			    }
+			}
+			if ( msamples > 0 && nsamples > 0 )
+			  $(result) /= ( nsamples * msamples );
+    }
+  }
+  
+]]>
+	</code>
+</node>

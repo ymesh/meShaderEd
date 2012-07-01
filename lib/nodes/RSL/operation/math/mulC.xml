@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="mulC" author="Libero Spagnolini">
+	<help>Multiple two colors.</help>
+	<input>
+		<property name="inColor1" type="color"/>		
+		<property name="inColor2" type="color"/>		
+	</input>
+	<output>
+		<property name="outColor" type="color" />		
+	</output>
+	<code>
+<![CDATA[
+ $(outColor) = $(inColor1) * $(inColor2);
+]]>
+	</code>		
+</node>

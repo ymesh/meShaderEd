@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<node name="FaceforwardNormal" author="mesh">
+	<help>Faceforward Normalized Normal.</help>
+	<input>
+	</input>
+	<output>
+		<property name="Nf" type="normal"/>
+	</output>
+	<code><![CDATA[
+	$(Nf) = faceforward( normalize(N), I );
+	]]>
+	</code>
+</node>

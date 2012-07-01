@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<node name="P" author="mesh" type="variable">
+	<help>Global point P.</help>
+	<output>
+		<property name="P" type="point"/>
+	</output>
+	<code><![CDATA[
+	  #ifdef SURFACE_SHADER
+	  $(P) = P;
+	  #endif
+	  #ifdef DISPLACEMENT_SHADER
+	  $(P) = P;
+	  #endif
+	  #ifdef LIGHT_SHADER
+	  $(P) = Ps;
+	  #endif
+	  #ifdef VOLUME_SHADER
+	  $(P) = Pv;
+	  #endif
+	  ]]>
+	</code>
+</node>

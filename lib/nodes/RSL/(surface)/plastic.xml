@@ -1,0 +1,31 @@
+<?xml version="1.0"?> 
+
+<node name="plastic" author="Libero Spagnolini">
+	<help>Standard plastic illumination.</help>
+	<input>
+		<property name="inColor" type="color" default="color(1.0, 1.0, 1.0)"	/>		
+		<property name="inOpacity" type="float" default="1.0"/>		
+		<property name="specColor" type="color" default="color(1.0, 1.0, 1.0)"	/>		
+		<property name="ka" type="float" default="1.0"/>		
+		<property name="kd" type="float" default="0.5"/>		
+		<property name="ks" type="float" default="0.5"/>		
+		<property name="roughness" type="float" default="0.1"/>		
+	</input>
+	<output>
+		<property name="outColor" type="color"/>		
+		<property name="outOpacity" type="float"/>		
+	</output>
+	<internal>
+		<variable name="Nf"/>
+	</internal>		
+	<code>
+<![CDATA[
+  normal $(Nf) = faceforward(normalize(N), I);
+  $(outColor) = $(inColor) * ($(ka) * ambient() +
+                      $(kd) * diffuse($(Nf))) + $(specColor) * $(ks) *
+                      specular($(Nf), -normalize(I), $(roughness));
+  $(outOpacity) = $(inOpacity);
+  $(outColor) *= $(outOpacity);
+]]>
+	</code>
+</node>

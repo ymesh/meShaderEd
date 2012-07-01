@@ -1,0 +1,52 @@
+##RenderMan RIB
+version 3.04
+Option "searchpath" "shader" ["&:@:.:~:/home/mesh/code/maya/liquidmaya/lib/shaders:/media/STORE2/projects/__KPP/Oreo/3d_scenes/maya/"]
+Option "searchpath" "texture" ["&:@:.:~:/home/mesh/code/maya/liquidmaya/lib/textures:/media/STORE2/projects/__KPP/Oreo/3d_scenes/maya/"]
+Option "searchpath" "procedural" ["&:@:.:~:/home/mesh/code/maya/liquidmaya/lib/shaders:/media/STORE2/projects/__KPP/Oreo/3d_scenes/maya/"]
+ShadingRate 1
+PixelSamples 3 3
+PixelFilter "catmull-rom" 4 4
+Format 128 128 1
+Display "/media/STORE2/projects/__KPP/Oreo/3d_scenes/maya/liquidPreviews/Untitled/liquidSurface1_.tif" "tiff" "rgb" 
+Projection "perspective" "fov" [22.5]
+Translate 0 0 2.75
+Exposure 1 1
+WorldBegin 
+ReverseOrientation 
+TransformBegin 
+Rotate -90 1 0 0
+CoordinateSystem "_environment"
+TransformEnd 
+LightSource "ambientlight" "ebcd1ecc-8dfe-11e1-ae0a-0023548d704c" "intensity" [0.05]
+TransformBegin 
+Rotate 55 1 0 0
+Rotate 30 0 1 0
+LightSource "liquiddistant" "ebcd2458-8dfe-11e1-ae0a-0023548d704c" "intensity" [0.9]
+TransformEnd 
+TransformBegin 
+Rotate -50 1 0 0
+Rotate -40 0 1 0
+LightSource "liquiddistant" "ebcd24c6-8dfe-11e1-ae0a-0023548d704c" "intensity" [0.2]
+TransformEnd 
+AttributeBegin 
+TransformBegin 
+Rotate 60 1 0 0
+Rotate 60 0 1 0
+Scale 1 1 1
+Color [1 1 1]
+Opacity [1 1 1]
+Color [1 1 1]
+Opacity [1 1 1]
+Surface "" 
+TransformEnd 
+Rotate 60 1 0 0
+ReverseOrientation 
+Sphere 0.5 -0.5 0.5 360 
+AttributeEnd 
+AttributeBegin 
+Scale 0.91 0.91 0.91
+Surface "liquidchecker" 
+Attribute "visibility" "camera" [1] "trace" [1] "transmission" [640775966]
+Patch "bilinear" "P" [-1 1 2 1 1 2 -1 -1 2 1 -1 2]
+AttributeEnd 
+WorldEnd 

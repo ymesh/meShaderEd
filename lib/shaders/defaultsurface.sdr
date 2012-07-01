@@ -1,0 +1,31 @@
+#!version 2.2.6
+surface
+#!parameters:
+uniform	float	Kd	=	.8
+uniform	float	Ka	=	.2
+#!variables:
+varying	float	diff
+varying	float	temporary_0
+varying	float	temporary_1
+varying	float	temporary_2
+varying	float	temporary_3
+varying	vector	temporary_4
+varying	vector	temporary_5
+#!Init:
+	return            
+#!Code:
+	dot               	diff I N
+	mulff             	temporary_0 diff diff
+	dot               	temporary_2 I I
+	dot               	temporary_3 N N
+	mulff             	temporary_1 temporary_2 temporary_3
+	divff             	diff temporary_0 temporary_1
+	mulvv             	temporary_4 Os Cs
+	vufloat            temporary_1 Ka
+	vufloat            temporary_3 Kd
+	mulff             	temporary_2 temporary_3 diff
+	addff             	temporary_0 temporary_1 temporary_2
+	vfromf            	temporary_5 temporary_0
+	mulvv             	Ci temporary_4 temporary_5
+	movevv            	Oi Os
+	return            

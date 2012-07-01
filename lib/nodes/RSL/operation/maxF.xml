@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="maxF" author="mesh">
+	<help>Max of two floats.</help>
+	<input>
+		<property name="A" type="float"/>		
+		<property name="B" type="float"/>		
+	</input>
+	<output>
+		<property name="result" type="float" />		
+	</output>
+	<code>
+<![CDATA[
+$(result) = max( $(A), $(B) );
+]]>
+	</code>		
+</node>

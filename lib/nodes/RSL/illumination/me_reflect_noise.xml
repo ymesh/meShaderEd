@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<node name="me_reflect_noise" author="mesh">
+	<help>Specularity with randomly perturbing the specular reflections</help>
+	<input>
+	  <property name="Nf" type="normal" default="normal(0,0,0)" />	
+		<property name="Kr" type="float" default="0.6"/>
+	</input>
+	<output>
+		<property name="result" type="color" default="color( 0, 0, 0 )"/>	
+	</output>
+	<include>
+	</include>	
+	<internal>
+	  <variable name="V"/>
+	  <variable name="D"/>
+	  <variable name="w"/>
+	</internal>
+	<code>
+  <![CDATA[
+
+	vector $(V) = -normalize ( I );
+	vector $(D) = reflect ( $(V), $(Nf) ) ;
+  $(D) = vtransform ( "world", $(D) );
+
+  #pragma nolint 4 /* Yes, we really DO want this noise in world space */
+  float $(w) = 0.6 * noise( $(D) * 2.5 ) +
+        0.2 * noise( $(D) * 5 ) +
+        0.1 * noise( $(D) * 10 ) +
+        0.05 * noise( $(D) * 20 );
+    $(w) = $(w) * $(w) * $(w);
+	
+	$(result) = $(Kr) * $(w);
+  ]]>
+	</code>	
+</node>

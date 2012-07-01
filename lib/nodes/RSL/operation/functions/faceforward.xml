@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<node name="faceforward" author="mesh">
+	<help>Normalize input Normal.</help>
+	<input>
+	  <property name="I" type="vector" default="vector (0, 0, 0)" />
+		<property name="N" type="normal" default="normal (0, 0, 0)" />
+	</input>
+	<output>
+		<property name="Nf" type="normal"/>
+	</output>
+	<code>
+<![CDATA[
+	$(Nf) = faceforward( $(N), $(I), $(N));
+]]>
+	</code>
+</node>

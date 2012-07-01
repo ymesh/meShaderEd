@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<node name="me_diff" author="mesh">
+	<help>Diffuse function with extra controls</help>
+	<input>
+	  <property name="N" type="normal" default="normal(0,0,0)" />	
+		<property name="category" type="string" default="">
+		<help></help>
+		</property>
+		<property name="Kd" type="float" default="1.0" subtype="slider" range="0 1 0.01">
+		<help></help>
+		</property>
+		<property name="atten" type="float" default="1.0" subtype="slider" range="0 1 0.01">
+		<help></help>
+		</property>
+		<property name="from" type="float" default="0" subtype="slider" range="0 1 0.01">
+		<help></help>
+		</property>
+		<property name="to" type="float" default="1" subtype="slider" range="0 1 0.01">
+		<help></help>
+		</property>
+		<property name="coloration" type="color" default="color( 1, 1, 1 )">
+		<help></help>
+		</property>
+	</input>
+	<output>
+		<property name="result" type="color" default="color ( 0, 0, 0 )"/>	
+	</output>
+	<include>
+	</include>
+	<internal>
+	  <variable name="diffColor"/>
+	  <variable name="hueComp"/>
+	  <variable name="satComp"/>
+	  <variable name="lumiComp"/>
+	  <variable name="hsvDiff"/>
+	</internal>
+	<code>
+  <![CDATA[
+	
+	color $(diffColor) = 0;
+              
+	illuminance ( $(category), P, $(N), PI/2, "lightcache", "refresh" ) 
+	{
+		float nondiff = 0;
+		lightsource( "__nondiffuse", nondiff );
+		if (nondiff < 1)
+			$(diffColor) += ( 1 - nondiff ) * Cl *( $(N).normalize(L) );
+	}
+	
+	float $(hueComp) = comp( ctransform( "hsv" , $(diffColor) ) , 0 );
+	float $(satComp) = comp( ctransform( "hsv" , $(diffColor) ), 1 );
+	float $(lumiComp) = comp( ctransform( "hsv" , $(diffColor) ), 2 ); /*  get value component from HSV color space */
+	color $(hsvDiff) = color "hsv" ( $(hueComp), $(satComp), ( $(from) + ( $(to) - $(from) ) * pow( $(lumiComp), $(atten) ) ) );
+  
+	$(result) = $(coloration) * $(Kd) * $(hsvDiff);
+			
+  ]]>
+	</code>	
+</node>

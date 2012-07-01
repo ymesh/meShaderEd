@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<node name="imageViewer" author="mesh" type="image">
+	<help>Single image viewer </help>
+	<input>
+    <property name="image" type="image" default="" subtype="file" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"/>		
+	</input>
+	<output>
+	</output>
+	<param_code>
+<![CDATA[
+#$(output) = $(input)
+#import core.imageNode
+#import code.nodeParam
+
+print ":: Hello from %s XML code !!!" % self.label
+self.imageName = self.getInputParamValueByName ( 'image' ) 
+
+
+]]>
+	</param_code>
+	<result><![CDATA[
+	  $(output) = $(input)
+	  ]]>
+	</code>
+	<preview>
+	</preview>		
+</node>

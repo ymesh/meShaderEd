@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+
+<node name="Cloth" author="mesh">
+	<help></help>
+	<input>
+		<property name="freq" type="float" default="4"/>
+		<property name="thickness" type="float" default="0.4"/>
+		<property name="flatness" type="float" default="1" subtype="selector" range="Min=0:Max=1:Double=2"/>
+		<property name="Q" type="point"/>	
+		<property name="dQu" type="vector"/>	
+		<property name="dQv" type="vector"/>	
+	</input>
+	<output>
+		<property name="result" type="float"/>		
+	</output>
+	<internal>
+	<variable name="x"/>	
+	<variable name="y"/>	
+	<variable name="surface_float"/>
+	<variable name="layer_float"/>
+	<variable name="layer_opac"/>
+	<variable name="temp_opac"/>
+	<variable name="a"/>	
+	<variable name="b"/>
+	<variable name="fuzz"/>	
+	<variable name="ss"/>	
+	<variable name="tt"/>	
+	<variable name="thick"/>	
+	<variable name="row"/>	
+	<variable name="col"/>	
+	<variable name="clampLow"/>	
+	<variable name="clampHi"/>	
+	</internal>
+	<code><![CDATA[
+ 
+  float $(surface_float), $(layer_float);
+	float $(layer_opac), $(temp_opac);
+		     
+  float $(a), $(b);
+		     
+  float $(fuzz);
+  float $(ss), $(tt);
+  float $(thick);
+  float $(row), $(col);
+  float $(clampLow);
+  float $(clampHi); 
+  varying float	$(x), $(y);
+
+	if ( $(flatness) ) 
+	{
+	  $(clampLow) = 0.2; 
+	  $(clampHi) = 0.7;
+	}
+  else 
+  {
+    $(clampLow) = 0.4; 
+    $(clampHi) = 1;
+  }
+			
+	$(thick) = ( clamp( $(thickness), $(clampLow), $(clampHi) ) ) / 2;
+	
+	$(x) = xcomp( $(Q) );
+	$(y) = ycomp( $(Q) );
+	
+	$(a) = 0.5 - $(thick);
+	$(b) = 0.5 + $(thick);
+	
+	$(fuzz) = ( $(b) - $(a) ) / 2;
+
+	$(ss) = mod( $(x) * $(freq), 1 ); 
+	$(tt) = mod( $(y) * $(freq), 1 ); 
+
+	$(row) = floor( $(y) * $(freq) );
+	$(col) = floor( $(x) * $(freq) );
+
+   /* layer #1 */
+  		     
+  if ( $(flatness) == 2 ) 
+    $(layer_opac) = smoothstep( $(a) - $(fuzz), $(a), $(ss)) - smoothstep( 0.5 - clamp( $(fuzz) / 2, 0, 0.1 ), 0.5, $(ss) ) + 
+                    smoothstep( 0.5, 0.5 + clamp( $(fuzz) / 2, 0, 0.1 ), $(ss) ) - smoothstep( $(b), $(b) + $(fuzz), $(ss) );
+  
+  if ( $(flatness) == 1 ) 
+    $(layer_opac) = smoothstep( $(a) - $(fuzz), $(a), $(ss) ) - smoothstep( $(b), $(b) + $(fuzz), $(ss) );
+    
+  if ( $(flatness) == 0 ) 
+    $(layer_opac) = smoothstep( $(a), $(a) + $(fuzz), $(ss) ) - smoothstep( $(b) - $(fuzz), $(b), $(ss) );
+  
+  /* else layer_opac = smoothstep(a, a + fuzz, ss) - smoothstep(0.3, 0.3 + fuzz, ss) + smoothstep(0.7 - fuzz, 0.7, ss)- smoothstep(b - fuzz, b, ss); */
+  
+  if ( ( ( mod( $(row), 2 ) == 0 ) && ( mod( $(col), 2 ) == 0 ) ) || ( ( mod( $(col), 2 ) == 1 ) && ( mod( $(row), 2 ) == 1 ) ) )
+    $(layer_float) = 2 * pow( ( $(tt) - 0.5 ), 2 );
+  else 
+    $(layer_float) = 1 - ( 2 * pow( ( $(tt) - 0.5 ), 2 ) );
+
+  $(surface_float) = $(layer_opac) - ( $(layer_opac) * $(layer_float) );
+
+  /* layer #2 */
+
+  if ( $(flatness) == 2 ) 
+    $(layer_opac) = smoothstep( $(a) - $(fuzz), $(a), $(tt) ) - smoothstep( 0.5 - clamp( $(fuzz) / 2, 0, 0.1 ), 0.5, $(tt) ) + 
+                    smoothstep( 0.5, 0.5 + clamp( $(fuzz) / 2, 0, 0.1 ), $(tt) ) - smoothstep( $(b), $(b) + $(fuzz), $(tt) );
+  
+  if ( $(flatness) == 1 ) 
+    $(layer_opac) = smoothstep( $(a) - $(fuzz), $(a), $(tt) ) - smoothstep( $(b), $(b) + $(fuzz), $(tt) );
+  
+  if ( $(flatness) ==0 ) 
+    $(layer_opac) = smoothstep( $(a), $(a) + $(fuzz), $(tt) ) - smoothstep( $(b) - $(fuzz), $(b), $(tt) );
+
+  if ( ( ( mod( $(col), 2 ) == 0) && ( mod( $(row), 2 ) == 1 ) ) || ( ( mod( $(row), 2 ) ==0 ) && ( mod( $(col), 2 ) == 1 ) ) )
+    $(layer_float) = 2 * pow( ( $(ss) - 0.5 ), 2 );
+  else 
+    $(layer_float) = 1 - ( 2 * pow( ( $(ss) - 0.5 ), 2 ) );
+
+  $(layer_float) = $(layer_opac) - ( $(layer_opac) * $(layer_float) );
+  $(surface_float) = max( $(surface_float), $(layer_float) );
+  
+  $(result) = $(surface_float);
+             
+	
+  ]]>
+	</code>	
+</node>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="vtransform" author="mesh">
+	<help>Transform a vector into a specific coordinate system.</help>
+	<input>
+		<property name="space" type="string" default="shader" detail="uniform"/>		
+		<property name="inVector" type="vector"/>				
+	</input>
+	<output>
+		<property name="outVector" type="vector"/>		
+	</output>
+	<code>
+<![CDATA[
+$(outVector) = transform($(space), $(inVector));
+]]>
+	</code>
+</node>

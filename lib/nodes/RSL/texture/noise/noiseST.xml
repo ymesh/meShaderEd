@@ -1,0 +1,18 @@
+<?xml version="1.0"?> 
+
+<node name="noiseST" author="Libero Spagnolini">
+	<help>Simple noise driven by texture coords.</help>
+	<input>
+		<property name="s" type="float" default="0.0" />
+		<property name="t" type="float" default="0.0" />		
+		<property name="freq" type="float" default="1.0" />	
+	</input>
+	<output>
+		<property name="noise" type="float"/>
+	</output>
+	<code>
+	  <![CDATA[
+	  $(noise) = noise($(freq)* $(s), $(freq)* $(t));
+	  ]]>
+	</code>
+</node>

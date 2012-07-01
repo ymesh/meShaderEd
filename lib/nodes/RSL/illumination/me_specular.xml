@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<node name="me_specular" author="mesh">
+	<help>Specular function (Plastic model)</help>
+	<input>
+	  <property name="N" type="normal" default="normal(0,0,0)" />	
+		<property name="category" type="string" default=""/>
+		<property name="specColor" type="color" default="color( 1, 1, 1 )"/>
+		<property name="Ks" type="float" default="1.0" subtype="slider" range="0 1 0.01"/>
+		<property name="roughness" type="float" default="0.2" subtype="slider" range="0 1 0.01"/>
+	</input>
+	<output>
+		<property name="result" type="color" default="color ( 0, 0, 0 )"/>	
+	</output>
+	<include>
+	</include>	
+	<internal>
+	  <variable name="spec"/>
+	</internal>
+	<code>
+  <![CDATA[
+	
+	color $(spec) = 0;
+  
+  /* spec =  specular(Nf, -normalize(I), roughness); */
+  /* P = P; dirty light cache  , "lightcache", "refresh" */ 
+  illuminance( $(category), P, $(N), PI/2, "lightcache", "refresh" ) 
+  { 
+    float nonspec = 0;
+    lightsource( "__nonspecular", nonspec );
+    if ( nonspec < 1 )
+      $(spec) += (1-nonspec) * Cl * specularbrdf(normalize(L), $(N), -normalize(I), $(roughness) );
+  }
+  
+  $(result) = $(Ks) * $(spec) * $(specColor);
+			
+  ]]>
+	</code>
+</node>

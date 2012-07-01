@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<node name="MScale" author="Pixar">
+	<help>Returns a non-uniformly scaled version of the
+	    	input manifold.</help>
+	<input>
+		<property name="Scale" type="vector" default="vector(1,1,1)">
+		<help>Controls the scale of the manifold.  Note
+		    that increasing the frequency of the manifold will result
+		    in decreasing the scale of a feature.</help>
+		</property>
+		<property name="inQ" type="point" default="point(0,0,0)"/>
+		<property name="induQ" type="vector" default="vector(0,0,0)"/>	
+		<property name="indvQ" type="vector" default="vector(0,0,0)"/>	
+	</input>
+	<output>
+		<property name="Q" type="point"/>	
+		<property name="duQ" type="vector"/>	
+		<property name="dvQ" type="vector"/>	
+	</output>
+	<code>
+<![CDATA[
+	  $(Q) = $(inQ) * $(Scale);
+		$(duQ) = $(induQ) * $(Scale);
+		$(dvQ) = $(indvQ) * $(Scale);
+	]]>	
+  </code>		
+</node>

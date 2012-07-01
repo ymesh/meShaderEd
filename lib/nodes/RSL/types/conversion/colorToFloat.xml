@@ -1,0 +1,16 @@
+<?xml version="1.0"?> 
+
+<node name="colorToFloat" type="rsl_code">
+	<help>Color to float converter.</help>
+	<input>
+		<property name="inColor" type="color" default="color(1.0, 1.0, 1.0)" />
+	</input>
+	<output>
+		<property name="outFloat" type="float"/>
+	</output>
+	<code>
+	  <![CDATA[
+	  $(outFloat) = ( comp($(inColor), 0) + comp($(inColor), 1) + comp($(inColor), 2) ) / 3;
+	  ]]>
+	</code>
+</node>

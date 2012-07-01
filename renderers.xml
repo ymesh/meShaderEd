@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<renderers>
+    <preset name="Aqsis">
+        <renderer flags="-progress" name="aqsis"/>
+        <texture viewer="" texinfo="" texmake="teqser" extension="tex"/>
+        <shader compiler="aqsl" sloinfo="aqsltell" extension="slx" defines="AQSIS"/>
+    </preset>
+    <preset name="3Delight">
+        <renderer flags="-progress" name="renderdl"/>
+        <texture viewer="" texinfo="" texmake="tdlmake" extension="tdl"/>
+        <shader compiler="shaderdl" sloinfo="shaderinfo" extension="sdl" defines="DELIGHT"/>
+    </preset>
+    <preset name="PRMan">
+        <renderer flags="-progress" name="prman"/>
+        <texture viewer="sho" texinfo="txinfo" texmake="txmake" extension="tex"/>
+        <shader compiler="shader" sloinfo="sloinfo" extension="slo" defines="PRMAN"/>
+    </preset>
+    <preset name="Air">
+        <renderer flags="" name="air"/>
+        <texture viewer="airshow" texinfo="" texmake="mktex" extension="tex"/>
+        <shader compiler="shaded" sloinfo="slbtell" extension="slb" defines="AIR"/>
+    </preset>
+    <preset name="Pixie">
+        <renderer flags="" name="rndr"/>
+        <texture viewer="show" texinfo="" texmake="texmake" extension="tex"/>
+        <shader compiler="sdrc" sloinfo="sdrinfo" extension="sdr" defines="PIXIE"/>
+    </preset>
+    <preset name="RenderDotC">
+        <renderer flags="" name="renderdc"/>
+        <texture viewer="" texinfo="" texmake="texdc" extension="map"/>
+        <shader compiler="shaderdc" sloinfo="soinfo" extension="dll" defines="RDC"/>
+    </preset>
+</renderers>
+>
+</renderers>

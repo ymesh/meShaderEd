@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+
+<node name="me_occlusion" label="occlusion" author="mesh">
+	<help>Occlusion function with most supporting parameters (including specific for 3Delight, Pixie and Air ) </help>
+	<input>
+	  <property name="N" type="normal" default="normal(0,0,0)" />		
+		<property name="Invert" type="float" default="1" detail="uniform" subtype="switch"/>
+		<property name="Adaptive" type="float" detail="uniform" default="1" subtype="switch"/>
+
+		<property name="MaxSamples" type="float" default="128" detail="uniform" subtype="slider" range="1 512 1"/>
+		<property name="MinSamples" type="float" default="64" detail="uniform" subtype="slider" range="1 512 1"/>
+		<property name="MaxDist" type="float" default="-1"  detail="uniform"/>
+
+		<property name="SkyAxis" type="vector" default="vector( 0, 1, 0 )"  detail="uniform"/>
+		
+		<property name="ConeAngle" type="float" default="90"/>
+		<property name="SampleBase" type="float" default="0" detail="uniform">
+		<help>specifies the (float) jittering of the hemisphere ray origins. 
+		The default value is 0 (no jittering). 
+		A value of 1 corresponds to jittering over the size of a micropolygon. 
+		This is useful to smooth out aliased occlusion next to edges.</help>
+		</property>
+		
+		<property name="Bias" type="float" default="0.05" detail="uniform" subtype="slider" range="0.0 5.0 .001"/>
+		
+		<property name="HitMode" type="string" default="default" detail="uniform" subtype="selector" range="default:primitive:shader"/>
+		<property name="HitSides" type="string" default="both" detail="uniform" subtype="selector" range="both:front:back"/>
+		
+		<property name="MaxVar" type="float" default="0.15" detail="uniform"/>
+		<property name="MaxError" type="float" default="-1" detail="uniform"/>
+		<property name="MaxPixelDist" type="float" default="0" detail="uniform">
+		<help>specifies an error metric to control quality/speed tradeoff for occlusion calculations.  
+		If set to zero, the occlusion will be computed at every shading point; 
+		no attempt at interpolation will be made.  
+		maxpixeldist is used in conjunction with maxerror or maxvariation 
+		and provides a screen-based metric to limit artifacts associated with interpolation. 
+		If not provided or if set to a negative value, the value of the attribute: 
+		"irradiance" "maxpixeldist" is used. </help>
+		</property>
+		
+		<property name="Distribution" type="string" default="cosine" detail="uniform" subtype="selector" range="cosine:uniform"/>
+		<property name="FalloffMode" type="float" default="0" detail="uniform" subtype="selector"
+		  range="exp(-falloff*dist)=0:(1 - dist/maxdist)^falloff=1" />
+		<property name="FalloffValue" type="float" default="0" detail="uniform"/>
+		
+		<property name="EnvMap" type="string" default="" detail="uniform"/>
+		<property name="EnvSpace" type="string" default="" detail="uniform"/>
+		<property name="BrtWarp" type="float" default="1" detail="uniform" subtype="switch"/>
+		
+		<property name="coordsys" type="string" default="" detail="uniform"/>
+		<property name="subset" type="string" default="" detail="uniform"/>
+		<property name="label" type="string" default="" detail="uniform"/>
+		
+		<property name="seed" type="float" default="-1" detail="uniform">
+		<help>frame-dependent random directions seed. 
+		If "seed" is set to a fixed non-negative number, 
+		the ray directions from each point will be fixed from frame to frame. 
+		If "seed" is set to -1 (the default) or the frame number, 
+		the directions will change from frame to frame. 
+		(Ignored for point-based calculations.)</help>
+		</property>
+		
+		<property name="pointbased" type="float" default="0" detail="uniform" subtype="switch"/>
+		<property name="PtcFile" type="string" default="" detail="uniform"/>
+		<property name="MaxSolidAngle" type="float" default="0.1" detail="uniform"/>
+		<property name="clamp" type="float" default="1" detail="uniform" subtype="switch"/>
+	</input>
+	<output>
+		<property name="result" type="float" default="0"/>	
+		<property name="env_color" type="color" default="color( 0, 0, 0 )"/>
+		<property name="bent_dir" type="vector" default="vector( 0, 0, 1 )"/>	
+	</output>
+	<include>
+	</include>
+		
+	<internal>
+	  <variable name="occ_C"/>
+	</internal>
+	<code>
+  <![CDATA[
+  
+	/* extern point P; */
+  /* extern normal N; */
+  /* normal Nss = meShadingNormal( N ); */
+  
+  /* if ( $(MaxDist) == -1 )
+	  $(MaxDist) = 1.0e38; */
+	
+	#ifdef AIR  
+   color $(occ_C) = occlusion( P  
+              ,$(N) 
+              ,radians( $(ConeAngle) )
+              ,bent_dir
+              ,"samples",       $(MaxSamples)
+              /* ,"blur", mapblur */
+              ,"bias",          $(Bias)
+              ,"label",         $(label)
+              ,"subset",        $(subset)
+              ,"maxdist",       $(MaxDist)
+              ,"maxerror",      $(MaxError) 
+              ,"maxpixeldist",  MaxPixelDist );
+             $(result) = comp( $(occ_C), 0 ); 
+#else                           
+   #ifdef PIXIE
+   $(result) = occlusion( P  
+              ,$(N)            
+              ,$(MaxSamples)
+              ,"irradiance",    $(env_color) /* The irradiance amount (output)  */
+              /*,"minR",          MaxPixelDist  uniform float minR	 The closest distance between samples. */
+              /*,"maxR",          MaxPixelDist uniform float maxR	The maximum distance between samples. */
+              ,"bias",          $(Bias)
+              ,"maxdist",       $(MaxDist) );
+   #else
+   $(result) = occlusion( P  
+              ,$(N)            
+              ,$(MaxSamples)
+              ,"adaptive",      $(Adaptive)
+              ,"minsamples",    $(MinSamples)
+              ,"maxdist",       $(MaxDist)
+  #ifdef DELIGHT             
+              ,"axis",          $(SkyAxis)
+  #endif              
+              ,"coneangle",     radians( $(ConeAngle) )
+              ,"samplebase",    $(SampleBase)
+              ,"bias",          $(Bias)
+              ,"hitmode",       $(HitMode)
+              ,"hitsides",      $(HitSides)
+              ,"maxvariation",  $(MaxVar)
+  #ifndef DELIGHT              
+              ,"maxerror",      $(MaxError)
+              ,"maxpixeldist",  $(MaxPixelDist)
+              ,"seed",          $(seed)
+              ,"brightnesswarp",  $(BrtWarp)
+  #endif               
+              ,"distribution",  $(Distribution)
+              ,"falloffmode",   $(FalloffMode)
+              ,"falloff",       $(FalloffValue)
+              
+              ,"environmentmap",    $(EnvMap)
+              ,"environmentspace",  $(EnvSpace)
+              
+              ,"coordsystem",   $(coordsys)
+              ,"subset",        $(subset)
+              ,"label",         $(label)
+
+              ,"pointbased",    $(pointbased)
+              ,"filename",      $(PtcFile)
+              ,"maxsolidangle", $(MaxSolidAngle)
+              ,"clamp",         $(clamp)
+              
+              ,"environmentcolor",  $(env_color)
+              ,"environmentdir",    $(bent_dir) );
+
+  #endif /* PIXIE */             
+#endif  /* AIR */           
+              
+  if ( $(Invert) == 1 )              
+    $(result) = 1 - $(result);            
+  ]]>
+	</code>
+</node>

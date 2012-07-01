@@ -1,0 +1,21 @@
+<?xml version="1.0"?> 
+
+<node name="saturation" author="mesh">
+	<help>Controls the color sauration value</help>
+	<input>
+	  <property name="input" type="color" default="color(0,0,0)"/>
+	  <property name="value" type="float" default="1" subtype="slider" range="0 1 0.01"/>
+	</input>
+	<output>
+		<property name="result" type="color"/>		
+	</output>
+	<internal>
+	  <variable name="lum"/>
+	</internal>
+	<code>
+<![CDATA[
+	float $(lum) = .2125*comp( $(input), 0) + .7154*comp($(input), 1) + .0721*comp($(input), 2);
+	$(result) = mix( color( $(lum) ), $(input), $(value) );
+	]]>
+	</code>		
+</node>

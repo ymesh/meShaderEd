@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<node name="Ng" author="mesh" type="variable">
+	<help>Global geometry normal Ng.</help>
+	<output>
+		<property name="Ng" type="normal"/>
+	</output>
+	<code>
+	<![CDATA[
+	$(Ng) = Ng;
+	]]>
+	</code>
+</node>

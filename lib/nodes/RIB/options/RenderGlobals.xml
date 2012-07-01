@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<node name="RenderGlobals" author="mesh" type="rib_code">
+	<help>RenderGlobals options</help>
+	<input>
+    <property name="Hider" type="string" default="hidden" provider="attribute" subtype="selector"
+      range="hidden:raytrace:photon:zbuffer:opengl"/>
+    <property name="Jitter" type="int" default="1" provider="attribute" subtype="switch"/>		
+    <property name="ShadingRate" label="Shading rate" type="float" default="1.0" provider="attribute"/>
+    <property name="Samples" type="int" default="4" provider="attribute"/>		
+    <property name="Filter" type="string" default="catmull-rom" provider="attribute" subtype="selector"
+      range="box:triangle:catmull-rom:gaussian:sinc:blackman-harris:mitchell:separable-catmull-rom:lanczos:bessel"/>
+    <property name="FilterWidth" label="Filter width" type="float" default="2.0" provider="attribute"/>	
+    
+    <property name="Options" label="Options" type="rib" default=""/>
+	</input>
+    
+	<output>
+  <property name="rib" label="rib" type="rib" default=""/>
+	</output>
+	<code_param>
+  <![CDATA[
+	]]>    
+	</code_param>
+	<code>
+  <![CDATA[
+  ##Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
+  ##Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
+
+  Hider "hidden" "int jitter" [1]
+
+  PixelSamples $(Samples) $(Samples)
+  PixelFilter "$(Filter)" $(FilterWidth) $(FilterWidth)
+  ShadingRate $(ShadingRate)
+
+  $(Options)
+  ]]>
+	</code>		
+</node>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?> 
+
+<node name="mixF" author="Libero Spagnolini">
+	<help>Mix two floats.</help>
+	<input>
+		<property name="inValue1" type="float"/>		
+		<property name="inValue2" type="float"/>		
+		<property name="factor" type="float"/>		
+	</input>
+	<output>
+		<property name="outValue" type="float" />		
+	</output>
+	<code>
+<![CDATA[
+$(outValue) = mix(($(inValue1)), ($(inValue2)), ($(factor)));
+]]>
+	</code>		
+</node>

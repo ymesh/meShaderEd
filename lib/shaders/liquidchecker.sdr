@@ -1,0 +1,73 @@
+#!version 2.2.6
+surface
+#!parameters:
+uniform	float	frequency	=	4.5
+uniform	float	mode	=	0
+#!variables:
+varying	float	temporary_0
+uniform	float	temporary_1
+varying	vector	a
+varying	vector	b
+varying	float	ss
+varying	float	tt
+varying	float	x
+varying	float	y
+uniform	vector	temporary_2
+varying	float	temporary_3
+varying	float	temporary_4
+varying	vector	temporary_5
+varying	vector	temporary_6
+varying	vector	temporary_7
+varying	vector	temporary_8
+varying	vector	temporary_9
+#!Init:
+	return            
+#!Code:
+	feql              	temporary_1 mode 0
+	vufloat            temporary_0 temporary_1
+	if                	temporary_0 #!Label5
+	vfromf            	temporary_2 0.33
+	vuvector           a temporary_2
+	vfromf            	temporary_2 0.66
+	vuvector           b temporary_2
+	vufloat            temporary_3 frequency
+	mulff             	ss s temporary_3
+	vufloat            temporary_3 frequency
+	mulff             	tt t temporary_3
+	vufloat            temporary_4 0.5
+	subff             	temporary_3 ss temporary_4
+	vufloat            temporary_4 1
+	mod	("f=ff")  x  temporary_3  temporary_4 
+	vufloat            temporary_4 0.5
+	subff             	temporary_3 tt temporary_4
+	vufloat            temporary_4 1
+	mod	("f=ff")  y  temporary_3  temporary_4 
+	vufloat            temporary_3 0.5
+	addff             	temporary_4 x du
+	filterstep	("f=fff")  x  temporary_3  x  temporary_4 
+	vufloat            temporary_3 0.5
+	addff             	temporary_4 y du
+	filterstep	("f=fff")  y  temporary_3  y  temporary_4 
+	movevv            	Oi Os
+	vfromf            	temporary_8 x
+	mulvv             	temporary_7 a temporary_8
+	vfromf            	temporary_9 x
+	subvv             	temporary_8 b temporary_9
+	mix	("v=vvf")  temporary_6  temporary_7  temporary_8  y 
+	vfromf            	temporary_2 0.85
+	vuvector           temporary_7 temporary_2
+	vufloat            temporary_3 0.8
+	mix	("v=vvf")  temporary_5  temporary_6  temporary_7  temporary_3 
+	mulvv             	Ci Os temporary_5
+#!Label5:
+	endif             
+	feql              	temporary_1 mode 1
+	vufloat            temporary_0 temporary_1
+	if                	temporary_0 #!Label7
+	movevv            	Oi Os
+	vfromf            	temporary_2 0.5
+	vuvector           temporary_5 temporary_2
+	mulvv             	Ci Os temporary_5
+#!Label7:
+	endif             
+	return            

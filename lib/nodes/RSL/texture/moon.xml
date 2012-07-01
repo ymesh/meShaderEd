@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+
+<node name="moon" author="Sler guys">
+	<help>Moon surface shader.</help>
+	<input>
+		<property name="ka" type="float" default="0.5"/>		
+		<property name="kd" type="float" default="1.0"/>		
+		<property name="lacunarity" type="float" default="2.0"/>		
+		<property name="octaves" type="float" default="8.0"/>		
+		<property name="H" type="float" default="0.3"/>		
+		<property name="highlandColor" type="color" default="color(0.7, 0.7, 0.7)"/>		
+		<property name="mariaBaseColor" type="color" default="color(0.7, 0.7, 0.7)"/>		
+		<property name="mariaColor" type="color" default="color(0.1, 0.1, 0.1)"/>		
+		<property name="arg22" type="float" default="1.0"/>		
+		<property name="arg23" type="float" default="1.0"/>		
+		<property name="highlandThreshold" type="float" default="-0.2"/>	
+		<property name="highlandAltitude" type="float" default="0.001"/>	
+		<property name="mariaAltitude" type="float" default="0.0004"/>	
+		<property name="peakRad" type="float" default="0.0075"/>	
+		<property name="innerRad" type="float" default="0.01"/>	
+		<property name="rimRad" type="float" default="0.02"/>	
+		<property name="outerRad" type="float" default="0.05"/>	
+		<property name="peakHt" type="float" default="0.005"/>	
+		<property name="rimHt" type="float" default="0.003"/>	
+		<property name="numRays" type="float" default="8.0"/>	
+		<property name="rayFade" type="float" default="1.0"/>	
+		<property name="P" type="point"/>			
+	</input>
+	<output>
+		<property name="outColor" type="color"/>		
+	</output>
+	<internal>
+		<variable name="radialDist"/>
+		<variable name="PP"/>
+		<variable name="PQ"/>
+		<variable name="l"/>
+		<variable name="a"/>
+		<variable name="o"/>
+		<variable name="i"/>
+		<variable name="omega"/>
+		<variable name="chaos"/>
+		<variable name="temp1"/>
+		<variable name="vv"/>
+		<variable name="uu"/>
+		<variable name="ht"/>
+		<variable name="freq"/>
+		<variable name="scale"/>
+		<variable name="lighten"/>
+		<variable name="NN"/>
+		<variable name="pd"/>
+		<variable name="rayDist"/>
+	</internal>
+	<code><![CDATA[#define snoise(Pt) (2*noise(Pt) - 1)
+#define DNoise(p) (2*(point noise(p)) - point(1,1,1))
+#define VLNoise(Pt,$(scale)) (snoise(Pt + $(scale)*DNoise(Pt)))
+#define TWOPI (6.28)
+
+float $(radialDist);
+point $(PP), $(PQ);
+float $(l), $(a), $(o), $(i), $(omega);
+float $(chaos);
+float $(temp1);
+point $(vv);
+float $(uu), $(ht), $(freq), $(scale);
+float $(lighten);
+point $(NN);
+float $(pd);  /* pole distance */
+float $(rayDist);
+
+$(PQ) = $(P);
+$(PP) = $(P);
+$(NN) = normalize(N);
+$(radialDist) = sqrt(xcomp($(PP))*xcomp($(PP)) + ycomp($(PP))*ycomp($(PP)));
+$(omega) = pow ($(lacunarity), (-.5)-$(H));
+
+$(l) = 1;  $(o) = 1;  $(a) = 0;
+for($(i) = 0;  $(i) < $(octaves);  $(i) += 1)
+{
+    $(a) += $(o) * snoise($(l) * $(PP));
+    $(l) *= $(lacunarity);
+    $(o) *= $(omega);
+}
+$(chaos) = $(a);
+
+$(outColor) = 1;
+
+$(temp1) = $(radialDist) * $(arg22);
+if($(temp1) < 1)
+    $(chaos) -= $(arg23) * (1 - smoothstep(0, 1, $(temp1)));
+
+if ($(chaos) > $(highlandThreshold)) {
+    $(PQ) += $(chaos) * $(highlandAltitude) * $(NN);
+    $(outColor) += $(highlandColor) * $(chaos);
+}
+else {
+    $(PQ) += $(chaos) * $(mariaAltitude) * $(NN);
+    $(outColor) *= $(mariaBaseColor) + $(mariaColor) * $(chaos);
+}
+
+$(pd) = 1-v;
+$(vv) = point(xcomp($(PP))/$(radialDist), 0, zcomp($(PP))/$(radialDist));
+$(lighten) = 0;
+if ($(pd) < $(peakRad)) {
+    $(uu) = 1 - $(pd)/$(peakRad);
+    $(ht) = $(peakHt) * smoothstep(0, 1, $(uu));
+}
+else if ($(pd) < $(innerRad)) { 
+    $(ht) = 0;
+}
+else if ($(pd) < $(rimRad)) {           
+    $(uu) = ($(pd)-$(innerRad)) / ($(rimRad) - $(innerRad));
+    $(lighten) = .75*$(uu);
+    $(ht) = $(rimHt) * smoothstep(0, 1, $(uu));
+}
+else if ($(pd) < $(outerRad)) {        
+    $(uu) = 1 - ($(pd)-$(rimRad)) / ($(outerRad)-$(rimRad));
+    $(lighten) = .75*$(uu)*$(uu);
+    $(ht) = $(rimHt) * smoothstep(0, 1, $(uu)*$(uu));
+}
+else $(ht) = 0;
+
+$(PQ) += $(ht) * $(NN);
+$(lighten) *= 0.2;
+$(outColor) += color($(lighten),$(lighten),$(lighten));
+
+if ($(uu) > 0) {
+    if ($(pd) < $(peakRad)) {     
+        $(vv) = 5*$(PP) + 3 * $(vv);
+        $(freq) = 1;  $(scale) = 1;  $(ht) = 0;
+        for ($(i) = 0;  $(i) < 4;  $(i) += 1) {
+          $(ht) += $(scale) * snoise($(freq) * $(vv));
+          $(freq) *= 2;  $(scale) *= 0.833;
+        }
+
+        $(PQ) += 0.0025 * $(uu)*$(ht) * $(NN);
+	}
+    else {
+        $(vv) = 6*$(PP) + 3 * $(vv);
+        $(freq) = 1;  $(scale) = 1;  $(ht) = 0;
+        for($(i) = 0;  $(i) < 4;  $(i) += 1)
+        {
+            $(ht) += $(scale) * snoise($(freq) * $(vv));
+            $(freq) *= 2;  $(scale) *= 0.833;
+        }
+        if($(radialDist) > $(rimRad))
+            $(uu) *= $(uu);
+        $(PQ) += 0.0025 * (0.5*$(uu) + 0.5*$(ht)) * $(NN);
+	}
+}
+
+$(lighten) = 0;
+if ($(pd) >= $(rimRad)  &&  $(pd) < 0.4) {
+    $(lighten) = smoothstep (.15, .5, snoise(62*u));
+    $(rayDist) = 0.2 + 0.2 * snoise (20 * mod(u+0.022,1));
+    $(lighten) *= (1 - smoothstep ($(rayDist)-.2, $(rayDist), $(pd)));
+}
+$(lighten) = 0.2 * clamp ($(lighten), 0, 1);
+$(outColor) += color ($(lighten), $(lighten), $(lighten));]]>
+	</code>
+</node>

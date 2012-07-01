@@ -1,0 +1,20 @@
+<?xml version="1.0"?> 
+
+<node name="compMultInvC" author="mesh">
+	<help>Multiple 'BG' and inverted 'FG' multiplied with 'mult' colors.</help>
+	<input>
+		<property name="BG" type="color"/>		
+		<property name="FG" type="color"/>		
+		<property name="mult" type="float" default="1" provider="external" subtype="slider" range="0 1 0.01"/>		
+	</input>
+	<output>
+		<property name="out" type="color" />		
+	</output>
+	<code>
+  <![CDATA[
+
+	$(out) = $(BG) * ( (1 - $(mult)) + $(mult) * ( 1 - $(FG) ) );
+	
+	]]>
+	</code>		
+</node>

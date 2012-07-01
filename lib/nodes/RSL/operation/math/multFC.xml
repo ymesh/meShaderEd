@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="multFC" author="Libero Spagnolini">
+	<help>Scale a color by a float.</help>
+	<input>
+		<property name="inValue1" type="float"/>		
+		<property name="inValue2" type="color"/>		
+	</input>
+	<output>
+		<property name="outValue" type="color" />		
+	</output>
+	<code>
+<![CDATA[
+ $(outValue) = $(inValue1) * $(inValue2);
+]]>
+	</code>			
+</node>

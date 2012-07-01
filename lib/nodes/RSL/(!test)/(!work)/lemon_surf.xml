@@ -1,0 +1,75 @@
+<?xml version="1.0"?> 
+
+<node name="lemon_surf" type="surface" author="mesh">
+	<help>Root surface shader.</help>
+	<input>
+		<property name="Ci" type="color" default="color(0,0,0)" />
+		<property name="Oi" type="color" default="color(1,1,1)" />
+		
+		<property name="color" type="color" default="color(0,0,0)"/>
+		<property name="diff" type="color" default="color(0,0,0)"/>
+		<property name="spec" type="color" default="color(0,0,0)"/>
+		<property name="diff_ibi" type="color" default="color(0,0,0)"/>
+		<property name="spec_ibi" type="color" default="color(0,0,0)"/>
+		<property name="shadow" type="color" default="color(0,0,0)"/>
+		<property name="reflect" type="color" default="color(0,0,0)"/>
+		<property name="sss" type="color" default="color(0,0,0)"/>
+		
+		<property name="pstrace" type="color" default="color(0,0,0)"/>
+		
+		<property name="occ" type="float" default="0"/>
+		<property name="occ_C" type="color" default="color(0,0,0)"/>
+		
+		<property name="mask" type="float" default="1"/>
+		<property name="mask_skin" type="float" default="0"/>
+		<property name="mask_C" type="color" default="color(0,1,0)"/>
+	
+	</input>
+	<output>
+	  <property name="__color" type="color" default="color(0, 0, 0)" detail="varying" provider="primitive"  />
+		<property name="__diff" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
+		<property name="__spec" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
+		<property name="__diff_ibi" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
+		<property name="__spec_ibi" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
+		<property name="__shadow" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
+		<property name="__reflect" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
+		<property name="__sss" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
+		
+		<property name="__pstrace" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
+		<property name="__occ" type="float" detail="varying" provider="primitive" default="0"/>
+		<property name="__occ_C" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
+		
+		<property name="__mask" type="float" detail="varying" provider="primitive" default="1"/>
+		<property name="__mask_skin" type="float" detail="varying" provider="primitive" default="0"/>
+		<property name="__mask_C" type="color" detail="varying" provider="primitive" default="color(0,1,0)"/>
+	</output>
+	<code><![CDATA[
+	Ci = $(Ci) * $(Oi); 
+	Oi = $(Oi);
+	__color = $(color);
+	__diff = $(diff);
+	__spec = $(spec);
+	__diff_ibi = $(diff_ibi);
+	__spec_ibi = $(spec_ibi);
+	__shadow = $(shadow);
+	__reflect = $(reflect);
+	__sss = $(sss);
+	
+	__pstrace = $(pstrace);
+	
+	__occ = $(occ);
+	__occ_C = $(occ_C);
+	
+	__mask = $(mask);
+	__mask_C = $(mask_C);
+	
+	__mask_skin = $(mask_skin);
+	
+	]]>
+	</code>
+	<preview>
+		<shader type="surface">
+			<code></code>
+		</shader>
+	</preview>	
+</node>

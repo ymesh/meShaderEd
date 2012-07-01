@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+
+<node name="zj_sss" author="zj">
+	<help>A SubSurface Scattering template based on depth map data.
+    Based on ZJ translucence shader.       
+	</help>
+	<input>
+	  <property name="N" type="normal" default="normal(0,0,0)" />	
+		<property name="category" type="string" default="subsurf" detail="uniform"/>
+		<property name="coord" type="string" default="" detail="uniform"/>
+		<property name="Ksss" type="float" default="1"/>
+		<property name="depth" type="float" default="0.1"/>
+		<property name="eta" type="float" default="0.5" detail="uniform"/>
+		<property name="sigma" type="float" default="0.5" detail="uniform"/>
+		<property name="ior" type="float" default="1.333" detail="uniform"/>
+		<property name="tint" type="color" default="color(1,1,1)"/>
+	</input>
+	<output>
+		<property name="result" type="color" default="color ( 0, 0, 0 )"/>	
+	</output>
+	<include>
+	</include>	
+	<internal>
+	  <variable name="efresnel"/>
+	  <variable name="Q"/>
+	  <variable name="Nn"/>
+	  <variable name="Vn"/>
+	  <variable name="Kr"/>
+	  <variable name="Kt"/>
+	  <variable name="T"/>
+	  <variable name="orient"/>
+	  <variable name="up"/>
+	  <variable name="base1"/>
+	  <variable name="base2"/>
+	  <variable name="c"/>
+	  <variable name="Cdata"/>
+	  <variable name="realsamples"/>
+	  <variable name="dist"/>
+	</internal>
+	<code><![CDATA[
+	
+  vector $(efresnel)(vector II; normal NN; float eta; output float Kr, Kt;) 
+	{
+    vector R, T;
+    fresnel(II, NN, eta, Kr, Kt, R, T);
+    Kr = smoothstep(0.,0.5, Kr);
+    Kt = 1. - Kr;
+    return normalize(T);
+  }
+
+  normal $(Nn) = normalize( $(N) );
+  vector $(Vn)  = normalize(I);
+       
+  float $(Kr), $(Kt);
+  vector $(T) = normalize( $(efresnel)( $(Vn), $(Nn), 1/$(ior), $(Kr), $(Kt) ) );
+  point $(Q) = P + $(T) * $(depth);
+  
+  vector $(orient) = vector "world" (0,0,1);
+  
+  if ( $(coord) != "" )
+    $(orient) = normalize( vtransform( $(coord),"current",vector(0,0,-1) ) );
+  
+  vector $(up) = vector "world" (0,1,0);
+  if ( abs($(orient).$(up)) > 0.9 )
+    $(up) = vector "world" (1,0,0);
+  vector $(base1) = normalize( $(orient)^$(up) );
+  vector $(base2) = normalize( $(orient)^$(base1) );
+        
+  color $(c) = 0, $(Cdata) = 1;
+  float $(realsamples) = 0, $(dist) = 0;
+  
+  /* P = P; */
+          
+  illuminance( $(category), $(Q), "lightcache", "refresh" )
+  {
+    uniform string shdname, imgname;
+    uniform matrix shadNDCSpace, shadcamSpace, shadinvSpace;
+    point Psample, NDCP, cameraP, Pin;
+    float idist[9] = { -1, -.5, -.3, -.1, 0, .5, .3, .5, 1 };
+    float jdist[9] = { -1, -.5, -.3, -.1, 0, .5, .3, .5, 1 };
+  
+    float i, j, NDCs, NDCt, Ddata, dot;
+    vector Ln; 
+    
+    Ln = normalize( L );
+    dot = Ln.$(orient);
+    
+    if ( lightsource("__shdname", shdname) != 0 && shdname != "" )
+    {
+      textureinfo( shdname, "projectionmatrix", shadNDCSpace );
+      textureinfo( shdname, "viewingmatrix", shadcamSpace );
+      shadinvSpace = 1 / shadcamSpace;
+              
+      for( i = 0 ; i <= 8 ; i= i + 1 )
+      {
+        for( j = 0 ; j <= 8 ; j = j + 1 )
+        {
+          Psample = $(Q) + (idist[i] + 0.5*(random()-0.5)) * $(eta) * $(base1) + (jdist[j]+0.5*(random()-0.5)) * $(eta) * $(base2);
+          NDCP = transform ( shadNDCSpace, Psample );
+          NDCs = 0.5 * ( 1 + xcomp(NDCP) );
+          NDCt = 0.5 * ( 1 - ycomp(NDCP) );
+          Ddata = float texture( shdname, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, "samples", 1 );
+          cameraP = transform( shadcamSpace, Psample );
+          if ( zcomp(cameraP) + 0.1 > Ddata) 
+          {
+            Pin = cameraP * Ddata / zcomp(cameraP);
+            Pin = transform( shadinvSpace, Pin );
+            $(dist) += distance( $(Q), Pin ) + $(depth);
+            if (lightsource("__imgname", imgname) != 0 && imgname != "" )
+              $(Cdata) = color texture( imgname, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, "samples", 1 );
+            
+            $(c) += $(Cdata) * Cl;
+          }
+          $(realsamples) += dot;
+        }
+      }
+    }
+  }
+  if ( $(realsamples) > 0 )
+  {
+    $(dist) /= $(realsamples);
+    $(c) /= $(realsamples);
+  }
+  else
+    $(dist) = 0;
+  
+  $(result) = $(Ksss) * exp( -$(dist) * $(sigma) ) * $(c) * $(tint);
+  
+  ]]>
+	</code>
+</node>

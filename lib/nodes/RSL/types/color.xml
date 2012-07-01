@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<node name="color" type="rsl_code" author="mesh">
+	<help>color operand</help>
+	<input>
+		<property name="inColor" type="color" default="color(0,0,0)" />
+	</input>
+	<output>
+		<property name="outColor" type="color" default="color(0,0,0)"/>
+	</output>
+	<code>
+	  <![CDATA[
+	  $(outColor) = $(inColor);
+	  ]]>
+	</code>
+</node>

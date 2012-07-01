@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<node name="Threads" author="mesh">
+	<help>threads, based on example from RenderMan Companion book</help>
+	<input>
+		
+		<property name="frequency" type="float" default="4">
+		</property>
+		
+		<property name="phase" type="float" default="0">
+		</property>
+		
+		<property name="offset" type="float" default="0">
+		</property>
+		
+		<property name="dampzone" type="float" default="0.05">
+		</property>
+		
+		<property name="tspace" type="float" default="0">
+		</property>
+		
+		<property name="bspace" type="float" default="1">
+		</property>
+		
+		<property name="Q" type="point"/>	
+		<property name="dQu" type="vector"/>	
+		<property name="dQv" type="vector"/>	
+		
+	</input>
+	<output>
+		<property name="result" type="float"/>		
+	</output>
+	<internal>
+	<variable name="x"/>	
+	<variable name="y"/>	
+	<variable name="magnitude"/>
+	
+	</internal>
+	<code><![CDATA[
+
+  float $(x) = xcomp($(Q));
+	float $(y) = ycomp($(Q));
+  
+	float $(magnitude) = sin( PI*2*( $(y) * $(frequency) + $(x) + radians( $(phase) ) ) ) + $(offset);
+	
+	if ( $(y) > $(tspace) && $(y) < $(bspace) ) 
+	{
+		if ( $(y) > ( $(bspace) - $(dampzone) ) ) 
+			$(magnitude) *= ( $(bspace) - $(y) ) / $(dampzone); 
+		else if ( $(y) < ( $(tspace) + $(dampzone) ) ) 
+			$(magnitude) *= ( $(y) - $(tspace) ) / $(dampzone); 
+	} 
+	else
+		$(magnitude) = 0;
+  
+  $(result) = $(magnitude);
+	
+  ]]>
+	</code>
+</node>

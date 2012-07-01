@@ -1,0 +1,18 @@
+<?xml version="1.0"?> 
+
+<node name="invertF" author="mesh">
+	<help>
+	Invert float value
+	</help>
+	<input>
+	  <property name="input" type="float" default="0"/>	
+	</input>
+	<output>
+		<property name="result" type="float" />		
+	</output>
+	<code>
+<![CDATA[
+$(result) = 1 - $(input);
+]]>
+	</code>		
+</node>

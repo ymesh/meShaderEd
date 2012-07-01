@@ -1,0 +1,104 @@
+<?xml version="1.0"?> 
+
+<node name="me_distant" type="rsl_code" author="mesh">
+	<help>Distant light shader.</help>
+	<input>
+		<property name="category" type="string" default="" detail="uniform"/>
+		
+		<property name="LightColor" type="color" default="color(1,1,1)">
+		<help>The color of your the light. You can connect a pattern generator here or
+    simply use a constant color.  Two common choices are an image map or a spline which varies with distance.</help>
+		</property>
+		
+		<property name="Kl" type="float" default="1" provider="external"/>
+		
+		<property name="Falloff" type="float" default="0" detail="uniform" subtype="selector"
+      range="None:Linear:Squared:Cubic">
+		<help>Normally light intensity diminished with distance.
+        This control governs the degree to which this effect
+    is in play.  Linear falls off more than None, Squared
+    more than Cubic, etc.  For more precise control, try
+    connecting the Kl or LightColor parameter to a
+    spline whose pattern is a distance function.</help>
+		</property>
+		
+		<property name="DisableBarnDoor" type="float" default="1" detail="uniform" subtype="switch">
+		<help>Allows you to turn off the barn door effect.  This is
+      useful in the case where you want to tightly focus your
+      shadowmaps but still want light throughout the scene.</help>
+		</property>
+		
+		<property name="Penumbra" type="float" default="0" detail="uniform" subtype="slider" range="0 .5 .001">
+		<help>Controls how sharp an edge the barn door makes.</help>
+		</property>
+		
+		<property name="IgnoreShadow" type="float" default="0" detail="uniform" subtype="switch">
+		<help>if enabled -- shadow will not mix with Cl</help>
+		</property>
+		
+		<property name="Shadow" type="color" default="color(0,0,0)">
+		<help>Connect a shadow function here.</help>
+		</property>
+		
+		<property name="ShadowColor" type="color" default="color(0,0,0)">
+		<help>The color of the shadow. Values other than black
+          can simulate the effect of semi-transparent shadowing.</help>
+		</property>
+		
+		
+		<property name="Diffuse" type="float" default="1" subtype="slider" range="0 1 .01"/>
+		<property name="Specular" type="float" default="1" subtype="slider" range="0 1 .01"/>
+		<property name="SSS" type="float" default="0" subtype="slider" range="0 1 .01"/>
+	</input>
+	<output>
+	  <property name="Cl" type="color" default="color(0,0,0)" />
+	  
+	  <property name="__category" type="string" default="" detail="uniform" provider="primitive"/>
+	  <property name="__nonspecular" type="float" default="0" detail="uniform" provider="primitive"/>
+	  <property name="__nondiffuse" type="float" default="0" detail="uniform" provider="primitive"/>
+	  <property name="__inShadowC" type="color" default="color(0,0,0)" detail="varying" provider="primitive"/>
+	  <property name="__foglight" type="float" default="1" detail="uniform" provider="primitive"/>
+	  <property name="__ssslight" type="float" default="0" detail="uniform" provider="primitive"/>
+	  
+	</output>
+	<internal>
+	<variable name="axis"/>
+	</internal>
+	<code>
+  <![CDATA[
+	uniform vector $(axis) = vector "shader" (0,0,1);
+
+  solar( $(axis), 0.0 ) 
+  {
+    varying float atten;
+    varying point PP = transform( "shader", Ps );
+    varying float sloc, tloc;
+    sloc = abs( xcomp( PP ) );
+    tloc = abs(ycomp(PP));
+
+    if ( $(DisableBarnDoor) != 1 ) 
+    {
+      if ( $(Penumbra) == 0 ) 
+        atten = (1 - filterstep(.5, sloc)) * (1 - filterstep(.5, tloc));
+      else 
+        atten = (1 - smoothstep(.5- $(Penumbra),.5,sloc)) * (1 - smoothstep(.5-$(Penumbra),.5, tloc));
+      atten *= filterstep(0, zcomp(PP));
+    } 
+    else 
+      atten = 1;
+    atten *= 1 / pow(length(L), $(Falloff));
+    
+    __inShadowC = $(Shadow);
+    __category = $(category);
+    __nondiffuse = 1 - $(Diffuse);
+    __nonspecular = 1 - $(Specular);
+    __ssslight = $(SSS);
+    
+    $(Cl) = atten * $(Kl) * $(LightColor);
+    
+    if ( $(IgnoreShadow) != 1 )
+      $(Cl) =  (1 - __inShadowC) * $(Cl) +  __inShadowC * $(ShadowColor);
+  }
+	]]>
+	</code>	
+</node>

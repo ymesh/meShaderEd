@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="sumFC" author="Libero Spagnolini">
+	<help>Sum a float to a color.</help>
+	<input>
+		<property name="inValue1" type="float"/>		
+		<property name="inValue2" type="color"/>		
+	</input>
+	<output>
+		<property name="outValue" type="color" />		
+	</output>
+	<code>
+<![CDATA[
+ $(outValue) = $(inValue2) + color($(inValue1));
+]]>
+	</code>			
+</node>

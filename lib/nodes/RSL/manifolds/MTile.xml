@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<node name="MTile" author="Pixar">
+	<help>Causes the underlying surface parameterization to
+	    	repeat. Use this to turn mundane simple geometric shapes
+		into exciting repetitive patterns of shape.</help>
+	<input>
+		<property name="Frequency" type="point" default="point(4,4,4)" range="0 100 1">
+		<help>The number of tiles per unit of surface.</help>
+		</property>
+		<property name="TileSize" type="float" default="1" subtype="slider" range="1 4 .01">
+		<help>Assuming your pattern generator computes values
+		    for the range 0-1, increasing the size of an individual
+		    tile results in sparser shape density</help>
+		</property>
+		<property name="Jitter" type="float" default="0" subtype="slider" range="0 1">
+		<help>Assuming your pattern generator computes values
+		    for the range 0-1, increasing the size of an individual
+		    tile results in sparser shape density</help>
+		</property>
+		<property name="RowOffset" type="float" default="0" subtype="switch" detail="uniform">
+		<help>Causes every other row of pattern to be offset.</help>
+		</property>
+		<property name="RandomZ" type="float" default="0" subtype="switch" detail="uniform">
+		<help>Some shapes refer to the z value of the Surface
+		    Position to choose from a subset of tiles.  Selecting
+		    this option causes a random tile number to be placed
+		    in the z coordinate of the surface position.  Note that
+		    many shapes ignore z completely</help>
+		</property>
+		
+		<property name="inQ" type="point" default="point(0,0,0)"/>
+		<property name="induQ" type="vector" default="vector(0,0,0)"/>	
+		<property name="indvQ" type="vector" default="vector(0,0,0)"/>	
+	</input>
+	<output>
+		<property name="Q" type="point"/>	
+		<property name="duQ" type="vector"/>	
+		<property name="dvQ" type="vector"/>	
+	</output>
+	<internal>
+		<variable name="x"/>
+		<variable name="y"/>
+		<variable name="xOffset"/>
+		<variable name="jitterPt"/>
+	</internal>
+	<code>
+<![CDATA[
+	  float $(x), $(y), $(xOffset) = 0;
+		point $(jitterPt);
+		
+		$(duQ) = $(induQ) * $(Frequency) * $(TileSize);
+		$(dvQ) = $(indvQ) * $(Frequency) * $(TileSize);
+
+		$(Q) = $(inQ) * $(Frequency);
+		$(x) = xcomp( $(Q) );
+		$(y) = ycomp( $(Q) );
+
+		if (($(RowOffset) != 0) && (abs( mod($(y),2) ) < 1))
+			$(x) += .5;
+
+		$(jitterPt) = point($(x), $(y), 0);
+
+		$(x) = mod($(x), 1);
+		$(y) = mod($(y), 1);
+		$(Q) = $(TileSize) * (point($(x), $(y), .5) - vector .5) + vector .5;
+
+		$(Q) += $(Jitter) * ($(TileSize) - 1) * (vector .5 - vector cellnoise( $(jitterPt) ));
+
+		if ( $(RandomZ) != 0 )
+		  setzcomp( $(Q), float cellnoise( $(jitterPt) ) );
+		else
+		  setzcomp( $(Q), 0 );
+	]]>	
+  </code>		
+</node>

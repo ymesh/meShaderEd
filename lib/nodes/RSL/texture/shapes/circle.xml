@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<node name="Circle" author="mesh">
+	<help>Generator of circle shape</help>
+	<input>
+		<property name="FillType" label="Fill Type" type="float" detail="uniform" default="0" subtype="selector" range="Solid:Lineriar:Hemisphere"/>
+    <property name="Radius" type="float" default="0.3" subtype="slider" range="0.01 0.5 .01"/>
+    <property name="Filter" type="string" default="triangle" detail="uniform" subtype="selector" range="box:triangle:catmull-rom:gaussian"/>
+    <property name="fwidth" label="Filter width" type="float" detail="uniform" default="1" subtype="slider" range="0 32 .1"/>
+    <property name="Fuzziness" type="float" default="0" subtype="slider" range="0 1 .01"/>
+    
+		<property name="Invert" type="float" detail="uniform" default="0" subtype="switch"/>
+		
+		<property name="Q" type="point"/>
+		<property name="duQ" type="vector"/>	
+		<property name="dvQ" type="vector"/>	
+	</input>
+	<output>
+		<property name="result" type="float"/>		
+	</output>
+	<internal>
+	  <variable name="x"/>
+	  <variable name="y"/>
+	  <variable name="r"/>	
+	  <variable name="dr"/>
+	  <variable name="rr"/>
+	</internal>
+	<code><![CDATA[
+	float	$(x) = xcomp( $(Q) )-.5;
+	float $(y) = ycomp( $(Q) )-.5;
+	
+	float	$(r) = sqrt ( $(x) * $(x) + $(y) * $(y) );
+	
+	$(x) = xcomp ( $(duQ) ) + xcomp ( $(dvQ) );
+	$(y) = ycomp ( $(duQ) ) + ycomp ( $(dvQ) );
+	
+	float $(dr) = max ( .5 * $(Fuzziness), sqrt ( $(x) * $(x) + $(y) * $(y) ) );
+
+	/* Solid */
+	$(result) = 1 - filterstep ( $(Radius), $(r), $(r) + $(dr), "filter", $(Filter), "width", $(fwidth) );	
+	
+	if ( $(FillType) == 1.0 ) {	/* lineriar */
+		$(result) = $(result) * ( ( $(Radius) - $(r) ) / $(Radius) );
+	} else 
+	  if ( $(FillType) == 2.0 ) {	/* Hemisphere  */
+		float $(rr) = ( PI/2 ) * ( ( $(Radius) - $(r) ) / $(Radius) );
+		$(result) *=  sin ( $(rr) ) ;
+	}
+	      		
+	if( $(Invert) != 0 )
+		$(result) = 1 - $(result);
+  ]]>
+	</code>
+</node>

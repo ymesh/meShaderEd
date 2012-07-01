@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="trace" author="Konstantin Kharitonov">
+	<help>Trace returns the incident light reaching a point P from a given direction R. If a particular implementation does not support the Ray Tracing capability, and cannot compute the incident light arriving from an arbitrary direction, trace will return 0 (black).</help>
+	<input>
+		<property name="P" type="point"/>		
+		<property name="R" type="vector"/>				
+	</input>
+	<output>
+		<property name="outColor" type="color"/>		
+	</output>
+	<code>
+<![CDATA[
+ $(outColor) = trace($(P), $(R));
+]]>
+	</code>
+</node>

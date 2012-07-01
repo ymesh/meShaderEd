@@ -1,0 +1,84 @@
+<?xml version="1.0"?> 
+
+<node name="IDgloop" type="rsl_code" author="Ivan DeWolf">
+	<help>IDgloop displacement shader demostrating non-linear displacement in PRMan</help>
+	<input>
+		<property name="P" type="point" default="point (0.0, 0.0, 0.0)" />
+		<property name="N" type="normal" default="normal (0.0, 1.0, 0.0)" />
+		
+		<property name="space" type="string" default="object" />
+		<property name="Kd" type="float" default="0.2" subtype="slider" range="0 1 0.001"/>
+		<property name="mag" type="float" default="0.2" subtype="slider" range="0 1 0.001"/>
+		<property name="freq" type="float" default="5.0" subtype="slider" range="0 100 0.01"/>
+	  <property name="numsteps" type="float" default="20" subtype="slider" range="0 64 1"/>/>
+	</input>
+	<output>
+		<property name="outP" type="point"/>
+		<property name="outN" type="normal"/>
+	</output>
+	<internal>
+	  <variable name="Nn"/>
+		<variable name="overdist"/>
+		<variable name="stepsize"/>
+		<variable name="Psh"/>
+		<variable name="sys"/>
+		<variable name="dPduN"/>
+		<variable name="dPdvN"/>
+		<variable name="Pou"/>
+		<variable name="Pov"/>
+		<variable name="nz"/>
+		<variable name="nzou"/>
+		<variable name="nzov"/>
+		<variable name="chu"/>
+		<variable name="chv"/>
+		<variable name="DdPdu"/>
+		<variable name="DdPdv"/>
+		<variable name="step"/>
+		<variable name="i"/>
+	</internal>
+	<code>
+  <![CDATA[
+	  
+		vector $(overdist) = 0.1;
+		vector $(stepsize) = $(mag) / $(freq);
+		
+		string $(sys) = $(space);
+		
+		if ( $(space) == "" ) $(sys) = "object";  
+		
+		point  $(Psh) = transform ( $(sys), $(P) ) * $(freq);
+		vector $(dPduN) = normalize ( vtransform ( $(sys), dPdu ) );
+		vector $(dPdvN) = normalize ( vtransform ( $(sys), dPdv ) );
+
+		point  $(Pou) = $(Psh) + ( $(dPduN) * $(overdist) );
+		point  $(Pov) = $(Psh) + ( $(dPdvN) * $(overdist) );
+
+		float  $(nz) = noise ( $(Psh) ) - 0.5;
+		float  $(nzou) = noise ( $(Pou) ) - 0.5;
+		float  $(nzov) = noise ( $(Pov) ) - 0.5;
+
+		float  $(chu) = ( $(nz) - $(nzou) );
+		float  $(chv) = ( $(nz) - $(nzov) );
+
+		vector $(DdPdu) = $(dPduN);
+		vector $(DdPdv) = $(dPdvN);
+
+		vector $(step) = $(DdPdu) ^ $(DdPdv);
+
+		float  $(i);
+		for ( $(i) = 1 ; $(i) < $(numsteps) ; $(i) += 1 )
+		{
+			$(P) -= vtransform ( $(sys), "current", $(step) ) * $(nz) * $(stepsize);
+			$(DdPdu) = normalize ( $(DdPdu) + ( $(step) * $(chu) ) );
+			$(DdPdv) = normalize ( $(DdPdv) + ( $(step) * $(chv) ) );
+		  $(step) = $(DdPdu) ^ $(DdPdv);
+		}
+		normal $(Nn) = normalize ( $(N) );
+    $(P) += $(Nn) * $(Kd) * (-1); 
+    $(N) = normalize ( calculatenormal( $(P) ) );
+         
+	  $(outP) = $(P); 
+	  $(outN) = $(N);
+	  ]]>
+	</code>	
+</node>

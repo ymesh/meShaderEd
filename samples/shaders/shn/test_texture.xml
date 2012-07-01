@@ -1,0 +1,579 @@
+<!DOCTYPE test_texture>
+<nodenet author="meShaderEd" name="test_texture">
+ <help>Short NodeNetwork description</help>
+ <nodes>
+  <node type="image" author="mesh" id="1" name="imageViewer" label="imageViewer">
+   <help>Single image viewer </help>
+   <input>
+    <property default="" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg" subtype="file" type="image" value="" name="image" label="image"/>
+   </input>
+   <output/>
+   <internal/>
+   <include/>
+   <param_code><![CDATA[
+#$(output) = $(input)
+#import core.imageNode
+#import code.nodeParam
+
+print ":: Hello from %s XML code !!!" % self.label
+self.imageName = self.getInputParamValueByName ( 'image' ) 
+
+
+]]></param_code>
+   <offset x="272" y="-165"/>
+  </node>
+  <node type="rib" author="mesh" id="2" name="BasicPlane" label="BasicPlane">
+   <help>Basic plane primitive preview RIB</help>
+   <input>
+    <property provider="attribute" default="256" type="int" value="256" name="Width" label="Image width"/>
+    <property provider="attribute" default="256" type="int" value="256" name="Height" label="Image height"/>
+    <property provider="attribute" default="1.000" type="float" value="1.000" name="ShadingRate" label="Shading rate"/>
+    <property provider="attribute" default="4" type="int" value="4" name="Samples" label="Samples"/>
+    <property provider="attribute" default="catmull-rom" range="box:triangle:catmull-rom:gaussian:sinc:blackman-harris:mitchell:separable-catmull-rom:lanczos:bessel" subtype="selector" type="string" value="catmull-rom" name="Filter" label="Filter"/>
+    <property provider="attribute" default="2.000" type="float" value="2.000" name="FilterWidth" label="Filter width"/>
+    <property provider="attribute" default="0.500" type="float" value="0.500" name="DisplaceBound" label="Displacement Bound"/>
+    <property provider="attribute" default="1.250" type="float" value="1.250" name="EnvIntensity" label="EnvLight Intensity"/>
+    <property provider="attribute" default="kitchen_LL.hdr.${TEX}" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" subtype="file" type="string" value="kitchen_LL.hdr.${TEX}" name="EnvMap" label="Environment Map"/>
+    <property provider="attribute" default="_environment" type="string" value="_environment" name="EnvSpace" label="Coordinate System"/>
+    <property provider="attribute" default="0.000 0.000 1.000" type="color" value="0.000 0.000 1.000" name="Color" label="Color"/>
+    <property provider="attribute" default="1.000 1.000 1.000" type="color" value="1.000 1.000 1.000" name="Opacity" label="Opacity"/>
+    <property default="null" type="displacement" value="null" name="FG_disp" label="FG_disp"/>
+    <property default="defaultsurface" type="surface" value="defaultsurface" name="FG_surf" label="FG_surf"/>
+    <property default="liquidchecker" type="surface" value="liquidchecker" name="BG_surf" label="BG_surf"/>
+   </input>
+   <output>
+    <property default="${TempPath}/${NODELABEL}.tif" type="image" value="${TempPath}/${NODELABEL}.tif" name="ImageFile" label="ImageFile"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+  Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}"
+  Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}"
+
+  Option "user" "float traceBreadthFactor" [1]
+  Option "user" "float traceDepthFactor" [1]
+  Option "trace" "int maxdepth" 4
+  Option "trace" "float specularthreshold" [10]
+  Option "trace" "int continuationbydefault" [1]
+
+  Attribute "visibility" "int trace" [1]
+  Attribute "visibility" "int transmission" [1]
+  Attribute "visibility" "int diffuse" [1]
+  Attribute "visibility" "int specular" [1]
+
+  Attribute "trace" "int maxdiffusedepth" [1]
+  Attribute "trace" "int maxspeculardepth" [4]
+
+  ### Output image
+  Display "$(ImageFile)" "tiff" "rgba"
+
+  Hider "hidden" "int jitter" [1]
+  Format $(Width) $(Height) 1.0
+  PixelSamples $(Samples) $(Samples)
+  PixelFilter "$(Filter)" $(FilterWidth) $(FilterWidth)
+  ShadingRate $(ShadingRate)
+
+  Projection "perspective" "fov" 45
+  Translate 0 0 3.0
+
+  Attribute "displacementbound" "float sphere" [$(DisplaceBound)]
+
+  WorldBegin
+
+    ReverseOrientation 
+	
+    TransformBegin
+      Rotate -90 1 0 0
+      CoordinateSystem "_environment"
+    TransformEnd
+
+    LightSource "distantlight" 1 "intensity" 1.0 "from" [-2 2 -3] "to" [0 0 0]
+    LightSource "distantlight" 2 "intensity" 0.4 "from" [6 -3 0] "to" [0 0 0]
+    LightSource "meEnvLight" 3  "uniform float Intensity" [$(EnvIntensity)] 
+                                "uniform string meEnvMap_EnvMap" ["$(EnvMap)"]
+                                "uniform string meEnvMap_Space" ["$(EnvSpace)"]
+
+    AttributeBegin 
+      #Rotate 60 1 0 0
+
+      Color [$(Color)]
+      Opacity [$(Opacity)]
+
+      Displacement "$(FG_disp)"
+      Surface "$(FG_surf)" 
+      
+      Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
+      
+    AttributeEnd 
+      
+    AttributeBegin 
+      Scale 7 7 7
+      Translate 0 0 2
+      Surface "$(BG_surf)" 
+      
+      Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
+    AttributeEnd  
+
+  WorldEnd
+  ]]></code>
+   <offset x="109" y="-160"/>
+  </node>
+  <node type="surface" author="mesh" id="3" name="surface" label="surf">
+   <help>Basic surface shader.</help>
+   <input>
+    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="Ci" label="Ci"/>
+    <property default="color(1.000,1.000,1.000)" type="color" value="color(1.000,1.000,1.000)" name="Oi" label="Oi"/>
+   </input>
+   <output>
+    <property default="${NODELABEL}" type="surface" value="${NODELABEL}" name="surface" label="surface"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+	  Ci = $(Ci) * $(Oi); 
+	  Oi = $(Oi);
+	]]></code>
+   <offset x="-44" y="-132"/>
+  </node>
+  <node type="" author="mesh" id="4" name="me_ImageFileC" label="ImageFileC">
+   <help>Color image file with alpha</help>
+   <input>
+    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="defColor" label="defColor">
+     <help></help>
+    </property>
+    <property default="1.000" type="float" value="1.000" name="defFloat" label="defFloat">
+     <help></help>
+    </property>
+    <property detail="uniform" provider="external" default="" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" subtype="file" type="string" value="grid.tif.${TEX}" name="File" label="File">
+     <help></help>
+    </property>
+    <property detail="uniform" default="0.000" subtype="switch" type="float" value="0.000" name="fillOutside" label="fillOutside">
+     <help></help>
+    </property>
+    <property detail="uniform" default="0.000" range="None=0:Apply=1:Multiply=2:Divide=3" subtype="selector" type="float" value="0.000" name="alphaOp" label="alphaOp"/>
+    <property detail="uniform" default="gaussian" range="box:triangle:b-spline:radial-bspline:gaussian:sinc:disk" subtype="selector" type="string" value="gaussian" name="filter" label="filter"/>
+    <property detail="uniform" default="1.000" type="float" value="1.000" name="SFilt" label="SFilt"/>
+    <property detail="uniform" default="1.000" type="float" value="1.000" name="TFilt" label="TFilt"/>
+    <property detail="uniform" default="1.000" subtype="switch" type="float" value="1.000" name="lerp" label="lerp"/>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="Pt" label="Pt"/>
+   </input>
+   <output>
+    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="colorResult" label="colorResult"/>
+    <property default="0.000" type="float" value="0.000" name="floatResult" label="floatResult"/>
+   </output>
+   <internal>
+    <variable name="x"/>
+    <variable name="y"/>
+   </internal>
+   <include/>
+   <code><![CDATA[
+	$(colorResult) = $(defColor);
+  $(floatResult) = $(defFloat);
+  
+  float $(x) = xcomp( $(Pt) );
+  float $(y) = ycomp( $(Pt) );
+	
+  if ( $(File) != "" ) 
+  {
+		$(colorResult) = color texture(
+			$(File), 
+			$(x),
+			$(y),
+			"swidth", $(SFilt),
+			"twidth", $(TFilt),
+			"filter", $(filter),
+			"lerp", $(lerp) );
+			
+		if ( $(alphaOp) != 0 ) /* "nop" */
+		{
+			uniform float nChannels = 3;
+			textureinfo( $(File), "channels", nChannels );
+			
+			if ( nChannels > 3 )
+			{
+				$(floatResult) = float texture(
+							$(File)[3],
+							$(x),
+							$(y),
+							"swidth", $(SFilt),
+							"twidth", $(TFilt),
+							"filter", $(filter),
+							"lerp", $(lerp) );
+				if ( $(alphaOp) == 2 )
+				{
+				  $(colorResult) *= $(floatResult);
+				}
+				if ( $(alphaOp) == 3 ) /* assume AlphaOp == "unassociated" */
+				{
+					if( $(floatResult) != 0 )
+					{
+						$(colorResult) /= $(floatResult);
+						$(colorResult) = clamp( $(colorResult), color(0), color(1) );
+					}
+				}
+			}
+				 
+			/*	if ( fillOutside  == 1 ) */
+			$(colorResult) = mix( $(defColor), $(colorResult), $(floatResult) ); 
+		}
+		if ( ( $(fillOutside) == 1 ) && ( $(x) < 0 || $(x) > 1 || $(y) < 0 || $(y) > 1) )   
+				$(colorResult) = $(defColor);
+	} 
+	 
+  ]]></code>
+   <offset x="-231" y="-121"/>
+  </node>
+  <node type="" author="Pixar" id="5" name="ST" label="ST">
+   <help>Returns the 2D surface point based on the underlying\n
+	    	ST parameterization of your object.</help>
+   <input>
+    <property detail="uniform" default="0.000" range="0 360 1" subtype="slider" type="float" value="0.000" name="angle" label="angle">
+     <help></help>
+    </property>
+    <property detail="uniform" default="1.000" type="float" value="1.000" name="repeatS" label="repeatS">
+     <help></help>
+    </property>
+    <property detail="uniform" default="1.000" type="float" value="1.000" name="repeatT" label="repeatT">
+     <help></help>
+    </property>
+    <property detail="uniform" default="0.000" type="float" value="0.000" name="offsetS" label="offsetS">
+     <help></help>
+    </property>
+    <property detail="uniform" default="0.000" type="float" value="0.000" name="offsetT" label="offsetT">
+     <help></help>
+    </property>
+    <property detail="uniform" default="0.000" subtype="switch" type="float" value="1.000" name="flipS" label="flipS">
+     <help></help>
+    </property>
+    <property detail="uniform" default="0.000" subtype="switch" type="float" value="1.000" name="flipT" label="flipT">
+     <help></help>
+    </property>
+   </input>
+   <output>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="Q" label="Q"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="duQ" label="duQ"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="dvQ" label="dvQ"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+		setxcomp( $(Q), $(repeatS) * s + $(offsetS));
+    setycomp( $(Q), $(repeatT) * t + $(offsetT));
+    setzcomp( $(Q), 0);
+    
+    if ( $(angle) != 0 )
+      $(Q) = rotate($(Q), radians($(angle)), point(0,0,0), point(0,0,1)); 
+
+    $(duQ) = vector Du( $(Q) ) * du;
+    $(dvQ) = vector Dv( $(Q) ) * dv;
+    
+    if ( $(flipS) == 1 )
+      setxcomp( $(Q), 1 - xcomp($(Q)) );
+    if ( $(flipT) == 1 )
+      setycomp( $(Q), 1 - ycomp($(Q)) );
+  ]]></code>
+   <offset x="-633" y="-69"/>
+  </node>
+  <node type="rib" author="mesh" id="6" name="BasicTeapot" label="BasicTeapot">
+   <help>Basic Teapot primitive preview RIB</help>
+   <input>
+    <property provider="attribute" default="256" type="int" value="256" name="Width" label="Image width"/>
+    <property provider="attribute" default="256" type="int" value="256" name="Height" label="Image height"/>
+    <property provider="attribute" default="1.000" type="float" value="1.000" name="ShadingRate" label="Shading rate"/>
+    <property provider="attribute" default="4" type="int" value="4" name="Samples" label="Samples"/>
+    <property provider="attribute" default="catmull-rom" range="box:triangle:catmull-rom:gaussian:sinc:blackman-harris:mitchell:separable-catmull-rom:lanczos:bessel" subtype="selector" type="string" value="catmull-rom" name="Filter" label="Filter"/>
+    <property provider="attribute" default="2.000" type="float" value="2.000" name="FilterWidth" label="Filter width"/>
+    <property provider="attribute" default="0.500" type="float" value="0.500" name="DisplaceBound" label="Displacement Bound"/>
+    <property provider="attribute" default="1.250" type="float" value="1.250" name="EnvIntensity" label="EnvLight Intensity"/>
+    <property provider="attribute" default="kitchen_LL.hdr.${TEX}" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" subtype="file" type="string" value="kitchen_LL.hdr.${TEX}" name="EnvMap" label="Environment Map"/>
+    <property provider="attribute" default="_environment" type="string" value="_environment" name="EnvSpace" label="Coordinate System"/>
+    <property provider="attribute" default="0.000 0.000 1.000" type="color" value="0.000 0.000 1.000" name="Color" label="Color"/>
+    <property provider="attribute" default="1.000 1.000 1.000" type="color" value="1.000 1.000 1.000" name="Opacity" label="Opacity"/>
+    <property provider="attribute" default="0" range="0 360 1" subtype="slider" type="int" value="0" name="RotateY" label="RotateY"/>
+    <property default="null" type="displacement" value="null" name="FG_disp" label="FG_disp"/>
+    <property default="defaultsurface" type="surface" value="defaultsurface" name="FG_surf" label="FG_surf"/>
+    <property default="liquidchecker" type="surface" value="liquidchecker" name="BG_surf" label="BG_surf"/>
+   </input>
+   <output>
+    <property default="${TempPath}/${NODELABEL}.tif" type="image" value="${TempPath}/${NODELABEL}.tif" name="ImageFile" label="ImageFile"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+  Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}"
+  Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}"
+
+  Option "user" "float traceBreadthFactor" [1]
+  Option "user" "float traceDepthFactor" [1]
+  Option "trace" "int maxdepth" 4
+  Option "trace" "float specularthreshold" [10]
+  Option "trace" "int continuationbydefault" [1]
+
+  Attribute "visibility" "int trace" [1]
+  Attribute "visibility" "int transmission" [1]
+  Attribute "visibility" "int diffuse" [1]
+  Attribute "visibility" "int specular" [1]
+
+  Attribute "trace" "int maxdiffusedepth" [1]
+  Attribute "trace" "int maxspeculardepth" [4]
+
+
+
+  Hider "hidden" "int jitter" [1]
+  Format $(Width) $(Height) 1.0
+  PixelSamples $(Samples) $(Samples)
+  PixelFilter "$(Filter)" $(FilterWidth) $(FilterWidth)
+  ShadingRate $(ShadingRate)
+
+  ### Output image
+  Display "$(ImageFile)" "tiff" "rgba" 
+
+  ### "filterwidth" [$(FilterWidth) $(FilterWidth)]
+
+  Projection "perspective" "fov" 45
+  Translate 0 0 3.0
+
+  Attribute "displacementbound" "float sphere" [$(DisplaceBound)]
+
+  WorldBegin
+
+    ReverseOrientation 
+	
+    TransformBegin
+      Rotate -90 1 0 0
+      CoordinateSystem "_environment"
+    TransformEnd
+
+    LightSource "distantlight" 1 "intensity" 1.0 "from" [-2 2 -3] "to" [0 0 0]
+    LightSource "distantlight" 2 "intensity" 0.4 "from" [6 -3 0] "to" [0 0 0]
+    LightSource "meEnvLight" 3  "uniform float Intensity" [$(EnvIntensity)] 
+                                "uniform string meEnvMap_EnvMap" ["$(EnvMap)"]
+                                "uniform string meEnvMap_Space" ["$(EnvSpace)"]
+
+      
+    AttributeBegin
+      Color [$(Color)]
+      Opacity [$(Opacity)]
+      
+      Rotate $(RotateY) 0 1 0 
+      
+      AttributeBegin
+        Scale 0.35 0.35 0.35
+        Translate -0.6 -1 0
+        Rotate 120 -1 0 0
+        Rotate 30 0 0 1
+  
+        Displacement "$(FG_disp)"
+        Surface "$(FG_surf)" 
+        Geometry "teapot"
+      AttributeEnd
+    AttributeEnd 
+      
+    AttributeBegin 
+      Scale 7 7 7
+      Translate 0 0 2
+      Surface "$(BG_surf)" 
+      
+      Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
+    AttributeEnd 
+
+  WorldEnd
+	]]></code>
+   <offset x="113" y="-305"/>
+  </node>
+  <node type="" author="Pixar" id="7" name="MWarp" label="MWarp">
+   <help>Returns points additively warped by vector-value
+	    	Unless you choose to map the Surface Point parameter, the
+		default behavior is to use ST coordinates.</help>
+   <input>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="warpFunc" label="warpFunc"/>
+    <property default="vector(0.100,0.100,0.100)" type="vector" value="vector(1.000,1.000,1.000)" name="Kw" label="Kw">
+     <help>A multiplier for the warper.</help>
+    </property>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="inQ" label="inQ"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="induQ" label="induQ"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="indvQ" label="indvQ"/>
+   </input>
+   <output>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="Q" label="Q"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="duQ" label="duQ"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="dvQ" label="dvQ"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+	  $(Q) = $(inQ) * $(Kw) * $(warpFunc);
+		$(duQ) = vector Du( $(Q) ) * du;
+		$(dvQ) = vector Dv( $(Q) ) * dv;
+	]]></code>
+   <offset x="-439" y="-219"/>
+  </node>
+  <node type="" author="Pixar" id="8" name="FractalV" label="FractalV">
+   <help>Vector Fractal function.</help>
+   <input>
+    <property default="6.000" range="1 8 1" subtype="slider" type="float" value="6.000" name="Layers" label="Layers">
+     <help>The number of noise layers used.</help>
+    </property>
+    <property default="1.000" range="0.1 10" subtype="slider" type="float" value="1.000" name="Frequency" label="Frequency">
+     <help>Sets the lowest (starting) frequency of the noise layers.</help>
+    </property>
+    <property default="2.000" range="1.25 4" subtype="slider" type="float" value="1.000" name="Lacunarity" label="Lacunarity">
+     <help>The scaler used to determine the 
+		    frequency of each sucessive layer of noise. Smaller 
+		    numbers will cause the layers to be more closely
+		    spaced in frequency. Larger values will space them
+		    further apart.</help>
+    </property>
+    <property default="1.000" range="0 2" subtype="slider" type="float" value="0.000" name="Dimension" label="Dimension">
+     <help>The frequency exponent. This value is used to
+		    scale the magnitude of each sucessive layer of noise using
+		    the formula 1/f^(3-2*Dimension); where f is the frequency
+		    of the noise being used for a given layer. It's called
+		    Dimension since this value relates to the fractal
+		    dimension. Bigger values are rougher, smaller values are
+		    smoother.</help>
+    </property>
+    <property default="1.000" range="0 3" subtype="slider" type="float" value="0.000" name="Flow" label="Flow">
+     <help>Determines the degree to which the original space
+		    is warped by the vector fractal field by each sucessive
+		    layer.</help>
+    </property>
+    <property default="0.000" type="float" value="0.000" name="Variation" label="Variation">
+     <help>This value controls which particular variation
+		of the appearance you get - without altering the qualities
+		of the appearance determined by the other controls. So, for
+		example, you can use this to animate the appearance by
+		connecting this to Time, or create several unique instances
+		of the appearance by setting this to different values.</help>
+    </property>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="Q" label="Q"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="duQ" label="duQ"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="dvQ" label="dvQ"/>
+   </input>
+   <output>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="result" label="result"/>
+   </output>
+   <internal>
+    <variable name="Noise"/>
+    <variable name="i"/>
+    <variable name="sum"/>
+    <variable name="mag"/>
+    <variable name="f"/>
+    <variable name="dQ"/>
+    <variable name="QQ"/>
+    <variable name="value"/>
+   </internal>
+   <include/>
+   <code><![CDATA[	
+	  vector $(Noise)(point Q)
+		{
+			extern float $(Variation);
+			vector	V;
+			
+			V = vector noise( Q, $(Variation) );
+			V = vector( 
+			    smoothstep(.2, .8, comp(V, 0)),
+			    smoothstep(.2, .8, comp(V, 1)),
+			    smoothstep(.2, .8, comp(V, 2))
+			);
+			return ( 2 * V - vector 1 );
+		}
+		       
+		uniform float	$(i);
+		float	$(sum), $(mag), $(f);
+		point	$(QQ);
+		float	$(dQ);
+		vector $(value) = vector( 0 );   
+		    
+		$(dQ) = max(
+			max( abs(xcomp( $(duQ) )) + abs(xcomp( $(dvQ) )), abs(ycomp( $(duQ) )) + abs(ycomp( $(dvQ) )) ),
+			abs(zcomp( $(duQ) )) + abs(zcomp( $(dvQ) ))
+		);
+
+		$(QQ) = $(Q); 
+		$(f) = $(Frequency);
+		$(result) = mix( $(Noise)( $(f) * $(QQ) ), vector 0, smoothstep (.25, 1, $(f) * $(dQ) ));
+		$(QQ) += $(Flow) / $(Layers) * $(result);
+		$(sum) = 1;
+
+		for ( $(i) = 1 ; $(i) < $(Layers) ; $(i) += 1) 
+	  {
+			$(f) *= $(Lacunarity);
+			$(mag) = 1/pow( $(f), 3 - 2 * $(Dimension) );
+			$(value) += $(mag) * mix( $(Noise)( $(f) * $(QQ) ), vector 0, smoothstep (.25, 1, $(f) * $(dQ) ));
+			$(QQ) += $(Flow) / $(Layers) * $(value);
+			$(result) += $(value);
+			$(sum) += $(mag);
+		}
+
+		$(result) /= $(sum);	
+  ]]></code>
+   <offset x="-642" y="-335"/>
+  </node>
+  <node type="" author="Pixar" id="9" name="CurrentPoint" label="CurrentPoint">
+   <help>Returns the surface point in current (shading) space..</help>
+   <input>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="Pt" label="Pt">
+     <help>Connect P or Ps here</help>
+    </property>
+    <property default="1.000" range="0 10 .001" subtype="slider" type="float" value="1.000" name="Frequency" label="Frequency">
+     <help>Controls the scale of the manifold.  Note
+		    that increasing the frequency of the manifold will result
+		    in decreasing the scale of a feature.</help>
+    </property>
+   </input>
+   <output>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="Q" label="Q"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="duQ" label="duQ"/>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="dvQ" label="dvQ"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+	  $(Q) = $(Frequency) * $(Pt);
+    $(duQ) = Du( $(Q) ) * du;
+    $(dvQ) = Dv( $(Q) ) * dv;
+]]></code>
+   <offset x="-836" y="-274"/>
+  </node>
+  <node type="variable" author="mesh" id="10" name="P" label="P">
+   <help>Global point P.</help>
+   <input/>
+   <output>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="P" label="P"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+	  #ifdef SURFACE_SHADER
+	  $(P) = P;
+	  #endif
+	  #ifdef DISPLACEMENT_SHADER
+	  $(P) = P;
+	  #endif
+	  #ifdef LIGHT_SHADER
+	  $(P) = Ps;
+	  #endif
+	  #ifdef VOLUME_SHADER
+	  $(P) = Pv;
+	  #endif
+	  ]]></code>
+   <offset x="-993" y="-241"/>
+  </node>
+ </nodes>
+ <links>
+  <link srcNode_id="3" dstNode_id="2" id="2" srcParam="surface" dstParam="FG_surf"/>
+  <link srcNode_id="4" dstNode_id="3" id="3" srcParam="colorResult" dstParam="Ci"/>
+  <link srcNode_id="3" dstNode_id="6" id="5" srcParam="surface" dstParam="FG_surf"/>
+  <link srcNode_id="5" dstNode_id="7" id="7" srcParam="Q" dstParam="inQ"/>
+  <link srcNode_id="5" dstNode_id="7" id="8" srcParam="duQ" dstParam="induQ"/>
+  <link srcNode_id="5" dstNode_id="7" id="9" srcParam="dvQ" dstParam="indvQ"/>
+  <link srcNode_id="7" dstNode_id="4" id="10" srcParam="Q" dstParam="Pt"/>
+  <link srcNode_id="8" dstNode_id="7" id="11" srcParam="result" dstParam="warpFunc"/>
+  <link srcNode_id="9" dstNode_id="8" id="12" srcParam="Q" dstParam="Q"/>
+  <link srcNode_id="9" dstNode_id="8" id="13" srcParam="duQ" dstParam="duQ"/>
+  <link srcNode_id="9" dstNode_id="8" id="14" srcParam="dvQ" dstParam="dvQ"/>
+  <link srcNode_id="10" dstNode_id="9" id="15" srcParam="P" dstParam="Pt"/>
+  <link srcNode_id="2" dstNode_id="1" id="16" srcParam="ImageFile" dstParam="image"/>
+ </links>
+</nodenet>

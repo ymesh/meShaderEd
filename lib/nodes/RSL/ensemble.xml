@@ -1,0 +1,27 @@
+<?xml version="1.0"?> 
+<node name="ensemble" author="mesh" type="rib">
+	<help>Ensemble</help>
+	<input>
+		<property name="surface" type="surface" default="" />	
+		<property name="displacement" type="displacement" default="" />	
+		<property name="volume" type="volume" default="" />	
+		<property name="light" type="light" default="" />	
+		<property name="rib" type="rib" default="" />	
+	</input>
+	<output>
+	<property name="RIB" type="rib" default="" />
+	</output>
+	<internal>
+	</internal>
+	<code><![CDATA[
+	  Ci = $(Ci) * $(Oi); 
+	  Oi = $(Oi);
+	  ]]>
+	</code>
+	<preview>
+		<shader type="surface">
+			<code>
+			</code>
+		</shader>
+	</preview>	
+</node>

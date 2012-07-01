@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<node name="float" type="rsl_code" author="mesh">
+	<help>float operand</help>
+	<input>
+		<property name="inFloat" type="float" default="0" />
+	</input>
+	<output>
+		<property name="outFloat" type="float" default="0"/>
+	</output>
+	<code><![CDATA[$(outFloat) = $(inFloat);]]>
+	</code>
+</node>

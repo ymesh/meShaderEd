@@ -1,0 +1,31 @@
+<!DOCTYPE gloop>
+<nodenet author="meShaderEd" name="gloop">
+ <help>Short NodeNetwork description</help>
+ <node type="image" author="mesh" id="1" name="imageViewer" label="imageViewer">
+  <help>Single image viewer </help>
+ </node>
+ <node type="rib" author="mesh" id="2" name="BasicTorus" label="BasicTorus">
+  <help>Basic torus primitive preview RIB</help>
+ </node>
+ <node type="surface" author="mesh" id="3" name="surface" label="surf">
+  <help>Basic surface shader.</help>
+ </node>
+ <node type="" author="Alexei Puzikov" id="4" name="blinn" label="blinn">
+  <help>Blinn illumination model.</help>
+ </node>
+ <node type="displacement" author="mesh" id="5" name="displacement" label="displacement">
+  <help>Root displacement shader.</help>
+ </node>
+ <node type="variable" author="mesh" id="7" name="P" label="P">
+  <help>Global point P.</help>
+ </node>
+ <node type="variable" author="mesh" id="8" name="N" label="N">
+  <help>Global normal N.</help>
+ </node>
+ <node type="rsl_code" author="Ivan DeWolf" id="11" name="IDgloop" label="IDgloop">
+  <help>IDgloop displacement shader demostrating non-linear displacement in PRMan</help>
+ </node>
+ <node type="rib" author="mesh" id="12" name="BasicCylinder" label="BasicCylinder">
+  <help>Basic cylinder primitive preview RIB</help>
+ </node>
+</nodenet>

@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+
+<node name="toon" author="Fredrik Gustafsson">
+	<help>Toon Antialising Shader.</help>
+	<input>
+		<property name="Ka" type="float" default="0.25" />
+		<property name="Kd" type="float" default="0.67" />
+		<property name="Ks" type="float" default="35" />
+		<property name="roughness" type="float" default="0.08" />	
+		<property name="specularcolor" type="color" default="color(1.0,1.0,1.0)" />		
+		<property name="paint_color" type="color" default="color(0.0,0.5,1.0)" />
+		<property name="paint_spec" type="float" default="0.92" />
+		<property name="paint_trans" type="float" default="0.35" />		
+		<property name="paint_fuzz" type="float" default="0.025" />	
+		<property name="ink_thresh" type="float" default="0.23" />	
+		<property name="ink_fuzz" type="float" default="0.02" />	
+		<property name="ink_color" type="color" default="color(0.05,0.05,0.05)" />			
+	</input>
+	<output>
+		<property name="toonCi" type="color"/>			
+		<property name="toonOi" type="color"/>	
+	</output>
+	<internal>
+    <variable name="toonspec"/>
+		<variable name="cos_here"/>
+		<variable name="diff"/>
+		<variable name="spec"/>
+		<variable name="Nf"/>
+		<variable name="normI"/>
+		<variable name="half"/>
+		<variable name="toon_color"/>
+		<variable name="layer_color"/>
+		<variable name="toon_opac"/>
+		<variable name="layer_opac"/>		
+	</internal>
+	<code>
+<![CDATA[
+#define blend(a,b,x) ((a) * (1 - (x)) + (b) * (x))
+#define union(a,b) ((a) + (b) - (a) * (b))
+
+float
+$(toonspec)(vector N, V; float roughness)
+{
+  extern point P;  
+  extern vector L;
+  float C = 0;
+  vector H;
+  
+  illuminance ( P, N, PI/2 ) 
+  {
+    H = normalize( normalize( L )+V );
+    C += pow(N.H, 1/roughness);
+  }
+  return C;
+}
+
+  float $(cos_here);
+  float $(diff), $(spec);
+  normal $(Nf);
+  vector $(normI), $(half);
+
+  color $(toon_color), $(layer_color);
+  color $(toon_opac), $(layer_opac);
+
+  $(Nf)= faceforward(normalize(N), I);
+  $(normI)= normalize(I);
+
+  /* background layer (layer 0) */
+  $(toon_color)= color (0, 0, 0);
+  $(toon_opac)= Os;
+
+  /* toon paint (layer 1) */
+
+  /* only care about percentage illumination */
+  $(diff)= 0;
+  illuminance ( P, $(Nf), PI/2 )
+    $(diff) += normalize(L).$(Nf); 
+
+  /* antialias the transition */
+  $(diff)= smoothstep($(paint_trans)- $(paint_fuzz)/2, $(paint_trans)+ $(paint_fuzz)/2, $(diff));
+
+  /* specular -- transition also antialiased */  
+  $(spec)= $(toonspec)($(Nf), -normalize(I), $(roughness));
+  $(spec)= smoothstep($(paint_spec)- $(paint_fuzz)/2, $(paint_spec)+ $(paint_fuzz)/2, $(spec));
+
+  $(layer_color)= Cs*($(Kd)*$(diff)*$(paint_color)+ $(Ka)*ambient()) + $(specularcolor)*$(Ks)*$(spec);
+  $(layer_opac)= Os;
+
+  $(toon_color)= blend($(toon_color), $(layer_color), $(layer_opac));
+  $(toon_opac)=  union($(toon_opac), $(layer_opac));
+
+  /* toon ink (layer 3) */
+  
+  $(cos_here)= normalize($(Nf)).$(normI);
+
+  /* antialias ink lines */
+  $(layer_opac)= 1 - smoothstep($(ink_thresh)- $(ink_fuzz)/2, $(ink_thresh)+ $(ink_fuzz)/2, abs($(cos_here)));
+  
+  if (abs($(cos_here)) < $(ink_thresh))
+    $(layer_color)= $(ink_color);
+  else
+    $(layer_color)= 0;
+  
+  $(toon_color)= blend($(toon_color), $(layer_color), $(layer_opac));
+  $(toon_opac)=  union($(toon_opac), $(layer_opac));
+
+  $(toonOi)= $(toon_opac);
+  $(toonCi)= $(toon_opac) * $(toon_color);
+]]>
+	</code>		
+</node>

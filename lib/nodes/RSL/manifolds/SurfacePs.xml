@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<node name="SurfacePs" author="Pixar">
+	<help>Returns the 3D point on the surface of your object.</help>
+	<input>
+		<property name="Space" type="string" default="" detail="uniform">
+		<help>The name of a coordinate system for the manifold.
+		    In addition to your custom coordinate systems
+		    you can use "current", "world", "object", "shader"
+		    and "NDC" (screen coordinates).</help>
+		</property>
+		<property name="Frequency" type="float" default="1" subtype="slider" range="0 10 .001">
+		<help>Controls the scale of the manifold.  Note
+		    that increasing the frequency of the manifold will result
+		    in decreasing the scale of a feature.</help>
+		</property>
+		<property name="IgnorePref" type="float" default="1" subtype="switch">
+		<help>If you have attached __Pref geometry and,
+		    for debugging purposes, want to ignore it, click
+		    here.  Note that it's much more efficient to simply
+		    remove the reference geometry if it's not needed.</help>
+		</property>
+	<property name="__Pref" type="point" default="point(-1,-1,-1)" detail="varying" provider="primitive"/>	
+	</input>
+	<output>
+		<property name="Q" type="point"/>	
+		<property name="duQ" type="vector"/>	
+		<property name="dvQ" type="vector"/>	
+		
+	</output>
+	<internal>
+	  <variable name="sys"/>
+	</internal>
+	<code>
+  <![CDATA[
+
+	uniform string $(sys);
+	
+	if ( $(Space) == "" )
+    $(sys) = "shader";
+  else
+    $(sys) = $(Space);
+      
+  if ( $(IgnorePref) == 0 && 1 == surface( "__Pref", $(Q) ) ) 
+  {
+    if ( xcomp( $(Q) ) == -1e10 ) 
+      $(Q) = $(Frequency) * transform( $(sys), Ps );
+    else
+      $(Q) = $(Frequency) * transform( $(sys), $(Q) );
+  }
+  else
+  	$(Q) = $(Frequency) * transform( $(sys), Ps );
+  $(duQ) = vector Du( $(Q) ) * du;
+  $(dvQ) = vector Dv( $(Q) ) * dv;
+	]]>	
+  </code>		
+</node>

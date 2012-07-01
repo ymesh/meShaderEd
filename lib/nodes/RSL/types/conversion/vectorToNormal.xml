@@ -1,0 +1,16 @@
+<?xml version="1.0"?> 
+
+<node name="vectorToNormal" type="rsl_code">
+	<help>Vector to color converter.</help>
+	<input>
+		<property name="inVector" type="vector" default="vector (0, 0, 0)" />
+	</input>
+	<output>
+		<property name="outNormal" type="normal"/>
+	</output>
+	<code>
+	  <![CDATA[
+	  $(outNormal) = normal( $(inVector) );
+	  ]]>
+	</code>
+</node>

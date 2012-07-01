@@ -1,0 +1,39 @@
+<?xml version="1.0"?> 
+
+<node name="lambert" author="Alexei Puzikov">
+	<help>Lambert illumination model.</help>
+	<input>
+		<property name="SurfaceColor" type="color" default="color(0,0.5,1)"	/>		
+		<property name="diffuseCoeff" type="float" default="0.8"/>		
+		<property name="ambientColor" type="color" default="color(0.0, 0.0, 0.0)"	/>		
+		<property name="incandescence" type="color" default="color(0.0, 0.0, 0.0)"/>		
+		<property name="translucence" type="float" default="0.0"/>			
+	</input>
+	<output>
+		<property name="outColor" type="color"/>			
+	</output>
+	<internal>
+		<variable name="Nf"/>
+		<variable name="V"/>
+		<variable name="Ia"/>
+		<variable name="Id"/>
+		<variable name="Itr"/>		
+	</internal>		
+	<code>
+<![CDATA[
+ normal $(Nf)= faceforward( normalize(N), I );
+ vector $(V)= -normalize(I);
+ color $(Ia)= ambient() + $(ambientColor);
+ color $(Id)= $(diffuseCoeff)* diffuse($(Nf));
+ 
+ color $(Itr)= 0;
+ if ($(translucence)!= 0) {
+  illuminance(P, $(Nf), PI)
+  $(Itr)+= Cl;
+  $(Itr)*= $(translucence);
+ }
+ 
+ $(outColor)= $(SurfaceColor) * ($(Ia)+ $(Id)+ $(Itr)+ $(incandescence));
+ ]]>
+	</code>
+</node>

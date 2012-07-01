@@ -1,0 +1,20 @@
+<RCC>
+  <qresource prefix="file_icons">
+    <file>resources/open.png</file>
+    <file>resources/save.png</file>
+    <file>resources/new.png</file>
+  </qresource>
+  <qresource prefix="show_icons">
+    <file>resources/ledoff.png</file>
+    <file>resources/ledon.png</file>
+    <file>resources/bg_pattern.png</file>
+  </qresource>
+  <qresource prefix="edit_icons">
+    <file>resources/delete.png</file>
+    <file>resources/redo.png</file>
+    <file>resources/undo.png</file>
+    <file>resources/paste.png</file>
+    <file>resources/copy.png</file>
+    <file>resources/editcut1.png</file>
+  </qresource>
+</RCC>

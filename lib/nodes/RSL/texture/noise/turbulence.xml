@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<node name="turbulence" author="Sler guys">
+	<help>Turbulence shader.</help>
+	<include>
+		<file name="filterwidth.h"/>
+		<file name="filtered.h"/>	
+		<file name="noises.h"/>
+	</include>	
+	<input>
+	  <property name="P" type="point" default="point(1.0, 0.0, 0.0)" />
+		<property name="freq" type="float" default="4.0" subtype="slider" range="1 32 .01"/>
+		<property name="flatness" type="float" default="0.1" subtype="slider" range="0 10 .01"/>
+		<property name="invert" type="float" default="0" subtype="switch"/>
+		
+	</input>
+	<output>
+		<property name="result" type="float"/>
+	</output>
+	<internal>
+		<variable name="PP"/>
+		<variable name="width"/>
+		<variable name="cutoff"/>
+		<variable name="fade"/>
+		<variable name="f"/>
+		<variable name="turb"/>
+		<variable name="maxfreq"/>
+	</internal>
+	<code>
+	  <![CDATA[
+    point $(PP);
+    float $(width), $(cutoff), $(fade), $(f), $(turb), $(maxfreq) = 16;
+    	
+    /* compute turbulence */
+
+    $(PP) = $(P) * $(freq);
+    
+    $(width) = filterwidthp($(PP));
+    $(cutoff) = clamp(0.5 / $(width), 0, $(maxfreq));
+    
+    $(turb) = 0;
+    for ( $(f) = 1; $(f) < 0.5 * $(cutoff); $(f) *= 2 ) 
+        $(turb) += abs(snoise($(PP) * $(f))) / $(f);
+    $(fade) = clamp( 2 * ($(cutoff) - $(f)) / $(cutoff), 0, 1 );
+    $(turb) += $(fade) * abs(snoise($(PP) * $(f))) / $(f);
+    
+    /* raise to power to create flat areas */
+
+    $(result) = pow($(turb), $(flatness));
+    
+    if( $(invert) ) 
+      $(result) = 1 - $(result);
+]]>
+	</code>
+	<preview>
+		<shader type="surface">
+			<code><![CDATA[Ci = $(outValue); Oi = 1.0;]]>
+			</code>
+		</shader>
+	</preview>	
+</node>

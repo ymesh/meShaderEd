@@ -1,0 +1,94 @@
+<?xml version="1.0"?> 
+
+<node name="blinn" author="Alexei Puzikov">
+	<help>Blinn illumination model.</help>
+	<input>
+		<property name="SurfaceColor" type="color" default="color(0,0.5,1)"	/>		
+		<property name="diffuseCoeff" type="float" default="0.8"/>		
+		<property name="ambientColor" type="color" default="color(0,0,0)"	/>		
+		<property name="incandescence" type="color" default="color(0,0,0)"	/>		
+		<property name="translucence" type="float" default="0.0"/>		
+		<property name="specularColor" type="color" default="color(0.5,0.5,0.5)"/>		
+		<property name="eccentricity" type="float" default="0.3"/>		
+		<property name="specularRollOff" type="float" default="0.7"/>		
+	</input>
+	<output>
+		<property name="outColor" type="color"/>			
+	</output>
+	<internal>	
+		<variable name="Nf"/>
+		<variable name="H"/>
+		<variable name="Ln"/>
+		<variable name="E"/>
+		<variable name="V"/>
+		<variable name="Ia"/>
+		<variable name="Id"/>
+		<variable name="Itr"/>
+		<variable name="Is"/>
+		<variable name="NH"/>
+		<variable name="NH2"/>
+		<variable name="NHSQ"/>
+		<variable name="Dd"/>
+		<variable name="Gg"/>
+		<variable name="VN"/>
+		<variable name="VH"/>
+		<variable name="LN"/>
+		<variable name="Ff"/>
+		<variable name="tmp"/>
+		<variable name=""/>
+		<variable name=""/>
+	</internal>		
+	<code>
+<![CDATA[ 
+ normal $(Nf);
+ vector $(H), $(Ln), $(V);
+ color $(Ia), $(Id), $(Itr), $(Is);
+ float $(NH), $(NH2), $(NHSQ), $(Dd), $(Gg), $(VN), $(VH), $(LN), $(Ff), $(tmp);
+ float $(E)= 1 / ($(eccentricity) * $(eccentricity)- 1);
+  
+ $(Nf)= faceforward(normalize(N), I);
+ $(Ia)= ambient() + $(ambientColor);
+ $(Id)= $(diffuseCoeff)* diffuse($(Nf));
+ 
+ $(Itr)= 0;
+ if ($(translucence)!= 0) {
+  illuminance(P, $(Nf), PI)
+  $(Itr)+= Cl;
+  $(Itr)*= $(translucence);
+ }
+ 
+ $(Is)= 0;
+ $(V)= normalize(-I);
+ $(VN)= $(V).$(Nf);
+ illuminance(P, $(Nf), PI * 0.5) {
+  $(Ln)= normalize(L);
+  $(H)= normalize($(Ln)+$(V));
+  $(NH)= $(Nf).$(H);
+  $(NHSQ)= $(NH)*$(NH);
+  $(NH2)= $(NH)* 2;
+  $(Dd)= ($(E)+1) / ($(NHSQ)+ $(E));
+  $(Dd)*= $(Dd);
+  $(VH)= $(V).$(H);
+  $(LN)= $(Ln).$(Nf);
+  if ($(VN) < $(LN)) {
+   if ($(VN)* $(NH2) < $(VH))
+   $(Gg)= $(NH2)/ $(VH);
+   else
+   $(Gg)= 1 / $(VN);
+   }
+  else {
+   if ($(LN)* $(NH2) < $(VH))
+   $(Gg)= ($(LN)* $(NH2)) / ($(VH)* $(VN));
+  else
+  $(Gg)= 1 / $(VN);
+ }
+ $(tmp)= pow((1 - $(VH)), 3);
+ $(Ff)= $(tmp)+ (1 - $(tmp)) * $(specularRollOff);
+ $(Is)+= Cl * $(Dd)* $(Gg)* $(Ff);
+ }
+ $(Is)*= $(specularColor);
+ 
+ $(outColor)= $(SurfaceColor)* ($(Ia) + $(Id) + $(Itr) + $(incandescence)+ $(Is));
+]]>
+	</code>
+</node>

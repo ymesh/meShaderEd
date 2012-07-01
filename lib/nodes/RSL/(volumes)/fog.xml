@@ -1,0 +1,26 @@
+<?xml version="1.0"?> 
+
+<node name="fog" author="Libero Spagnolini">
+	<help>Fog shader.</help>
+	<input>
+		<property name="distance" type="float" default="16.0" />
+		<property name="background" type="color" default="color(0.0, 0.0, 0.0)" />		
+	</input>
+	<output>
+		<property name="outColor" type="color"/>
+		<property name="outOpacity" type="color"/>
+	</output>
+	<internal>
+		<variable name="d"/>
+	</internal>
+	<code><![CDATA[float $(d) = 1 - exp(-length(I) / $(distance));
+color $(outColor) = mix(Ci, $(background), $(d));
+color $(outOpacity) = mix(Oi, color(1, 1, 1), $(d));]]>
+	</code>
+	<preview>
+		<shader type="surface">
+			<code><![CDATA[Ci = $(outColor); Oi = $(outOpacity);]]>
+			</code>
+		</shader>
+	</preview>	
+</node>

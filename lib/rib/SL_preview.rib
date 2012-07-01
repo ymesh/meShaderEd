@@ -1,0 +1,59 @@
+Option "searchpath" "shader" "$(ShaderPath):@:$(TempPath)"
+Option "searchpath" "texture" "@:$(TexturePath):$(TempPath)"
+Option "trace" "int maxdepth" 4
+Attribute "visibility" "int trace" [1]
+Attribute "visibility" "int transmission" [1]
+Attribute "visibility" "int diffuse" [1]
+Attribute "visibility" "int specular" [1]
+Option "user" "float traceBreadthFactor" [1]
+Option "user" "float traceDepthFactor" [1]
+Option "trace" "float specularthreshold" [10]
+Option "trace" "int continuationbydefault" [1]
+
+Attribute "trace" "int maxdiffusedepth" [1]
+Attribute "trace" "int maxspeculardepth" [4]
+
+
+Display "$(ImageFile)" "tiff" "rgb"
+
+Format $(Width) $(Height) $(AspectRatio)
+PixelSamples $(SamplesX) $(SamplesY)
+PixelFilter "$(Filter)" $(FilterWidth) $(FilterHeight)
+Projection "perspective" "fov" 45
+ShadingRate $(ShadingRate)
+
+Attribute "displacementbound" "float sphere" [0.5]
+
+WorldBegin
+	
+TransformBegin
+Rotate -90 1 0 0
+CoordinateSystem "_environment"
+TransformEnd
+
+LightSource "distantlight" 1 "intensity" 1.2 "from" [2 2 -2] "to" [0 0 0]
+LightSource "distantlight" 2 "intensity" 0.2 "from" [-8 -8 -2] "to" [0 0 0]
+
+LightSource "meEnvLight" 3  "uniform string meEnvMap_EnvMap" ["kitchen_LL.hdr.tex" ]  "uniform string meEnvMap_Space" ["_environment" ]  "uniform float meEnvMap_reflBlur" [0 ]  "uniform float meEnvMap_envrad" [100 ]  "uniform float meEnvMap_samples" [1 ]  "uniform float meEnvMap_Coloration" [0 ]  "uniform color meEnvMap_cFilt" [1 1 1 ]  "uniform float meEnvMap_Lerp" [1 ]  "uniform float Intensity" [1.35 ]  "uniform float __nondiffuse" [1 ]  "uniform float __nonspecular" [1 ] 
+
+
+
+Translate 0 0 5
+Rotate 45 1 0 0
+Rotate 45 0 0 1
+Scale 1 1 -1
+
+Imager "$(Imager)"
+Atmosphere "$(Atmosphere)"
+
+ReverseOrientation
+Attribute "visibility" "trace" 1
+Surface "previewChecker"
+Polygon "P" [5 5 -5  5 -5 -5  -5 -5 -5  -5 5 -5] "st" [0 0 1 0 1 1 0 1]
+Scale 1.5 1.5 1.5
+Surface "$(Surface)"
+Displacement "$(Displacement)"
+Interior "$(Interior)"
+Exterior "$(Exterior)"
+Sphere 1 -1 1 360
+WorldEnd

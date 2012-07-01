@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<node name="WorldPoint" author="Pixar">
+	<help>Returns the 3D World space.</help>
+	<input>
+		<property name="Pt" type="point" default="point(0,0,0)">
+		<help>Connect P or Ps here</help>
+		</property>
+		<property name="Frequency" type="float" default="1" subtype="slider" range="0 10 .001">
+		<help>Controls the scale of the manifold.  Note
+		    that increasing the frequency of the manifold will result
+		    in decreasing the scale of a feature.</help>
+		</property>
+		<property name="Offset" type="float" default="0" subtype="slider" range="0 100">
+		<help>Use this parameter to offset the worlspace
+		    function.  When connected to time or animated with
+		    an expression containing \$f, this parameter controls
+		    motion of all upstream functions.</help>
+		</property>
+		<property name="Direction" type="vector" default="vector(1,0,0)" >
+		<help>Establishes the direction of the motion controlled by the Offset parameter.</help>
+		</property>
+	</input>
+	<output>
+		<property name="Q" type="point"/>	
+		<property name="duQ" type="vector"/>	
+		<property name="dvQ" type="vector"/>	
+	</output>
+	<code>
+  <![CDATA[
+	  $(Q) = $(Frequency) * transform( "world", $(Pt) );
+	  $(Q) += $(Offset) * vtransform( "world", $(Direction) );
+    $(duQ) = Du( $(Q) ) * du;
+    $(dvQ) = Dv( $(Q) ) * dv;
+	]]>	
+  </code>		
+</node>

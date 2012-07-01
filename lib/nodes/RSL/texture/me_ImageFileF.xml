@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<node name="me_ImageFileF" label="ImageFileF" author="mesh">
+	<help>Float image file</help>
+	
+	<input>
+		<property name="defFloatResult" type="float" default="0">
+		<help></help>
+		</property>
+		
+		<property name="File" type="string" detail="uniform" default="" provider="external" subtype="file"
+		  range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" >
+		<help></help>
+		</property>
+		
+		<property name="Channel" type="float" detail="uniform" default="0">
+		<help>
+		"Red Channel" 0
+    "Green Channel" 1
+    "Blue Channel" 2
+    "Alpha Channel" 3
+		</help>
+		</property>
+		<property name="Invert" type="float" detail="uniform" default="0" subtype="switch">
+		<help></help>
+		</property>
+		<property name="filter" type="string" detail="uniform" default="gaussian" subtype="selector" range="box:triangle:b-spline:radial-bspline:gaussian:sinc:disk"/>
+		<property name="SFilt" type="float" detail="uniform" default="1">
+		<help></help>
+		</property>
+		<property name="TFilt" type="float" detail="uniform" default="1">
+		<help></help>
+		</property>
+		<property name="Blur" type="float" detail="uniform" default="0">
+		<help></help>
+		</property>
+		<property name="lerp" type="float" detail="uniform" default="1" subtype="switch">
+		
+		<help></help>
+		</property>
+		<property name="Pt" type="point"/>	
+	</input>
+	<output>
+		<property name="result" type="float"/>	
+	</output>
+	<internal>
+	<variable name="x"/>
+	<variable name="y"/>
+	</internal>
+	<code><![CDATA[
+	$(result) = $(defFloatResult);
+	
+  float $(x) = xcomp( $(Pt) );
+  float $(y) = ycomp( $(Pt) );
+	
+  if ( $(File) != ""  ) 
+  {
+		$(result) = float texture( 
+				$(File)[$(Channel)],
+				$(x), $(y), 
+				"swidth", $(SFilt),
+				"twidth", $(TFilt),
+				"filter", $(filter),
+				"blur", $(Blur),
+				"lerp", $(lerp)
+			);
+	} 
+	
+	if( $(Invert) != 0) 
+	  $(result) = 1 - $(result);
+	 
+  ]]>
+	</code>
+</node>

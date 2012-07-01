@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<node name="s" author="Libero Spagnolini" type="variable">
+	<help>Renderer texture coordinate s.</help>
+	<output>
+		<property name="s" type="float"/>
+	</output>
+	<code>
+  <![CDATA[
+	  $(s) = s;
+	  ]]>
+	</code>
+</node>

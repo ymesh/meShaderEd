@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<nodeset name="me_planar">
+<node name="me_ST_BBB" author="mesh">
+	<help>Returns the 2D surface point based on the underlying\n
+	    	ST parameterization of your object.</help>
+	<input>
+		<property name="angle" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+		<property name="repeatS" type="float" default="1" detail="uniform">
+		<help></help>
+		</property>
+		<property name="repeatT" type="float" default="1" detail="uniform">
+		<help></help>
+		</property>
+		<property name="offsetS" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+		<property name="offsetT" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+		<property name="flipS" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+		<property name="flipT" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+	</input>
+	<output>
+		<property name="Q" type="point"/>	
+		<property name="dQu" type="vector"/>	
+		<property name="dQv" type="vector"/>	
+	</output>
+	<include><file name="me_manifold.h"/></include>
+	<internal>
+		
+	</internal>
+	<code><![CDATA[
+		point $(Q);
+		vector $(dQu);
+		vector $(dQv);
+  		    	
+  	me_ST( $(angle), $(repeatS), $(repeatT), $(offsetS), $(offsetT), $(flipS), $(flipT), $(Q), $(dQu), $(dQv) );
+  	
+  ]]>
+	</code>
+	<preview>
+		<shader type="surface">
+			<code><![CDATA[
+			Ci = color( xcomp($(Q)), ycomp($(Q)), zcomp($(Q)) ); 
+			Oi = 1.0;]]>)
+			</code>
+		</shader>
+	</preview>	
+</node>
+<node name="me_ST_AAA" author="mesh">
+	<help>Returns the 2D surface point based on the underlying\n
+	    	ST parameterization of your object.</help>
+	<input>
+		<property name="angle" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+		<property name="repeatS" type="float" default="1" detail="uniform">
+		<help></help>
+		</property>
+		<property name="repeatT" type="float" default="1" detail="uniform">
+		<help></help>
+		</property>
+		<property name="offsetS" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+		<property name="offsetT" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+		<property name="flipS" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+		<property name="flipT" type="float" default="0" detail="uniform">
+		<help></help>
+		</property>
+	</input>
+	<output>
+		<property name="Q" type="point"/>	
+		<property name="dQu" type="vector"/>	
+		<property name="dQv" type="vector"/>	
+	</output>
+	<include><file name="me_manifold.h"/></include>
+	<internal>
+		
+	</internal>
+	<code><![CDATA[
+		point $(Q);
+		vector $(dQu);
+		vector $(dQv);
+  		    	
+  	me_ST( $(angle), $(repeatS), $(repeatT), $(offsetS), $(offsetT), $(flipS), $(flipT), $(Q), $(dQu), $(dQv) );
+  	
+  ]]>
+	</code>
+	<preview>
+		<shader type="surface">
+			<code><![CDATA[
+			Ci = color( xcomp($(Q)), ycomp($(Q)), zcomp($(Q)) ); 
+			Oi = 1.0;]]>)
+			</code>
+		</shader>
+	</preview>	
+</node>
+</nodegroup>

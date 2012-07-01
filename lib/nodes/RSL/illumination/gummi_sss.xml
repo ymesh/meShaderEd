@@ -1,0 +1,66 @@
+<?xml version="1.0"?> 
+
+<node name="gummi_sss" type="rsl_code" author="mesh">
+  <help></help>
+  <input>
+    <property name="category" type="string" default="__dome" detail="uniform"/>
+    <property name="tintColor" type="color" default="color(1,1,1)"/>
+    <property name="Ks" type="float" default="1"/>
+    
+    <property name="mapBlur" type="float" default="0" detail="uniform" />
+    <property name="samples" type="float" default="1" detail="uniform"/>
+    <property name="filter" type="string" default="box" detail="uniform" subtype="selector" range="box:triangle:b-spline:radial-bspline:gaussian:sinc:disk"/>
+    <property name="width" type="float" default="1" detail="uniform"/>
+    <property name="bias" type="float" default="0" detail="uniform"/>
+    
+    <property name="gummiFalloff" type="color" default="color(1,1,1)">
+    
+    <help>gummiFalloff is type color but it is really independent red, green, blue distance falloff controls. Higher values produce a steeper falloff.</help>
+    </property>
+
+  </input>
+  <output>
+    <property name="result" type="color" default="color(0,0,0)" />
+		<property name="__mapBlur" type="float" default="0" detail="uniform" provider="primitive"/>	
+		<property name="__mapSamples" type="float" default="0" detail="uniform" provider="primitive"/>	
+		<property name="__mapFilter" type="string" default="" detail="uniform" provider="primitive"/>	
+		<property name="__mapFilterWidth" type="float" default="0" detail="uniform" provider="primitive"/>	
+		<property name="__mapBias" type="float" default="0" detail="uniform" provider="primitive"/>	
+    <property name="__gummiFalloff" type="color" default="color(0,0,0)" detail="varying" provider="primitive"/>	
+    <property name="__tintColor" type="color" default="color(0,0,0)" detail="varying" provider="primitive"/>	
+  </output>
+  <internal>
+    <variable name="sss"/>
+    <variable name="gummiAmount"/>
+    <variable name="mapName"/>
+  </internal>
+  <code><![CDATA[
+   
+/* P = P; */
+
+  __mapBlur = $(mapBlur);
+	__mapSamples = $(samples);
+	__mapFilter = $(filter);
+	__mapFilterWidth = $(width);
+	__mapBias = $(bias); 
+	__gummiFalloff = $(gummiFalloff);
+	__tintColor = $(tintColor);
+  
+  uniform string $(mapName) = "";
+  
+  color $(gummiAmount) = 0, $(sss) = 0; 
+  P = P;
+  /* , P, N, PI, "lightcache", "refresh" */       
+  illuminance ( $(category), P, N, PI/2 ) 
+  {
+    if ( ( ( lightsource( "__shdname", $(mapName) )) != 0 ) && ( $(mapName) != "") )
+    {
+       lightsource("__gummi_sss", $(gummiAmount) );
+    } 
+   	 $(sss) += Cl;
+  }
+  $(result) = $(Ks) * $(tintColor) * $(sss);
+
+  ]]>
+  </code> 
+</node>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?> 
+
+<node name="vectorToColor" type="rsl_code">
+	<help>Vector to color converter.</help>
+	<input>
+		<property name="inVector" type="vector" default="vector (0, 0, 0)" />
+	</input>
+	<output>
+		<property name="outColor" type="color"/>
+	</output>
+	<code>
+	  <![CDATA[
+	  $(outColor) = color(xcomp($(inVector)),ycomp($(inVector)),zcomp($(inVector)) );
+	  ]]>
+	</code>
+</node>

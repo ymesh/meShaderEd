@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<node name="me_diff_ibi" author="mesh">
+	<help>Diffuse component with IBI (Image Based Illumination)</help>
+	<input>
+	  <property name="N" type="normal" default="normal(0,0,0)" />	
+		<property name="category" type="string" default="environment"/>
+		<property name="dBlur" type="float" default="0.7 "
+		subtype="slider"
+		range="0 1 0.01"/>
+		<property name="Kd" type="float" default="0.8"
+		subtype="slider"
+		range="0 1 0.01"/>
+	</input>
+	<output>
+		<property name="result" type="color" default="color ( 0, 0, 0 )"/>	
+		<property name="__L" type="vector" default="vector (0, 0, 1)" detail="varying" provider="primitive"/>
+		<property name="__blur" type="float" default="0" detail="varying" provider="primitive"/>
+	</output>
+	<include>
+	</include>
+		
+	<internal>
+	</internal>
+	<code>
+  <![CDATA[
+	
+	__L = vector ( $(N) );
+  __blur = $(dBlur);
+	
+	  
+	illuminance ( $(category), P,  "lightcache", "refresh" ) 
+  {
+    $(result) += Cl;
+  }     
+
+  $(result) *= $(Kd);
+			
+  ]]>
+	</code>	
+</node>

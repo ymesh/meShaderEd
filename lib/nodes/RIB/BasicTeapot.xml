@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+
+<node name="BasicTeapot" author="mesh" type="rib">
+	<help>Basic Teapot primitive preview RIB</help>
+	<input>
+    <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
+    <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>	
+    <property name="ShadingRate" label="Shading rate" type="float" default="1.0" provider="attribute"/>
+    <property name="Samples" type="int" default="4" provider="attribute"/>		
+    <property name="Filter" type="string" default="catmull-rom" provider="attribute" subtype="selector"
+      range="box:triangle:catmull-rom:gaussian:sinc:blackman-harris:mitchell:separable-catmull-rom:lanczos:bessel"/>
+    <property name="FilterWidth" label="Filter width" type="float" default="2.0" provider="attribute"/>	
+    
+    <property name="DisplaceBound" label="Displacement Bound" type="float" default="0.5" provider="attribute"/>
+    
+    <property name="EnvIntensity" label="EnvLight Intensity" type="float" default="1.25" provider="attribute"/>	
+    <property name="EnvMap" label="Environment Map" type="string" default="kitchen_LL.hdr.${TEX}" provider="attribute"
+      subtype="file" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" />		
+    <property name="EnvSpace" label="Coordinate System" type="string" default="_environment" provider="attribute" />
+    
+    <property name="Color" type="color" default="0 0 1" provider="attribute"/>	
+    <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>	
+    
+    <property name="RotateY" type="int" default="0" provider="attribute" subtype="slider" range="0 360 1"/>
+    	
+    <property name="FG_disp" type="displacement" default="null" />
+    <property name="FG_surf" type="surface" default="defaultsurface" />
+		<property name="BG_surf" type="surface" default="liquidchecker" />
+	</input>
+	<output>
+	  <property name="ImageFile" type="image" default="${TempPath}/${NODELABEL}.tif"/>
+	</output>
+	<code_param><![CDATA[
+	]]>    
+	</code_param>
+	<code>
+  <![CDATA[
+  Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
+  Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
+
+  Option "user" "float traceBreadthFactor" [1]
+  Option "user" "float traceDepthFactor" [1]
+  Option "trace" "int maxdepth" 4
+  Option "trace" "float specularthreshold" [10]
+  Option "trace" "int continuationbydefault" [1]
+
+  Attribute "visibility" "int trace" [1]
+  Attribute "visibility" "int transmission" [1]
+  Attribute "visibility" "int diffuse" [1]
+  Attribute "visibility" "int specular" [1]
+
+  Attribute "trace" "int maxdiffusedepth" [1]
+  Attribute "trace" "int maxspeculardepth" [4]
+
+
+
+  Hider "hidden" "int jitter" [1]
+  Format $(Width) $(Height) 1.0
+  PixelSamples $(Samples) $(Samples)
+  PixelFilter "$(Filter)" $(FilterWidth) $(FilterWidth)
+  ShadingRate $(ShadingRate)
+
+  ### Output image
+  Display "$(ImageFile)" "tiff" "rgba" 
+
+  ### "filterwidth" [$(FilterWidth) $(FilterWidth)]
+
+  Projection "perspective" "fov" 45
+  Translate 0 0 3.0
+
+  Attribute "displacementbound" "float sphere" [$(DisplaceBound)]
+
+  WorldBegin
+
+    ReverseOrientation 
+	
+    TransformBegin
+      Rotate -90 1 0 0
+      CoordinateSystem "_environment"
+    TransformEnd
+
+    LightSource "distantlight" 1 "intensity" 1.0 "from" [-2 2 -3] "to" [0 0 0]
+    LightSource "distantlight" 2 "intensity" 0.4 "from" [6 -3 0] "to" [0 0 0]
+    LightSource "meEnvLight" 3  "uniform float Intensity" [$(EnvIntensity)] 
+                                "uniform string meEnvMap_EnvMap" ["$(EnvMap)"]
+                                "uniform string meEnvMap_Space" ["$(EnvSpace)"]
+
+      
+    AttributeBegin
+      Color [$(Color)]
+      Opacity [$(Opacity)]
+      
+      Rotate $(RotateY) 0 1 0 
+      
+      AttributeBegin
+        Scale 0.35 0.35 0.35
+        Translate -0.6 -1 0
+        Rotate 120 -1 0 0
+        Rotate 30 0 0 1
+  
+        Displacement "$(FG_disp)"
+        Surface "$(FG_surf)" 
+        Geometry "teapot"
+      AttributeEnd
+    AttributeEnd 
+      
+    AttributeBegin 
+      Scale 7 7 7
+      Translate 0 0 2
+      Surface "$(BG_surf)" 
+      
+      Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
+    AttributeEnd 
+
+  WorldEnd
+	]]>
+	</code>		
+</node>

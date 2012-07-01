@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<node name="time" author="mesh" type="variable">
+	<help>Current shutter time </help>
+	<output>
+		<property name="time" type="float" detail="uniform"/>
+	</output>
+	<code>
+  <![CDATA[
+	/* extern float time; */
+	$(time) = time;
+	]]>
+	</code>
+</node>

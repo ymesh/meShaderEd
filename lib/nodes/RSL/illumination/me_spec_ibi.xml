@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<node name="me_spec_ibi" author="mesh">
+	<help>Specular component with IBI (Image Based Illumination)</help>
+	<input>
+	  <property name="N" type="normal" default="normal(0,0,0)" />		
+		<property name="category" type="string" default="environment"/>
+		<property name="rBlur" type="float" default="0" subtype="slider" range="0 1 0.01"/>
+		<property name="KrMin" type="float" default="0" subtype="slider" range="0 1 0.01"/>
+		<property name="KrMax" type="float" default="0.25" subtype="slider" range="0 1 0.01"/>
+		<property name="IOR" type="float" default="1.5" subtype="slider" range="0 5 0.01"/>
+	</input>
+	<output>
+		<property name="result" type="color" default="color ( 0, 0, 0 )"/>	
+		<property name="__L" type="vector" default="vector (0, 0, 1)" detail="varying" provider="primitive"/>
+		<property name="__blur" type="float" default="0" detail="varying" provider="primitive"/>	
+	</output>
+	<include>
+	</include>
+		
+	<internal>
+	  <variable name="Kr"/>
+	  <variable name="R"/>
+	  <variable name="V"/>
+	</internal>
+	<code>
+  <![CDATA[
+
+  float $(Kr) = $(KrMax);
+	vector $(R) = vector (0);
+	vector $(V) = normalize( I );  
+  
+  if ( $(IOR) > 0 )
+	{
+    vector T;
+    float Kt;
+    float f = max( $(IOR), 1.0e-4 );
+    fresnel( $(V), $(N), ( I.$(N) < 0 ) ? 1.0/f : $(IOR) , $(Kr), Kt, $(R), T );
+    $(Kr) = mix( $(KrMin), $(KrMax), $(Kr) );
+	}
+	else
+	{
+    $(R) = reflect( $(V), $(N) );
+	}
+  
+  __L = $(R);
+  __blur = $(rBlur);
+  /* P = P; dirty light cache */
+  illuminance ( $(category), P, "lightcache", "refresh" ) /* , "lightcache", "refresh" */
+  {
+    $(result) += Cl;
+  }     
+
+  $(result) *= $(Kr);
+			
+  ]]>
+	</code>	
+</node>

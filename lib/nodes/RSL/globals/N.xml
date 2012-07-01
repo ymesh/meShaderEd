@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<node name="N" author="mesh" type="variable">
+	<help>Global normal N.</help>
+	<output>
+		<property name="N" type="normal"/>
+	</output>
+	<code>
+	  <![CDATA[
+	#ifdef SURFACE_SHADER
+	  $(N) = N;
+	  #endif
+	  #ifdef DISPLACEMENT_SHADER
+	  $(N) = N;
+	  #endif
+	  #ifdef LIGHT_SHADER
+	  $(N) = Ns;
+	  #endif
+	  #ifdef VOLUME_SHADER
+	  $(N) = Nv;
+	  #endif
+	]]>
+	</code>
+</node>

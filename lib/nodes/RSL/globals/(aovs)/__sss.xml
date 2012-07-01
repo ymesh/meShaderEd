@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<node name="__sss" author="mesh">
+	<help>__color arbitrary output variable (AOV)</help>
+	<input>
+		<property name="in" type="color" default="color(0,0,0)" />
+		<property name="mult" type="color" default="color(1,1,1)" />
+	</input>
+	<output>
+	  <property name="out" type="color" default="color(0,0,0)"/>
+		<property name="__sss" type="color" default="color(0,0,0)" detail="varying" provider="primitive"/>
+	</output>
+	<code><![CDATA[
+	color $(out) = $(in) * $(mult); 
+	__sss = $(out); ]]>
+	</code>
+	<preview>
+		<shader type="surface">
+			<code><![CDATA[Ci = $(out); Oi = 1;]]></code>
+		</shader>
+	</preview>		
+</node>

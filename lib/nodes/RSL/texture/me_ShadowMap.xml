@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+
+<node name="me_ShadowMap" label="ShadowMap" author="mesh">
+	<help>Shadow map must be connected to "Shadow" input in light shader</help>
+	<input>
+	  <property name="File" type="string" default="" detail="uniform" subtype="file"
+		  range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" />
+	  <property name="Samples" type="float" default="16" detail="uniform"/>
+	  <property name="Blur" type="float" default="0" detail="uniform"/>
+	  <property name="Bias" type="float" default="0" detail="uniform"/>
+	  <property name="Filter" type="string" default="box" detail="uniform" subtype="selector" range="box:triangle:b-spline:radial-bspline:gaussian:sinc:disk"/>
+	  <property name="Width" type="float" default="0" detail="uniform"/>
+	  <property name="sWidth" type="float" default="0" detail="uniform"/>
+	  <property name="tWidth" type="float" default="0" detail="uniform"/>
+	  
+	  <property name="UseTransform" type="float" default="0" detail="uniform" subtype="switch">
+	  <help>When this switch is checked ON, Once per job generated shadow can be moved with coordinate system groupped with shadowed objects</help>
+	  </property>
+	  <property name="CoordSys" type="string" default="" detail="uniform">
+	  <help> Name of mtorCoordinateSystem shape node that will be moved with shadowed objects</help>
+	  </property>
+	</input>  
+	<output>
+		<property name="result" type="color" default="color( 0, 0, 0 )"/>	
+	</output>
+	<include>
+	</include>	
+	<internal>
+	  <variable name="tQ"/>
+	</internal>
+	<code><![CDATA[
+	point $(tQ) = Ps;
+	
+  if ( $(UseTransform) == 1 ) 
+  {
+    /* do smart transform */
+    if ( $(CoordSys)!= "" ) 
+    { 
+	    uniform matrix srcSpace;
+	    uniform matrix trans;
+	    point padd, pshad, psys = 0;
+	    psys = transform( $(CoordSys), "world", psys );  
+      textureinfo( $(File), "viewingmatrix", srcSpace );
+	              
+	    setxcomp( padd, xcomp(psys));
+      setycomp( padd, ycomp(psys));
+      setzcomp( padd, zcomp(psys));
+	              
+	    trans = matrix 1 / srcSpace;
+      setxcomp( pshad, comp( trans, 3, 0 ));
+      setycomp( pshad, comp( trans, 3, 1 ));
+      setzcomp( pshad, comp( trans, 3, 2 ));
+      pshad = transform( "current", "world", pshad ); 
+
+      padd -= pshad;
+      
+      $(tQ) = transform( "current", "world", $(tQ) );  
+  		$(tQ) -= padd;
+      $(tQ) = transform( "world", "current", $(tQ) );  
+   	}   
+  } 	    	
+  if ( $(File) != "" ) 
+  { 
+    $(result) = color shadow( $(File), $(tQ)
+            	,"samples", $(Samples)
+            	,"blur", $(Blur)
+            	,"bias", $(Bias)
+            	,"width", $(Width)
+            	,"swidth", $(sWidth)
+            	,"twidth", $(tWidth)
+            	,"filter", $(Filter)
+            	);
+  }
+]]>
+	</code>
+	<preview>
+		<shader type="surface">
+			<code><![CDATA[
+			Ci = $(result); 
+			Oi = 1.0;]]>)
+			</code>
+		</shader>
+	</preview>	
+</node>

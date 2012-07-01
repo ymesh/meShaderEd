@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<node name="psTrace" author="mesh">
+	<help></help>
+	<output>
+	  <property name="out" type="color" default="color(0,0,0)"/>
+	</output>
+	<internal>
+	  <variable name="Nf"/>
+	  <variable name="Nc"/>
+	</internal>
+	<code><![CDATA[	
+	  normal $(Nf);
+ 		normal $(Nc);
+	
+ 		$(Nf) = faceforward(normalize(N), I);
+    $(Nc) = transform("camera", ($(Nf) + point "camera" (0,0,0)));
+    $(Nc) = normalize($(Nc));
+		    
+    setcomp($(out), 0, clamp((0.5 - xcomp($(Nc)) / 2), 0, 1));
+    setcomp($(out), 1, clamp((0.5 + ycomp($(Nc)) / 2), 0, 1));
+    setcomp($(out), 2, clamp(abs(zcomp($(Nc))), 0, 1));	
+  ]]>
+	</code>		
+</node>

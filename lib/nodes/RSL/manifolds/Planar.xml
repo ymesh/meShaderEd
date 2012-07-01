@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<node name="me_planar" label="Planar" author="mesh">
+	<help>Planar projection</help>
+	<input>
+		<property name="coordsys" type="string" default="" detail="uniform">
+		<help>define shader space</help>
+		</property>
+
+		<property name="xperiodic" type="float" default="0" detail="uniform" subtype="switch">
+		<help></help>
+		</property>
+		
+		<property name="yperiodic" type="float" default="0" detail="uniform" subtype="switch">
+		<help></help>
+		</property>
+		
+		<property name="sticky" type="float" default="0" detail="uniform" subtype="switch">
+		<help> Tell the shader to use reference geometry to eliminate\n 
+  	      the texture swimming effect caused by deformation.</help>
+		</property>
+  <property name="__Pref" type="point" default="point(-10000000000,-10000000000,-10000000000)" detail="varying" provider="primitive"/>
+	</input>
+	<output>
+		<property name="Q" type="point"/>	
+		<property name="dQu" type="vector"/>	
+		<property name="dQv" type="vector"/>	
+		
+	</output>
+
+	<internal>
+	<variable name="sys"/>
+	<variable name="Nt"/>
+	<variable name="x"/>	
+	<variable name="y"/>	
+	<variable name="z"/>
+	<variable name="xloc"/>		
+	<variable name="yloc"/>	
+	</internal>
+	<code>
+<![CDATA[
+  		
+		float $(x), $(y), $(xloc), $(yloc), $(z);
+		
+		uniform string $(sys) = ( $(coordsys) != "" ) ? $(coordsys) : "world";
+			
+	  $(Q) = ( $(sticky) == 0)? transform( $(sys), P ) : transform( $(sys), __Pref);
+    normal $(Nt) = ntransform( $(sys), normalize(N));
+    
+    $(x) = xcomp( $(Q) );
+    $(y) = ycomp( $(Q) );
+    $(z) = zcomp( $(Q) );
+    
+    $(x) += 0.5;
+    $(y) += 0.5;
+    
+    $(x) = 1 - $(x);
+    $(y) = 1 - $(y);
+    
+    $(xloc) = ($(xperiodic) == 0) ? $(x) : mod( $(x), 1.0 );
+    $(yloc) = ($(yperiodic) == 0) ? $(y) : mod( $(y), 1.0 );
+    
+    setxcomp( $(Q), $(xloc) );
+    setycomp( $(Q), $(yloc) );
+    setzcomp( $(Q), $(z) );
+
+    $(dQu) = vector Du( $(Q) ) * du;
+    $(dQv) = vector Dv( $(Q) ) * dv;	
+  	
+  ]]>
+	</code>	
+</node>

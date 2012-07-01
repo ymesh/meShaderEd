@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+
+<node name="FractalC" author="Pixar">
+	<help>Color Fractal function.</help>
+	<input>
+		<property name="Layers" type="float" default="6" subtype="slider" range="1 8 1">
+		<help>The number of noise layers used.</help>
+		</property>  
+		<property name="Frequency" type="float" default="1" subtype="slider" range="0.1 10">
+		<help>Sets the lowest (starting) frequency of the noise layers.</help>
+		</property> 
+		<property name="Lacunarity" type="float" default="2" subtype="slider" range="1.25 4">
+		<help>The scaler used to determine the 
+		    frequency of each sucessive layer of noise. Smaller 
+		    numbers will cause the layers to be more closely
+		    spaced in frequency. Larger values will space them
+		    further apart.</help>
+		</property>
+		<property name="Dimension" type="float" default="1" subtype="slider" range="0 2">
+		<help>The frequency exponent. This value is used to
+		    scale the magnitude of each sucessive layer of noise using
+		    the formula 1/f^(3-2*Dimension); where f is the frequency
+		    of the noise being used for a given layer. It's called
+		    Dimension since this value relates to the fractal
+		    dimension. Bigger values are rougher, smaller values are
+		    smoother.</help>
+		</property>
+		<property name="Erosion" type="float" default="0" subtype="slider" range="-2 2">
+		<help>The frequency exponent range. The frequency
+		    exponent specified by the Dimension is itself offset
+		    as a function of the noise magnitude. This value adjusts
+		    that offset. This determines the so-called \"crossover
+		    scale\" of the fractal. 0 gives a uniform appearance.
+		    Negative values will smooth out the low valued areas,
+		    and positive values will smooth the high valued ones.</help>
+		</property>
+		<property name="Measure" type="float" default="0" subtype="selector" 
+		  range="Gray:Saturation:Luminance">
+		<help>The measurement value used to determine what
+		    the Erosion will effect. For Gray, it's how far away from
+		    gray the color is.</help>
+		</property>
+		<property name="Variation" type="float" default="0" >
+		<help>This value controls which particular variation
+		of the appearance you get - without altering the qualities
+		of the appearance determined by the other controls. So, for
+		example, you can use this to animate the appearance by
+		connecting this to Time, or create several unique instances
+		of the appearance by setting this to different values.</help>
+		</property>
+		<property name="Q" type="point" default="point(0,0,0)"/>	
+		<property name="duQ" type="vector" default="vector(0,0,0)"/>	
+		<property name="dvQ" type="vector" default="vector(0,0,0)"/>	
+	</input>
+	<output>
+	  <property name="result" type="color" default="color(0,0,0)"/>
+	</output>
+	<internal>
+	  <variable name="Noise"/>
+	  <variable name="Distance"/>
+	  <variable name="i"/>
+	  <variable name="sum"/>
+	  <variable name="mag"/>
+	  <variable name="f"/>
+	  <variable name="offset"/>
+	  <variable name="dQ"/>
+	</internal>
+	<code><![CDATA[	
+	  color $(Noise)(point Q)
+		{
+			extern float $(Variation);
+			color	C;
+			
+			C = color noise( Q, $(Variation) );
+			C = color( 
+			    smoothstep(.2, .8, comp(C, 0)),
+			    smoothstep(.2, .8, comp(C, 1)),
+			    smoothstep(.2, .8, comp(C, 2))
+			);
+			return (C);
+		}
+		    
+		float $(Distance)(float type; color C)
+		{
+			float	result;
+			if (type == 1)	/* Saturation */
+			  result = comp (ctransform ("RGB", "HSY", C), 1);
+			else if (type == 2)	/* Luminance */
+			  result = comp (ctransform ("RGB", "HSY", C), 2);
+			else	/* Gray */
+			  result = length (vector (C - color .5)) + .319;
+						return (result);
+		}
+		uniform float	$(i);
+		float	$(sum), $(mag), $(f), $(offset);
+		float	$(dQ);
+		    
+		$(dQ) = max(
+			max( abs(xcomp( $(duQ) )) + abs(xcomp( $(dvQ) )), abs(ycomp( $(duQ) )) + abs(ycomp( $(dvQ) )) ),
+			abs(zcomp( $(duQ) )) + abs(zcomp( $(dvQ) ))
+		);
+
+		$(f) = $(Frequency);
+		$(result) = mix( $(Noise)( $(f) * $(Q) ), color .5, smoothstep (.25, 1, $(f) * $(dQ) ));
+		$(sum) = 1;
+
+		for ( $(i) = 1 ; $(i) < $(Layers) ; $(i) += 1) 
+	  {
+			$(f) *= $(Lacunarity);
+			$(offset) = mix(-$(Erosion), $(Erosion), $(Distance)( $(Measure), $(result)/$(sum) ) );
+			$(mag) = 1/pow( $(f), 3 - 2 * $(Dimension) + $(offset) );
+			$(result) += $(mag) * mix( $(Noise)( $(f) * $(Q) ), color .5, smoothstep (.25, 1, $(f) * $(dQ) ));
+			$(sum) += $(mag);
+		}
+
+		$(result) /= $(sum);	
+  ]]>
+	</code>
+</node>
