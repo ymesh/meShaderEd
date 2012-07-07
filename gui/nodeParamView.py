@@ -171,11 +171,12 @@ class NodeParamView ( QtGui.QWidget ):
     if self.gfxNode is not None :
       self.nameEdit.setText ( self.gfxNode.node.label )
       for inputParam in self.gfxNode.node.inputParams:
-        if not self.gfxNode.node.isInputParamLinked( inputParam ):
-          if inputParam.type in self.paramWidgets.keys() :
-            #print '%s type = %s' % ( inputParam.label, inputParam.type )  
-            paramWidget = apply ( self.paramWidgets [ inputParam.type ], [ inputParam, self.gfxNode, self ] )
-            frameLayout.addWidget ( paramWidget ) 
+        if inputParam.display :
+          if not self.gfxNode.node.isInputParamLinked( inputParam ):
+            if inputParam.type in self.paramWidgets.keys() :
+              #print '%s type = %s' % ( inputParam.label, inputParam.type )  
+              paramWidget = apply ( self.paramWidgets [ inputParam.type ], [ inputParam, self.gfxNode, self ] )
+              frameLayout.addWidget ( paramWidget ) 
             
     
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding )

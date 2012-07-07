@@ -5,7 +5,7 @@
   <node type="image" author="mesh" id="1" name="imageViewer" label="imageViewer">
    <help>Single image viewer </help>
    <input>
-    <property range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg" subtype="" type="image" value="" name="image" label="image"/>
+    <property default="" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg" type="image" value="" name="image" label="image"/>
    </input>
    <output/>
    <internal/>
@@ -21,25 +21,26 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 
 ]]></param_code>
    <code><![CDATA[]]></code>
+   <offset x="347" y="-155"/>
   </node>
   <node type="rib" author="mesh" id="2" name="BasicSphere" label="BasicSphere">
    <help>Basic sphere primitive preview RIB</help>
    <input>
-    <property detail="attribute" type="int" value="256" name="Width" label="Image width"/>
-    <property detail="attribute" type="int" value="256" name="Height" label="Image height"/>
-    <property detail="attribute" type="float" value="1.000" name="ShadingRate" label="Shading rate"/>
-    <property detail="attribute" type="int" value="4" name="Samples" label="Samples"/>
-    <property detail="attribute" range="box:triangle:catmull-rom:gaussian:sinc:blackman-harris:mitchell:separable-catmull-rom:lanczos:bessel" subtype="attribute" type="string" value="catmull-rom" name="Filter" label="Filter"/>
-    <property detail="attribute" type="float" value="2.000" name="FilterWidth" label="Filter width"/>
-    <property detail="attribute" type="float" value="0.500" name="DisplaceBound" label="Displacement Bound"/>
-    <property detail="attribute" type="color" value="0.000 0.000 1.000" name="Color" label="Color"/>
-    <property detail="attribute" type="color" value="1.000 1.000 1.000" name="Opacity" label="Opacity"/>
-    <property type="displacement" value="null" name="FG_disp" label="FG_disp"/>
-    <property type="surface" value="defaultsurface" name="FG_surf" label="FG_surf"/>
-    <property type="surface" value="liquidchecker" name="BG_surf" label="BG_surf"/>
+    <property detail="attribute" default="0" type="int" value="256" name="Width" label="Image width"/>
+    <property detail="attribute" default="0" type="int" value="256" name="Height" label="Image height"/>
+    <property detail="attribute" default="0.000" type="float" value="1.000" name="ShadingRate" label="Shading rate"/>
+    <property detail="attribute" default="0" type="int" value="4" name="Samples" label="Samples"/>
+    <property detail="attribute" default="" range="box:triangle:catmull-rom:gaussian:sinc:blackman-harris:mitchell:separable-catmull-rom:lanczos:bessel" subtype="attribute" type="string" value="catmull-rom" name="Filter" label="Filter"/>
+    <property detail="attribute" default="0.000" type="float" value="2.000" name="FilterWidth" label="Filter width"/>
+    <property detail="attribute" default="0.000" type="float" value="0.500" name="DisplaceBound" label="Displacement Bound"/>
+    <property detail="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 1.000" name="Color" label="Color"/>
+    <property detail="attribute" default="0.000 0.000 0.000" type="color" value="1.000 1.000 1.000" name="Opacity" label="Opacity"/>
+    <property default="" type="displacement" value="null" name="FG_disp" label="FG_disp"/>
+    <property default="" type="surface" value="defaultsurface" name="FG_surf" label="FG_surf"/>
+    <property default="" type="surface" value="liquidchecker" name="BG_surf" label="BG_surf"/>
    </input>
    <output>
-    <property type="image" value="${TempPath}/${NODELABEL}.tif" name="ImageFile" label="ImageFile"/>
+    <property default="" type="image" value="${TempPath}/${NODELABEL}.tif" name="ImageFile" label="ImageFile"/>
    </output>
    <internal/>
    <include/>
@@ -112,15 +113,16 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 
   WorldEnd
   ]]></code>
+   <offset x="172" y="-168"/>
   </node>
   <node type="displacement" author="mesh" id="3" name="displace" label="displace">
    <help>Root displacement shader.</help>
    <input>
-    <property type="point" value="point(0.000,0.000,0.000)" name="P" label="P"/>
-    <property type="normal" value="normal(0.000,1.000,0.000)" name="N" label="N"/>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="P" label="P"/>
+    <property default="normal(0.000,0.000,0.000)" type="normal" value="normal(0.000,1.000,0.000)" name="N" label="N"/>
    </input>
    <output>
-    <property type="displacement" value="${NODELABEL}" name="disp" label="disp"/>
+    <property default="" type="displacement" value="${NODELABEL}" name="disp" label="disp"/>
    </output>
    <internal/>
    <include/>
@@ -129,6 +131,7 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 	  P = $(P); 
 	  N = $(N);
 	]]></code>
+   <offset x="21" y="-105"/>
   </node>
   <node type="rsl_code" author="Ivan DeWolf" id="4" name="IDbubbly" label="IDbubbly">
    <help>bubbly.sl written a while ago by Ivan DeWolf ivan@martian-tools.com
@@ -137,16 +140,16 @@ self.imageName = self.getInputParamValueByName ( 'image' )
     		instead of the sparse convolution in the paper. not as elegant, but hey, it works.
     		the bubbles are paraboloids diplaced along the normal. </help>
    <input>
-    <property type="point" value="point(0.000,0.000,0.000)" name="P" label="P"/>
-    <property type="normal" value="normal(0.000,1.000,0.000)" name="N" label="N"/>
-    <property type="float" value="0.200" name="Kd" label="Kd"/>
-    <property type="float" value="5.000" name="mult" label="mult"/>
-    <property type="float" value="1.000" name="Nzscale" label="Nzscale"/>
-    <property type="float" value="1.000" name="bubsize" label="bubsize"/>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="P" label="P"/>
+    <property default="normal(0.000,0.000,0.000)" type="normal" value="normal(0.000,1.000,0.000)" name="N" label="N"/>
+    <property default="0.000" type="float" value="0.200" name="Kd" label="Kd"/>
+    <property default="0.000" type="float" value="5.000" name="mult" label="mult"/>
+    <property default="0.000" type="float" value="1.000" name="Nzscale" label="Nzscale"/>
+    <property default="0.000" type="float" value="1.000" name="bubsize" label="bubsize"/>
    </input>
    <output>
-    <property type="point" value="point(0.000,0.000,0.000)" name="outP" label="outP"/>
-    <property type="normal" value="normal(0.000,0.000,0.000)" name="outN" label="outN"/>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="outP" label="outP"/>
+    <property default="normal(0.000,0.000,0.000)" type="normal" value="normal(0.000,0.000,0.000)" name="outN" label="outN"/>
    </output>
    <internal>
     <variable name="Nn"/>
@@ -202,12 +205,13 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 	  $(outP) = $(P); 
 	  $(outN) = $(N);
 	  ]]></code>
+   <offset x="-131" y="-79"/>
   </node>
   <node type="variable" author="mesh" id="5" name="P" label="P">
    <help>Global point P.</help>
    <input/>
    <output>
-    <property type="point" value="point(0.000,0.000,0.000)" name="P" label="P"/>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="P" label="P"/>
    </output>
    <internal/>
    <include/>
@@ -226,12 +230,13 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 	  $(P) = Pv;
 	  #endif
 	  ]]></code>
+   <offset x="-294" y="-65"/>
   </node>
   <node type="variable" author="mesh" id="6" name="N" label="N">
    <help>Global normal N.</help>
    <input/>
    <output>
-    <property type="normal" value="normal(0.000,0.000,0.000)" name="N" label="N"/>
+    <property default="normal(0.000,0.000,0.000)" type="normal" value="normal(0.000,0.000,0.000)" name="N" label="N"/>
    </output>
    <internal/>
    <include/>
@@ -250,6 +255,7 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 	  $(N) = Nv;
 	  #endif
 	]]></code>
+   <offset x="-292" y="16"/>
   </node>
  </nodes>
  <links>

@@ -432,4 +432,5 @@ class MainWindow ( QtGui.QMainWindow ):
       self.ui.tabs.setTabText ( self.ui.tabs.indexOf( self.workArea ), name )
       
       self.workArea.nodeNet.save ()
+      self.ui.project_ctl.onReload()
   

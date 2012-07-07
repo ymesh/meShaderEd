@@ -31,7 +31,8 @@ class NodeParam ( QtCore.QObject ):
     self.shaderParam = False
     
     self.isRibParam = isRibParam
-
+    self.display = True
+    
     # extra parameter description
     self.detail = '' # variable, uniform
     self.provider = '' # primitive, connection, constant, variable, expression
@@ -120,6 +121,11 @@ class NodeParam ( QtCore.QObject ):
     #if self.shaderParam :
     #  print '--> is shaderParam'
       
+    self.display = True
+    display_value = str ( xml_param.attributes().namedItem( 'display' ).nodeValue() )
+    if display_value == 'hidden' : self.display = False
+    if display_value == 'visible' : self.display = True  
+    
     self.detail = str ( xml_param.attributes().namedItem( 'detail' ).nodeValue() )
     self.provider = str ( xml_param.attributes().namedItem( 'provider' ).nodeValue() )
     
@@ -152,6 +158,8 @@ class NodeParam ( QtCore.QObject ):
     if self.label != None : xmlnode.setAttribute ( "label", self.label )
     if self.type != None : xmlnode.setAttribute ( "type", self.type )
     if self.shaderParam : xmlnode.setAttribute ( "shaderParam", True )
+      
+    if not self.display : xmlnode.setAttribute ( "display", 'hidden' )
       
     if self.detail != '' : xmlnode.setAttribute ( "detail", self.detail )
     if self.provider != '' : xmlnode.setAttribute ( "provider", self.provider )

@@ -11,6 +11,7 @@ from PyQt4.QtCore import QDir, QFile, QVariant
 
 from node import Node
 from rslNode import RSLNode
+from ribCodeNode import RIBCodeNode
 from ribNode import RIBNode
 from imageNode import ImageNode
 
@@ -243,6 +244,7 @@ class NodeNetwork ( QtCore.QObject ):
   def addNodeFromXML ( self, xml_node ) :
     #
     createNodeTable = { 'rib':RIBNode 
+                       ,'rib_code':RIBCodeNode 
                        ,'image':ImageNode 
                        ,'surface':RSLNode 
                        ,'displacement':RSLNode

@@ -4,7 +4,9 @@
 	<help>Basic primitive preview RIB</help>
 	<input>
     <property name="Globals" label="Render Options" type="rib" default=""/>
-
+    
+    <property name="Primitive" label="Primitive" type="string" provider="attribute" default="Sphere" subtype="selector" range = "Sphere:Teapot:Cylinder:Plane"/>
+    
     <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
     <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>	
     
@@ -13,7 +15,7 @@
     <property name="EnvIntensity" label="EnvLight Intensity" type="float" default="1.25" provider="attribute"/>	
     <property name="EnvMap" label="Environment Map" type="string" default="kitchen_LL.hdr.${TEX}" provider="attribute"
       subtype="file" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" />		
-    <property name="EnvSpace" label="Coordinate System" type="string" default="_environment" provider="attribute" />
+    
     
     <property name="Color" type="color" default="0 0 1" provider="attribute"/>	
     <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>	
@@ -23,14 +25,38 @@
 
     <property name="FG_surf" label="Surface Shader" type="surface" default="defaultsurface" />
 		<property name="BG_surf" label="Background Shader" type="surface" default="liquidchecker" />
+		
+		<property name="PrimitiveCode" type="string" default="" provider="attribute" display="hidden"/>
 	</input>
 	<output>
 	  <property name="ImageFile" type="image" default="${TempPath}/${NODELABEL}.tif"/>
 	</output>
-	<code_param>
-  <![CDATA[
-	]]>    
-	</code_param>
+	<param_code>
+<![CDATA[
+print ":: Hello from %s XML code !!!" % self.label
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Sphere': 
+  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Sphere 1.0 -1.0 1.0 360"
+  
+if self.getInputParamByName ( 'Primitive' ).value == 'Teapot': 
+  self.getInputParamByName ( 'PrimitiveCode' ).value = """Rotate 0 0 1 0
+      AttributeBegin
+        Scale 0.35 0.35 0.35
+        Translate -0.6 -1 0
+        Rotate 120 -1 0 0
+        Rotate 30 0 0 1
+        Geometry \"teapot\"
+      AttributeEnd"""
+      
+if self.getInputParamByName ( 'Primitive' ).value == 'Cylinder': 
+  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Cylinder 1 -0.5 0.5 360"
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Plane': 
+  self.getInputParamByName ( 'PrimitiveCode' ).value = 'Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]'
+
+
+]]>
+	</param_code>
 	<code>
   <![CDATA[
   Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
@@ -61,18 +87,19 @@
     LightSource "distantlight" 2 "intensity" 0.4 "from" [6 -3 0] "to" [0 0 0]
     LightSource "meEnvLight" 3  "uniform float Intensity" [$(EnvIntensity)] 
                                 "uniform string meEnvMap_EnvMap" ["$(EnvMap)"]
-                                "uniform string meEnvMap_Space" ["$(EnvSpace)"]
+                                "uniform string meEnvMap_Space" ["_environment"]
 
     AttributeBegin 
-      Rotate 60 1 0 0
-
+      
+      
+      
       Color [$(Color)]
       Opacity [$(Opacity)]
 
       Displacement "$(FG_disp)"
       Surface "$(FG_surf)" 
       
-      Sphere 1.0 -1.0 1.0 360 
+      $(PrimitiveCode)
       
     AttributeEnd 
       

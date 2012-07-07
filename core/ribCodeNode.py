@@ -1,5 +1,5 @@
 #===============================================================================
-# ribNode.py
+# ribCodeNode.py
 #
 # 
 #
@@ -15,14 +15,14 @@ from core.node_global_vars import node_global_vars
 #
 # RIBNode
 #
-class RIBNode ( Node ):
+class RIBCodeNode ( Node ):
   #
   #
   def __init__ ( self, xml_node = None ):
     #
     Node.__init__ ( self, xml_node )
     self.ribName = ''
-    print ">> RIBNode __init__" 
+    print ">> RIBCodeNode __init__" 
   #
   #    
   def getInputParamValueByName ( self, name ):
@@ -48,52 +48,22 @@ class RIBNode ( Node ):
     else :
       result = param.getValueToStr ()
     
-    return result    
+    return result 
   #
   #
   def computeNode ( self ) :
-    print '>> RIBNode (%s).computeNode' % self.label
+    print '>> RIBCodeNode (%s).computeNode' % self.label
     #
     # inside code, imageName value can be assigned from different  
     # input parameters
     #
     self.execParamCode ()
     
-    self.ribName = app_global_vars[ 'TempPath' ] + '/' + self.getInstanceName() + '.rib'
     
-    ribCode = self.parseLocalVars ( self.code )    
-    ribCode = self.parseGlobalVars ( ribCode )
-    
-    print '>> RIBNode save file %s' % self.ribName
-    
-    f = open ( self.ribName, 'w+t' )
-    f.write ( ribCode )
-    f.close ()
-
-    from meShaderEd import app_renderer
-    
-    renderer = app_global_vars[ 'Renderer' ]
-    flags = app_global_vars[ 'RendererFlags' ]
-    renderCmd = [ renderer ]
-    if  flags != '' :  renderCmd.append ( flags )
-    renderCmd.append ( self.ribName )
-    
-    print '>> RIBNode renderCmd = %s' %  ' '.join( renderCmd ) 
-    
-    import subprocess, errno
-    
-    # call the process
-    try:
-    	retval = subprocess.call( renderCmd, 0, None, None )
-    except OSError, e:
-    	if e.errno != errno.EINTR:
-    		raise
-    
-    return self.ribName
   #
   #
   def parseLocalVars ( self, parsedStr ) :
-    print '-> parseLocalVars in %s' % parsedStr
+    #print '-> parseLocalVars in %s' % parsedStr
     resultStr = ''
     parserStart = 0
     parserPos = 0
