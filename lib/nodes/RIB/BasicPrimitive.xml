@@ -5,7 +5,7 @@
 	<input>
     <property name="Globals" label="Render Options" type="rib" default=""/>
     
-    <property name="Primitive" label="Primitive" type="string" provider="attribute" default="Sphere" subtype="selector" range = "Sphere:Teapot:Cylinder:Plane"/>
+    <property name="Primitive" label="Primitive" type="string" provider="attribute" default="Sphere" subtype="selector" range = "Sphere:Teapot:Cylinder:Torus:Plane"/>
     
     <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
     <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>	
@@ -39,17 +39,25 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Sphere':
   self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Sphere 1.0 -1.0 1.0 360"
   
 if self.getInputParamByName ( 'Primitive' ).value == 'Teapot': 
-  self.getInputParamByName ( 'PrimitiveCode' ).value = """Rotate 0 0 1 0
+  self.getInputParamByName ( 'PrimitiveCode' ).value = """
+      Rotate 0 0 1 0
       AttributeBegin
         Scale 0.35 0.35 0.35
         Translate -0.6 -1 0
         Rotate 120 -1 0 0
         Rotate 30 0 0 1
         Geometry \"teapot\"
-      AttributeEnd"""
+      AttributeEnd
+      """
       
 if self.getInputParamByName ( 'Primitive' ).value == 'Cylinder': 
   self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Cylinder 1 -0.5 0.5 360"
+  
+if self.getInputParamByName ( 'Primitive' ).value == 'Torus': 
+  self.getInputParamByName ( 'PrimitiveCode' ).value = """
+  Rotate 45 1 0 0
+  Torus 0.7 0.4 0.0 360 360
+  """
 
 if self.getInputParamByName ( 'Primitive' ).value == 'Plane': 
   self.getInputParamByName ( 'PrimitiveCode' ).value = 'Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]'

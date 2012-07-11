@@ -126,6 +126,8 @@ class SettingsSetup ( QtGui.QDialog ):
     
     app_global_vars[ 'TextureSearchPath' ] = sanitizeSearchPath ( textures_dir )
     app_global_vars[ 'ShaderSearchPath' ] = sanitizeSearchPath ( shaders_dir )
+    
+    createMissingDirs ( [temp_dir, lib_dir, nodes_dir, inc_dir, shaders_dir, textures_dir] )
         
     #self.emit( QtCore.SIGNAL( "accepted()" ) )
     self.done( 0 ) 
