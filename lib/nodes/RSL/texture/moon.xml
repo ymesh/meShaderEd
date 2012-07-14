@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="moon" author="Sler guys">
+<node name="moon" author="Sler guys" icon="moon.png">
 	<help>Moon surface shader.</help>
 	<input>
 		<property name="ka" type="float" default="0.5"/>		

@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="lambert" author="Alexei Puzikov">
+<node name="lambert" author="Alexei Puzikov" icon="lambert.png">
 	<help>Lambert illumination model.</help>
 	<input>
 		<property name="SurfaceColor" type="color" default="color(0,0.5,1)"	/>		

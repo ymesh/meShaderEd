@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_diff_ibi" author="mesh">
+<node name="me_diff_ibi" author="mesh" icon="me_diff_ibi.png">
 	<help>Diffuse component with IBI (Image Based Illumination)</help>
 	<input>
 	  <property name="N" type="normal" default="normal(0,0,0)" />	

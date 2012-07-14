@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_reflect_noise" author="mesh">
+<node name="me_reflect_noise" author="mesh" icon="me_reflect_noise.png">
 	<help>Specularity with randomly perturbing the specular reflections</help>
 	<input>
 	  <property name="Nf" type="normal" default="normal(0,0,0)" />	

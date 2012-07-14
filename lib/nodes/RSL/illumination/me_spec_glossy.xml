@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<node name="me_spec_glossy" author="mesh">
+<node name="me_spec_glossy" author="mesh" icon="me_spec_glossy.png">
 	<help>Specularity with close falloff for a wet apearance</help>
 	<input>
 	  <property name="N" type="normal" default="normal(0,0,0)" />	
 		<property name="category" type="string" default=""/>
 		<property name="specColor" type="color" default="color( 1, 1, 1 )"/>
 		<property name="Ks" type="float" default="1.0"/>
-		<property name="roughness" type="float" default="0.2"/>
+		<property name="roughness" type="float" default="0.05"/>
 		<property name="sharpness" type="float" default="0.5"/>
 	</input>
 	<output>

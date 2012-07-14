@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_ImageFileF" label="ImageFileF" author="mesh">
+<node name="me_ImageFileF" label="ImageFileF" author="mesh" icon="ImageFileF.png">
 	<help>Float image file</help>
 	
 	<input>

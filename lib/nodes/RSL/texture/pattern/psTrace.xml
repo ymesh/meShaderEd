@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<node name="psTrace" author="mesh">
-	<help></help>
+<node name="psTrace" author="Kevin Bjorke?" icon="psTrace.png">
+	<help>RenderMan Normals Shader</help>
 	<output>
 	  <property name="out" type="color" default="color(0,0,0)"/>
 	</output>

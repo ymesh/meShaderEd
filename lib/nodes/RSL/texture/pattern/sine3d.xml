@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="sine3d" author="Malcolm Kesson" type="rsl_code">
+<node name="sine3d" author="Malcolm Kesson" type="rsl_code" icon="sine3d.png">
 	<help>A 3D Sinusoidal Texture (http://www.fundza.com)</help>
 	<input>
 	  <property name="space" type="string" detail="uniform" default="object"/>

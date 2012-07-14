@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="IDgloop" type="rsl_code" author="Ivan DeWolf">
+<node name="IDgloop" type="rsl_code" author="Ivan DeWolf" icon="IDgloop.png">
 	<help>IDgloop displacement shader demostrating non-linear displacement in PRMan</help>
 	<input>
 		<property name="P" type="point" default="point (0.0, 0.0, 0.0)" />

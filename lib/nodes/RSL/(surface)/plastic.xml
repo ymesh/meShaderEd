@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="plastic" author="Libero Spagnolini">
+<node name="plastic" author="Libero Spagnolini" icon="plastic.png">
 	<help>Standard plastic illumination.</help>
 	<input>
 		<property name="inColor" type="color" default="color(1.0, 1.0, 1.0)"	/>		

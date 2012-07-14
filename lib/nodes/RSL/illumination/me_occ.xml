@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_occlusion" label="occlusion" author="mesh">
+<node name="me_occlusion" label="occlusion" author="mesh" icon="occlusion.png">
 	<help>Occlusion function with most supporting parameters (including specific for 3Delight, Pixie and Air ) </help>
 	<input>
 	  <property name="N" type="normal" default="normal(0,0,0)" />		

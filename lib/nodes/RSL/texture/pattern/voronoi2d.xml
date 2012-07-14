@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="voronoi2d" author="Sler guys">
+<node name="voronoi2d" author="Sler guys" icon="voronoi2d.png">
 	<help>Standard voronoi 2D.</help>
 	<input>
 		<property name="freq" type="float" default="20.0" />

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<node name="me_spec_sparks" author="mesh">
+<node name="me_spec_sparks" author="mesh" icon="me_spec_sparks.png">
 	<help>Specularity with Snow sparks effect</help>
 	<input>
 	  <property name="Nf" type="normal" default="normal(0,0,0)" />	
 		<property name="category" type="string" default=""/>
 		
-		<property name="Ks" type="float" default="1.0"/>
-		<property name="roughness" type="float" default="0.2"/>
+		<property name="Ks" type="float" default="10.0"/>
+		<property name="roughness" type="float" default="0.3"/>
 		
 		<property name="repeat_s" type="float" default="1000"/>
 		<property name="repeat_t" type="float" default="1000"/>

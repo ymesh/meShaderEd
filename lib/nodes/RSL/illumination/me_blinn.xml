@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 
-<node name="me_blinn" author="mesh">
+<node name="me_blinn" author="mesh" icon="me_blinn.png">
 	<help>Blinn specular function</help>
 	<input>
 	  <property name="N" type="normal" default="normal(0,0,0)" />	
 		<property name="category" type="string" default=""/>
 		<property name="specColor" type="color" default="color( 1, 1, 1 )"/>
 		<property name="Ks" type="float" default="1.0" subtype="slider" range="0 1 0.01"/>
-		<property name="eccentricity" type="float" default="0.3" subtype="slider" range="0 1 0.01"/>
-		<property name="specularRollOff" type="float" default="0.7" subtype="slider" range="0 1 0.01"/>
+		<property name="eccentricity" type="float" default="0.5" subtype="slider" range="0 1 0.01"/>
+		<property name="specularRollOff" type="float" default="0.3" subtype="slider" range="0 1 0.01"/>
 		<property name="reflectivity" type="float" default="1.0" subtype="slider" range="0 1 0.01"/>
 	</input>
 	<output>

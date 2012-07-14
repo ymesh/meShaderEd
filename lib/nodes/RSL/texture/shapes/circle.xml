@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="Circle" author="mesh">
+<node name="Circle" author="mesh" icon="Circle.png">
 	<help>Generator of circle shape</help>
 	<input>
 		<property name="FillType" label="Fill Type" type="float" detail="uniform" default="0" subtype="selector" range="Solid:Lineriar:Hemisphere"/>

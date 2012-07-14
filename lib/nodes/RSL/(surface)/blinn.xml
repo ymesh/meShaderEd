@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="blinn" author="Alexei Puzikov">
+<node name="blinn" author="Alexei Puzikov" icon="blinn.png">
 	<help>Blinn illumination model.</help>
 	<input>
 		<property name="SurfaceColor" type="color" default="color(0,0.5,1)"	/>		

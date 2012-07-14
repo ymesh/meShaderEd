@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="IDbubbly" type="rsl_code" author="Ivan DeWolf">
+<node name="IDbubbly" type="rsl_code" author="Ivan DeWolf" icon="IDbubbly.png">
 	<help>bubbly.sl written a while ago by Ivan DeWolf ivan@martian-tools.com
     		basicly it is F1 squared as described in a cellular texture basis function
     		by Steven Worley in the siggraph proceedings from 1996, except this uses a noised grid of cells

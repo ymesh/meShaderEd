@@ -89,6 +89,7 @@ class NodeLibrary (): # QtCore.QObject
           nodeName = node.attributes().namedItem('name').nodeValue()
           nodeType = node.attributes().namedItem('type').nodeValue()
           nodeAuthor = node.attributes().namedItem('author').nodeValue()
+          nodeIcon = node.attributes().namedItem('icon').nodeValue()
           nodeHelp = ''
           help_tag = node.namedItem ('help')
           if not help_tag.isNull() : nodeHelp = help_tag.toElement().text()
@@ -100,6 +101,7 @@ class NodeLibrary (): # QtCore.QObject
           item.setData( QVariant( nodeType ), QtCore.Qt.UserRole + 2 )
           item.setData( QVariant( nodeHelp ), QtCore.Qt.UserRole + 3 )
           item.setData( QVariant( nodeFilename ), QtCore.Qt.UserRole + 4 )
+          item.setData( QVariant( nodeIcon ), QtCore.Qt.UserRole + 5 )
           
           if node.nodeName() == 'nodenet' :
             # set Blue color for nodenet items

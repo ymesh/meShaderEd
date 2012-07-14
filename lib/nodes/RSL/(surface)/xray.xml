@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="xray" author="Simon Bunker">
+<node name="xray" author="Simon Bunker" icon="xray.png">
 	<help>Simple xray surface shader; assign it to Oi.</help>
 	<input>
 		<property name="edgefalloff" type="float" default="1"/>				

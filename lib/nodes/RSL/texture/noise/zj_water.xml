@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="zj_water" author="zj">
+<node name="zj_water" author="zj" icon="zj_water.png">
 	<help>Turbulence waves on water.</help>
 	<include>
 		<file name="filterwidth.h"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="grid" author="Alexei Puzikov">
+<node name="grid" author="Alexei Puzikov" icon="grid.png">
 	<help>Experimental grid shader.</help>
 	<input>
 		<property name="freq" type="float" default="20"/>

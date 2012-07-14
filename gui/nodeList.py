@@ -74,7 +74,7 @@ class NodeList ( QtGui.QWidget ):
   #      
   #    
   def doubleClicked ( self, index ):
-    item = self.nodesLib.model.itemFromIndex(index)
+    item = self.nodesLib.model.itemFromIndex ( index )
     nodeKind = item.whatsThis()
     if nodeKind != 'folder' :
       nodeFilename = item.data( QtCore.Qt.UserRole + 4 ).toString()
@@ -88,11 +88,19 @@ class NodeList ( QtGui.QWidget ):
     nodeType = item.data( QtCore.Qt.UserRole + 2 ).toString()
     nodeHelp = item.data( QtCore.Qt.UserRole + 3 ).toString()
     nodeFilename = item.data( QtCore.Qt.UserRole + 4 ).toString()
+    nodeIcon = item.data( QtCore.Qt.UserRole + 5 ).toString()
     
     self.ui.infoText.clear()
     
+    description = ''
+    
     if ( nodeKind != "folder" ):
-      description = "<table>"
+      if nodeIcon !='' :
+        iconFileName = os.path.join ( os.path.dirname( str( nodeFilename ) ), str( nodeIcon ) ) 
+        print str( iconFileName )
+        description += '<img src="' + iconFileName + '" />'  # width="128" height="128"
+
+      description += "<table>"
       #description += "<tr>"
       #description += "<td align=right>name:</td>"
       #description += "<td><b>" + nodeName + "</b></td>"

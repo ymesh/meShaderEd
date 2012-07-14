@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="Threads" author="mesh">
+<node name="Threads" author="Pixar" icon="Threads.png">
 	<help>threads, based on example from RenderMan Companion book</help>
 	<input>
 		

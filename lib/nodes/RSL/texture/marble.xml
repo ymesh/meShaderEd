@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="marble" author="Sler guys">
+<node name="marble" author="Sler guys" icon="marble.png">
 	<help>Marble semi fractal shader.</help>
 	<input>
 		<property name="inColor1" type="color" default="color(0.8, 0.2, 0.05)" />

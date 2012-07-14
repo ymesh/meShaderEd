@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="BrownianF" author="Larry Gritz">
+<node name="BrownianF" author="Larry Gritz" icon="BrownianF.png">
 	<help>Float Fractal function.</help>
 	<input>
 		<property name="baseFreq" type="float" default="1" detail="uniform" 

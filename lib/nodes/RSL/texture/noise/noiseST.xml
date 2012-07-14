@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="noiseST" author="Libero Spagnolini">
+<node name="noiseST" author="Libero Spagnolini" icon="noiseST.png">
 	<help>Simple noise driven by texture coords.</help>
 	<input>
 		<property name="s" type="float" default="0.0" />

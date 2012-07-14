@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<node name="me_spec_ibi" author="mesh">
+<node name="me_spec_ibi" author="mesh" icon="me_spec_ibi.png">
 	<help>Specular component with IBI (Image Based Illumination)</help>
 	<input>
 	  <property name="N" type="normal" default="normal(0,0,0)" />		
 		<property name="category" type="string" default="environment"/>
 		<property name="rBlur" type="float" default="0" subtype="slider" range="0 1 0.01"/>
-		<property name="KrMin" type="float" default="0" subtype="slider" range="0 1 0.01"/>
-		<property name="KrMax" type="float" default="0.25" subtype="slider" range="0 1 0.01"/>
+		<property name="KrMin" type="float" default="0.2" subtype="slider" range="0 1 0.01"/>
+		<property name="KrMax" type="float" default="0.75" subtype="slider" range="0 1 0.01"/>
 		<property name="IOR" type="float" default="1.5" subtype="slider" range="0 5 0.01"/>
 	</input>
 	<output>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_ImageFileC" label="ImageFileC" author="mesh">
+<node name="me_ImageFileC" label="ImageFileC" author="mesh" icon="ImageFileC.png">
 	<help>Color image file with alpha</help>
 	
 	<input>

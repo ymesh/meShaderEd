@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="JBUMcraters" type="rsl_code" author="Jim Bumgardner">
+<node name="JBUMcraters" type="rsl_code" author="Jim Bumgardner" icon="JBUMcraters.png">
 	<help>Lunar-like surface - Jim Bumgardner jbum@SpamSucks_jbum.com
 			  Voronoi/Worley noise is combined using 1/f scaling to put craters on a surface.
 			  Similar tricks can be used to make cork, swiss-cheese, bread, etc.</help>

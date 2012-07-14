@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_occ_ptc" author="mesh">
+<node name="me_occ_ptc" author="mesh" icon="occlusion.png">
 	<help>Point based occlussion</help>
 	<input>
 	  <property name="N" type="normal" default="normal(0,0,0)" />		

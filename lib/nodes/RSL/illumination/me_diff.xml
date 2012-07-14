@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_diff" author="mesh">
+<node name="me_diff" author="mesh" icon="me_diff.png">
 	<help>Diffuse function with extra controls</help>
 	<input>
 	  <property name="N" type="normal" default="normal(0,0,0)" />	

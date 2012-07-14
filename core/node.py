@@ -30,6 +30,7 @@ class Node ( QtCore.QObject ):
     
     self.author = None
     self.help = None
+    self.icon = None
     
     self.master = None
     
@@ -212,6 +213,8 @@ class Node ( QtCore.QObject ):
       self.help = help_tag.toElement().text()
       #print '-> help= %s' % self.help
       
+    self.icon = str ( xml_node.attributes().namedItem( 'icon' ).nodeValue() )   
+      
     from core.nodeParam import *
     
     createParamTable = {   'float':FloatNodeParam
@@ -306,6 +309,7 @@ class Node ( QtCore.QObject ):
     if self.label != None : xml_node.setAttribute ( 'label', self.label )
     if self.type != None : xml_node.setAttribute ( 'type', self.type )
     if self.author != None : xml_node.setAttribute ( 'author', self.author )
+    if self.icon != None : xml_node.setAttribute ( 'icon', self.icon )
     
     if self.help != None :
       # append node help (short description)      

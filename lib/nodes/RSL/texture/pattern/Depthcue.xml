@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="Depthcue" author="mesh">
+<node name="Depthcue" author="mesh" icon="Depthcue.png">
 	<help></help>
 	<input>
 		<property name="exponent" type="float" default="1" subtype="switch">

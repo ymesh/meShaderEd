@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="Wipe" author="mesh">
+<node name="Wipe" author="mesh" icon="Wipe.png">
 	<help></help>
 	<input>
 		<property name="input" type="float" default="1">

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="Waves1D_cellnoise" author="Pixar">
+<node name="Waves1D_cellnoise" author="Pixar" icon="Waves1D_cellnoise.png">
 	<help>Generates one-dimensional wave-like patterns.  Patterns
 		ranging from linear to circular can be obtained through the use
 		of the Domain parameter.</help>

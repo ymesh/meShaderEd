@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_specular" author="mesh">
+<node name="me_specular" author="mesh" icon="me_specular.png">
 	<help>Specular function (Plastic model)</help>
 	<input>
 	  <property name="N" type="normal" default="normal(0,0,0)" />	

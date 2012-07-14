@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="texture" author="Libero Spagnolini">
+<node name="texture" author="Libero Spagnolini" icon="ImageFileC.png">
 	<help>Loads file texture, given projection and space</help>
 	<include>
 		<file name="project.h"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="FractalV" author="Pixar">
+<node name="FractalV" author="Pixar" icon="FractalV.png">
 	<help>Vector Fractal function.</help>
 	<input>
 		<property name="Layers" type="float" default="6" subtype="slider" range="1 8 1">

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="FacingForward" author="Pixar">
+<node name="FacingForward" author="Pixar" icon="FacingForward.png">
 	<help>A function that computes the degree to which
 the normal of a surface faces the camera.  You can
 use this function to fade the opacity of objects

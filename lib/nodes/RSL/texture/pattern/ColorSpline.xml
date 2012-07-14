@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="ColorSpline" author="mesh">
+<node name="ColorSpline" author="mesh" icon="ColorSpline.png">
 	<help>
 Spline fits a spline to the control points given.  
 At least four control points must always be given.  

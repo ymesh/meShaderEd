@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="toon" author="Fredrik Gustafsson">
+<node name="toon" author="Fredrik Gustafsson" icon="toon.png">
 	<help>Toon Antialising Shader.</help>
 	<input>
 		<property name="Ka" type="float" default="0.25" />

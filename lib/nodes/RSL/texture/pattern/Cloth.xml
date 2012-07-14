@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<node name="Cloth" author="mesh">
-	<help></help>
+<node name="Cloth" author="Alexander Krasovsky" icon="Cloth.png">
+	<help>Mimics Maya cloth node.</help>
 	<input>
 		<property name="freq" type="float" default="4"/>
 		<property name="thickness" type="float" default="0.4"/>

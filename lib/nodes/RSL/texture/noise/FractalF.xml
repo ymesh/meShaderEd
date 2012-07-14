@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="FractalF" author="Pixar">
+<node name="FractalF" author="Pixar" icon="FractalF.png">
 	<help>Float Fractal function.</help>
 	<input>
 		<property name="Layers" type="float" default="6" subtype="slider" range="1 8 1">

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="turbulence" author="Sler guys">
+<node name="turbulence" author="Sler guys" icon="turbulence.png">
 	<help>Turbulence shader.</help>
 	<include>
 		<file name="filterwidth.h"/>
