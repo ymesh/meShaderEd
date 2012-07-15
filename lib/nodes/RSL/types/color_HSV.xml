@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<node name="color_HSV" type="rsl_code" author="mesh">
+	<help>Simple color builder in HSV space.</help>
+	<input>
+		<property name="h" label="Hue" type="float" default="1.0" subtype="slider" range="0 1 0.001"/>
+		<property name="s" label="Saturation" type="float" default="1.0" subtype="slider" range="0 1 0.001"/>
+		<property name="v" label="Value" type="float" default="1.0" subtype="slider" range="0 1 0.001"/>
+	</input>
+	<output>
+		<property name="result" type="color"/>
+	</output>
+	<code><![CDATA[
+	  $(result) = color "hsv" ( $(h), $(s), $(v) );
+	]]>
+	</code>		
+</node>

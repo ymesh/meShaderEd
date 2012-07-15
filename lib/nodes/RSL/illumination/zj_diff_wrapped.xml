@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<node name="zj_diff_wrapped" author="zj" icon="zj_diff_wrapped.png">
+	<help>'One shortcoming of the traditional lighting model is:
+    	diffuse falloff too fast. Wrapped Diffuse Lighting model gave the light the ability
+    	 to reach beyond the 90 degree point on the surface of objects, producing softened 
+    	 light, as if simulating an area light. A few of directional lights is sufficient.
+    	 Here is the float function used to vary a colorSpline according to the wrapped diffuse.'said zj, July 26,2002.</help>
+	<input>
+	  <property name="N" type="normal" default="normal(0,0,0)" />	
+		<property name="category" type="string" default="">
+		<help>Leave it blank for sampling ALL incoming lights. Otherwise only lights with specified category will contribute to this function.</help>
+		</property>
+		<property name="Kw" label="Wrapped Angle" type="float" default="1.0" subtype="slider" range="0.5 1 0.01">
+		<help>The highest angle/PI of point reached</help>
+		</property>
+		<property name="atten" label="Attenuation"type="float" default="1.0" subtype="slider" range="0 2 0.01">
+		<help></help>
+		</property>
+	</input>
+	<output>
+		<property name="result" type="color" default="color ( 0, 0, 0 )"/>	
+	</output>
+	<include>
+	</include>
+	<internal>
+	  <variable name="ang"/>
+	</internal>
+	<code>
+  <![CDATA[
+	float $(ang) = 0;
+	       
+  illuminance ( $(category), P, $(N), PI ) 
+  {
+    extern vector L;
+    vector Ln = normalize ( L );
+    $(ang) = acos ( Ln.$(N) );
+  }
+  $(result) = pow ( max ( ( 1 - $(ang) / ( PI * $(Kw) ) ), 0 ), $(atten) );
+			
+  ]]>
+	</code>	
+</node>
