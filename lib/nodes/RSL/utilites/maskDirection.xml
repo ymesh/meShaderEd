@@ -1,0 +1,56 @@
+<?xml version="1.0"?> 
+
+<node name="maskDirection" author="mesh" type="rsl_code" icon="maskDirection.png">
+	<help>Generate mask for arbitrary direction</help>
+	<input>
+		<property name="direction" type="vector" default="vector(0,0,1)" >
+	  <help></help>
+	  </property>	
+		
+		<property name="sys" label="Coord. System" type="string" detail="uniform" default="object">
+		<help></help>
+		</property>
+		
+		<property name="Min" label="Minimum" type="float" default="0" subtype="slider" range="0 1 0.001"/>
+		<property name="Fuz" label="Fuziness" type="float" default="0.2" subtype="slider" range="0 1 0.001"/>
+		
+		<property name="Abs" type="float" detail="uniform" default="0" subtype="switch">
+		<help>Takes the absolute value of result. This means that surfaces that face away from the camera will be treated as though they face toward it.</help>
+		</property>
+		
+		<property name="invert" type="float" detail="uniform" default="0" subtype="switch">
+		<help></help>
+		</property>
+	</input>
+	<internal>
+		<variable name="outdir"/>
+		<variable name="NN"/>	
+	</internal>
+	<output>
+		<property name="result" type="float" />		
+	</output>
+	<code>
+	<![CDATA[
+	 
+    normal $(NN) = normalize ( N ); 
+    vector $(outdir);
+    
+    if ( $(sys) == "" || $(sys) == "current" ) 
+      $(outdir) = $(direction); 
+    else
+      $(outdir) = vtransform ( $(sys), "current", $(direction) ); 
+      
+    $(result) = normalize( $(outdir) ).$(NN);
+    
+    if ( $(Abs) != 0 )
+      $(result) = abs ( $(result) ); 
+    
+    
+    $(result) = smoothstep ( $(Min), $(Min) + $(Fuz), $(result) );
+    
+    if ( $(invert) != 0 ) 
+   	 $(result) = 1 - $(result);   
+    
+	  ]]>
+	</code>		
+</node>

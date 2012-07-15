@@ -1,0 +1,141 @@
+<?xml version="1.0"?> 
+
+<node name="Curvature" author="mesh" type="rsl_code" icon="Curvature.png">
+	<help>Calculates different types of curvature.</help>
+	<input>
+	  <property name="CurvatureType" type="float" detail="uniform" default="0" subtype="selector" range="gaussian:mean:min:max:ku:kv"/>
+		<property name="Min" label="Minimum" type="float" default="-10" subtype="slider" range="-200 0 0.1"/>
+		<property name="Max" label="Maximum" type="float" default="10" subtype="slider" range="0 200 0.1"/>
+	</input>
+	<internal>
+	  <variable name="CALC_K1K2"/>  
+		<variable name="CalcQuadEquation"/>
+		<variable name="Calck"/>
+		<variable name="CalcColor"/>
+		<variable name="Nf"/>
+		<variable name="NN"/>
+		<variable name="V"/>
+		<variable name="Puu"/>
+		<variable name="Puv"/>
+		<variable name="Pvv"/>
+		<variable name="k"/>
+		<variable name="k1"/>
+		<variable name="k2"/>
+		<variable name="Ct"/>
+		<variable name="G"/>
+		<variable name="M"/>
+	</internal>
+	<output>
+		<property name="result" type="float" />		
+	</output>
+	<code>
+	<![CDATA[
+	
+  #define $(CALC_K1K2)() \
+       $(CalcQuadEquation)( ((dPdu.dPdu)*(dPdv.dPdv) - pow(dPdu.dPdv, 2)), \
+                         -((dPdu.dPdu)*($(Pvv).$(NN))+(dPdv.dPdv)*($(Puu).$(NN))    \
+                           - 2*(dPdu.dPdv)*($(Puv).$(NN))),                   \
+                         (($(Puu).$(NN))*($(Pvv).$(NN)) - pow($(Puv).$(NN), 2)), \
+                         $(k1),$(k2) )
+
+		void $(CalcQuadEquation) ( float a; float b; float c; output float r1; output float r2 )
+		{
+		   float q;
+
+		   q = b*b - 4*a*c;
+		   if ( q < 0 )
+		   {
+		      r1 = 0;
+		      r2 = 0;
+		   }
+		   else
+		   {
+		      q = -0.5*( b + sign(b) * sqrt(q));
+		      r1 = q / a;
+		      r2 = c / q;
+		   }
+		}
+    
+    float $(Calck) ( vector Q1; vector Q2 )
+    {
+       return length((Q1^Q2)/pow(length(Q1),3));
+    }
+		
+		float $(CalcColor) ( float min; float max; float index )
+		{
+		   float  line;
+
+		   line = clamp( index, min, max );
+		   line = (line-min)/(max-min);
+
+		   return line;
+		}
+		 
+    vector  $(Puu), $(Puv), $(Pvv);
+    float   $(k), $(k1), $(k2);
+    float   $(Ct);
+    float   $(G), $(M);
+
+    normal $(NN) = normalize(N);
+    normal $(Nf) = faceforward( $(NN), I );
+    vector $(V) = -normalize(I);
+		 
+   if ( $(CurvatureType) == 0 ) 
+   {
+		 	$(Puu) = Du ( dPdu );
+		 	$(Puv) = Du ( dPdv );
+		 	$(Pvv) = Dv ( dPdv );
+		 	$(k) = ( ( $(Puu).$(NN) ) * ( $(Pvv).$(NN) ) - pow ( $(Puv).$(NN), 2) ) / ( ( dPdu.dPdu ) * ( dPdv.dPdv ) - pow ( dPdu.dPdv, 2) );
+
+		 	$(Ct) = $(CalcColor) ( $(Min), $(Max), $(k) );
+   }
+   else if ( $(CurvatureType) == 1 )
+   {
+ 			$(Puu) = Du ( dPdu );
+ 			$(Puv) = Du ( dPdv );
+ 			$(Pvv) = Dv ( dPdv );
+ 			$(k) = ( ( dPdu.dPdu ) * ( $(Pvv).$(NN) ) + ( dPdv.dPdv ) * ( $(Puu).$(NN) ) - 2 * ( dPdu.dPdv ) * ( $(Puv).$(NN) ) ) 
+ 			       / ( 2 * ( ( dPdu.dPdu ) * ( dPdv.dPdv ) -  pow ( dPdu.dPdv, 2 ) ) );
+			   
+ 			$(Ct) = $(CalcColor) ( $(Min), $(Max), $(k) );
+ 		}
+    else if ( $(CurvatureType) == 2 )
+    {
+      $(Puu) = Du ( dPdu );
+      $(Puv) = Du ( dPdv );
+      $(Pvv) = Dv ( dPdv );
+      $(CALC_K1K2)();
+      
+      $(k) = min ( $(k1), $(k2) );
+      
+      $(Ct) = $(CalcColor) ( $(Min), $(Max), $(k) );
+    }
+    else if ( $(CurvatureType) == 3 )
+    {
+      $(Puu) = Du ( dPdu );
+      $(Puv) = Du ( dPdv );
+      $(Pvv) = Dv ( dPdv );
+      $(CALC_K1K2)();
+      
+      $(k) = max ( $(k1), $(k2) );
+      
+      $(Ct) = $(CalcColor) ( $(Min), $(Max), $(k) );
+    }
+    else if ( $(CurvatureType) == 4 )
+    {
+      $(k) = $(Calck) ( dPdu, Du ( dPdu ) );
+      $(Ct) = $(CalcColor) ( $(Min), $(Max), $(k) );
+    }
+    else if ( $(CurvatureType) == 5 )
+    {
+      $(k) = $(Calck) ( dPdv, Du ( dPdv ) );
+      $(Ct) = $(CalcColor) ( $(Min), $(Max), $(k) );
+    }
+    else
+    {
+      $(Ct) = 1.0;
+    }
+		$(result) = $(Ct); 
+	  ]]>
+	</code>		
+</node>

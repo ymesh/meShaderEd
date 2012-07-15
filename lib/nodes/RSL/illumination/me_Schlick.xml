@@ -25,7 +25,7 @@
 	  vector $(V) = -normalize(I);
 
 	  color $(schlickSpec) = 0;
-	  illuminance( P, $(Nf), PI/2 )
+	  illuminance( $(category), P, $(Nf), PI/2 )
 	  {
 	    float nonspec = 0;
 	    lightsource ( "__nonspecular", nonspec );

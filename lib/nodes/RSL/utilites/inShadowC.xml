@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<node name="me_inShadowC" author="mesh">
-	<help>value of __inShadowC (Slim lightsource output variable)</help>
+<node name="inShadowC" author="mesh">
+	<help>Get value of __inShadowC (Slim lightsource output variable)</help>
 	<input>
 	  <property name="N" type="normal" default="normal(0,0,0)" />		
 		<property name="category" type="string" default=""/>

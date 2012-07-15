@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<node name="Cells" author="mesh" icon="Cells.png">
+	<help>Cells pattern</help>
+	<input>
+		<property name="frequency" type="float" default="4.0" subtype="slider" range="1 128 1"/>
+		<property name="Pt" type="point"/>	
+		<property name="duP" type="vector"/>	
+		<property name="dvP" type="vector"/>	
+	</input>
+	<output>
+		<property name="result" type="color" default="color( 0, 0, 0 )"/>	
+	</output>
+	<include>
+	  <file name="pxslUtil.h"/>
+	</include>	
+	<internal>
+	  <variable name="pp"/>
+	  <variable name="dppu"/>
+	  <variable name="dppv"/>
+	  <variable name="f"/>
+	  <variable name="f1"/>
+	  <variable name="f2"/>
+	  <variable name="f3"/>
+	  <variable name="f4"/>
+	</internal>
+	<code>
+  <![CDATA[
+  point $(pp) = $(frequency) * $(Pt);
+  vector $(dppu) = $(frequency) * $(duP);
+  vector $(dppv) = $(frequency) * $(dvP);
+  /* collect samples at four "adjacent" points */
+  float $(f1) = float cellnoise( $(pp) );
+  float $(f2) = float cellnoise( $(pp) + $(dppu) );
+  float $(f3) = float cellnoise( $(pp) + $(dppv) );
+  float $(f4) = float cellnoise( $(pp) + $(dppu) + $(dppv) );
+  float $(f) = .25 * ( $(f1) + $(f2) + $(f3) + $(f4) );
+  $(result) = fadeout( $(f), .5, 1, pxslFilterWidth( $(duP), $(dvP) ) );
+  ]]>
+	</code>	
+</node>

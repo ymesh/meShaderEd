@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<node name="Sine" author="mesh" icon="Sine.png">
+	<help>Sinus wave Generator</help>
+	<input>
+		<property name="frequency" type="float" default="2.0" subtype="slider" range="0 64 0.01"/>
+		<property name="sOffset" type="float" default="0.0" subtype="slider" range="-1 1 0.001"/>
+		<property name="tOffset" type="float" default="0.0" subtype="slider" range="-0.5 0.5 0.001"/>
+		<property name="mult" type="float" default="0.25" subtype="slider" range="0 0.5 0.001"/>
+		
+		<property name="noise" type="float" detail="uniform" default="0" subtype="slider" range="-1 1 0.001"/>
+		
+		<property name="filter" type="string" detail="uniform" default="box" subtype="selector" range="box:triangle:catmull-rom:gaussian"/>
+		<property name="fwidth" type="float" detail="uniform" default="1.0" subtype="slider" range="0 4 0.1"/>
+		<property name="fuzziness" type="float" default="0.0" subtype="slider" range="0 1 0.1"/>
+		
+		<property name="Invert" type="float" detail="uniform" default="0" subtype="switch"/>
+		
+		<property name="Pt" type="point"/>	
+		<property name="duP" type="vector"/>	
+		<property name="dvP" type="vector"/>	
+	</input>
+	<output>
+		<property name="result" type="color" default="color( 0, 0, 0 )"/>	
+	</output>
+	<include>
+	</include>	
+	<internal>
+	  <variable name="x"/>
+	  <variable name="y"/>
+	  <variable name="xx"/>
+	  <variable name="yy"/>
+	  <variable name="dr"/>
+	  <variable name="sinus"/>
+	</internal>
+	<code>
+  <![CDATA[
+      	
+  float $(x) = xcomp( $(Pt) ) * 2 * PI * $(frequency) - PI * $(sOffset);
+  float $(y) = ycomp( $(Pt) ) + 0.5 - 1;
+  
+  float $(xx) = xcomp( $(duP) ) + xcomp( $(dvP) );
+  float $(yy) = ycomp( $(duP) ) + ycomp( $(dvP) );
+  
+  float $(dr) = max ( .5 * $(fuzziness), sqrt ( $(xx)*$(xx) + $(yy)*$(yy) ) );
+  	
+  float $(sinus) = $(mult) * sin( $(x) ) + ( ( $(noise) != 0 )? ( $(noise) * noise( $(x) ) ) : 0 );
+  
+  $(result) = filterstep( $(sinus), $(y) + $(tOffset), $(y) + $(tOffset) + $(dr), "filter", $(filter), "width", $(fwidth) );
+  
+  if( $(Invert) != 0 )
+    $(result) = 1 - $(result);   
+  
+  ]]>
+	</code>	
+</node>
