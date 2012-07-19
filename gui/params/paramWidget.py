@@ -51,9 +51,10 @@ class ParamWidget ( QtGui.QWidget ) :
     self.hl.setSpacing ( UI.SPACING )
     self.hl.setMargin ( 0 )
     self.hl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
-    
-    if not self.gfxNode.node.type in ['rib','image']:
-    
+    #
+    # add 'isShaderParam' check box only for RSL nodes
+    #
+    if not self.gfxNode.node.type in ['rib', 'rib_code', 'image']:
       if self.param.provider != 'attribute' :
       
         self.check = QtGui.QCheckBox( self )

@@ -1,0 +1,387 @@
+#!version 2.2.6
+light
+#!parameters:
+uniform	float	intensity	=	1
+uniform	color	lightcolor	=	1
+uniform	float	coneangle
+uniform	float	penumbraangle
+uniform	float	dropoff	=	0
+uniform	float	decay	=	0
+uniform	float	barndoors	=	0
+uniform	float	leftbarndoor	=	10
+uniform	float	rightbarndoor	=	10
+uniform	float	topbarndoor	=	10
+uniform	float	bottombarndoor	=	10
+uniform	float	decayRegions	=	0
+uniform	float	startDistance1	=	1.0
+uniform	float	endDistance1	=	2.0
+uniform	float	startDistance2	=	3.0
+uniform	float	endDistance2	=	6.0
+uniform	float	startDistance3	=	8.0
+uniform	float	endDistance3	=	10.0
+uniform	float	startDistanceIntensity1	=	1.0
+uniform	float	endDistanceIntensity1	=	1.0
+uniform	float	startDistanceIntensity2	=	1.0
+uniform	float	endDistanceIntensity2	=	1.0
+uniform	float	startDistanceIntensity3	=	1.0
+uniform	float	endDistanceIntensity3	=	1.0
+uniform	string	shadowname	=	""
+uniform	float	shadowbias	=	0.01
+uniform	float	shadowblur	=	0.0
+uniform	float	shadowsamples	=	32
+uniform	float	shadowfiltersize	=	1
+uniform	color	shadowcolor	=	0
+varying	color	shadowcolorSurf	=	0
+uniform	float	shadowcolorMix
+uniform	float	lightID	=	0
+uniform	string	__category	=	""
+output	varying	color	__shadowC	=	0
+output	varying	float	__shadowF	=	0
+output	varying	float	__barn	=	0
+output	varying	color	__unshadowed_Cl	=	0
+output	uniform	float	__nondiffuse	=	0
+output	uniform	float	__nonspecular	=	0
+#!variables:
+varying	float	atten
+varying	float	cosangle
+uniform	float	cosoutside
+uniform	float	cosinside
+uniform	float	angle
+uniform	float	lbn
+uniform	float	rbn
+uniform	float	tbn
+uniform	float	bbn
+uniform	float	penumbraRatio
+varying	vector	Pshad
+varying	float	Pz
+varying	float	Pz_width
+varying	vector	finalShadowColor
+varying	float	temporary_0
+uniform	float	temporary_1
+uniform	float	temporary_2
+uniform	float	temporary_3
+varying	float	temporary_4
+varying	float	temporary_5
+varying	float	temporary_6
+varying	float	temporary_7
+varying	float	temporary_8
+varying	vector	temporary_9
+uniform	vector	temporary_10
+uniform	vector	temporary_11
+varying	vector	temporary_12
+varying	float	distance
+varying	float	pwc
+varying	vector	temporary_13
+varying	float	temporary_14
+varying	float	region
+varying	float	mask
+varying	float	temporary_15
+varying	float	temporary_16
+varying	vector	PP
+varying	float	x
+varying	float	y
+varying	float	pwx
+varying	float	pwy
+varying	float	temporary_17
+varying	float	temporary_18
+varying	float	temporary_19
+uniform	float	shadowsize[2]
+uniform	float	temporary_20
+#!Init:
+	radians	("f=f")  coneangle  40 
+	radians	("f=f")  penumbraangle  0 
+	negf              	shadowcolorMix 1
+	return            
+#!Code:
+	vufloat            atten 0
+	vufloat            cosangle 0
+	flt               	temporary_1 penumbraangle 0
+	vufloat            temporary_0 temporary_1
+	if                	temporary_0 #!Label25
+	moveff            	angle coneangle
+	cos	("f=f")  cosoutside  coneangle 
+	addff             	temporary_1 coneangle penumbraangle
+	cos	("f=f")  cosinside  temporary_1 
+#!Label25:
+	else              	#!Label24
+	addff             	angle coneangle penumbraangle
+	cos	("f=f")  cosoutside  angle 
+	cos	("f=f")  cosinside  coneangle 
+#!Label24:
+	endif             
+	vufloat            __barn 1.0
+	fneql             	temporary_1 barndoors 0
+	vufloat            temporary_0 temporary_1
+	if                	temporary_0 #!Label26
+	divff             	temporary_1 leftbarndoor angle
+	negf              	lbn temporary_1
+	divff             	rbn rightbarndoor angle
+	divff             	tbn topbarndoor angle
+	divff             	temporary_1 bottombarndoor angle
+	negf              	bbn temporary_1
+	divff             	temporary_1 penumbraangle angle
+	mulff             	penumbraRatio temporary_1 0.5
+#!Label26:
+	endif             
+	fneql             	temporary_2 decayRegions 0
+	fneql             	temporary_3 barndoors 0
+	or                	temporary_1 temporary_2 temporary_3
+	vufloat            temporary_0 temporary_1
+	if                	temporary_0 #!Label28
+	transform	("p=Sp")  Pshad  "shader"  Ps 
+	zcomp	("f=p")  Pz  Pshad 
+	Du	("f=f")  temporary_7  Pz 
+	mulff             	temporary_6 temporary_7 du
+	abs	("f=f")  temporary_5  temporary_6 
+	Dv	("f=f")  temporary_8  Pz 
+	mulff             	temporary_7 temporary_8 dv
+	abs	("f=f")  temporary_6  temporary_7 
+	addff             	temporary_4 temporary_5 temporary_6
+	vufloat            temporary_5 1.0e-6
+	max	("f=ff")  Pz_width  temporary_4  temporary_5 
+#!Label28:
+	endif             
+	vuvector           finalShadowColor shadowcolor
+	negf              	temporary_2 1
+	fneql             	temporary_1 shadowcolorMix temporary_2
+	vufloat            temporary_0 temporary_1
+	if                	temporary_0 #!Label30
+	vuvector           temporary_9 shadowcolor
+	vufloat            temporary_4 shadowcolorMix
+	mix	("v=vvf")  finalShadowColor  temporary_9  shadowcolorSurf  temporary_4 
+#!Label30:
+	endif             
+	vfromf            	temporary_11 0 0 0
+	pfrom             	temporary_10 "shader" temporary_11
+	vuvector           temporary_9 temporary_10
+	vfromf            	temporary_11 0 0 1
+	vfrom             	temporary_10 "shader" temporary_11
+	vuvector           temporary_12 temporary_10
+	vufloat            temporary_0 angle
+	illuminate        	 temporary_9  temporary_12  temporary_0  #!Label32
+	length	("f=v")  distance  L 
+	vfromf            	temporary_11 0 0 1
+	vfrom             	temporary_10 "shader" temporary_11
+	vuvector           temporary_13 temporary_10
+	dot               	temporary_4 L temporary_13
+	divff             	cosangle temporary_4 distance
+	Du	("f=f")  temporary_7  cosangle 
+	mulff             	temporary_6 temporary_7 du
+	abs	("f=f")  temporary_5  temporary_6 
+	Dv	("f=f")  temporary_8  cosangle 
+	mulff             	temporary_7 temporary_8 dv
+	abs	("f=f")  temporary_6  temporary_7 
+	addff             	temporary_4 temporary_5 temporary_6
+	vufloat            temporary_5 1.0e-6
+	max	("f=ff")  pwc  temporary_4  temporary_5 
+	vufloat            temporary_4 1
+	vufloat            temporary_6 decay
+	pow	("f=ff")  temporary_5  distance  temporary_6 
+	divff             	atten temporary_4 temporary_5
+	vufloat            temporary_5 dropoff
+	pow	("f=ff")  temporary_4  cosangle  temporary_5 
+	mulff             	atten atten temporary_4
+	vufloat            temporary_6 cosoutside
+	addff             	temporary_5 temporary_6 pwc
+	vufloat            temporary_7 cosinside
+	vufloat            temporary_14 2
+	mulff             	temporary_8 pwc temporary_14
+	addff             	temporary_6 temporary_7 temporary_8
+	smoothstep	("f=fff")  temporary_4  temporary_5  temporary_6  cosangle 
+	mulff             	atten atten temporary_4
+	fneql             	temporary_1 decayRegions 0
+	vufloat            temporary_4 temporary_1
+	if                	temporary_4 #!Label33
+	vufloat            region 0
+	vufloat            mask 0
+	vufloat            temporary_7 startDistance1
+	subff             	temporary_6 temporary_7 Pz_width
+	vufloat            temporary_8 startDistance1
+	addff             	temporary_7 temporary_8 Pz_width
+	smoothstep	("f=fff")  temporary_5  temporary_6  temporary_7  Pz 
+	vufloat            temporary_8 endDistance1
+	subff             	temporary_7 temporary_8 Pz_width
+	vufloat            temporary_14 endDistance1
+	addff             	temporary_8 temporary_14 Pz_width
+	smoothstep	("f=fff")  temporary_6  temporary_7  temporary_8  Pz 
+	subff             	mask temporary_5 temporary_6
+	fneql             	temporary_2 startDistanceIntensity1 1
+	fneql             	temporary_3 endDistanceIntensity1 1
+	or                	temporary_1 temporary_2 temporary_3
+	vufloat            temporary_5 temporary_1
+	if                	temporary_5 #!Label35
+	vufloat            temporary_7 startDistanceIntensity1
+	vufloat            temporary_8 endDistanceIntensity1
+	vufloat            temporary_15 startDistance1
+	vufloat            temporary_16 endDistance1
+	smoothstep	("f=fff")  temporary_14  temporary_15  temporary_16  Pz 
+	mix	("f=fff")  temporary_6  temporary_7  temporary_8  temporary_14 
+	mulff             	mask mask temporary_6
+#!Label35:
+	endif             
+	moveff            	region mask
+	vufloat            temporary_7 startDistance2
+	subff             	temporary_6 temporary_7 Pz_width
+	vufloat            temporary_8 startDistance2
+	addff             	temporary_7 temporary_8 Pz_width
+	smoothstep	("f=fff")  temporary_5  temporary_6  temporary_7  Pz 
+	vufloat            temporary_8 endDistance2
+	subff             	temporary_7 temporary_8 Pz_width
+	vufloat            temporary_14 endDistance2
+	addff             	temporary_8 temporary_14 Pz_width
+	smoothstep	("f=fff")  temporary_6  temporary_7  temporary_8  Pz 
+	subff             	mask temporary_5 temporary_6
+	fneql             	temporary_2 startDistanceIntensity2 1
+	fneql             	temporary_3 endDistanceIntensity2 1
+	or                	temporary_1 temporary_2 temporary_3
+	vufloat            temporary_5 temporary_1
+	if                	temporary_5 #!Label37
+	vufloat            temporary_7 startDistanceIntensity2
+	vufloat            temporary_8 endDistanceIntensity2
+	vufloat            temporary_15 startDistance2
+	vufloat            temporary_16 endDistance2
+	smoothstep	("f=fff")  temporary_14  temporary_15  temporary_16  Pz 
+	mix	("f=fff")  temporary_6  temporary_7  temporary_8  temporary_14 
+	mulff             	mask mask temporary_6
+#!Label37:
+	endif             
+	addff             	region region mask
+	vufloat            temporary_7 startDistance3
+	subff             	temporary_6 temporary_7 Pz_width
+	vufloat            temporary_8 startDistance3
+	addff             	temporary_7 temporary_8 Pz_width
+	smoothstep	("f=fff")  temporary_5  temporary_6  temporary_7  Pz 
+	vufloat            temporary_8 endDistance3
+	subff             	temporary_7 temporary_8 Pz_width
+	vufloat            temporary_14 endDistance3
+	addff             	temporary_8 temporary_14 Pz_width
+	smoothstep	("f=fff")  temporary_6  temporary_7  temporary_8  Pz 
+	subff             	mask temporary_5 temporary_6
+	fneql             	temporary_2 startDistanceIntensity3 1
+	fneql             	temporary_3 endDistanceIntensity3 1
+	or                	temporary_1 temporary_2 temporary_3
+	vufloat            temporary_5 temporary_1
+	if                	temporary_5 #!Label39
+	vufloat            temporary_7 startDistanceIntensity3
+	vufloat            temporary_8 endDistanceIntensity3
+	vufloat            temporary_15 startDistance3
+	vufloat            temporary_16 endDistance3
+	smoothstep	("f=fff")  temporary_14  temporary_15  temporary_16  Pz 
+	mix	("f=fff")  temporary_6  temporary_7  temporary_8  temporary_14 
+	mulff             	mask mask temporary_6
+#!Label39:
+	endif             
+	addff             	region region mask
+	mulff             	atten atten region
+#!Label33:
+	endif             
+	fneql             	temporary_1 barndoors 0
+	vufloat            temporary_4 temporary_1
+	if                	temporary_4 #!Label41
+	vfromf            	temporary_13 Pz
+	divvv             	PP Pshad temporary_13
+	xcomp	("f=p")  temporary_5  PP 
+	tan	("f=f")  temporary_1  angle 
+	vufloat            temporary_6 temporary_1
+	divff             	x temporary_5 temporary_6
+	ycomp	("f=p")  temporary_5  PP 
+	tan	("f=f")  temporary_1  angle 
+	vufloat            temporary_6 temporary_1
+	divff             	y temporary_5 temporary_6
+	Du	("f=f")  temporary_8  x 
+	mulff             	temporary_7 temporary_8 du
+	abs	("f=f")  temporary_6  temporary_7 
+	Dv	("f=f")  temporary_14  x 
+	mulff             	temporary_8 temporary_14 dv
+	abs	("f=f")  temporary_7  temporary_8 
+	addff             	temporary_5 temporary_6 temporary_7
+	vufloat            temporary_6 1.0e-6
+	max	("f=ff")  pwx  temporary_5  temporary_6 
+	Du	("f=f")  temporary_8  y 
+	mulff             	temporary_7 temporary_8 du
+	abs	("f=f")  temporary_6  temporary_7 
+	Dv	("f=f")  temporary_14  y 
+	mulff             	temporary_8 temporary_14 dv
+	abs	("f=f")  temporary_7  temporary_8 
+	addff             	temporary_5 temporary_6 temporary_7
+	vufloat            temporary_6 1.0e-6
+	max	("f=ff")  pwy  temporary_5  temporary_6 
+	vufloat            temporary_15 lbn
+	subff             	temporary_14 temporary_15 pwx
+	vufloat            temporary_15 penumbraRatio
+	subff             	temporary_8 temporary_14 temporary_15
+	vufloat            temporary_16 lbn
+	addff             	temporary_15 temporary_16 pwx
+	vufloat            temporary_16 penumbraRatio
+	addff             	temporary_14 temporary_15 temporary_16
+	smoothstep	("f=fff")  temporary_7  temporary_8  temporary_14  x 
+	vufloat            temporary_14 1
+	vufloat            temporary_18 rbn
+	subff             	temporary_17 temporary_18 pwx
+	vufloat            temporary_18 penumbraRatio
+	subff             	temporary_16 temporary_17 temporary_18
+	vufloat            temporary_19 rbn
+	addff             	temporary_18 temporary_19 pwx
+	vufloat            temporary_19 penumbraRatio
+	addff             	temporary_17 temporary_18 temporary_19
+	smoothstep	("f=fff")  temporary_15  temporary_16  temporary_17  x 
+	subff             	temporary_8 temporary_14 temporary_15
+	mulff             	temporary_6 temporary_7 temporary_8
+	vufloat            temporary_8 1
+	vufloat            temporary_17 tbn
+	subff             	temporary_16 temporary_17 pwy
+	vufloat            temporary_17 penumbraRatio
+	subff             	temporary_15 temporary_16 temporary_17
+	vufloat            temporary_18 tbn
+	addff             	temporary_17 temporary_18 pwy
+	vufloat            temporary_18 penumbraRatio
+	addff             	temporary_16 temporary_17 temporary_18
+	smoothstep	("f=fff")  temporary_14  temporary_15  temporary_16  y 
+	subff             	temporary_7 temporary_8 temporary_14
+	mulff             	temporary_5 temporary_6 temporary_7
+	vufloat            temporary_14 bbn
+	subff             	temporary_8 temporary_14 pwy
+	vufloat            temporary_14 penumbraRatio
+	subff             	temporary_7 temporary_8 temporary_14
+	vufloat            temporary_15 bbn
+	addff             	temporary_14 temporary_15 pwy
+	vufloat            temporary_15 penumbraRatio
+	addff             	temporary_8 temporary_14 temporary_15
+	smoothstep	("f=fff")  temporary_6  temporary_7  temporary_8  y 
+	mulff             	__barn temporary_5 temporary_6
+#!Label41:
+	endif             
+	sneql             	temporary_1 shadowname ""
+	vufloat            temporary_4 temporary_1
+	if                	temporary_4 #!Label44
+	seql              	temporary_1 shadowname "raytrace"
+	vufloat            temporary_5 temporary_1
+	if                	temporary_5 #!Label46
+	ftoa              	shadowsize 0 5
+#!Label46:
+	else              	#!Label45
+	textureinfo	("f=SSF")  temporary_1  shadowname  "resolution"  shadowsize 
+#!Label45:
+	endif             
+	mulff             	temporary_3 shadowfiltersize 1
+	ffroma            	temporary_20 shadowsize 0
+	divff             	temporary_2 temporary_3 temporary_20
+	addff             	temporary_1 temporary_2 shadowblur
+	shadow	("f=SFpSfsfsf")  __shadowF  shadowname  0  Ps  "samples"  shadowsamples  "bias"  shadowbias  "blur"  temporary_1 
+	vuvector           temporary_13 lightcolor
+	mix	("v=vvf")  __shadowC  temporary_13  finalShadowColor  __shadowF 
+#!Label44:
+	else              	#!Label43
+	vufloat            __shadowF 0.0
+	vuvector           __shadowC lightcolor
+#!Label43:
+	endif             
+	vufloat            temporary_6 intensity
+	mulff             	temporary_5 temporary_6 atten
+	mulff             	temporary_4 temporary_5 __barn
+	vfromf            	Cl temporary_4
+	movevv            	__unshadowed_Cl Cl
+	mulvv             	Cl Cl __shadowC
+#!Label32:
+	endilluminate     
+	return            

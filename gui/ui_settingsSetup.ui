@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
-    <height>302</height>
+    <width>376</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -266,6 +266,39 @@
         </item>
        </layout>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="hl_archives" stretch="0,1,0">
+        <item>
+         <widget class="QLabel" name="label_archives">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>80</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Archives</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_archives"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="btn_archives_dir">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
@@ -427,6 +460,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_archives_dir</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsSetup</receiver>
+   <slot>onBrowseArchivesDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>342</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>187</x>
+     <y>172</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onBrowseLibraryDir()</slot>
@@ -435,5 +484,6 @@
   <slot>onBrowseNodesDir()</slot>
   <slot>onBrowseIncludesDir()</slot>
   <slot>onBrowseTexturesDir()</slot>
+  <slot>onBrowseArchivesDir()</slot>
  </slots>
 </ui>

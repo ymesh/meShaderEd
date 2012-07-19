@@ -12,8 +12,23 @@ from core.nodeParam import NodeParam
 
 from global_vars import app_global_vars
 from core.node_global_vars import node_global_vars
+
 #
-# ImageNode
+# RSL_code
+#
+class RSL_code ( Node ):
+  #
+  #
+  def __init__ ( self, xml_node = None ):
+    #
+    Node.__init__ ( self, xml_node )
+    self.shaderName = ''
+    print ">> RSL_code __init__" 
+  #
+  #
+
+#
+# RSLNode
 #
 class RSLNode ( Node ):
   #

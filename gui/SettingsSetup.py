@@ -48,7 +48,7 @@ class SettingsSetup ( QtGui.QDialog ):
     self.ui.lineEdit_nodes.setText( self.app_settings.value('nodes').toString() )
     self.ui.lineEdit_shaders.setText( self.app_settings.value('shaders').toString() )
     self.ui.lineEdit_textures.setText( self.app_settings.value('texture').toString() )
-
+    self.ui.lineEdit_archives.setText( self.app_settings.value('archive').toString() )
   #
   #  
   def onBrowseTempDir ( self ):
@@ -93,6 +93,13 @@ class SettingsSetup ( QtGui.QDialog ):
       self.ui.lineEdit_textures.setText( normPath( newDir ) )
   #
   #  
+  def onBrowseArchivesDir ( self ):
+    curDir = self.ui.lineEdit_archives.text()
+    newDir = QtGui.QFileDialog.getExistingDirectory( self, "Select Directory", curDir )
+    if newDir != '' : 
+      self.ui.lineEdit_archives.setText( normPath( newDir ) )
+  #
+  #  
   def reject ( self ):
     self.done( 0 ) 
   #  
@@ -107,6 +114,7 @@ class SettingsSetup ( QtGui.QDialog ):
     
     shaders_dir = normPath ( self.ui.lineEdit_shaders.text() )
     textures_dir = normPath ( self.ui.lineEdit_textures.text() )
+    archives_dir = normPath ( self.ui.lineEdit_archives.text() )
     
     self.app_settings.setValue( 'temp', temp_dir )
     self.app_settings.setValue( 'include', inc_dir )
@@ -114,6 +122,7 @@ class SettingsSetup ( QtGui.QDialog ):
     self.app_settings.setValue( 'nodes', nodes_dir )
     self.app_settings.setValue( 'shaders', shaders_dir )
     self.app_settings.setValue( 'texture', textures_dir )
+    self.app_settings.setValue( 'archive', archives_dir )
     
     app_global_vars[ 'TempPath' ] = temp_dir
     
@@ -126,8 +135,9 @@ class SettingsSetup ( QtGui.QDialog ):
     
     app_global_vars[ 'TextureSearchPath' ] = sanitizeSearchPath ( textures_dir )
     app_global_vars[ 'ShaderSearchPath' ] = sanitizeSearchPath ( shaders_dir )
+    app_global_vars[ 'ArchiveSearchPath' ] = sanitizeSearchPath ( archives_dir )
     
-    createMissingDirs ( [temp_dir, lib_dir, nodes_dir, inc_dir, shaders_dir, textures_dir] )
+    createMissingDirs ( [temp_dir, lib_dir, nodes_dir, inc_dir, shaders_dir, textures_dir, archives_dir] )
         
     #self.emit( QtCore.SIGNAL( "accepted()" ) )
     self.done( 0 ) 

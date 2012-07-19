@@ -6,7 +6,7 @@
 		<property name="N" type="normal" default="normal (0.0, 1.0, 0.0)" />
 	</input>
 	<output>
-	<property name="disp" type="displacement" default="${NODELABEL}" />
+	<property name="disp" type="rib" default="Displacement &quot;${NODELABEL}&quot;" />
 	</output>
 	<code>
 	<![CDATA[

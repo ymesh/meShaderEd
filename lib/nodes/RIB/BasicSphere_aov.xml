@@ -21,9 +21,9 @@
     <property name="Color" type="color" default="0 0 1" provider="attribute"/>	
     <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>	
     
-    <property name="FG_disp" type="displacement" default="null" />
-    <property name="FG_surf" type="surface" default="defaultsurface" />
-		<property name="BG_surf" type="surface" default="liquidchecker" />
+    <property name="FG_disp" type="rib" default="Displacement &quot;null&quot;" />
+    <property name="FG_surf" type="rib" default="Surface &quot;defaultsurface&quot;" />
+		<property name="BG_surf" type="rib" default="Surface &quot;liquidchecker&quot;" />
 	</input>
 	<output>
 	  <property name="ImageFile" type="image" default="${TempPath}/${NODELABEL}.tif"/>
@@ -103,8 +103,8 @@
       Color [$(Color)]
       Opacity [$(Opacity)]
 
-      Displacement "$(FG_disp)"
-      Surface "$(FG_surf)" 
+      $(FG_disp)
+      $(FG_surf) 
       
       Sphere 1.0 -1.0 1.0 360 
       
@@ -113,7 +113,7 @@
     AttributeBegin 
       Scale 7 7 7
       Translate 0 0 2
-      Surface "$(BG_surf)" 
+      $(BG_surf) 
       
       Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
     AttributeEnd 

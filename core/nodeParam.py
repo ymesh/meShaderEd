@@ -168,8 +168,14 @@ class NodeParam ( QtCore.QObject ):
     if self.subtype != '' : xmlnode.setAttribute ( "subtype", self.subtype )
     if self.range != '' : xmlnode.setAttribute ( "range", self.range )
       
-    if self.default != None : xmlnode.setAttribute ( "default", self.getDefaultToStr().strip('\"')  )
-    if self.value != None : xmlnode.setAttribute ( "value", self.getValueToStr().strip('\"')  )
+    if self.default != None : 
+      value = self.getDefaultToStr()
+      if not self.type in ['rib', 'rib_code']  : value = value.strip('\"')
+      xmlnode.setAttribute ( "default", value )
+    if self.value != None : 
+      value = self.getValueToStr()
+      if not self.type in ['rib', 'rib_code'] : value = value.strip('\"')
+      xmlnode.setAttribute ( "value", value )
     
     if self.help != None :
       # append node help (short description)      

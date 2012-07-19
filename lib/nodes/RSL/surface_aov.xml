@@ -27,7 +27,7 @@
 		<property name="extra_F" type="float" default="1"/>
 	</input>
 	<output>
-	  <property name="surface" type="surface" default="${NODELABEL}" />
+	  <property name="surface" type="rib" default="Surface &quot;${NODELABEL}&quot;" />
 		<property name="__color" type="color" default="color(0)" detail="varying" provider="primitive"  />
 		<property name="__diff" type="color" detail="varying" provider="primitive" default="color(0)"/>
 		<property name="__spec" type="color" detail="varying" provider="primitive" default="color(0)"/>
@@ -74,9 +74,4 @@
 	
 	]]>
 	</code>
-	<preview>
-		<shader type="surface">
-			<code></code>
-		</shader>
-	</preview>	
 </node>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_glass" author="mesh">
+<node name="me_glass" author="mesh" icon="me_glass.png">
 	<help>Raytraced glass</help>
 	<input>
 	  <property name="Ns" type="normal" default="normal(0,0,0)"/>

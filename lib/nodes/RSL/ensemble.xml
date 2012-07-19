@@ -2,10 +2,11 @@
 <node name="ensemble" author="mesh" type="rib">
 	<help>Ensemble</help>
 	<input>
-		<property name="surface" type="surface" default="" />	
-		<property name="displacement" type="displacement" default="" />	
-		<property name="volume" type="volume" default="" />	
-		<property name="light" type="light" default="" />	
+	  <property name="light" type="rib" default="" />	
+	  <property name="volume" type="rib" default="" />
+		<property name="displacement" type="rib" default="" />	
+    <property name="surface" type="rib" default="" />		
+	
 		<property name="rib" type="rib" default="" />	
 	</input>
 	<output>
@@ -14,14 +15,11 @@
 	<internal>
 	</internal>
 	<code><![CDATA[
-	  Ci = $(Ci) * $(Oi); 
-	  Oi = $(Oi);
+	  $(light)
+	  $(volume)
+	  $(displacement)
+	  $(surface)
+	  $(rib)
 	  ]]>
 	</code>
-	<preview>
-		<shader type="surface">
-			<code>
-			</code>
-		</shader>
-	</preview>	
 </node>

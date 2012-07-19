@@ -1,0 +1,734 @@
+lightsource
+AQSIS_V 1.4.2
+
+
+segment Data
+
+USES 524408
+
+param uniform  float intensity
+param uniform  color lightcolor
+param uniform  float coneangle
+param uniform  float penumbraangle
+param uniform  float dropoff
+param uniform  float decay
+param uniform  float barndoors
+param uniform  float leftbarndoor
+param uniform  float rightbarndoor
+param uniform  float topbarndoor
+param uniform  float bottombarndoor
+param uniform  float decayRegions
+param uniform  float startDistance1
+param uniform  float endDistance1
+param uniform  float startDistance2
+param uniform  float endDistance2
+param uniform  float startDistance3
+param uniform  float endDistance3
+param uniform  float startDistanceIntensity1
+param uniform  float endDistanceIntensity1
+param uniform  float startDistanceIntensity2
+param uniform  float endDistanceIntensity2
+param uniform  float startDistanceIntensity3
+param uniform  float endDistanceIntensity3
+param uniform  string shadowname
+param uniform  float shadowbias
+param uniform  float shadowblur
+param uniform  float shadowsamples
+param uniform  float shadowfiltersize
+param uniform  color shadowcolor
+param varying  color shadowcolorSurf
+param uniform  float shadowcolorMix
+param uniform  float lightID
+param uniform  string __category
+output param varying  color __shadowC
+output param varying  float __shadowF
+output param varying  float __barn
+output param varying  color __unshadowed_Cl
+output param uniform  float __nondiffuse
+output param uniform  float __nonspecular
+varying  float atten
+varying  float cosangle
+uniform  float cosoutside
+uniform  float cosinside
+uniform  float angle
+uniform  float lbn
+uniform  float rbn
+uniform  float tbn
+uniform  float bbn
+uniform  float penumbraRatio
+varying  point Pshad
+varying  float Pz
+varying  float Pz_width
+varying  color finalShadowColor
+varying  float b5::distance
+varying  float b5::pwc
+varying  float b5::b6::region
+varying  float b5::b6::mask
+varying  point b5::b7::PP
+varying  float b5::b7::x
+varying  float b5::b7::y
+varying  float b5::b7::pwx
+varying  float b5::b7::pwy
+uniform  float b5::b8::shadowsize[2]
+
+
+segment Init
+	pushif 1
+	pop intensity
+	pushif 1
+	setfc
+	pop lightcolor
+	pushif 40
+	radians
+	pop coneangle
+	pushif 0
+	radians
+	pop penumbraangle
+	pushif 0
+	pop dropoff
+	pushif 0
+	pop decay
+	pushif 0
+	pop barndoors
+	pushif 10
+	pop leftbarndoor
+	pushif 10
+	pop rightbarndoor
+	pushif 10
+	pop topbarndoor
+	pushif 10
+	pop bottombarndoor
+	pushif 0
+	pop decayRegions
+	pushif 1
+	pop startDistance1
+	pushif 2
+	pop endDistance1
+	pushif 3
+	pop startDistance2
+	pushif 6
+	pop endDistance2
+	pushif 8
+	pop startDistance3
+	pushif 10
+	pop endDistance3
+	pushif 1
+	pop startDistanceIntensity1
+	pushif 1
+	pop endDistanceIntensity1
+	pushif 1
+	pop startDistanceIntensity2
+	pushif 1
+	pop endDistanceIntensity2
+	pushif 1
+	pop startDistanceIntensity3
+	pushif 1
+	pop endDistanceIntensity3
+	pushis ""
+	pop shadowname
+	pushif 0.01
+	pop shadowbias
+	pushif 0
+	pop shadowblur
+	pushif 32
+	pop shadowsamples
+	pushif 1
+	pop shadowfiltersize
+	pushif 0
+	setfc
+	pop shadowcolor
+	pushif 0
+	setfc
+	pop shadowcolorSurf
+	pushif 1
+	negf
+	pop shadowcolorMix
+	pushif 0
+	pop lightID
+	pushis ""
+	pop __category
+	pushif 0
+	setfc
+	pop __shadowC
+	pushif 0
+	pop __shadowF
+	pushif 0
+	pop __barn
+	pushif 0
+	setfc
+	pop __unshadowed_Cl
+	pushif 0
+	pop __nondiffuse
+	pushif 0
+	pop __nonspecular
+
+
+segment Code
+	pushif 0
+	pop atten
+	pushif 0
+	pop cosangle
+	S_CLEAR
+	pushif 0
+	pushv penumbraangle
+	lsff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 1
+	pushv coneangle
+	pop angle
+	pushv coneangle
+	cos
+	pop cosoutside
+	pushv penumbraangle
+	pushv coneangle
+	addff
+	cos
+	pop cosinside
+:1
+	RS_INVERSE
+	RS_JZ 0
+	pushv penumbraangle
+	pushv coneangle
+	addff
+	pop angle
+	pushv angle
+	cos
+	pop cosoutside
+	pushv coneangle
+	cos
+	pop cosinside
+:0
+	RS_POP
+	pushif 1
+	pop __barn
+	S_CLEAR
+	pushif 0
+	pushv barndoors
+	neff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 2
+	pushv angle
+	pushv leftbarndoor
+	negf
+	divff
+	pop lbn
+	pushv angle
+	pushv rightbarndoor
+	divff
+	pop rbn
+	pushv angle
+	pushv topbarndoor
+	divff
+	pop tbn
+	pushv angle
+	pushv bottombarndoor
+	negf
+	divff
+	pop bbn
+	pushif 0.5
+	pushv angle
+	pushv penumbraangle
+	divff
+	mulff
+	pop penumbraRatio
+:2
+	RS_POP
+	S_CLEAR
+	pushif 0
+	pushv decayRegions
+	neff
+	pushif 0
+	pushv barndoors
+	neff
+	lor
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 3
+	pushv Ps
+	pushis "shader"
+	transform
+	pop Pshad
+	pushv Pshad
+	zcomp
+	pop Pz
+	pushif 1e-06
+	pushv dv
+	pushv Pz
+	fDv
+	mulff
+	abs
+	pushv du
+	pushv Pz
+	fDu
+	mulff
+	abs
+	addff
+	pushif 0
+	max
+	pop Pz_width
+:3
+	RS_POP
+	pushv shadowcolor
+	pop finalShadowColor
+	S_CLEAR
+	pushif 1
+	negf
+	pushv shadowcolorMix
+	neff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 4
+	pushv shadowcolorMix
+	pushv shadowcolorSurf
+	pushv shadowcolor
+	cmix
+	pop finalShadowColor
+:4
+	RS_POP
+:5
+	S_CLEAR
+	pushv angle
+	pushif 1
+	pushif 0
+	pushif 0
+	settv
+	pushis "current"
+	pushis "shader"
+	vtransform2
+	pushif 0
+	pushif 0
+	pushif 0
+	settp
+	pushis "current"
+	pushis "shader"
+	transform2
+	illuminate2
+	S_JZ 6
+	RS_PUSH
+	RS_GET
+	pushv L
+	length
+	pop b5::distance
+	pushv b5::distance
+	pushif 1
+	pushif 0
+	pushif 0
+	settv
+	pushis "current"
+	pushis "shader"
+	vtransform2
+	pushv L
+	dotpp
+	divff
+	pop cosangle
+	pushif 1e-06
+	pushv dv
+	pushv cosangle
+	fDv
+	mulff
+	abs
+	pushv du
+	pushv cosangle
+	fDu
+	mulff
+	abs
+	addff
+	pushif 0
+	max
+	pop b5::pwc
+	pushv decay
+	pushv b5::distance
+	pow
+	pushif 1
+	divff
+	pop atten
+	pushv dropoff
+	pushv cosangle
+	pow
+	pushv atten
+	mulff
+	pop atten
+	pushv cosangle
+	pushif 2
+	pushv b5::pwc
+	mulff
+	pushv cosinside
+	addff
+	pushv b5::pwc
+	pushv cosoutside
+	addff
+	smoothstep
+	pushv atten
+	mulff
+	pop atten
+	S_CLEAR
+	pushif 0
+	pushv decayRegions
+	neff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 7
+	pushif 0
+	pop b5::b6::region
+	pushif 0
+	pop b5::b6::mask
+	pushv Pz
+	pushv Pz_width
+	pushv endDistance1
+	addff
+	pushv Pz_width
+	pushv endDistance1
+	subff
+	smoothstep
+	pushv Pz
+	pushv Pz_width
+	pushv startDistance1
+	addff
+	pushv Pz_width
+	pushv startDistance1
+	subff
+	smoothstep
+	subff
+	pop b5::b6::mask
+	S_CLEAR
+	pushif 1
+	pushv startDistanceIntensity1
+	neff
+	pushif 1
+	pushv endDistanceIntensity1
+	neff
+	lor
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 8
+	pushv Pz
+	pushv endDistance1
+	pushv startDistance1
+	smoothstep
+	pushv endDistanceIntensity1
+	pushv startDistanceIntensity1
+	fmix
+	pushv b5::b6::mask
+	mulff
+	pop b5::b6::mask
+:8
+	RS_POP
+	pushv b5::b6::mask
+	pop b5::b6::region
+	pushv Pz
+	pushv Pz_width
+	pushv endDistance2
+	addff
+	pushv Pz_width
+	pushv endDistance2
+	subff
+	smoothstep
+	pushv Pz
+	pushv Pz_width
+	pushv startDistance2
+	addff
+	pushv Pz_width
+	pushv startDistance2
+	subff
+	smoothstep
+	subff
+	pop b5::b6::mask
+	S_CLEAR
+	pushif 1
+	pushv startDistanceIntensity2
+	neff
+	pushif 1
+	pushv endDistanceIntensity2
+	neff
+	lor
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 9
+	pushv Pz
+	pushv endDistance2
+	pushv startDistance2
+	smoothstep
+	pushv endDistanceIntensity2
+	pushv startDistanceIntensity2
+	fmix
+	pushv b5::b6::mask
+	mulff
+	pop b5::b6::mask
+:9
+	RS_POP
+	pushv b5::b6::mask
+	pushv b5::b6::region
+	addff
+	pop b5::b6::region
+	pushv Pz
+	pushv Pz_width
+	pushv endDistance3
+	addff
+	pushv Pz_width
+	pushv endDistance3
+	subff
+	smoothstep
+	pushv Pz
+	pushv Pz_width
+	pushv startDistance3
+	addff
+	pushv Pz_width
+	pushv startDistance3
+	subff
+	smoothstep
+	subff
+	pop b5::b6::mask
+	S_CLEAR
+	pushif 1
+	pushv startDistanceIntensity3
+	neff
+	pushif 1
+	pushv endDistanceIntensity3
+	neff
+	lor
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 10
+	pushv Pz
+	pushv endDistance3
+	pushv startDistance3
+	smoothstep
+	pushv endDistanceIntensity3
+	pushv startDistanceIntensity3
+	fmix
+	pushv b5::b6::mask
+	mulff
+	pop b5::b6::mask
+:10
+	RS_POP
+	pushv b5::b6::mask
+	pushv b5::b6::region
+	addff
+	pop b5::b6::region
+	pushv b5::b6::region
+	pushv atten
+	mulff
+	pop atten
+:7
+	RS_POP
+	S_CLEAR
+	pushif 0
+	pushv barndoors
+	neff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 11
+	pushv Pz
+	setfp
+	pushv Pshad
+	divpp
+	pop b5::b7::PP
+	pushv angle
+	tan
+	pushv b5::b7::PP
+	xcomp
+	divff
+	pop b5::b7::x
+	pushv angle
+	tan
+	pushv b5::b7::PP
+	ycomp
+	divff
+	pop b5::b7::y
+	pushif 1e-06
+	pushv dv
+	pushv b5::b7::x
+	fDv
+	mulff
+	abs
+	pushv du
+	pushv b5::b7::x
+	fDu
+	mulff
+	abs
+	addff
+	pushif 0
+	max
+	pop b5::b7::pwx
+	pushif 1e-06
+	pushv dv
+	pushv b5::b7::y
+	fDv
+	mulff
+	abs
+	pushv du
+	pushv b5::b7::y
+	fDu
+	mulff
+	abs
+	addff
+	pushif 0
+	max
+	pop b5::b7::pwy
+	pushv b5::b7::y
+	pushv penumbraRatio
+	pushv b5::b7::pwy
+	pushv bbn
+	addff
+	addff
+	pushv penumbraRatio
+	pushv b5::b7::pwy
+	pushv bbn
+	subff
+	subff
+	smoothstep
+	pushv b5::b7::y
+	pushv penumbraRatio
+	pushv b5::b7::pwy
+	pushv tbn
+	addff
+	addff
+	pushv penumbraRatio
+	pushv b5::b7::pwy
+	pushv tbn
+	subff
+	subff
+	smoothstep
+	pushif 1
+	subff
+	pushv b5::b7::x
+	pushv penumbraRatio
+	pushv b5::b7::pwx
+	pushv rbn
+	addff
+	addff
+	pushv penumbraRatio
+	pushv b5::b7::pwx
+	pushv rbn
+	subff
+	subff
+	smoothstep
+	pushif 1
+	subff
+	pushv b5::b7::x
+	pushv penumbraRatio
+	pushv b5::b7::pwx
+	pushv lbn
+	addff
+	addff
+	pushv penumbraRatio
+	pushv b5::b7::pwx
+	pushv lbn
+	subff
+	subff
+	smoothstep
+	mulff
+	mulff
+	mulff
+	pop __barn
+:11
+	RS_POP
+	S_CLEAR
+	pushis ""
+	pushv shadowname
+	ness
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 13
+	S_CLEAR
+	pushis "raytrace"
+	pushv shadowname
+	eqss
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 15
+	pushif 5
+	pushif 0
+	ipop b5::b8::shadowsize
+:15
+	RS_INVERSE
+	RS_JZ 14
+	pushis "resolution"
+	pushv shadowname
+	textureinfo b5::b8::shadowsize
+	drop
+:14
+	RS_POP
+	pushv shadowblur
+	pushif 0
+	ipushv b5::b8::shadowsize
+	pushif 1
+	pushv shadowfiltersize
+	mulff
+	divff
+	addff
+	pushis "blur"
+	pushv shadowbias
+	pushis "bias"
+	pushv shadowsamples
+	pushis "samples"
+	pushv Ps
+	pushif 0
+	pushv shadowname
+	pushif 6
+	shadow
+	pop __shadowF
+	pushv __shadowF
+	pushif 2
+	pushv finalShadowColor
+	comp
+	pushif 2
+	pushv lightcolor
+	comp
+	fmix
+	pushv __shadowF
+	pushif 1
+	pushv finalShadowColor
+	comp
+	pushif 1
+	pushv lightcolor
+	comp
+	fmix
+	pushv __shadowF
+	pushif 0
+	pushv finalShadowColor
+	comp
+	pushif 0
+	pushv lightcolor
+	comp
+	fmix
+	settc
+	pop __shadowC
+:13
+	RS_INVERSE
+	RS_JZ 12
+	pushif 0
+	pop __shadowF
+	pushv lightcolor
+	pop __shadowC
+:12
+	RS_POP
+	pushv __barn
+	pushv atten
+	pushv intensity
+	mulff
+	mulff
+	setfc
+	pop Cl
+	pushv Cl
+	pop __unshadowed_Cl
+	pushv __shadowC
+	pushv Cl
+	mulcc
+	pop Cl
+	RS_POP
+	jmp 5
+:6

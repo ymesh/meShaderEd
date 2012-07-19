@@ -21,6 +21,7 @@ app_global_vars = {
   ,'DisplaySearchPath':''
   ,'TextureSearchPath':''
   ,'ShaderSearchPath':''
+  ,'ArchiveSearchPath':''
   ,'Renderer':''
   ,'RendererFlags':''
   ,'ShaderCompiler':''

@@ -2,18 +2,14 @@
 <node name="light" type="light" author="mesh">
 	<help>Root light shader.</help>
 	<input>
+	  <property name="handle" type="int" default="0" provider="attribute"/>
 		<property name="Cl" type="color" default="color(0.0, 0.0, 0.0)" />
 	</input>
 	<output>
-	  <property name="light" type="light" default="${NODELABEL}" />
+	  <property name="light" type="rib" default="LightSource &quot;${NODELABEL}&quot; $(handle) " />
 	</output>
 	<code><![CDATA[
 	  Cl = $(Cl);
 	  ]]>
 	</code>
-	<preview>
-		<shader type="light">
-			<code></code>
-		</shader>
-	</preview>	
 </node>

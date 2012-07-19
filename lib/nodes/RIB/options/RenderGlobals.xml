@@ -13,6 +13,7 @@
     <property name="FilterWidth" label="Filter width" type="float" default="2.0" provider="attribute"/>	
     
     <property name="Options" label="Options" type="rib" default=""/>
+    <property name="Channels" label="Channels" type="rib" default=""/>
 	</input>
     
 	<output>
@@ -34,6 +35,8 @@
   ShadingRate $(ShadingRate)
 
   $(Options)
+  
+  $(Channels)
   ]]>
 	</code>		
 </node>

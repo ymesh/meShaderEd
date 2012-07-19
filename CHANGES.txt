@@ -1,6 +1,12 @@
 
 meShaderEd.py
 
+version 0.2.5 (19 Jul 2012)
+  added icons in node description window
+  added ReadArchive node
+  root RSL nodes now have rib output instead of just shader name
+  some preview nodes removed. BasicPrimitive node has selector for
+  choosing primitive.
 
 version 0.2.0 (27 May 2012)  
      BUG: some links doesn't save in XML

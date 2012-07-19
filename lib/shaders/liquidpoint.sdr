@@ -1,0 +1,195 @@
+#!version 2.2.6
+light
+#!parameters:
+uniform	float	intensity	=	1
+uniform	color	lightcolor	=	1
+uniform	float	decay	=	0
+uniform	string	shadownamepx	=	""
+uniform	string	shadownamenx	=	""
+uniform	string	shadownamepy	=	""
+uniform	string	shadownameny	=	""
+uniform	string	shadownamepz	=	""
+uniform	string	shadownamenz	=	""
+uniform	float	shadowbias	=	0.01
+uniform	float	shadowblur	=	0.0
+uniform	float	shadowsamples	=	16
+uniform	float	shadowfiltersize	=	1
+uniform	color	shadowcolor	=	0
+uniform	float	lightID	=	0
+uniform	string	__category	=	""
+output	varying	float	__shadowF	=	0
+output	varying	color	__shadowC	=	1.0
+output	varying	color	__unshadowed_Cl	=	0
+output	uniform	float	__nondiffuse	=	0
+output	uniform	float	__nonspecular	=	0
+#!variables:
+varying	vector	temporary_0
+uniform	vector	temporary_1
+uniform	vector	temporary_2
+varying	float	temporary_3
+uniform	float	temporary_4
+uniform	float	temporary_5
+varying	vector	Lworld
+varying	float	Lx
+varying	float	LxAbs
+varying	float	Ly
+varying	float	LyAbs
+varying	float	Lz
+varying	float	LzAbs
+uniform	float	shadowsize[2]
+varying	float	temporary_6
+varying	float	temporary_7
+varying	float	temporary_8
+varying	float	temporary_9
+uniform	float	temporary_10
+uniform	float	temporary_11
+varying	float	temporary_12
+varying	float	temporary_13
+varying	vector	temporary_14
+varying	vector	temporary_15
+#!Init:
+	return            
+#!Code:
+	vfromf            	temporary_2 0 0 0
+	pfrom             	temporary_1 "shader" temporary_2
+	vuvector           temporary_0 temporary_1
+	illuminate        	 temporary_0  #!Label22
+	seql              	temporary_4 shadownamepx "raytrace"
+	vufloat            temporary_3 temporary_4
+	if                	temporary_3 #!Label24
+	mulff             	temporary_5 shadowfiltersize 0.2
+	addff             	temporary_4 temporary_5 shadowblur
+	shadow	("c=SFpSfsfsfsf")  __shadowC  shadownamepx  0  Ps  "samples"  shadowsamples  "blur"  temporary_4  "bias"  shadowbias  "width"  1 
+#!Label24:
+	else              	#!Label23
+	vtransform	("v=Sv")  Lworld  "world"  L 
+	xcomp	("f=p")  Lx  Lworld 
+	abs	("f=f")  LxAbs  Lx 
+	ycomp	("f=p")  Ly  Lworld 
+	abs	("f=f")  LyAbs  Ly 
+	zcomp	("f=p")  Lz  Lworld 
+	abs	("f=f")  LzAbs  Lz 
+	fgt               	temporary_7 LxAbs LyAbs
+	fgt               	temporary_8 LxAbs LzAbs
+	and               	temporary_6 temporary_7 temporary_8
+	if                	temporary_6 #!Label26
+	vufloat            temporary_9 0
+	fgt               	temporary_8 Lx temporary_9
+	sneql             	temporary_4 shadownamepx ""
+	vufloat            temporary_9 temporary_4
+	and               	temporary_7 temporary_8 temporary_9
+	if                	temporary_7 #!Label28
+	textureinfo	("f=SSF")  temporary_4  shadownamepx  "resolution"  shadowsize 
+	mulff             	temporary_10 shadowfiltersize 1
+	ffroma            	temporary_11 shadowsize 0
+	divff             	temporary_5 temporary_10 temporary_11
+	addff             	temporary_4 temporary_5 shadowblur
+	shadow	("f=SFpSfsfsfsf")  __shadowF  shadownamepx  0  Ps  "samples"  shadowsamples  "blur"  temporary_4  "bias"  shadowbias  "width"  1 
+#!Label28:
+	else              	#!Label27
+	sneql             	temporary_4 shadownamenx ""
+	vufloat            temporary_8 temporary_4
+	if                	temporary_8 #!Label29
+	textureinfo	("f=SSF")  temporary_4  shadownamenx  "resolution"  shadowsize 
+	mulff             	temporary_10 shadowfiltersize 1
+	ffroma            	temporary_11 shadowsize 0
+	divff             	temporary_5 temporary_10 temporary_11
+	addff             	temporary_4 temporary_5 shadowblur
+	shadow	("f=SFpSfsfsfsf")  __shadowF  shadownamenx  0  Ps  "samples"  shadowsamples  "blur"  temporary_4  "bias"  shadowbias  "width"  1 
+#!Label29:
+	endif             
+#!Label27:
+	endif             
+#!Label26:
+	else              	#!Label25
+	fgt               	temporary_8 LyAbs LxAbs
+	fgt               	temporary_9 LyAbs LzAbs
+	and               	temporary_7 temporary_8 temporary_9
+	if                	temporary_7 #!Label32
+	vufloat            temporary_12 0
+	fgt               	temporary_9 Ly temporary_12
+	sneql             	temporary_4 shadownamepy ""
+	vufloat            temporary_12 temporary_4
+	and               	temporary_8 temporary_9 temporary_12
+	if                	temporary_8 #!Label34
+	textureinfo	("f=SSF")  temporary_4  shadownamepy  "resolution"  shadowsize 
+	mulff             	temporary_10 shadowfiltersize 1
+	ffroma            	temporary_11 shadowsize 0
+	divff             	temporary_5 temporary_10 temporary_11
+	addff             	temporary_4 temporary_5 shadowblur
+	shadow	("f=SFpSfsfsfsf")  __shadowF  shadownamepy  0  Ps  "samples"  shadowsamples  "blur"  temporary_4  "bias"  shadowbias  "width"  1 
+#!Label34:
+	else              	#!Label33
+	sneql             	temporary_4 shadownameny ""
+	vufloat            temporary_9 temporary_4
+	if                	temporary_9 #!Label35
+	textureinfo	("f=SSF")  temporary_4  shadownameny  "resolution"  shadowsize 
+	mulff             	temporary_10 shadowfiltersize 1
+	ffroma            	temporary_11 shadowsize 0
+	divff             	temporary_5 temporary_10 temporary_11
+	addff             	temporary_4 temporary_5 shadowblur
+	shadow	("f=SFpSfsfsfsf")  __shadowF  shadownameny  0  Ps  "samples"  shadowsamples  "blur"  temporary_4  "bias"  shadowbias  "width"  1 
+#!Label35:
+	endif             
+#!Label33:
+	endif             
+#!Label32:
+	else              	#!Label31
+	fgt               	temporary_9 LzAbs LyAbs
+	fgt               	temporary_12 LzAbs LxAbs
+	and               	temporary_8 temporary_9 temporary_12
+	if                	temporary_8 #!Label38
+	vufloat            temporary_13 0
+	fgt               	temporary_12 Lz temporary_13
+	sneql             	temporary_4 shadownamepz ""
+	vufloat            temporary_13 temporary_4
+	and               	temporary_9 temporary_12 temporary_13
+	if                	temporary_9 #!Label40
+	textureinfo	("f=SSF")  temporary_4  shadownamepz  "resolution"  shadowsize 
+	mulff             	temporary_10 shadowfiltersize 1
+	ffroma            	temporary_11 shadowsize 0
+	divff             	temporary_5 temporary_10 temporary_11
+	addff             	temporary_4 temporary_5 shadowblur
+	shadow	("f=SFpSfsfsfsf")  __shadowF  shadownamepz  0  Ps  "samples"  shadowsamples  "blur"  temporary_4  "bias"  shadowbias  "width"  1 
+#!Label40:
+	else              	#!Label39
+	sneql             	temporary_4 shadownamenz ""
+	vufloat            temporary_12 temporary_4
+	if                	temporary_12 #!Label41
+	textureinfo	("f=SSF")  temporary_4  shadownamenz  "resolution"  shadowsize 
+	mulff             	temporary_10 shadowfiltersize 1
+	ffroma            	temporary_11 shadowsize 0
+	divff             	temporary_5 temporary_10 temporary_11
+	addff             	temporary_4 temporary_5 shadowblur
+	shadow	("f=SFpSfsfsfsf")  __shadowF  shadownamenz  0  Ps  "samples"  shadowsamples  "blur"  temporary_4  "bias"  shadowbias  "width"  1 
+#!Label41:
+	endif             
+#!Label39:
+	endif             
+#!Label38:
+	else              	#!Label37
+	vufloat            __shadowF 0.0
+#!Label37:
+	endif             
+#!Label31:
+	endif             
+#!Label25:
+	endif             
+#!Label23:
+	endif             
+	vuvector           temporary_14 lightcolor
+	vuvector           temporary_15 shadowcolor
+	mix	("v=vvf")  __shadowC  temporary_14  temporary_15  __shadowF 
+	vufloat            temporary_6 intensity
+	vufloat            temporary_9 1
+	length	("f=v")  temporary_12  L 
+	divff             	temporary_8 temporary_9 temporary_12
+	vufloat            temporary_9 decay
+	pow	("f=ff")  temporary_7  temporary_8  temporary_9 
+	mulff             	temporary_3 temporary_6 temporary_7
+	vfromf            	Cl temporary_3
+	movevv            	__unshadowed_Cl Cl
+	mulvv             	Cl Cl __shadowC
+#!Label22:
+	endilluminate     
+	return            

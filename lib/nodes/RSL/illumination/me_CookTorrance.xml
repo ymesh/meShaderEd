@@ -72,15 +72,20 @@
 	  vector $(V) = -normalize(I);
 
 	  float $(cook) = 0;
-	  illuminance( P, $(Nf), PI/2 )
+	  illuminance( $(category), P, $(Nf), PI/2 )
 	  {
-	    vector Ln = normalize(L);
-	    vector H = normalize( Ln + $(V) );
-	    float D = $(distro) ( $(Nf), H, $(m) );
-	    float G = $(geom) ( $(Nf), H, Ln, $(V) );
-	    float F = $(fresnel_hack) ( $(Nf), $(V), $(IndexOfRefraction) );
-
-	    $(cook) += D*G*F;
+      float nonspec = 0;
+      lightsource( "__nonspecular", nonspec );
+      if ( nonspec < 1 )
+      { 	   
+  	    vector Ln = normalize(L);
+  	    vector H = normalize( Ln + $(V) );
+  	    float D = $(distro) ( $(Nf), H, $(m) );
+  	    float G = $(geom) ( $(Nf), H, Ln, $(V) );
+  	    float F = $(fresnel_hack) ( $(Nf), $(V), $(IndexOfRefraction) );
+  
+  	    $(cook) += D*G*F;
+  	  }
 	  }
 	  float $(vdotn) = $(V).$(Nf);
 	  $(cook) /= $(vdotn);

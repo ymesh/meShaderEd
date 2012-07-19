@@ -93,7 +93,7 @@ class RIBNode ( Node ):
   #
   #
   def parseLocalVars ( self, parsedStr ) :
-    print '-> parseLocalVars in %s' % parsedStr
+    #print '-> parseLocalVars in %s' % parsedStr
     resultStr = ''
     parserStart = 0
     parserPos = 0

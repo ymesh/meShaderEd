@@ -20,11 +20,13 @@
     <property name="Color" type="color" default="0 0 1" provider="attribute"/>	
     <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>	
     	
-    <property name="FG_disp" label="Displace Shader" type="displacement" default="null" />
     <property name="DisplaceBound" label="Displacement Bound" type="float" default="0.5" provider="attribute"/>
 
-    <property name="FG_surf" label="Surface Shader" type="surface" default="defaultsurface" />
-		<property name="BG_surf" label="Background Shader" type="surface" default="liquidchecker" />
+    
+    <property name="FG_disp" label="Displace Shader" type="rib" default="Displacement &quot;null&quot;" />
+
+    <property name="FG_surf" label="Surface Shader" type="rib" default="Surface &quot;defaultsurface&quot;" />
+		    <property name="BG_surf" label="Background Shader" type="rib" default="Surface &quot;liquidchecker&quot;"/>
 		
 		<property name="PrimitiveCode" type="string" default="" provider="attribute" display="hidden"/>
 	</input>
@@ -69,12 +71,14 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
   <![CDATA[
   Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
   Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
-
+  Option "searchpath" "archive" "&:@:.:~:${ArchiveSearchPath}:${ProjectSearchPath}"
+  
   $(Globals)
+ 
 
   ### Output image
   Display "$(ImageFile)" "tiff" "rgba"
-
+  
   Format $(Width) $(Height) 1.0
 
   Projection "perspective" "fov" 45
@@ -104,8 +108,8 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
       Color [$(Color)]
       Opacity [$(Opacity)]
 
-      Displacement "$(FG_disp)"
-      Surface "$(FG_surf)" 
+      $(FG_disp)
+      $(FG_surf) 
       
       $(PrimitiveCode)
       
@@ -114,7 +118,7 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
     AttributeBegin 
       Scale 7 7 7
       Translate 0 0 2
-      Surface "$(BG_surf)" 
+      $(BG_surf) 
       
       Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
     AttributeEnd  

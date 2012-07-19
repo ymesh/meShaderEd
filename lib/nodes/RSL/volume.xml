@@ -6,7 +6,7 @@
 		<property name="Oi" type="color" default="color(1.0, 1.0, 1.0)" />		
 	</input>
 	<output>
-	<property name="volume" type="volume" default="${NODELABEL}" />
+	<property name="volume" type="rib" default="Volume &quot;${NODELABEL}&quot;" />
 	</output>
 	<internal>
 	</internal>
@@ -15,10 +15,4 @@
 	  Oi = $(Oi);
 	  ]]>
 	</code>
-	<preview>
-		<shader type="surface">
-			<code>
-			</code>
-		</shader>
-	</preview>	
 </node>

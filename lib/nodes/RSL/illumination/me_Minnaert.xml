@@ -43,11 +43,16 @@
 	  
 	  /* NVidia version ???
 	  
-	  illuminance( P, Nf, PI/2 )
+	  illuminance( $(category), P, Nf, PI/2 )
 	  {
 	    extern vector L;
-	    ndotl = max(0, (normalize(L)).Nf);
-	    cminnaert += Cl*pow(ndotl, k);
+	    float nonspec = 0;
+      lightsource( "__nonspecular", nonspec );
+      if ( nonspec < 1 )
+      { 
+  	    ndotl = max(0, (normalize(L)).Nf);
+  	    cminnaert += Cl*pow(ndotl, k);
+  	  }
 	  }
 	  vector V = -normalize(I);
 	  float ndotv = max(0, Nf.V);

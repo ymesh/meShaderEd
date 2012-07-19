@@ -1,0 +1,181 @@
+light "liquidspot";
+desc "Standard Maya-Like Spot Light\nPart of Liquid.";
+
+param "__category";
+name "__category";
+
+param "intensity";
+name "intensity";
+desc "";
+type "slider";
+range [ 0 100 ];
+
+param "lightcolor";
+name "lightcolor";
+desc "";
+
+param "__nondiffuse";
+name "Non Diffuse";
+desc "";
+type "bool";
+
+param "__nonspecular";
+name "Non Specular";
+desc "";
+type "bool";
+
+param "coneangle";
+name "coneangle";
+desc "";
+type "slider";
+
+param "penumbraangle";
+name "penumbraangle";
+desc "";
+type "slider";
+
+param "dropoff";
+name "dropoff";
+desc "";
+type "slider";
+
+param "decay";
+name "decay";
+desc "";
+type "selector";
+range [ None 0 Linear 1 Quadratic 2 Cubic 3 ];
+
+param "lightID";
+name "lightID";
+
+group "Barn Doors";
+  param "barndoors";
+  name "barndoors";
+  desc "";
+  type "bool";
+
+  param "leftbarndoor";
+  name "leftbarndoor";
+  type "slider";
+  range [ 0 1 ];
+
+  param "rightbarndoor";
+  name "rightbarndoor";
+  type "slider";
+  range [ 0 1 ];
+
+  param "topbarndoor";
+  name "topbarndoor";
+  type "slider";
+  range [ 0 1 ];
+
+  param "bottombarndoor";
+  name "bottombarndoor";
+  type "slider";
+  range [ 0 1 ];
+group "end";
+
+group "Decay Regions";
+
+  param "decayRegions";
+  name "decayRegions";
+  type "bool";
+
+  group "Regions 1";
+
+    param "startDistance1";
+    name "startDistance1";
+
+    param "endDistance1";
+    name "endDistance1";
+
+    param "startDistanceIntensity1";
+    name "startDistanceIntensity1";
+
+    param "endDistanceIntensity1";
+    name "endDistanceIntensity1";
+
+  group "end";
+
+  group "Regions 2";
+
+    param "startDistance2";
+    name "startDistance2";
+
+    param "endDistance2";
+    name "endDistance2";
+
+    param "startDistanceIntensity2";
+    name "startDistanceIntensity2";
+
+    param "endDistanceIntensity2";
+    name "endDistanceIntensity2";
+
+  group "end";
+
+  group "Regions 3";
+
+    param "startDistance3";
+    name "startDistance3";
+
+    param "endDistance3";
+    name "endDistance3";
+
+    param "startDistanceIntensity3";
+    name "startDistanceIntensity3";
+
+    param "endDistanceIntensity3";
+    name "endDistanceIntensity3";
+
+  group "end";
+
+group "end";
+
+group "Shadow";
+  param "shadowname";
+  name "Shadow Name";
+  type "shadow";
+
+  param "shadowbias";
+  name "Shadow Bias";
+  type "slider";
+  range [ 0 1 ];
+
+  param "shadowblur";
+  name "Shadow Blur";
+  type "slider";
+  range [ 0 1 ];
+
+  param "shadowsamples";
+  name "Shadow Samples";
+  type "selector";
+  range [ 8 8 16 16 32 32 64 64 ];
+
+  param "shadowfiltersize";
+  name "Shadow Filter Size";
+  type "slider";
+
+  param "shadowcolor";
+  name "Shadow Color";
+  desc "";
+
+  group "AOVs" "close";
+    param "__shadowC";
+    name "__shadowC";
+    desc "";
+
+    param "__shadowF";
+    name "__shadowF";
+    desc "";
+
+    param "__barn";
+    name "__barn";
+    desc "";
+
+    param "__unshadowed_Cl";
+    name "__unshadowed_Cl";
+    desc "";
+  group "end";
+
+group "end";
+

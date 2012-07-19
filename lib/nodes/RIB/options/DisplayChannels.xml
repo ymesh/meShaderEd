@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<node name="DisplayChannels" author="mesh" type="rib_code">
+	<help>DisplayChannels options</help>
+	<input>
+    <property name="Filter" type="string" default="catmull-rom" provider="attribute" subtype="selector"
+      range="box:triangle:catmull-rom:gaussian:sinc:blackman-harris:mitchell:separable-catmull-rom:lanczos:bessel"/>
+    <property name="FilterWidth" label="Filter width" type="float" default="2.0" provider="attribute"/>	
+	</input>
+    
+	<output>
+  <property name="rib" label="rib" type="rib" default=""/>
+	</output>
+	<code_param>
+  <![CDATA[
+	]]>    
+	</code_param>
+	<code>
+  <![CDATA[
+  #Display Channels:
+  DisplayChannel "color __color" "int[4] quantize" [ 0 255 0 255 ] "float dither" [0.5] "string filter" ["$(Filter)"] "float filterwidth[2]" [$(FilterWidth) $(FilterWidth)]
+  DisplayChannel "color __diff" "int[4] quantize" [ 0 255 0 255 ] "float dither" [0.5] "string filter" ["$(Filter)"] "float filterwidth[2]" [$(FilterWidth) $(FilterWidth)]
+  DisplayChannel "color __spec" "int[4] quantize" [ 0 255 0 255 ] "float dither" [0.5] "string filter" ["$(Filter)"] "float filterwidth[2]" [$(FilterWidth) $(FilterWidth)]
+  DisplayChannel "color __diff_ibi" "int[4] quantize" [ 0 255 0 255 ] "float dither" [0.5] "string filter" ["$(Filter)"] "float filterwidth[2]" [$(FilterWidth) $(FilterWidth)]
+  DisplayChannel "color __spec_ibi" "int[4] quantize" [ 0 255 0 255 ] "float dither" [0.5] "string filter" ["$(Filter)"] "float filterwidth[2]" [$(FilterWidth) $(FilterWidth)]
+  DisplayChannel "float __occ" "int[4] quantize" [ 0 255 0 255 ] "float dither" [0.5] "string filter" ["$(Filter)"] "float filterwidth[2]" [$(FilterWidth) $(FilterWidth)]
+  ]]>
+	</code>		
+</node>
+
+ 

@@ -7,16 +7,11 @@
 		<property name="Oi" type="color" default="color(1.0, 1.0, 1.0)" />
 	</input>
 	<output>
-	  <property name="surface" type="surface" default="${NODELABEL}" />
+	  <property name="surface" type="rib" default="Surface &quot;${NODELABEL}&quot;" />
 	</output>
 	<code><![CDATA[
 	  Ci = $(Ci) * $(Oi); 
 	  Oi = $(Oi);
 	]]>
 	</code>
-	<preview>
-		<shader type="surface">
-			<code></code>
-		</shader>
-	</preview>	
 </node>

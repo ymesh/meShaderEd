@@ -62,6 +62,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
                             ,'s' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkGreen)) 
                             ,'v' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkMagenta))
                             ,'n' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkBlue)) 
+                            ,'R' : QtGui.QBrush(QtGui.QColor('orange')) 
                          }
                                
         

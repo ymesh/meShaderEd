@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui\ui_settingsSetup.ui'
 #
-# Created: Tue May 22 00:06:24 2012
-#      by: PyQt4 UI code generator snapshot-4.9.2-fa0ccc58c397
+# Created: Wed Jul 18 14:26:06 2012
+#      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_SettingsSetup(object):
     def setupUi(self, SettingsSetup):
         SettingsSetup.setObjectName(_fromUtf8("SettingsSetup"))
-        SettingsSetup.resize(398, 302)
+        SettingsSetup.resize(376, 346)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
@@ -131,6 +131,21 @@ class Ui_SettingsSetup(object):
         self.hl_textures.addWidget(self.btn_textures_dir)
         self.hl_textures.setStretch(1, 1)
         self.verticalLayout.addLayout(self.hl_textures)
+        self.hl_archives = QtGui.QHBoxLayout()
+        self.hl_archives.setObjectName(_fromUtf8("hl_archives"))
+        self.label_archives = QtGui.QLabel(self.grp_dirs)
+        self.label_archives.setMinimumSize(QtCore.QSize(80, 0))
+        self.label_archives.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.label_archives.setObjectName(_fromUtf8("label_archives"))
+        self.hl_archives.addWidget(self.label_archives)
+        self.lineEdit_archives = QtGui.QLineEdit(self.grp_dirs)
+        self.lineEdit_archives.setObjectName(_fromUtf8("lineEdit_archives"))
+        self.hl_archives.addWidget(self.lineEdit_archives)
+        self.btn_archives_dir = QtGui.QToolButton(self.grp_dirs)
+        self.btn_archives_dir.setObjectName(_fromUtf8("btn_archives_dir"))
+        self.hl_archives.addWidget(self.btn_archives_dir)
+        self.hl_archives.setStretch(1, 1)
+        self.verticalLayout.addLayout(self.hl_archives)
         self.verticalLayout_2.addWidget(self.grp_dirs)
         spacerItem = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem)
@@ -149,6 +164,7 @@ class Ui_SettingsSetup(object):
         QtCore.QObject.connect(self.btn_nodes_dir, QtCore.SIGNAL(_fromUtf8("clicked()")), SettingsSetup.onBrowseNodesDir)
         QtCore.QObject.connect(self.btn_shaders_dir, QtCore.SIGNAL(_fromUtf8("clicked()")), SettingsSetup.onBrowseShadersDir)
         QtCore.QObject.connect(self.btn_textures_dir, QtCore.SIGNAL(_fromUtf8("clicked()")), SettingsSetup.onBrowseTexturesDir)
+        QtCore.QObject.connect(self.btn_archives_dir, QtCore.SIGNAL(_fromUtf8("clicked()")), SettingsSetup.onBrowseArchivesDir)
         QtCore.QMetaObject.connectSlotsByName(SettingsSetup)
 
     def retranslateUi(self, SettingsSetup):
@@ -166,4 +182,6 @@ class Ui_SettingsSetup(object):
         self.btn_shaders_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None, QtGui.QApplication.UnicodeUTF8))
         self.label_textures.setText(QtGui.QApplication.translate("SettingsSetup", "Textures", None, QtGui.QApplication.UnicodeUTF8))
         self.btn_textures_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_archives.setText(QtGui.QApplication.translate("SettingsSetup", "Archives", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_archives_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None, QtGui.QApplication.UnicodeUTF8))
 

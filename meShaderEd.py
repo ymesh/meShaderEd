@@ -1,8 +1,8 @@
 #!/usr/local/bin/python
 #
-#
 # meShaderEd.py
 #
+# version 0.2.5 19 Jul 2012
 # version 0.2.0 27 May 2012
 # version 0.1.1 16 May 2012
 # version 0.1.0 13 May 2012
@@ -22,7 +22,6 @@
 #
 #
 #===============================================================================
-
 import sys
 import os
 #import ntpath
@@ -95,11 +94,13 @@ def main ():
   node_dir = setDefaultValue ( 'nodes', normPath ( os.path.join ( lib_dir, 'nodes' ) ) )
   texture_dir = setDefaultValue ('texture', normPath ( os.path.join ( lib_dir, 'textures' ) ) )
   shaders_dir = setDefaultValue ('shaders', normPath ( os.path.join ( lib_dir, 'shaders' ) ) )
+  archive_dir = setDefaultValue ('archive', normPath ( os.path.join ( lib_dir, 'archives' ) ) )
+  
   include_dir = setDefaultValue ('include', normPath ( os.path.join ( root, 'include' ) ) )
   
   createMissingDirs ( [temp_dir, lib_dir, project_dir, project_shaders, project_textures] )
   createMissingDirs ( [shader_networks_dir, shader_sources_dir] )
-  createMissingDirs ( [node_dir, texture_dir, shaders_dir, include_dir] )
+  createMissingDirs ( [node_dir, texture_dir, shaders_dir, archive_dir, include_dir] )
   
   #  path(), filePath(), absolutePath(), and absoluteFilePath().
   
@@ -126,6 +127,7 @@ def main ():
   
   app_global_vars[ 'TextureSearchPath' ] = sanitizeSearchPath ( texture_dir )
   app_global_vars[ 'ShaderSearchPath' ] = sanitizeSearchPath ( shaders_dir )
+  app_global_vars[ 'ArchiveSearchPath' ] = sanitizeSearchPath ( archive_dir )
   
   app_global_vars[ 'ProjectSearchPath' ] = sanitizeSearchPath ( project_dir )
   app_global_vars[ 'ProjectSearchShaders' ] = sanitizeSearchPath ( project_shaders )
@@ -140,11 +142,11 @@ def main ():
   
   print 'TextureSearchPath = %s' % app_global_vars[ 'TextureSearchPath' ]
   print 'ShaderSearchPath = %s' % app_global_vars[ 'ShaderSearchPath' ]
+  print 'ArchiveSearchPath = %s' % app_global_vars[ 'ArchiveSearchPath' ]
   print 'Renderer = %s' % app_global_vars[ 'Renderer' ]
   
   #app_global_vars[ 'RibPath' ] = ''
   #app_global_vars[ 'DisplayPath' ] = ''
-  
     
   app_settings.beginGroup( 'WorkArea' )
   
@@ -167,7 +169,6 @@ def main ():
 #
 #
 #
-
 if __name__ == "__main__":
   #safeEffects = QtCore.QT_VERSION >= 0x40600 and QtCore.PYQT_VERSION > 0x40704
   print sys.version

@@ -6,7 +6,7 @@
    <help>Basic primitive preview RIB</help>
    <input>
     <property default="" type="rib" value="" name="Globals" label="Render Options"/>
-    <property provider="attribute" default="Sphere" range="Sphere:Teapot:Cylinder:Torus:Plane" subtype="selector" type="string" value="Sphere" name="Primitive" label="Primitive"/>
+    <property provider="attribute" default="Sphere" range="Sphere:Teapot:Cylinder:Torus:Plane" subtype="selector" type="string" value="Teapot" name="Primitive" label="Primitive"/>
     <property provider="attribute" default="256" type="int" value="128" name="Width" label="Image width"/>
     <property provider="attribute" default="256" type="int" value="128" name="Height" label="Image height"/>
     <property provider="attribute" default="1.250" type="float" value="0.000" name="EnvIntensity" label="EnvLight Intensity"/>
@@ -17,7 +17,7 @@
     <property provider="attribute" default="0.500" type="float" value="0.500" name="DisplaceBound" label="Displacement Bound"/>
     <property default="defaultsurface" type="surface" value="defaultsurface" name="FG_surf" label="Surface Shader"/>
     <property default="liquidchecker" type="surface" value="liquidchecker" name="BG_surf" label="Background Shader"/>
-    <property display="hidden" provider="attribute" default="" type="string" value="Rotate 60 1 0 0&#xa; Sphere 1.0 -1.0 1.0 360" name="PrimitiveCode" label="PrimitiveCode"/>
+    <property display="hidden" provider="attribute" default="" type="string" value="&#xa;      Rotate 0 0 1 0&#xa;      AttributeBegin&#xa;        Scale 0.35 0.35 0.35&#xa;        Translate -0.6 -1 0&#xa;        Rotate 120 -1 0 0&#xa;        Rotate 30 0 0 1&#xa;        Geometry &quot;teapot&quot;&#xa;      AttributeEnd&#xa;      " name="PrimitiveCode" label="PrimitiveCode"/>
    </input>
    <output>
     <property default="${TempPath}/${NODELABEL}.tif" type="image" value="${TempPath}/${NODELABEL}.tif" name="ImageFile" label="ImageFile"/>
@@ -111,7 +111,7 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
 
   WorldEnd
   ]]></code>
-   <offset x="119" y="-291"/>
+   <offset x="121" y="-307"/>
   </node>
   <node icon="" type="image" author="mesh" id="2" name="imageViewer" label="imageViewer">
    <help>Single image viewer </help>
@@ -131,7 +131,7 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 
 
 ]]></param_code>
-   <offset x="259" y="-260"/>
+   <offset x="279" y="-278"/>
   </node>
   <node icon="" type="rib_code" author="mesh" id="3" name="RenderGlobals" label="RenderGlobals">
    <help>RenderGlobals options</help>
@@ -139,7 +139,7 @@ self.imageName = self.getInputParamValueByName ( 'image' )
     <property provider="attribute" default="hidden" range="hidden:raytrace:photon:zbuffer:opengl" subtype="selector" type="string" value="hidden" name="Hider" label="Hider"/>
     <property provider="attribute" default="1" subtype="switch" type="int" value="1" name="Jitter" label="Jitter"/>
     <property provider="attribute" default="1.000" type="float" value="0.100" name="ShadingRate" label="Shading rate"/>
-    <property provider="attribute" default="4" type="int" value="4" name="Samples" label="Samples"/>
+    <property provider="attribute" default="4" type="int" value="6" name="Samples" label="Samples"/>
     <property provider="attribute" default="catmull-rom" range="box:triangle:catmull-rom:gaussian:sinc:blackman-harris:mitchell:separable-catmull-rom:lanczos:bessel" subtype="selector" type="string" value="catmull-rom" name="Filter" label="Filter"/>
     <property provider="attribute" default="2.000" type="float" value="2.000" name="FilterWidth" label="Filter width"/>
     <property default="" type="rib" value="" name="Options" label="Options"/>
@@ -178,7 +178,7 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 	  Ci = $(Ci) * $(Oi); 
 	  Oi = $(Oi);
 	]]></code>
-   <offset x="-17" y="-138"/>
+   <offset x="-15" y="-154"/>
   </node>
   <node icon="" type="rsl_code" author="" id="5" name="floatToColor" label="floatToColor">
    <help>Float to color converter.</help>
@@ -263,7 +263,7 @@ self.imageName = self.getInputParamValueByName ( 'image' )
    <code><![CDATA[
 	  $(outColor) = color(xcomp($(inVector)),ycomp($(inVector)),zcomp($(inVector)) );
 	  ]]></code>
-   <offset x="-168" y="-148"/>
+   <offset x="93" y="356"/>
   </node>
   <node icon="" type="" author="mesh" id="19" name="ColorSpline" label="ColorSpline">
    <help>
@@ -595,328 +595,6 @@ $(f1) = sqrt($(f1));
   ]]></code>
    <offset x="-470" y="-71"/>
   </node>
-  <node icon="" type="" author="Sler guys" id="37" name="marble" label="marble">
-   <help>Marble semi fractal shader.</help>
-   <input>
-    <property default="color(0.800,0.200,0.050)" type="color" value="color(0.800,0.200,0.050)" name="inColor1" label="inColor1"/>
-    <property default="color(0.800,0.800,0.790)" type="color" value="color(0.800,0.800,0.790)" name="inColor2" label="inColor2"/>
-    <property default="2.500" type="float" value="2.500" name="veining" label="veining"/>
-    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="P" label="P"/>
-   </input>
-   <output>
-    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="outColor" label="outColor"/>
-   </output>
-   <internal>
-    <variable name="surfaceColor"/>
-    <variable name="layerColor"/>
-    <variable name="layerOpac"/>
-    <variable name="PP"/>
-    <variable name="V"/>
-    <variable name="Nf"/>
-    <variable name="Nf"/>
-    <variable name="width"/>
-    <variable name="cutoff"/>
-    <variable name="fade"/>
-    <variable name="f"/>
-    <variable name="turb"/>
-    <variable name="maxfreq"/>
-    <variable name="r"/>
-    <variable name="g"/>
-    <variable name="b"/>
-   </internal>
-   <include/>
-   <code><![CDATA[
-#define snoise(x)    (noise(x) * 2 - 1)
-#define MINFILTERWIDTH  1e-7
-#define filterwidth_point(p) (max(sqrt(area(p)), MINFILTERWIDTH))
-#define blend(a,b,x) ((a) * (1 - (x)) + (b) * (x))
-
-color $(surfaceColor), $(layerColor);
-color $(layerOpac);
-point $(PP);
-vector $(V);
-normal $(Nf) ;
-float $(width), $(cutoff), $(fade), $(f), $(turb), $(maxfreq) = 16;
-
-/* init */
-$(surfaceColor) = 0;
-
-$(Nf) = faceforward(normalize(N), I);
-$(V) = -normalize(I);
-
-/* compute turbulence */
-$(PP) = $(P) * $(veining);
-
-$(width) = filterwidth_point($(PP));
-$(cutoff) = clamp(0.5 / $(width), 0, $(maxfreq));
-
-$(turb) = 0;
-for($(f) = 1; $(f) < 0.5 * $(cutoff); $(f) *= 2) 
-    $(turb) += abs(snoise($(PP) * $(f))) / $(f);
-$(fade) = clamp(2 * ($(cutoff) - $(f)) / $(cutoff), 0, 1);
-$(turb) += $(fade) * abs(snoise($(PP) * $(f))) / $(f);
-
-$(turb) *= 0.5;  /* to match original rmarble turbulence value */
-
-/* use turb to index into spline for layer color */
-
-float $(r) = comp($(inColor1), 0);
-float $(g) = comp($(inColor1), 1);
-float $(b) = comp($(inColor1), 2);
-
-$(layerColor) = spline($(turb),
-        		       $(inColor1),
-        		       $(inColor1),
-        		       color($(r), $(g)+0.3, $(b)+0.25),
-        		       color($(r)-0.2, $(g)+0.394, $(b)+0.53),
-        		       color($(r)-0.5, $(g)+0.1, $(b)+0.35),
-        		       color($(r)-0.75, $(g)+0.15, $(b)+0.05),
-        		       $(inColor2),
-        		       $(inColor2)); 
-		       
-$(layerOpac) = 1;
-$(surfaceColor) = blend($(surfaceColor), $(layerColor), $(layerOpac));
-
-$(outColor) = $(surfaceColor);
-]]></code>
-   <offset x="-652" y="357"/>
-  </node>
-  <node icon="" type="" author="Alexei Puzikov" id="42" name="blinn" label="blinn">
-   <help>Blinn illumination model.</help>
-   <input>
-    <property default="color(0.000,0.500,1.000)" type="color" value="color(0.000,0.500,1.000)" name="SurfaceColor" label="SurfaceColor"/>
-    <property default="0.800" type="float" value="0.800" name="diffuseCoeff" label="diffuseCoeff"/>
-    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="ambientColor" label="ambientColor"/>
-    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="incandescence" label="incandescence"/>
-    <property default="0.000" type="float" value="0.000" name="translucence" label="translucence"/>
-    <property default="color(0.500,0.500,0.500)" type="color" value="color(0.500,0.500,0.500)" name="specularColor" label="specularColor"/>
-    <property default="0.300" type="float" value="0.300" name="eccentricity" label="eccentricity"/>
-    <property default="0.700" type="float" value="0.700" name="specularRollOff" label="specularRollOff"/>
-   </input>
-   <output>
-    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="outColor" label="outColor"/>
-   </output>
-   <internal>
-    <variable name="Nf"/>
-    <variable name="H"/>
-    <variable name="Ln"/>
-    <variable name="E"/>
-    <variable name="V"/>
-    <variable name="Ia"/>
-    <variable name="Id"/>
-    <variable name="Itr"/>
-    <variable name="Is"/>
-    <variable name="NH"/>
-    <variable name="NH2"/>
-    <variable name="NHSQ"/>
-    <variable name="Dd"/>
-    <variable name="Gg"/>
-    <variable name="VN"/>
-    <variable name="VH"/>
-    <variable name="LN"/>
-    <variable name="Ff"/>
-    <variable name="tmp"/>
-   </internal>
-   <include/>
-   <code><![CDATA[ 
- normal $(Nf);
- vector $(H), $(Ln), $(V);
- color $(Ia), $(Id), $(Itr), $(Is);
- float $(NH), $(NH2), $(NHSQ), $(Dd), $(Gg), $(VN), $(VH), $(LN), $(Ff), $(tmp);
- float $(E)= 1 / ($(eccentricity) * $(eccentricity)- 1);
-  
- $(Nf)= faceforward(normalize(N), I);
- $(Ia)= ambient() + $(ambientColor);
- $(Id)= $(diffuseCoeff)* diffuse($(Nf));
- 
- $(Itr)= 0;
- if ($(translucence)!= 0) {
-  illuminance(P, $(Nf), PI)
-  $(Itr)+= Cl;
-  $(Itr)*= $(translucence);
- }
- 
- $(Is)= 0;
- $(V)= normalize(-I);
- $(VN)= $(V).$(Nf);
- illuminance(P, $(Nf), PI * 0.5) {
-  $(Ln)= normalize(L);
-  $(H)= normalize($(Ln)+$(V));
-  $(NH)= $(Nf).$(H);
-  $(NHSQ)= $(NH)*$(NH);
-  $(NH2)= $(NH)* 2;
-  $(Dd)= ($(E)+1) / ($(NHSQ)+ $(E));
-  $(Dd)*= $(Dd);
-  $(VH)= $(V).$(H);
-  $(LN)= $(Ln).$(Nf);
-  if ($(VN) < $(LN)) {
-   if ($(VN)* $(NH2) < $(VH))
-   $(Gg)= $(NH2)/ $(VH);
-   else
-   $(Gg)= 1 / $(VN);
-   }
-  else {
-   if ($(LN)* $(NH2) < $(VH))
-   $(Gg)= ($(LN)* $(NH2)) / ($(VH)* $(VN));
-  else
-  $(Gg)= 1 / $(VN);
- }
- $(tmp)= pow((1 - $(VH)), 3);
- $(Ff)= $(tmp)+ (1 - $(tmp)) * $(specularRollOff);
- $(Is)+= Cl * $(Dd)* $(Gg)* $(Ff);
- }
- $(Is)*= $(specularColor);
- 
- $(outColor)= $(SurfaceColor)* ($(Ia) + $(Id) + $(Itr) + $(incandescence)+ $(Is));
-]]></code>
-   <offset x="-329" y="15"/>
-  </node>
-  <node icon="" type="" author="Alexei Puzikov" id="43" name="lambert" label="lambert">
-   <help>Lambert illumination model.</help>
-   <input>
-    <property default="color(0.000,0.500,1.000)" type="color" value="color(0.000,0.500,1.000)" name="SurfaceColor" label="SurfaceColor"/>
-    <property default="0.800" type="float" value="0.800" name="diffuseCoeff" label="diffuseCoeff"/>
-    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="ambientColor" label="ambientColor"/>
-    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="incandescence" label="incandescence"/>
-    <property default="0.000" type="float" value="0.000" name="translucence" label="translucence"/>
-   </input>
-   <output>
-    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="outColor" label="outColor"/>
-   </output>
-   <internal>
-    <variable name="Nf"/>
-    <variable name="V"/>
-    <variable name="Ia"/>
-    <variable name="Id"/>
-    <variable name="Itr"/>
-   </internal>
-   <include/>
-   <code><![CDATA[
- normal $(Nf)= faceforward( normalize(N), I );
- vector $(V)= -normalize(I);
- color $(Ia)= ambient() + $(ambientColor);
- color $(Id)= $(diffuseCoeff)* diffuse($(Nf));
- 
- color $(Itr)= 0;
- if ($(translucence)!= 0) {
-  illuminance(P, $(Nf), PI)
-  $(Itr)+= Cl;
-  $(Itr)*= $(translucence);
- }
- 
- $(outColor)= $(SurfaceColor) * ($(Ia)+ $(Id)+ $(Itr)+ $(incandescence));
- ]]></code>
-   <offset x="-203" y="-22"/>
-  </node>
-  <node icon="" type="" author="Fredrik Gustafsson" id="45" name="toon" label="toon">
-   <help>Toon Antialising Shader.</help>
-   <input>
-    <property default="0.250" type="float" value="0.000" name="Ka" label="Ka"/>
-    <property default="0.670" type="float" value="0.900" name="Kd" label="Kd"/>
-    <property default="35.000" type="float" value="0.300" name="Ks" label="Ks"/>
-    <property default="0.080" type="float" value="0.001" name="roughness" label="roughness"/>
-    <property default="color(1.000,1.000,1.000)" type="color" value="color(1.000,1.000,1.000)" name="specularcolor" label="specularcolor"/>
-    <property default="color(0.000,0.500,1.000)" type="color" value="color(0.000,0.500,1.000)" name="paint_color" label="paint_color"/>
-    <property default="0.920" type="float" value="0.800" name="paint_spec" label="paint_spec"/>
-    <property default="0.350" type="float" value="0.350" name="paint_trans" label="paint_trans"/>
-    <property default="0.025" type="float" value="0.025" name="paint_fuzz" label="paint_fuzz"/>
-    <property default="0.230" type="float" value="0.400" name="ink_thresh" label="ink_thresh"/>
-    <property default="0.020" type="float" value="0.020" name="ink_fuzz" label="ink_fuzz"/>
-    <property default="color(0.050,0.050,0.050)" type="color" value="color(0.050,0.050,0.050)" name="ink_color" label="ink_color"/>
-   </input>
-   <output>
-    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="toonCi" label="toonCi"/>
-    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="toonOi" label="toonOi"/>
-   </output>
-   <internal>
-    <variable name="toonspec"/>
-    <variable name="cos_here"/>
-    <variable name="diff"/>
-    <variable name="spec"/>
-    <variable name="Nf"/>
-    <variable name="normI"/>
-    <variable name="half"/>
-    <variable name="toon_color"/>
-    <variable name="layer_color"/>
-    <variable name="toon_opac"/>
-    <variable name="layer_opac"/>
-   </internal>
-   <include/>
-   <code><![CDATA[
-#define blend(a,b,x) ((a) * (1 - (x)) + (b) * (x))
-#define union(a,b) ((a) + (b) - (a) * (b))
-
-float
-$(toonspec)(vector N, V; float roughness)
-{
-  extern point P;  
-  extern vector L;
-  float C = 0;
-  vector H;
-  
-  illuminance ( P, N, PI/2 ) 
-  {
-    H = normalize( normalize( L )+V );
-    C += pow(N.H, 1/roughness);
-  }
-  return C;
-}
-
-  float $(cos_here);
-  float $(diff), $(spec);
-  normal $(Nf);
-  vector $(normI), $(half);
-
-  color $(toon_color), $(layer_color);
-  color $(toon_opac), $(layer_opac);
-
-  $(Nf)= faceforward(normalize(N), I);
-  $(normI)= normalize(I);
-
-  /* background layer (layer 0) */
-  $(toon_color)= color (0, 0, 0);
-  $(toon_opac)= Os;
-
-  /* toon paint (layer 1) */
-
-  /* only care about percentage illumination */
-  $(diff)= 0;
-  illuminance ( P, $(Nf), PI/2 )
-    $(diff) += normalize(L).$(Nf); 
-
-  /* antialias the transition */
-  $(diff)= smoothstep($(paint_trans)- $(paint_fuzz)/2, $(paint_trans)+ $(paint_fuzz)/2, $(diff));
-
-  /* specular -- transition also antialiased */  
-  $(spec)= $(toonspec)($(Nf), -normalize(I), $(roughness));
-  $(spec)= smoothstep($(paint_spec)- $(paint_fuzz)/2, $(paint_spec)+ $(paint_fuzz)/2, $(spec));
-
-  $(layer_color)= Cs*($(Kd)*$(diff)*$(paint_color)+ $(Ka)*ambient()) + $(specularcolor)*$(Ks)*$(spec);
-  $(layer_opac)= Os;
-
-  $(toon_color)= blend($(toon_color), $(layer_color), $(layer_opac));
-  $(toon_opac)=  union($(toon_opac), $(layer_opac));
-
-  /* toon ink (layer 3) */
-  
-  $(cos_here)= normalize($(Nf)).$(normI);
-
-  /* antialias ink lines */
-  $(layer_opac)= 1 - smoothstep($(ink_thresh)- $(ink_fuzz)/2, $(ink_thresh)+ $(ink_fuzz)/2, abs($(cos_here)));
-  
-  if (abs($(cos_here)) < $(ink_thresh))
-    $(layer_color)= $(ink_color);
-  else
-    $(layer_color)= 0;
-  
-  $(toon_color)= blend($(toon_color), $(layer_color), $(layer_opac));
-  $(toon_opac)=  union($(toon_opac), $(layer_opac));
-
-  $(toonOi)= $(toon_opac);
-  $(toonCi)= $(toon_opac) * $(toon_color);
-]]></code>
-   <offset x="-365" y="227"/>
-  </node>
   <node icon="" type="" author="Simon Bunker" id="46" name="xray" label="xray">
    <help>Simple xray surface shader; assign it to Oi.</help>
    <input>
@@ -933,7 +611,7 @@ $(toonspec)(vector N, V; float roughness)
 float $(opac) = pow ( abs(normalize(N).normalize(I)), $(edgefalloff) );
 $(outOpacity)= ( 1 - $(opac) ) * Oi;
 ]]></code>
-   <offset x="-180" y="146"/>
+   <offset x="87" y="134"/>
   </node>
   <node icon="" type="rsl_code" author="Ivan DeWolf" id="47" name="IDbubbly" label="IDbubbly">
    <help>bubbly.sl written a while ago by Ivan DeWolf ivan@martian-tools.com
@@ -1073,10 +751,225 @@ $(outOpacity)= ( 1 - $(opac) ) * Oi;
 	]]></code>
    <offset x="-155" y="-295"/>
   </node>
+  <node icon="" type="" author="mesh" id="52" name="FaceforwardNormal" label="FaceforwardNormal">
+   <help>Faceforward Normalized Normal.</help>
+   <input/>
+   <output>
+    <property default="normal(0.000,0.000,0.000)" type="normal" value="normal(0.000,0.000,0.000)" name="Nf" label="Nf"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+	$(Nf) = faceforward( normalize(N), I );
+	]]></code>
+   <offset x="-582" y="211"/>
+  </node>
+  <node icon="" type="" author="mesh" id="54" name="clampC" label="clampC">
+   <help>
+	clamp(input,min,max) returns "min:  if "input" is less than "min", "max" if a is greater than "max"; 
+	otherwise it returns "input"
+	</help>
+   <input>
+    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="input" label="input"/>
+    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="min" label="min"/>
+    <property default="color(1.000,1.000,1.000)" type="color" value="color(1.000,1.000,1.000)" name="max" label="max"/>
+   </input>
+   <output>
+    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="result" label="result"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+ $(result) = clamp(($(input)), ($(min)), ($(max)));
+]]></code>
+   <offset x="-151" y="135"/>
+  </node>
+  <node icon="me_CookTorrance.png" type="" author="mesh" id="55" name="me_CookTorrance" label="me_CookTorrance">
+   <help>Specular function (Cook-Torrance BRDF) based on code from Brent Watkins Advanced Digital Cinematography HW6</help>
+   <input>
+    <property default="normal(0.000,0.000,0.000)" type="normal" value="normal(0.000,0.000,0.000)" name="Nf" label="Nf"/>
+    <property default="" type="string" value="" name="category" label="category"/>
+    <property default="color(1.000,1.000,1.000)" type="color" value="color(1.000,1.000,1.000)" name="Coloration" label="Coloration"/>
+    <property default="0.150" range="0 1 0.001" subtype="slider" type="float" value="0.150" name="Ks" label="Ks"/>
+    <property default="0.300" range="0 2 0.001" subtype="slider" type="float" value="0.300" name="IndexOfRefraction" label="IndexOfRefraction">
+     <help>Index of refraction for the surface</help>
+    </property>
+    <property default="0.100" range="0 1 0.001" subtype="slider" type="float" value="0.143" name="m" label="m">
+     <help>Root-mean-square slope of surface microfacets</help>
+    </property>
+   </input>
+   <output>
+    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="result" label="result"/>
+   </output>
+   <internal>
+    <variable name="V"/>
+    <variable name="cook"/>
+    <variable name="vdotn"/>
+    <variable name="distro"/>
+    <variable name="geom"/>
+    <variable name="fresnel_hack"/>
+   </internal>
+   <include/>
+   <code><![CDATA[
+  /* microfacet distribution function */
+	  float $(distro) ( normal Nn;
+		        vector H;
+			float m; )
+	  {
+	    float ndoth = Nn.H;
+	    float beta = acos( ndoth );
+	    float tanbeta = tan( beta );
+	    float tanbeta_over_m = tanbeta/m;
+	    float D = exp(-(tanbeta_over_m*tanbeta_over_m));
+	    D /= 4*m*m*pow(ndoth,4);
+	    return D;
+	  }
+	/* geometric attenuation factor */
+	  float $(geom) ( normal Nn;
+		      vector H;
+		      vector L;
+		      vector V )
+	  {
+	    float ndoth = Nn.H;
+	    float ndotv = Nn.V;
+	    float ndotl = Nn.L;
+	    float vdoth = V.H;
+
+	    float masking = 2*ndoth*ndotv/vdoth;
+	    float shadowing = 2*ndoth*ndotl/vdoth;
+	    return min(1,min(masking,shadowing));
+	  }
+
+	  /* fresnel conductance term - using the faster approximation */
+    float $(fresnel_hack) ( normal Nn;
+			      normal V;
+			      float n; )
+	  {
+	    float ndotv = N.V;
+
+	    float foo = pow(1-ndotv, 5);
+	    return 1-foo + n*foo;
+	  }
+	  
+	  vector $(V) = -normalize(I);
+
+	  float $(cook) = 0;
+	  illuminance( $(category), P, $(Nf), PI/2 )
+	  {
+	    vector Ln = normalize(L);
+	    vector H = normalize( Ln + $(V) );
+	    float D = $(distro) ( $(Nf), H, $(m) );
+	    float G = $(geom) ( $(Nf), H, Ln, $(V) );
+	    float F = $(fresnel_hack) ( $(Nf), $(V), $(IndexOfRefraction) );
+
+	    $(cook) += D*G*F;
+	  }
+	  float $(vdotn) = $(V).$(Nf);
+	  $(cook) /= $(vdotn);
+	  /* normalize - preserves conservation of energy */
+	  $(cook) /= PI;
+
+	  $(result) = $(Coloration) * $(Ks) * $(cook);
+  ]]></code>
+   <offset x="-334" y="26"/>
+  </node>
+  <node icon="" type="" author="Konstantin Kharitonov" id="56" name="normalizeI" label="normalizeI">
+   <help>Returns normalize(I).</help>
+   <input/>
+   <output>
+    <property default="vector(0.000,0.000,0.000)" type="vector" value="vector(0.000,0.000,0.000)" name="In" label="In"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+	  $(In) = normalize(I);
+	  ]]></code>
+   <offset x="-750" y="479"/>
+  </node>
+  <node icon="" type="" author="Konstantin Kharitonov" id="57" name="normalizeN" label="normalizeN">
+   <help>Returns normalize(N).</help>
+   <input/>
+   <output>
+    <property default="normal(0.000,0.000,0.000)" type="normal" value="normal(0.000,0.000,0.000)" name="Nn" label="Nn"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+	  $(Nn) = normalize(N);
+	  ]]></code>
+   <offset x="-568" y="338"/>
+  </node>
+  <node icon="me_CookTorrance.png" type="" author="Scott Eaton" id="58" name="me_CookTorrance2" label="me_CookTorrance2">
+   <help>A simple implementation of the Cook-Torrance shading model describe in:  
+  A Reflectance Model for Computer Graphics R. L. Cook, K. E. Torrance, ACM Transactions on Graphics 1982</help>
+   <input>
+    <property default="normal(0.000,0.000,0.000)" type="normal" value="normal(0.000,0.000,0.000)" name="Nn" label="Nn"/>
+    <property default="" type="string" value="" name="category" label="category"/>
+    <property default="color(1.000,1.000,1.000)" type="color" value="color(1.000,1.000,1.000)" name="Coloration" label="Coloration"/>
+    <property default="0.150" range="0 1 0.001" subtype="slider" type="float" value="0.150" name="Ks" label="Ks"/>
+    <property default="1.300" range="0 2 0.001" subtype="slider" type="float" value="0.097" name="IOR" label="IndexOfRefraction">
+     <help>Index of refraction for the surface</help>
+    </property>
+    <property default="0.200" range="0 1 0.001" subtype="slider" type="float" value="0.256" name="roughness" label="roughness">
+     <help>Root-mean-square slope of surface microfacets</help>
+    </property>
+    <property default="100.000" type="float" value="100.000" name="gaussConstant" label="gaussConstant"/>
+   </input>
+   <output>
+    <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="result" label="result"/>
+   </output>
+   <internal>
+    <variable name="Vn"/>
+    <variable name="cook"/>
+    <variable name="F"/>
+    <variable name="Ktransmit"/>
+    <variable name="m"/>
+    <variable name="NdotV"/>
+   </internal>
+   <include/>
+   <code><![CDATA[
+  vector $(Vn) = normalize(-I);
+  float $(F), $(Ktransmit);
+  float $(m) = $(roughness);
+  fresnel( normalize(I), $(Nn), 1/$(IOR), $(F), $(Ktransmit) );
+  
+  color $(cook) = 0;
+  float $(NdotV) = $(Nn).$(Vn);
+  
+  illuminance( $(category), P, $(Nn), PI/2 )
+  {
+    /* half angle vector */
+    vector Ln = normalize( L );
+    vector H = normalize( $(Vn) + Ln );
+    
+    float NdotH = $(Nn).H;
+    float NdotL = $(Nn).Ln;
+    float VdotH = $(Vn).H;
+    
+    float D;
+    float alpha = acos( NdotH );
+    
+    /* microfacet distribution */
+    D = $(gaussConstant) * exp( -( alpha*alpha )/( $(m)*$(m) ) );
+    
+    /* geometric attenuation factor */
+    float G = min( 1, min( ( 2*NdotH*$(NdotV) / VdotH ), ( 2*NdotH*NdotL / VdotH ) ) );
+    
+    /* sum contributions */
+    $(cook) += Cl * ($(F)*D*G) / ( PI*$(NdotV) );
+  }
+  $(result) = $(Coloration) * $(Ks) * $(cook) / PI;
+  ]]></code>
+   <offset x="-369" y="222"/>
+  </node>
  </nodes>
  <links>
-  <link srcNode_id="1" dstNode_id="2" id="1" srcParam="ImageFile" dstParam="image"/>
-  <link srcNode_id="3" dstNode_id="1" id="2" srcParam="rib" dstParam="Globals"/>
+  <link srcNode_id="1" dstNode_id="2" id="3" srcParam="ImageFile" dstParam="image"/>
+  <link srcNode_id="54" dstNode_id="4" id="8" srcParam="result" dstParam="Ci"/>
+  <link srcNode_id="52" dstNode_id="55" id="12" srcParam="Nf" dstParam="Nf"/>
+  <link srcNode_id="3" dstNode_id="1" id="13" srcParam="rib" dstParam="Globals"/>
+  <link srcNode_id="58" dstNode_id="54" id="15" srcParam="result" dstParam="input"/>
+  <link srcNode_id="52" dstNode_id="58" id="17" srcParam="Nf" dstParam="Nn"/>
   <link srcNode_id="21" dstNode_id="20" id="37" srcParam="Q" dstParam="Q"/>
   <link srcNode_id="21" dstNode_id="20" id="38" srcParam="duQ" dstParam="dQu"/>
   <link srcNode_id="21" dstNode_id="20" id="39" srcParam="dvQ" dstParam="dQv"/>
@@ -1086,13 +979,10 @@ $(outOpacity)= ( 1 - $(opac) ) * Oi;
   <link srcNode_id="21" dstNode_id="36" id="79" srcParam="Q" dstParam="Q"/>
   <link srcNode_id="21" dstNode_id="36" id="80" srcParam="duQ" dstParam="duQ"/>
   <link srcNode_id="21" dstNode_id="36" id="81" srcParam="dvQ" dstParam="dvQ"/>
-  <link srcNode_id="7" dstNode_id="37" id="83" srcParam="Q" dstParam="P"/>
-  <link srcNode_id="46" dstNode_id="4" id="99" srcParam="outOpacity" dstParam="Ci"/>
   <link srcNode_id="49" dstNode_id="47" id="100" srcParam="N" dstParam="N"/>
   <link srcNode_id="48" dstNode_id="47" id="101" srcParam="P" dstParam="P"/>
   <link srcNode_id="47" dstNode_id="50" id="102" srcParam="outP" dstParam="P"/>
   <link srcNode_id="47" dstNode_id="50" id="103" srcParam="outN" dstParam="N"/>
-  <link srcNode_id="50" dstNode_id="1" id="104" srcParam="disp" dstParam="FG_disp"/>
   <link srcNode_id="4" dstNode_id="1" id="105" srcParam="surface" dstParam="FG_surf"/>
  </links>
 </nodenet>

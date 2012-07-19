@@ -261,11 +261,11 @@ class Node ( QtCore.QObject ):
         # some parameters (Color, Point, Vector, Normal, Matrix ...)
         # have different string interpretation in RIB
         #
-        isRibParam = ( self.type == 'rib' )
+        isRibParam = ( self.type == 'rib' or self.type == 'rib_code' )
         param = createParamTable[ param_type ]( xml_param, isRibParam )
         param.isInput = False
         self.addOutputParam ( param ) 
-        #print '--> param = %s value = %s' % ( param.label, param.getValueToStr() )
+        print '--> param = %s value = %s' % ( param.label, param.getValueToStr() )
     
     internal_tag = xml_node.namedItem ( 'internal' )
     if not internal_tag.isNull() :
@@ -406,7 +406,7 @@ class Node ( QtCore.QObject ):
           self.computedLocalParams += declare 
           
     for param in self.outputParams :
-      if not param.type in ['surface', 'displacement', 'light', 'volume'] : 
+      if not param.type in ['rib', 'surface', 'displacement', 'light', 'volume'] : 
         declare = self.getParamDeclaration ( param )
         if param.provider == 'primitive' : 
           self.computedOutputParams.append( 'output ' + declare )  
