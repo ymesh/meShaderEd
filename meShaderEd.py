@@ -2,6 +2,7 @@
 #
 # meShaderEd.py
 #
+# version 0.2.6 29 Aug 2012
 # version 0.2.5 19 Jul 2012
 # version 0.2.0 27 May 2012
 # version 0.1.1 16 May 2012

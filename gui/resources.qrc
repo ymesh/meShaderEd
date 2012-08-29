@@ -5,6 +5,8 @@
     <file>resources/new.png</file>
   </qresource>
   <qresource prefix="show_icons">
+    <file>resources/grid_off.png</file>
+    <file>resources/grid_on.png</file>
     <file>resources/ledoff.png</file>
     <file>resources/ledon.png</file>
     <file>resources/bg_pattern.png</file>

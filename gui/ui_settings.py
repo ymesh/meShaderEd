@@ -22,3 +22,5 @@ if ( sys.platform == 'darwin' ) :
   COMBO_HEIGHT = 24
 MAX = 16777215
 LT_SPACE = CHECK_WIDTH
+TAB_SIZE = 10
+

@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Sun May 27 12:39:29 2012
-#      by: PyQt4 UI code generator snapshot-4.9.2-fa0ccc58c397
+# Created: Thu Aug 02 01:02:59 2012
+#      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -209,7 +209,8 @@ class Ui_MainWindow(object):
         self.actionShowGrid = QtGui.QAction(MainWindow)
         self.actionShowGrid.setCheckable(True)
         icon8 = QtGui.QIcon()
-        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/bg_pattern.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/grid_off.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/grid_on.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.actionShowGrid.setIcon(icon8)
         self.actionShowGrid.setObjectName(_fromUtf8("actionShowGrid"))
         self.actionAbout = QtGui.QAction(MainWindow)

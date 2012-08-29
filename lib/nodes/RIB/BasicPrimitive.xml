@@ -7,6 +7,9 @@
     
     <property name="Primitive" label="Primitive" type="string" provider="attribute" default="Sphere" subtype="selector" range = "Sphere:Teapot:Cylinder:Torus:Plane"/>
     
+    <property name="DisplayDriver" label="Display Driver" type="string" default="tiff" provider="attribute"
+      subtype="selector" range="tiff:framebuffer:it" />
+      
     <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
     <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>	
     
@@ -77,7 +80,7 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
  
 
   ### Output image
-  Display "$(ImageFile)" "tiff" "rgba"
+  Display "$(ImageFile)" "$(DisplayDriver)" "rgba"
   
   Format $(Width) $(Height) 1.0
 

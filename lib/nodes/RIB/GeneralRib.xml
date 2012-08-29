@@ -6,9 +6,11 @@
     <property name="Globals" label="Render Options" type="rib" default=""/>
     <property name="Camera" label="Camera" type="rib" default=""/>
     
+    <property name="DisplayDriver" label="Display Driver" type="string" default="tiff" provider="attribute"
+      subtype="selector" range="tiff:framebuffer:it" />
+    
     <property name="Width" label="Image width" type="int" default="512" provider="attribute"/>
     <property name="Height" label="Image height" type="int" default="512" provider="attribute"/>	
-    
     
     <property name="EnvIntensity" label="EnvLight Intensity" type="float" default="1.25" provider="attribute"/>	
     <property name="EnvMap" label="Environment Map" type="string" default="kitchen_LL.hdr.${TEX}" provider="attribute"
@@ -44,7 +46,7 @@ print ":: Hello from %s XML code !!!" % self.label
   $(Camera)
 
   ### Output image
-  Display "$(ImageFile)" "tiff" "rgba"
+  Display "$(ImageFile)" "$(DisplayDriver)" "rgba"
 
   Format $(Width) $(Height) 1.0
 

@@ -47,6 +47,7 @@ def findExecutable ( executable, path = None ):
 def createMissingDirs ( dirList = None ):   
 
   for dirName in dirList :
+    print '-> Check dir %s' % dirName    
     if not os.path.exists ( dirName ) : 
       print '-> Create missing dir %s' % dirName    
       os.makedirs ( dirName )

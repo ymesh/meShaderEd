@@ -521,7 +521,8 @@
    </property>
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/show_icons/resources/bg_pattern.png</normaloff>:/show_icons/resources/bg_pattern.png</iconset>
+     <normaloff>:/show_icons/resources/grid_off.png</normaloff>
+     <normalon>:/show_icons/resources/grid_on.png</normalon>:/show_icons/resources/grid_off.png</iconset>
    </property>
    <property name="text">
     <string>Show grid</string>

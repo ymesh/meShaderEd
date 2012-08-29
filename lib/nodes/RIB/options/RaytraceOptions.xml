@@ -10,7 +10,11 @@
     <property name="maxdiffusedepth" label="Max Diffuse Depth" type="int" default="1" provider="attribute"/>	
     <property name="maxspeculardepth" label="Max Specular Depth" type="int" default="4" provider="attribute"/>		
   
-    <property name="specularthreshold" label="Specular Threshold" type="float" default="10" provider="attribute"/>		
+    <property name="specularthreshold" label="Specular Threshold" type="float" default="10" provider="attribute"/>	
+    <property name="importancethreshold" label="Importance Threshold" type="float" default="0.001" provider="attribute"/>	
+    <property name="decimationrate" label="Decimation Rate" type="float" default="1" provider="attribute"/>	
+    <property name="traceBias" label="Trace Bias" type="float" default="0" provider="attribute"/>	
+    <property name="traceDisplacement" label="Trace Displacement" type="int" default="1" provider="attribute" subtype="switch"/>
     <property name="continuationbydefault" label="Continuation By Default" type="int" default="1" provider="attribute" subtype="switch"/>
    
 	</input>
@@ -26,15 +30,20 @@
   <![CDATA[
   Option "user" "float traceBreadthFactor" [$(traceBreadthFactor)]
   Option "user" "float traceDepthFactor" [$(traceDepthFactor)]
-  Option "trace" "int maxdepth" 4
+  Option "trace" "int maxdepth" [$(maxdepth)]
 
   Option "trace" "float specularthreshold" [$(specularthreshold)]
   Option "trace" "int continuationbydefault" [$(continuationbydefault)]
+  
 
   Attribute "visibility" "int trace" [1]
   Attribute "visibility" "int transmission" [1]
   Attribute "visibility" "int diffuse" [1]
   Attribute "visibility" "int specular" [1]
+  Attribute "trace" "int displacements" [$(traceDisplacement)]
+  Attribute "trace" "float bias" [$(traceBias)]
+  Attribute "trace" "float importancethreshold" [$(importancethreshold)]
+  Attribute "trace" "float decimationrate" [$(decimationrate)]
 
   Attribute "trace" "int maxdiffusedepth" [$(maxdiffusedepth)]
   Attribute "trace" "int maxspeculardepth" [$(maxspeculardepth)]

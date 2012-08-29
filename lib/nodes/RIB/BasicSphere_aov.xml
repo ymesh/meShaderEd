@@ -3,6 +3,9 @@
 <node name="BasicSphere_aov" author="mesh" type="rib">
 	<help>Basic sphere primitive preview RIB with additional AOV outputs</help>
 	<input>
+   <property name="DisplayDriver" label="Display Driver" type="string" default="tiff" provider="attribute"
+      subtype="selector" range="tiff:framebuffer:it" />
+      
     <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
     <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>	
     <property name="ShadingRate" label="Shading rate" type="float" default="1.0" provider="attribute"/>
@@ -62,7 +65,7 @@
   DisplayChannel "float __occ" "int[4] quantize" [ 0 255 0 255 ] "float dither" [0.5] "string filter" ["$(Filter)"] "float filterwidth[2]" [$(FilterWidth) $(FilterWidth)]
 
   ### Output image
-  Display "$(ImageFile)" "tiff" "rgba"
+  Display "$(ImageFile)" "$(DisplayDriver)" "rgba"
   Display "+$(__color)" "tiff" "__color"
   Display "+$(__diff)" "tiff" "__diff"
   Display "+$(__spec)" "tiff" "__spec"

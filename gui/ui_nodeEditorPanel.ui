@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NodeEditorPanel</class>
+ <widget class="QWidget" name="NodeEditorPanel">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>579</width>
+    <height>499</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QSplitter" name="splitter">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="lineWidth">
+      <number>4</number>
+     </property>
+     <property name="midLineWidth">
+      <number>4</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="handleWidth">
+      <number>8</number>
+     </property>
+     <property name="childrenCollapsible">
+      <bool>false</bool>
+     </property>
+     <widget class="QToolBox" name="toolBox">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
+      <property name="currentIndex">
+       <number>5</number>
+      </property>
+      <widget class="QWidget" name="node">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>469</width>
+         <height>319</height>
+        </rect>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <attribute name="label">
+        <string>Node</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="inputs">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>469</width>
+         <height>319</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Input Parameters</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QListView" name="inputs_listView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="outputs">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>469</width>
+         <height>319</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Output Parameters</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QListView" name="ouputs_listView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="includes">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>469</width>
+         <height>319</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Includes</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QListView" name="includes_listView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="internals">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>469</width>
+         <height>319</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Local Names</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QListView" name="internals_listView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="code">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>469</width>
+         <height>319</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Code</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QListWidget" name="code_listWidget">
+          <item>
+           <property name="text">
+            <string>code</string>
+           </property>
+           <property name="toolTip">
+            <string>Main code text (SL, RIB, ...)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>param_code</string>
+           </property>
+           <property name="toolTip">
+            <string>Python code for parameters control</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::Panel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>1</number>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QStackedWidget" name="side_stackedWidget">
+         <widget class="QWidget" name="side_stackedWidgetPage1"/>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>toolBox</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>NodeEditorPanel</receiver>
+   <slot>onToolBoxIndexChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>348</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>221</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>code_listWidget</sender>
+   <signal>currentItemChanged(QListWidgetItem*,QListWidgetItem*)</signal>
+   <receiver>NodeEditorPanel</receiver>
+   <slot>updateGui()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>243</x>
+     <y>330</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>289</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onToolBoxIndexChanged(int)</slot>
+  <slot>updateGui()</slot>
+ </slots>
+</ui>

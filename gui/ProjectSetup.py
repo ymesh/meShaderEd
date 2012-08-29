@@ -121,7 +121,7 @@ class ProjectSetup( QtGui.QDialog ):
     app_global_vars[ 'ProjectSearchShaders' ] = sanitizeSearchPath ( project_shaders )
     app_global_vars[ 'ProjectSearchTextures' ] = sanitizeSearchPath ( project_textures )
     
-    createMissingDirs ( [project_dir, project_shaders, project_textures, shader_networks_dir] )
+    createMissingDirs ( [project_dir, project_shaders, project_textures, shader_networks_dir, shader_sources_dir] )
     
     #self.emit( QtCore.SIGNAL( "accepted()" ) )
     self.done( 0 ) 

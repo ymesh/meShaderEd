@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<node name="Transform" author="mesh" type="rib_code">
+	<help>Transform RIB code node</help>
+	<input>
+	  <property name="translateX" type="float" default="0"/>
+	  <property name="translateY" type="float" default="0"/>
+	  <property name="translateZ" type="float" default="0"/>
+	  
+	  <property name="scaleX" type="float" default="1"/>
+	  <property name="scaleY" type="float" default="1"/>
+	  <property name="scaleZ" type="float" default="1"/>
+	  
+	  <property name="rib_input" type="rib" default=""/>
+	</input>
+	<output>
+	  <property name="rib_out" label="rib" type="rib" default=""/>
+	</output>
+	<code_param>
+  <![CDATA[
+	]]>    
+	</code_param>
+	<code>
+  <![CDATA[
+  
+  TransformBegin 
+    Translate $(translateX) $(translateY) $(translateZ)
+    Scale $(scaleX) $(scaleY) $(scaleZ)
+    ##Rotate
+    
+	  $(rib_input)
+	TransformEnd 
+
+  ]]>
+	</code>		
+</node>

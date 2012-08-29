@@ -86,16 +86,28 @@ class ImageViewWidget ( QtGui.QWidget ):
   #
   def updateViewer ( self ) :
     print ">> ImageViewWidget: updateViewer"
+    RenderViewMode = False
     idx = self.ui.selector.currentIndex ()
     if len ( self.imageNodes ) > 0 :
       gfxNode = self.imageNodes[ idx ]
       print ">> ImageViewWidget: getImageName on %s" % gfxNode.node.label
       
+      imageInputParam = gfxNode.node.getInputParamByName ( 'image' )
+      if imageInputParam is not None :
+        if gfxNode.node.isInputParamLinked ( imageInputParam ):
+          link = gfxNode.node.inputLinks[ imageInputParam ]
+          displayParam = link.srcNode.getInputParamByName ( 'DisplayDriver' )
+          if displayParam is not None :
+            print '>> Display driver = %s' % displayParam.value
+            if displayParam.value != 'tiff' :
+              RenderViewMode = True  
+      
       imageName = gfxNode.node.computeNode()
       
       print ">> ImageViewWidget: imageName = %s" % imageName
       
-      self.ui.imageArea.setImage ( imageName )
+      if not RenderViewMode :
+        self.ui.imageArea.setImage ( imageName )
       
       #imageParam = None
       #for param in gfxNode.node.inputParams :

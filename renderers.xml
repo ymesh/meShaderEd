@@ -31,5 +31,4 @@
         <shader compiler="shaderdc" sloinfo="soinfo" extension="dll" defines="RDC"/>
     </preset>
 </renderers>
->
-</renderers>
+

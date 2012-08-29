@@ -450,6 +450,13 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   def mouseDoubleClickEvent ( self, event ):
     #print ">> WorkArea: mouseDoubleClickEvent"
+    selected = self.scene().selectedItems()
+    
+    for item in selected:
+      if isinstance ( item, GfxNode ): 
+        print '>> Edit node %s' % item.node.label 
+        self.emit( QtCore.SIGNAL( "editGfxNode" ), item ) 
+        
     QtGui.QGraphicsView.mouseDoubleClickEvent ( self, event )
   #
   #  

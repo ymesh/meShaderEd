@@ -1,0 +1,38 @@
+#===============================================================================
+# NodeEditorWindow.py
+#
+# ver. 1.0.0
+# Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
+# 
+# Dialog for managing node code and parameters
+# 
+#===============================================================================
+
+import os, sys
+from PyQt4 import QtCore, QtGui
+
+from core.meCommon import *
+from global_vars import app_global_vars
+
+from ui_nodeEditorWindow import Ui_NodeEditorWindow
+#
+#
+#
+class NodeEditorWindow ( QtGui.QDialog ):
+  #
+  #
+  def __init__ ( self, editNode = None ):
+    QtGui.QDialog.__init__(self)
+    
+    self.editNode = editNode
+
+    self.buildGui()
+  #
+  #
+  def buildGui ( self ):
+    # build the gui created with QtDesigner
+    self.ui = Ui_NodeEditorWindow ()
+    self.ui.setupUi ( self )
+    self.ui.widget.setEditNode ( self.editNode )
+    
+    

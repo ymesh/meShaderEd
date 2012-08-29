@@ -6,7 +6,7 @@
 #===============================================================================
 import os, sys
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui,  QtXml
 
 from global_vars import app_global_vars
 from core.meCommon import *
@@ -16,6 +16,7 @@ from core.nodeNetwork import NodeNetwork
 from meRendererSetup import meRendererSetup
 from ProjectSetup import ProjectSetup
 from SettingsSetup import SettingsSetup
+from NodeEditorWindow import NodeEditorWindow
 
 from nodeList import NodeList
 
@@ -85,6 +86,7 @@ class MainWindow ( QtGui.QMainWindow ):
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "nodeParamChanged" ), self.onNodeParamChanged  )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "gfxNodeAdded" ), self.onAddGfxNode )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "gfxNodeRemoved" ), self.onRemoveGfxNode )
+      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "editGfxNode" ), self.onEditGfxNode )
   #
   #
   def disconnectWorkAreaSignals ( self ) :
@@ -95,6 +97,7 @@ class MainWindow ( QtGui.QMainWindow ):
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "nodeParamChanged" ), self.onNodeParamChanged  )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "gfxNodeAdded" ), self.onAddGfxNode )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "gfxNodeRemoved" ), self.onRemoveGfxNode )  
+      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "editGfxNode" ), self.onEditGfxNode )
   #
   #
   def setupMenuBar ( self ) :
@@ -169,6 +172,8 @@ class MainWindow ( QtGui.QMainWindow ):
     #
     print ">> MainWindow: onRenderSavePreset  preset = %s" % app_renderer.getCurrentPresetName()
     app_renderer.saveSettings ()
+  
+    
   #
   #
   def onShowGrid ( self, check ):
@@ -249,6 +254,15 @@ class MainWindow ( QtGui.QMainWindow ):
     if gfxNode.node.type == 'image' :
       self.ui.imageView_ctl.removeViewer ( gfxNode )
       #QtCore.QObject.disconnect ( self.ui.nodeParam_ctl, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.ui.imageView_ctl.onNodeParamChanged ) 
+  #
+  #
+  def onEditGfxNode ( self, gfxNode ):
+    print ">> MainWindow: onEditGfxNode" 
+    import copy
+    editNode = copy.deepcopy( gfxNode.node )
+    nodeEditDlg = NodeEditorWindow ( editNode )
+    if ( nodeEditDlg.exec_() == QtGui.QDialog.Accepted ) :
+      print '>> MainWindow: onEditGfxNode Accepted'
   #
   #
   def onDelete ( self ):

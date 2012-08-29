@@ -34,14 +34,14 @@ control result of the function.</help>
 		<property name="result" type="float"/>		
 	</output>
 	<internal>
-		
+	<variable name = "cosangle"/>	
 	</internal>
 	<code><![CDATA[
-	float cosangle = normalize(-I).normalize(N);
-	if( cosangle < 0)
-		$(result) = -pow(-cosangle, $(Attenuation));
+	float $(cosangle) = normalize(-I).normalize(N);
+	if( $(cosangle) < 0)
+		$(result) = -pow(-$(cosangle), $(Attenuation));
 	else
-		$(result) = pow(cosangle, $(Attenuation));
+		$(result) = pow( $(cosangle), $(Attenuation));
 	if( $(Abs) != 0 )
 		$(result) = abs($(result));
 	if( $(Clamp) != 0 )
