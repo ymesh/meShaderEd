@@ -41,6 +41,10 @@ class NodeEditorPanel ( QtGui.QDialog ):
   def setEditNode ( self, editNode ): 
     print '>> NodeEditorPanel: setEditNode'
     self.editNode = editNode 
+    
+    item = QtGui.QListWidgetItem( editNode.name )
+    self.ui.nodes_listWidget.addItem( item )
+    
     self.updateGui ()
     
   #
@@ -49,6 +53,8 @@ class NodeEditorPanel ( QtGui.QDialog ):
     # build the gui created with QtDesigner
     self.ui = Ui_NodeEditorPanel ( )
     self.ui.setupUi ( self )
+    
+    
 
   #
   #

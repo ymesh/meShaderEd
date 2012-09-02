@@ -13,8 +13,8 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout_6">
+   <item>
     <widget class="QSplitter" name="splitter">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
@@ -55,7 +55,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>469</width>
+         <width>517</width>
          <height>319</height>
         </rect>
        </property>
@@ -68,13 +68,24 @@
        <attribute name="label">
         <string>Node</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QListWidget" name="nodes_listWidget"/>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="inputs">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>469</width>
+         <width>517</width>
          <height>319</height>
         </rect>
        </property>
@@ -89,7 +100,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QListView" name="inputs_listView"/>
+         <widget class="QListWidget" name="inputs_listWidget"/>
         </item>
        </layout>
       </widget>
@@ -98,7 +109,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>469</width>
+         <width>517</width>
          <height>319</height>
         </rect>
        </property>
@@ -113,7 +124,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QListView" name="ouputs_listView"/>
+         <widget class="QListWidget" name="ouputs_listWidget"/>
         </item>
        </layout>
       </widget>
@@ -122,7 +133,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>469</width>
+         <width>517</width>
          <height>319</height>
         </rect>
        </property>
@@ -137,7 +148,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QListView" name="includes_listView"/>
+         <widget class="QListWidget" name="includes_listWidget"/>
         </item>
        </layout>
       </widget>
@@ -146,7 +157,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>469</width>
+         <width>517</width>
          <height>319</height>
         </rect>
        </property>
@@ -161,7 +172,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QListView" name="internals_listView"/>
+         <widget class="QListWidget" name="internals_listWidget"/>
         </item>
        </layout>
       </widget>
@@ -170,7 +181,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>469</width>
+         <width>517</width>
          <height>319</height>
         </rect>
        </property>

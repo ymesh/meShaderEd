@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Thu Aug 02 01:02:59 2012
+# Created: Sat Sep 01 22:17:49 2012
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(1113, 650)
+        MainWindow.resize(1113, 886)
         MainWindow.setDockOptions(QtGui.QMainWindow.AllowTabbedDocks|QtGui.QMainWindow.AnimatedDocks)
         MainWindow.setUnifiedTitleAndToolBarOnMac(False)
         self.centralwidget = QtGui.QWidget(MainWindow)
@@ -61,6 +61,7 @@ class Ui_MainWindow(object):
         self.menuEdit.setFont(font)
         self.menuEdit.setObjectName(_fromUtf8("menuEdit"))
         self.menuCommand = QtGui.QMenu(self.menubar)
+        self.menuCommand.setEnabled(False)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("MS Shell Dlg 2"))
         font.setPointSize(8)

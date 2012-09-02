@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1113</width>
-    <height>650</height>
+    <height>886</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -124,6 +124,9 @@
     <addaction name="actionSettings"/>
    </widget>
    <widget class="QMenu" name="menuCommand">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="font">
      <font>
       <family>MS Shell Dlg 2</family>

@@ -312,6 +312,8 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onZoomReset ( self ) :    
     print ">> MainWindow: onZoomReset"
+    self.workArea.resetZoom()
+    
   #
   #
   def onNewParamView ( self ) :    

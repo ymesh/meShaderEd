@@ -1,6 +1,9 @@
 
 meShaderEd.py
 
+version 0.2.6 (29 Aug 2012)
+   Added nodeEditorWindow feature
+ 
 version 0.2.5 (19 Jul 2012)
   added icons in node description window
   added ReadArchive node
