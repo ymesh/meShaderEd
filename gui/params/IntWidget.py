@@ -17,16 +17,19 @@ class IntWidget ( ParamWidget ):
   #
   #                 
   def buildGui ( self ):
-    
-    if self.param.subtype == 'selector': 
-      self.ui = Ui_IntWidget_selector()
-    elif self.param.subtype == 'switch': 
-      self.ui = Ui_IntWidget_switch()
-    elif self.param.subtype == 'slider' or self.param.subtype == 'vslider' : 
-      self.ui = Ui_IntWidget_slider()
-    else:
+    #
+    if not self.ignoreSubtype :
+      if self.param.subtype == 'selector': 
+        self.ui = Ui_IntWidget_selector()
+      elif self.param.subtype == 'switch': 
+        self.ui = Ui_IntWidget_switch()
+      elif self.param.subtype == 'slider' or self.param.subtype == 'vslider' : 
+        self.ui = Ui_IntWidget_slider()
+      else:
+        self.ui = Ui_IntWidget_field() 
+    else :
       self.ui = Ui_IntWidget_field() 
-       
+         
     self.ui.setupUi ( self )
 #
 # Ui_IntWidget_field
@@ -63,8 +66,7 @@ class Ui_IntWidget_field ( object ):
   def onIntEditEditingFinished ( self ) :
     intStr = self.intEdit.text()
     intValue = intStr.toInt()[0] 
-    self.widget.param.value = intValue       
-    #self.controler.editProperty( floatValue )  #
+    self.widget.param.setValue (  intValue )      
   #
   #      
   def updateGui ( self, value ): self.intEdit.setText ( QtCore.QString.number( value ) )
@@ -103,7 +105,7 @@ class Ui_IntWidget_switch ( object ):
   def onStateChanged ( self, value ):
     intValue = self.checkBox.isChecked()    
     # print "CALL: onStateChanged value = %d  floatValue = %d" % ( value, floatValue )
-    self.widget.param.value = intValue
+    self.widget.param.setValue ( intValue )
   #
   #      
   def updateGui ( self, value ): self.checkBox.setChecked( value != 0 )  
@@ -148,9 +150,7 @@ class Ui_IntWidget_selector ( object ):
     ( intValue, ok ) = self.selector.itemData ( idx ).toInt()
     #print ">> Ui_IntWidget_selector setValue = " # %d" % intValue
     #print intValue
-    self.widget.param.value = int( intValue )
-    self.widget.param.paramChanged ()
-    #self.controler.editProperty( stringValue )
+    self.widget.param.setValue ( int( intValue ) )
   #
   #      
   def updateGui ( self, setValue ): 
@@ -226,12 +226,12 @@ class Ui_IntWidget_slider ( object ):
   def onIntEditEditingFinished ( self ):
     intStr = self.intEdit.text()
     intValue = intStr.toInt()[0] 
-    self.widget.param.value = intValue     
+    self.widget.param.setValue ( intValue )    
     self.slider.setValue ( intValue )
   #
   #                      
   def onSliderValueChanged ( self, value ) :
-    self.widget.param.value = value
+    self.widget.param.setValue ( value )
     self.updateGui ( value) 
     #self.widget.param.paramChanged ()
   #

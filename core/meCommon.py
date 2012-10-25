@@ -5,6 +5,8 @@
 #
 #===============================================================================
 import os, sys
+
+
 from PyQt4 import QtCore
 #
 #
@@ -24,30 +26,30 @@ def findExecutable ( executable, path = None ):
     # executable files on OS/2 can have an arbitrary extension, but
     # .exe is automatically appended if no dot is present in the name
     if not ext:
-        executable = executable + ".exe"
+      executable = executable + ".exe"
   elif sys.platform == 'win32':
     pathext = os.environ['PATHEXT'].lower().split(os.pathsep)
     (base, ext) = os.path.splitext(executable)
     if ext.lower() not in pathext:
-        extlist = pathext
+      extlist = pathext
   for ext in extlist:
     execname = executable + ext
     if os.path.isfile( execname ):
-        return execname
+      return execname
     else:
-        for p in paths:
-            f = os.path.join(p, execname)
-            if os.path.isfile(f):
-                return f
+      for p in paths:
+        f = os.path.join(p, execname)
+        if os.path.isfile(f):
+          return f
   else:
-      return None
+    return None
 #
 #
 #
 def createMissingDirs ( dirList = None ):   
-
+  #
   for dirName in dirList :
-    print '-> Check dir %s' % dirName    
+    #print '-> Check dir %s' % dirName    
     if not os.path.exists ( dirName ) : 
       print '-> Create missing dir %s' % dirName    
       os.makedirs ( dirName )
@@ -68,10 +70,65 @@ def normPath ( pathName ) :
 # replace C:/ with //C/ for RIB search path names
 #
 def sanitizeSearchPath ( pathName ) :
-  
   #print ':: sanitizeSearchPath %s' %  pathName
   sanitizedPath = pathName
   if ( sys.platform == 'win32' ) :
     if pathName[1:2] == ':' :
       sanitizedPath = ( '//' + pathName[0:1] + pathName[2:] )
-  return sanitizedPath       
+  return sanitizedPath
+#
+# is pathname relative ? 
+#
+def isRelativePath ( pathName ) :
+  isRelative = True
+  if ( sys.platform == 'win32' ) :
+    if pathName[1:2] == ':' : isRelative = False
+  if pathName[0:1] == '\\' or pathName[0:1] == '/' : 
+    isRelative = False
+  return isRelative     
+#
+# get pathName relative to rootPath 
+#
+def toRelativePath ( rootPath, pathName ) :
+  #print ':: toRelativePath %s' %  pathName
+  relativePath = pathName
+  if not isRelativePath ( pathName ) :
+    if pathName.find ( rootPath ) != -1 :
+      relativePath = pathName[ len( rootPath ) + 1 :  ]  
+    
+  return relativePath
+#
+# get full pathName from relative to rootPath 
+#
+def fromRelativePath ( rootPath, pathName ) :
+  #print ':: fromRelativePath %s' %  pathName
+  fullPath = pathName
+  if isRelativePath ( pathName ) :
+    fullPath = os.path.join ( rootPath, pathName )
+    
+  return fullPath  
+#
+# launch process
+#
+def launchProcess ( cmdList ) :
+  #
+  import subprocess, errno
+  
+  try:
+    if ( sys.platform.startswith( 'linux' ) ):
+      (sysname, nodename, release, version, machine) = os.uname()
+      #print 'sysname = %s' % sysname
+      #print 'release = %s' % release
+      #print 'version = %s' % version
+      if version.find( 'Ubuntu' ) != -1 :
+        print 'Ubuntu'
+        retval = os.popen( ' '.join( cmdList ) )
+      else :
+        retval = subprocess.call( cmdList )  
+    else:        
+      retval = subprocess.call( cmdList )
+  except OSError, e:
+    if e.errno != errno.EINTR : raise 
+    
+  
+  

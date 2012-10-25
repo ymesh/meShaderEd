@@ -119,6 +119,10 @@ class ImageViewWidget ( QtGui.QWidget ):
       #  self.ui.imageArea.setImage ( imageParam.value )   
   #
   #
+  def autoUpdate ( self ) :
+    return self.ui.chk_auto.isChecked()
+  #
+  #
   def onNodeParamChanged ( self, node, param ) :
     print ">> ImageViewWidget: onNodeParamChanged %s %s" % ( node.label, param.name )
     if node == self.currentImageNode().node :
@@ -133,3 +137,6 @@ class ImageViewWidget ( QtGui.QWidget ):
         self.ui.selector.setItemText ( i, newLabel )
         break    
       i += 1 
+
+    
+      

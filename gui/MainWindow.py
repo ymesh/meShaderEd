@@ -11,12 +11,13 @@ from PyQt4 import QtCore, QtGui,  QtXml
 from global_vars import app_global_vars
 from core.meCommon import *
 
-from core.nodeNetwork import NodeNetwork
+from gfx.gfxNode import GfxNode
+from core.nodeNetwork import *
 
 from meRendererSetup import meRendererSetup
 from ProjectSetup import ProjectSetup
 from SettingsSetup import SettingsSetup
-from NodeEditorWindow import NodeEditorWindow
+from NodeEditorPanel import NodeEditorPanel
 
 from nodeList import NodeList
 
@@ -76,6 +77,7 @@ class MainWindow ( QtGui.QMainWindow ):
     QtCore.QObject.connect ( self.ui.tabs, QtCore.SIGNAL( "tabCloseRequested(int)" ), self.onTabCloseRequested )
     
     QtCore.QObject.connect ( self.ui.nodeParam_ctl, QtCore.SIGNAL( "nodeLabelChanged" ), self.onNodeLabelChanged  )
+    QtCore.QObject.connect ( self.ui.nodeParam_ctl, QtCore.SIGNAL( "nodeParamChanged" ), self.onNodeParamChanged  )
   #
   #
   def connectWorkAreaSignals ( self ) :
@@ -83,7 +85,7 @@ class MainWindow ( QtGui.QMainWindow ):
       if self.activeNodeList != None :
         QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL( "addNode" ), self.workArea.insertNodeNet  ) 
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "selectNodes" ), self.onSelectGfxNodes  )
-      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "nodeParamChanged" ), self.onNodeParamChanged  )
+      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "nodeConnectionChanged" ), self.onNodeParamChanged  )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "gfxNodeAdded" ), self.onAddGfxNode )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "gfxNodeRemoved" ), self.onRemoveGfxNode )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL( "editGfxNode" ), self.onEditGfxNode )
@@ -94,7 +96,7 @@ class MainWindow ( QtGui.QMainWindow ):
       if self.activeNodeList != None :
         QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL( "addNode" ), self.workArea.insertNodeNet  )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "selectNodes" ), self.onSelectGfxNodes  )
-      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "nodeParamChanged" ), self.onNodeParamChanged  )
+      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "nodeConnectionChanged" ), self.onNodeParamChanged  )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "gfxNodeAdded" ), self.onAddGfxNode )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "gfxNodeRemoved" ), self.onRemoveGfxNode )  
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL( "editGfxNode" ), self.onEditGfxNode )
@@ -118,7 +120,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   #
   def setupPanels ( self ) :
-        
+    #        
     self.tabifyDockWidget ( self.ui.dockGeom, self.ui.dockPreview ) 
     self.tabifyDockWidget ( self.ui.dockProject, self.ui.dockNodes ) 
     
@@ -129,7 +131,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   #
   def onProjectSetup ( self ):
-
+    #
     print ">> MainWindow: onProjectSetup" 
     projectSetupDlg = ProjectSetup ( app_settings )
     projectSetupDlg.exec_()
@@ -137,7 +139,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   #
   def onSettingsSetup ( self ):
-
+    #
     print ">> MainWindow: onSettingsSetup" 
     settingsSetupDlg = SettingsSetup ( app_settings )
     settingsSetupDlg.exec_()
@@ -145,7 +147,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   #
   def onRenderSettings ( self ):
-
+    #
     print ">> MainWindow: onRenderSettings" 
     renderSettingsDlg = meRendererSetup ( app_renderer )
     QtCore.QObject.connect( renderSettingsDlg, QtCore.SIGNAL("presetChanged"), self.onRenderPresetChanged )
@@ -172,8 +174,6 @@ class MainWindow ( QtGui.QMainWindow ):
     #
     print ">> MainWindow: onRenderSavePreset  preset = %s" % app_renderer.getCurrentPresetName()
     app_renderer.saveSettings ()
-  
-    
   #
   #
   def onShowGrid ( self, check ):
@@ -230,7 +230,8 @@ class MainWindow ( QtGui.QMainWindow ):
   # Called by WorkArea after drag&drop event
   # Here we choose selected nodeList panel (Libray or Project)
   # for processing node request
-  def onGetNode ( self, itemFilename, pos ):
+  def onGetNode ( self, itemFilename, pos ) :
+    #
     if self.activeNodeList != None :
       self.activeNodeList.onGetNode ( itemFilename, pos ) 
   #
@@ -239,7 +240,6 @@ class MainWindow ( QtGui.QMainWindow ):
     #
     #print ">> MainWindow: onAddGfxNode = %s" % gfxNode.node.label
     if gfxNode.node.type == 'image' :
-      
       self.ui.imageView_ctl.addViewer ( gfxNode )
       
       #if self.ui.nodeParam_ctl.receivers( QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ) ) == 0 :
@@ -258,9 +258,11 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onEditGfxNode ( self, gfxNode ):
     print ">> MainWindow: onEditGfxNode" 
-    import copy
-    editNode = copy.deepcopy( gfxNode.node )
-    nodeEditDlg = NodeEditorWindow ( editNode )
+    #import copy
+    #editNode = copy.deepcopy( gfxNode.node )
+    dom = QtXml.QDomDocument ( gfxNode.node.name ) 
+    xml_node = gfxNode.node.parseToXML ( dom )
+    nodeEditDlg = NodeEditorPanel ( xml_node )
     if ( nodeEditDlg.exec_() == QtGui.QDialog.Accepted ) :
       print '>> MainWindow: onEditGfxNode Accepted'
   #
@@ -289,17 +291,27 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   #
   def onNodeLabelChanged ( self, gfxNode, newLabel ) :
-
+    #
     self.workArea.nodeNet.renameNodeLabel ( gfxNode.node, newLabel )
     gfxNode.updateNodeLabel()
     self.ui.imageView_ctl.onNodeLabelChanged ( gfxNode, newLabel )
     self.workArea.scene().update()
   #
   #
-  def onNodeParamChanged ( self, gfxNode, param ) :
+  def onNodeParamChanged ( self, node, param ) :
+    print ">> MainWindow: onNodeParamChanged"
     #param.shaderParam = not gfxNode.node.isInputParamLinked ( param )
-    gfxNode.updateInputParams ()
-    self.ui.nodeParam_ctl.updateGui ()
+    
+    # from WorkArea we have GfxNode in signal nodeConnectionChanged
+    # hence need to update nodeParam_ctl
+    if isinstance ( node, GfxNode ) :
+      print "* update nodeView" 
+      node.updateInputParams ()
+      self.ui.nodeParam_ctl.updateGui ()
+      
+    if self.ui.imageView_ctl.autoUpdate () :
+      print "* auto update" 
+      self.ui.imageView_ctl.updateViewer()
   #
   #
   def onFitAll ( self ) :    

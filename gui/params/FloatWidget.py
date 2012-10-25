@@ -19,16 +19,19 @@ class FloatWidget ( ParamWidget ):
   #
   #                 
   def buildGui ( self ):
-    
-    if self.param.subtype == 'selector': 
-      self.ui = Ui_FloatWidget_selector()
-    elif self.param.subtype == 'switch': 
-      self.ui = Ui_FloatWidget_switch()
-    elif self.param.subtype == 'slider' or self.param.subtype == 'vslider' : 
-      self.ui = Ui_FloatWidget_slider()
-    else:
+    #
+    if not self.ignoreSubtype :
+      if self.param.subtype == 'selector': 
+        self.ui = Ui_FloatWidget_selector()
+      elif self.param.subtype == 'switch': 
+        self.ui = Ui_FloatWidget_switch()
+      elif self.param.subtype == 'slider' or self.param.subtype == 'vslider' : 
+        self.ui = Ui_FloatWidget_slider()
+      else:
+        self.ui = Ui_FloatWidget_field() 
+    else :
       self.ui = Ui_FloatWidget_field() 
-       
+         
     self.ui.setupUi ( self )
 #
 # Ui_FloatWidget_field
@@ -65,11 +68,12 @@ class Ui_FloatWidget_field ( object ):
   def onFloatEditEditingFinished ( self ):
     floatStr = self.floatEdit.text()
     floatValue = floatStr.toFloat()[0] 
-    self.widget.param.value = floatValue       
-    #self.controler.editProperty( floatValue )  #
+    self.widget.param.setValue ( floatValue )       
+    # self.widget.param.paramChanged ()
   #
   #      
-  def updateGui ( self, value ): self.floatEdit.setText ( QtCore.QString.number(value, 'f', 3) )
+  def updateGui ( self, value ): 
+    self.floatEdit.setText ( QtCore.QString.number(value, 'f', 3) )
 #
 # Ui_FloatWidget_switch
 #          
@@ -105,7 +109,8 @@ class Ui_FloatWidget_switch ( object ):
   def onStateChanged ( self, value ):
     floatValue = self.checkBox.isChecked()    
     # print "CALL: onStateChanged value = %d  floatValue = %d" % ( value, floatValue )
-    self.widget.param.value = floatValue
+    self.widget.param.setValue ( floatValue )
+    # self.widget.param.paramChanged ()
   #
   #      
   def updateGui ( self, value ): self.checkBox.setChecked( value != 0 )  
@@ -148,11 +153,11 @@ class Ui_FloatWidget_selector ( object ):
   #                      
   def onCurrentIndexChanged ( self, idx ):
     ( floatValue, ok ) = self.selector.itemData ( idx ).toFloat()
-    print ">> Ui_FloatWidget_selector setValue = " # %d" % floatValue
-    print floatValue
-    self.widget.param.value = float( floatValue )
-    self.widget.param.paramChanged ()
-    #self.controler.editProperty( stringValue )
+    #print ">> Ui_FloatWidget_selector setValue = " # %d" % floatValue
+    #print floatValue
+    self.widget.param.setValue ( float( floatValue ) )
+    #self.widget.param.paramChanged ()
+    
   #
   #      
   def updateGui ( self, setValue ): 
@@ -245,8 +250,8 @@ class Ui_FloatWidget_slider ( object ):
   def onFloatEditEditingFinished ( self ) :
     floatStr = self.floatEdit.text()
     floatValue = floatStr.toFloat()[0] 
-    self.widget.param.value = floatValue       
-    #self.controler.editProperty( floatValue )  #
+    self.widget.param.setValue ( floatValue )       
+    #self.widget.param.paramChanged ()
     
     floatMinVal = 0
     floatMaxVal = 1
@@ -288,7 +293,7 @@ class Ui_FloatWidget_slider ( object ):
     multiplier = self.getRangeMultiplier ( floatStep ) 
     
     floatValue = float ( intValue ) / float ( multiplier )
-    self.widget.param.value = floatValue
+    self.widget.param.setValue ( floatValue )
     self.updateGui ( floatValue ) 
     #self.widget.param.paramChanged ()
   #

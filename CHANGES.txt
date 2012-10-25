@@ -1,6 +1,12 @@
 
 meShaderEd.py
 
+version 0.2.7 (20 Sep 2012)
+   ProjectSetup: Using relative pathes for resource directories (20 Sep 2012)
+   ImageView: Auto update checkbox (9 Oct 2012)
+   ImageView: Reset zoom button (9 Oct 2012)
+   NodeEditorWindow: replaced by NodeEditorPanel
+   
 version 0.2.6 (29 Aug 2012)
    Added nodeEditorWindow feature
  

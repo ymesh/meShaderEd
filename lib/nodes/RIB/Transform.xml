@@ -11,6 +11,11 @@
 	  <property name="scaleY" type="float" default="1"/>
 	  <property name="scaleZ" type="float" default="1"/>
 	  
+	  <property name="Angle" type="float" default="0"/>
+	  <property name="rotateX" type="float" default="1"/>
+	  <property name="rotateY" type="float" default="0"/>
+	  <property name="rotateZ" type="float" default="0"/>
+	  
 	  <property name="rib_input" type="rib" default=""/>
 	</input>
 	<output>
@@ -26,7 +31,7 @@
   TransformBegin 
     Translate $(translateX) $(translateY) $(translateZ)
     Scale $(scaleX) $(scaleY) $(scaleZ)
-    ##Rotate
+    Rotate $(Angle) $(rotateX) $(rotateY) $(rotateZ)
     
 	  $(rib_input)
 	TransformEnd 

@@ -93,8 +93,8 @@ class Ui_ColorWidget_field ( object ):
       newValue = ( colorSelected.redF(),
                    colorSelected.greenF(),
                    colorSelected.blueF())        
-      self.widget.param.value = newValue
-      self.widget.param.paramChanged ()
+      self.widget.param.setValue ( newValue )
+      #self.widget.param.paramChanged ()
       self.updateGui ( self.widget.param.value )
 
   #

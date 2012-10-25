@@ -29,3 +29,5 @@ app_global_vars = {
   ,'TEX':''
   ,'SLO':''
 }
+DEBUG_MODE = True
+

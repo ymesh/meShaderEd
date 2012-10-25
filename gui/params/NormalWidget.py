@@ -74,9 +74,8 @@ class Ui_NormalWidget_field ( object ):
     f1 = floatStr1.toFloat()[0] 
     f2 = floatStr2.toFloat()[0]
     
-    self.widget.param.value = [ f0, f1, f2 ]
-    self.widget.param.paramChanged ()       
-    #self.controler.editProperty( floatValue )  #
+    self.widget.param.setValue ( [ f0, f1, f2 ] )
+
   #
   #
   #      

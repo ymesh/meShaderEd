@@ -25,7 +25,7 @@ class ProjectSetup( QtGui.QDialog ):
     QtGui.QDialog.__init__(self)
 
     self.app_settings = app_settings
-          
+    self.rootDir = str( self.app_settings.value('project').toString() )      
     #self.debugPrint()
     self.buildGui ()
   #
@@ -42,48 +42,63 @@ class ProjectSetup( QtGui.QDialog ):
     ##else :
     ##  font.setPointSize(10)
     
-    self.ui.lineEdit_project.setText( self.app_settings.value('project').toString() )
+    self.ui.lineEdit_project.setText( self.rootDir )
 
-    self.ui.lineEdit_network.setText( self.app_settings.value('shader_networks').toString() )
-    self.ui.lineEdit_sources.setText( self.app_settings.value('shader_sources').toString() )
-    self.ui.lineEdit_shaders.setText( self.app_settings.value('project_shaders').toString() )
-    self.ui.lineEdit_textures.setText( self.app_settings.value('project_textures').toString() )
+    self.ui.lineEdit_network.setText( toRelativePath( self.rootDir, str( self.app_settings.value('shader_networks').toString() ) ) )
+    self.ui.lineEdit_sources.setText( toRelativePath( self.rootDir, str( self.app_settings.value('shader_sources').toString() ) ) )
+    self.ui.lineEdit_shaders.setText( toRelativePath( self.rootDir, str( self.app_settings.value('project_shaders').toString() ) ) )
+    self.ui.lineEdit_textures.setText( toRelativePath( self.rootDir, str( self.app_settings.value('project_textures').toString() ) ) )
+  #
+  #
+  #
+  def setupProject ( self ) :
+    #
+    project_shaders = normPath ( fromRelativePath( self.rootDir, str( self.ui.lineEdit_shaders.text() ) ) )
+    project_textures = normPath ( fromRelativePath( self.rootDir, str( self.ui.lineEdit_textures.text() ) ) )
+    
+    shader_networks_dir = normPath ( fromRelativePath( self.rootDir, str( self.ui.lineEdit_network.text() ) ) )
+    shader_sources_dir = normPath ( fromRelativePath( self.rootDir, str( self.ui.lineEdit_sources.text() ) ) )
+    
+    createMissingDirs ( [self.rootDir, project_shaders, project_textures, shader_networks_dir, shader_sources_dir] )
+    
+    return ( project_shaders, project_textures, shader_networks_dir, shader_sources_dir )
   #
   #  
   def onBrowseProjectDir ( self ):
     curDir = self.ui.lineEdit_project.text()
     newDir = QtGui.QFileDialog.getExistingDirectory( self, "Select Project Directory", curDir )
     if newDir != '' : 
-      self.ui.lineEdit_project.setText( normPath( newDir ) )
-
+      self.rootDir = normPath( newDir )
+      self.ui.lineEdit_project.setText( self.rootDir )
+      self.setupProject ()
   #
   #  
   def onBrowseNetworksDir ( self ):
-    curDir = self.ui.lineEdit_network.text()
+    curDir = fromRelativePath( self.rootDir, str( self.ui.lineEdit_network.text() ) )
     newDir = QtGui.QFileDialog.getExistingDirectory( self, "Select Shader Networks Directory", curDir )
     if newDir != '' : 
-      self.ui.lineEdit_network.setText( normPath( newDir ) )
+      self.ui.lineEdit_network.setText( toRelativePath( self.rootDir, normPath( newDir ) ) )
   #
   #  
   def onBrowseSourcesDir ( self ):
-    curDir = self.ui.lineEdit_sources.text()
+    curDir = fromRelativePath( self.rootDir, str( self.ui.lineEdit_sources.text() ) )
     newDir = QtGui.QFileDialog.getExistingDirectory( self, "Select Shader Sources Directory", curDir )
     if newDir != '' : 
-      self.ui.lineEdit_sources.setText( normPath( newDir ) )
+      self.ui.lineEdit_sources.setText( toRelativePath( self.rootDir, normPath( newDir ) ) )
   #
   #  
   def onBrowseShadersDir ( self ):
-    curDir = self.ui.lineEdit_shaders.text()
+    curDir = fromRelativePath( self.rootDir, str( self.ui.lineEdit_shaders.text() ) )
     newDir = QtGui.QFileDialog.getExistingDirectory( self, "Select Compiled Shaders Directory", curDir )
     if newDir != '' : 
-      self.ui.lineEdit_shaders.setText( normPath( newDir ) )
+      self.ui.lineEdit_shaders.setText( toRelativePath( self.rootDir, normPath( newDir ) ) )
   #
   #  
   def onBrowseTexturesDir ( self ):
-    curDir = self.ui.lineEdit_textures.text()
+    curDir = fromRelativePath( self.rootDir, str( self.ui.lineEdit_textures.text() ) )
     newDir = QtGui.QFileDialog.getExistingDirectory( self, "Select Textures Directory", curDir )
     if newDir != '' : 
-      self.ui.lineEdit_textures.setText( normPath( newDir ) )
+      self.ui.lineEdit_textures.setText( toRelativePath( self.rootDir, normPath( newDir ) ) )
   #
   #  
   def reject ( self ):
@@ -95,21 +110,23 @@ class ProjectSetup( QtGui.QDialog ):
   def accept ( self ):
     #print ">> ProjectSetup: accept"
 
-    project_dir = normPath ( self.ui.lineEdit_project.text() )
-    project_shaders = normPath ( self.ui.lineEdit_shaders.text() )
-    project_textures = normPath ( self.ui.lineEdit_textures.text() )
+    #project_dir = normPath ( self.ui.lineEdit_project.text() )
+    ( project_shaders, project_textures, shader_networks_dir, shader_sources_dir ) = self.setupProject ()
     
-    shader_networks_dir = normPath ( self.ui.lineEdit_network.text() )
-    shader_sources_dir = normPath ( self.ui.lineEdit_sources.text() )
+    #project_shaders = normPath ( fromRelativePath( self.rootDir, str( self.ui.lineEdit_shaders.text() ) ) )
+    #project_textures = normPath ( fromRelativePath( self.rootDir, str( self.ui.lineEdit_textures.text() ) ) )
     
-    self.app_settings.setValue( 'project', project_dir )
+    #shader_networks_dir = normPath ( fromRelativePath( self.rootDir, str( self.ui.lineEdit_network.text() ) ) )
+    #shader_sources_dir = normPath ( fromRelativePath( self.rootDir, str( self.ui.lineEdit_sources.text() ) ) )
+    
+    self.app_settings.setValue( 'project', self.rootDir )
 
     self.app_settings.setValue( 'shader_networks', shader_networks_dir )
     self.app_settings.setValue( 'shader_sources', shader_sources_dir )
     self.app_settings.setValue( 'project_shaders', project_shaders )
     self.app_settings.setValue( 'project_textures', project_textures )
     
-    app_global_vars[ 'ProjectPath' ] = project_dir
+    app_global_vars[ 'ProjectPath' ] = self.rootDir
     
     app_global_vars[ 'ProjectShaders' ] = project_shaders
     app_global_vars[ 'ProjectTextures' ] = project_textures
@@ -117,11 +134,11 @@ class ProjectSetup( QtGui.QDialog ):
     app_global_vars[ 'ProjectNetworks' ] = shader_networks_dir
     app_global_vars[ 'ProjectSources' ] = shader_sources_dir
     
-    app_global_vars[ 'ProjectSearchPath' ] = sanitizeSearchPath ( project_dir )
+    app_global_vars[ 'ProjectSearchPath' ] = sanitizeSearchPath ( self.rootDir )
     app_global_vars[ 'ProjectSearchShaders' ] = sanitizeSearchPath ( project_shaders )
     app_global_vars[ 'ProjectSearchTextures' ] = sanitizeSearchPath ( project_textures )
     
-    createMissingDirs ( [project_dir, project_shaders, project_textures, shader_networks_dir, shader_sources_dir] )
+    #createMissingDirs ( [self.rootDir, project_shaders, project_textures, shader_networks_dir, shader_sources_dir] )
     
     #self.emit( QtCore.SIGNAL( "accepted()" ) )
     self.done( 0 ) 

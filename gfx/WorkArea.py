@@ -318,8 +318,8 @@ class WorkArea ( QtGui.QGraphicsView ):
 
       self.currentGfxLink.link = link
       self.nodeNet.addLink ( link ) 
-      self.emit( QtCore.SIGNAL( 'nodeParamChanged' ), self.currentGfxLink.srcConnector.parentItem(), self.currentGfxLink.srcConnector.param )
-      self.emit( QtCore.SIGNAL( 'nodeParamChanged' ), self.currentGfxLink.dstConnector.parentItem(), self.currentGfxLink.dstConnector.param ) 
+      #self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), self.currentGfxLink.srcConnector.parentItem(), self.currentGfxLink.srcConnector.param )
+      self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), self.currentGfxLink.dstConnector.parentItem(), self.currentGfxLink.dstConnector.param ) 
     
     self.lastConnectCandidateReset ()
     self.currentGfxLink = None
@@ -343,10 +343,10 @@ class WorkArea ( QtGui.QGraphicsView ):
       self.nodeNet.removeLink ( gfxLink.link )
       if srcConnector is not None :  
         print "srcConnector.parentItem().node.label = %s " % srcConnector.parentItem().node.label
-        self.emit( QtCore.SIGNAL( 'nodeParamChanged' ), srcConnector.parentItem(), srcConnector.param )
+        #self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), srcConnector.parentItem(), srcConnector.param )
       if dstConnector is not None :
         print "dstConnector.parentItem().node.label = %s " % dstConnector.parentItem().node.label
-        self.emit( QtCore.SIGNAL( 'nodeParamChanged' ), dstConnector.parentItem(), dstConnector.param ) 
+        self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), dstConnector.parentItem(), dstConnector.param ) 
   #
   #
   def removeSelected ( self ):

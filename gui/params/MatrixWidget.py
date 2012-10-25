@@ -92,8 +92,8 @@ class Ui_MatrixWidget_field ( object ):
     self.floatEdit14.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     self.floatEdit15.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     
-    spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
-    lt_space1 = QtGui.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
+    
+    
         
     #spacer1 = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     #spacer2 = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
@@ -105,54 +105,59 @@ class Ui_MatrixWidget_field ( object ):
     self.hl1 = QtGui.QHBoxLayout ( self.raw1 )
     self.hl1.setSpacing ( UI.SPACING )
     self.hl1.setMargin ( 0 )
-    
+    lt_space1 = QtGui.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
     self.hl1.addItem ( lt_space1 )    
     self.hl1.addWidget ( self.floatEdit0 )
     self.hl1.addWidget ( self.floatEdit1 )
     self.hl1.addWidget ( self.floatEdit2 )
     self.hl1.addWidget ( self.floatEdit3 )
-    self.hl1.addItem ( spacer )
+    spacer1 = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
+    self.hl1.addItem ( spacer1 )
     
     self.raw2 = QtGui.QWidget(  MatrixWidget )
     
     self.hl2 = QtGui.QHBoxLayout ( self.raw2 )
     self.hl2.setSpacing ( UI.SPACING )
     self.hl2.setMargin ( 0 )
-    
-    self.hl2.addItem ( lt_space1 )    
+    lt_space2 = QtGui.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
+    self.hl2.addItem ( lt_space2 )    
     self.hl2.addWidget ( self.floatEdit4 )
     self.hl2.addWidget ( self.floatEdit5 )
     self.hl2.addWidget ( self.floatEdit6 )
     self.hl2.addWidget ( self.floatEdit7 )
-    self.hl2.addItem ( spacer )
+    spacer2 = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
+    self.hl2.addItem ( spacer2 )
     
     self.raw3 = QtGui.QWidget(  MatrixWidget )
     
     self.hl3 = QtGui.QHBoxLayout ( self.raw3 )
     self.hl3.setSpacing ( UI.SPACING )
     self.hl3.setMargin ( 0 )
-    
-    self.hl3.addItem ( lt_space1 )    
+    lt_space3 = QtGui.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
+    self.hl3.addItem ( lt_space3 )    
     self.hl3.addWidget ( self.floatEdit8 )
     self.hl3.addWidget ( self.floatEdit9 )
     self.hl3.addWidget ( self.floatEdit10 )
     self.hl3.addWidget ( self.floatEdit11 )
-    self.hl3.addItem ( spacer )
+    spacer3 = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
+    self.hl3.addItem ( spacer3 )
     
     self.raw4 = QtGui.QWidget(  MatrixWidget )
     
     self.hl4 = QtGui.QHBoxLayout ( self.raw4 )
     self.hl4.setSpacing ( UI.SPACING )
     self.hl4.setMargin ( 0 )
-    
-    self.hl4.addItem ( lt_space1 )    
+    lt_space4 = QtGui.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
+    self.hl4.addItem ( lt_space4 )    
     self.hl4.addWidget ( self.floatEdit12 )
     self.hl4.addWidget ( self.floatEdit13 )
     self.hl4.addWidget ( self.floatEdit14 )
     self.hl4.addWidget ( self.floatEdit15 )
-    self.hl4.addItem ( spacer )
+    spacer4 = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
+    self.hl4.addItem ( spacer4 )
     
-    self.widget.hl.addItem ( spacer )
+    spacer5 = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
+    self.widget.hl.addItem ( spacer5 )
         
     self.widget.vl.addWidget ( self.raw1 )
     self.widget.vl.addWidget ( self.raw2 )
@@ -222,44 +227,43 @@ class Ui_MatrixWidget_field ( object ):
     f2 = floatStr2.toFloat()[0]
     f3 = floatStr3.toFloat()[0]
     
-    self.widget.param.value[ 0 ] = [ f0, f1, f2, f3 ]
+    #self.widget.param.value[ 0 ] = [ f0, f1, f2, f3 ]
     
     floatStr0 = self.floatEdit4.text()
     floatStr1 = self.floatEdit5.text()
     floatStr2 = self.floatEdit6.text()
     floatStr3 = self.floatEdit7.text()
-    f0 = floatStr0.toFloat()[0]
-    f1 = floatStr1.toFloat()[0] 
-    f2 = floatStr2.toFloat()[0]
-    f3 = floatStr3.toFloat()[0]
+    f4 = floatStr0.toFloat()[0]
+    f5 = floatStr1.toFloat()[0] 
+    f6 = floatStr2.toFloat()[0]
+    f7 = floatStr3.toFloat()[0]
     
-    self.widget.param.value[ 1 ] = [ f0, f1, f2, f3 ]
+    #self.widget.param.value[ 1 ] = [ f4, f5, f6, f7 ]
     
     floatStr0 = self.floatEdit8.text()
     floatStr1 = self.floatEdit9.text()
     floatStr2 = self.floatEdit10.text()
     floatStr3 = self.floatEdit11.text()
-    f0 = floatStr0.toFloat()[0]
-    f1 = floatStr1.toFloat()[0] 
-    f2 = floatStr2.toFloat()[0]
-    f3 = floatStr3.toFloat()[0]
+    f8 = floatStr0.toFloat()[0]
+    f9 = floatStr1.toFloat()[0] 
+    f10 = floatStr2.toFloat()[0]
+    f11 = floatStr3.toFloat()[0]
     
-    self.widget.param.value[ 2 ] = [ f0, f1, f2, f3 ]
+    #self.widget.param.value[ 2 ] = [ f8, f9, f10, f11 ]
     
     floatStr0 = self.floatEdit12.text()
     floatStr1 = self.floatEdit13.text()
     floatStr2 = self.floatEdit14.text()
     floatStr3 = self.floatEdit15.text()
-    f0 = floatStr0.toFloat()[0]
-    f1 = floatStr1.toFloat()[0] 
-    f2 = floatStr2.toFloat()[0]
-    f3 = floatStr3.toFloat()[0]
+    f12 = floatStr0.toFloat()[0]
+    f13 = floatStr1.toFloat()[0] 
+    f14 = floatStr2.toFloat()[0]
+    f15 = floatStr3.toFloat()[0]
     
-    self.widget.param.value[ 3 ] = [ f0, f1, f2, f3 ]
+    #self.widget.param.value[ 3 ] = [ f12, f13, f14, f15 ]
     
-    
-    self.widget.param.paramChanged ()       
-    #self.controler.editProperty( floatValue )  #
+    self.widget.param.setValue ( [ [ f0, f1, f2, f3 ], [ f4, f5, f6, f7 ], [ f8, f9, f10, f11 ],[ f12, f13, f14, f15 ] ] )
+
   #
   # value  = [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]]   
   #      

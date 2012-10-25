@@ -249,7 +249,7 @@ class Node ( QtCore.QObject ):
         param = createParamTable[ param_type ]( xml_param, isRibParam )
         param.isInput = True
         self.addInputParam ( param )
-        print '--> param = %s value = %s (isRibParam = %d )' % ( param.label, param.getValueToStr(), isRibParam )
+        #print '--> param = %s value = %s (isRibParam = %d )' % ( param.label, param.getValueToStr(), isRibParam )
     
     output_tag = xml_node.namedItem ( 'output' )
     if not output_tag.isNull() :
@@ -265,7 +265,7 @@ class Node ( QtCore.QObject ):
         param = createParamTable[ param_type ]( xml_param, isRibParam )
         param.isInput = False
         self.addOutputParam ( param ) 
-        print '--> param = %s value = %s' % ( param.label, param.getValueToStr() )
+        #print '--> param = %s value = %s' % ( param.label, param.getValueToStr() )
     
     internal_tag = xml_node.namedItem ( 'internal' )
     if not internal_tag.isNull() :
@@ -534,4 +534,4 @@ class Node ( QtCore.QObject ):
     resultStr += parsedStr [ parserStart: ]
     
     return resultStr
-  
+    

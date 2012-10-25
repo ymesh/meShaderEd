@@ -43,7 +43,37 @@ class GeomView ( QtOpenGL.QGLWidget ):
     print '>> GeomView init'
   #
   #
+  def initializeGL ( self ) :
+    #
+    print ">> GeomeView: initializeGL"
+    
+    #glClearColor(0.0, 0.0, 0.0, 0.0);
+    #glEnable(GL_DEPTH_TEST);  
+  #
+  #
+  def resizeGL ( self, w, h) :
+    #
+    print ">> GeomeView: resizeGL (%d, %d)" % ( w, h )     
+    
+    #setup viewport, projection etc.:
+    
+    #glViewport(0, 0, (GLint)w, (GLint)h);
+    #glFrustum(...);
 
+  #
+  #
+  def paintGL ( self ) :
+    #
+    print ">> GeomeView: paintGL"
+    
+    # draw the scene:
+    
+    #glRotatef(...);
+    #glMaterialfv(...);
+    #glBegin(GL_QUADS);
+    #glVertex3f(...);
+    #glVertex3f(...);
+    #glEnd();
   #
   #
   def keyPressEvent ( self, event ) : 

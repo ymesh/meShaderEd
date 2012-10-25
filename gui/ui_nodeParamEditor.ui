@@ -6,45 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>683</width>
-    <height>390</height>
+    <width>714</width>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="addButton">
-       <property name="text">
-        <string>Add</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="removeButton">
-       <property name="text">
-        <string>Remove</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
+   <property name="spacing">
+    <number>2</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
      <item>
@@ -68,7 +40,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,1">
      <item>
-      <widget class="QLabel" name="name_label_2">
+      <widget class="QLabel" name="label_label">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -81,14 +53,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="name_lineEdit_2"/>
+      <widget class="QLineEdit" name="label_lineEdit"/>
      </item>
     </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="display_label">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -125,7 +97,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="shader_label">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -133,7 +105,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Shader Parameter</string>
+        <string>Use in Shader</string>
        </property>
       </widget>
      </item>
@@ -162,7 +134,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="type_label">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -175,7 +147,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="type_comboBox">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -202,7 +174,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="detail_label">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -215,7 +187,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_2">
+      <widget class="QComboBox" name="detail_comboBox">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -240,9 +212,49 @@
     </layout>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_11">
+     <item>
+      <widget class="QLabel" name="provider_label_2">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Provider</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="provider_comboBox">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_7">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_9">
      <item>
-      <widget class="QLabel" name="label_6">
+      <widget class="QLabel" name="subtype_label">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -255,7 +267,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_3">
+      <widget class="QComboBox" name="subtype_comboBox">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -282,7 +294,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="0,1">
      <item>
-      <widget class="QLabel" name="name_label_3">
+      <widget class="QLabel" name="range_label">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -295,15 +307,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="name_lineEdit_3"/>
+      <widget class="QLineEdit" name="range_lineEdit"/>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QWidget" name="value_widget" native="true"/>
-   </item>
-   <item>
-    <widget class="QWidget" name="def_value_widget_2" native="true"/>
+    <widget class="QStackedWidget" name="value_stackedWidget">
+     <widget class="QWidget" name="value_stackedWidgetPage1" native="true"/>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">
@@ -321,7 +332,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="descr_label">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -337,7 +348,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPlainTextEdit" name="plainTextEdit">
+      <widget class="QPlainTextEdit" name="descr_plainTextEdit">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -351,44 +362,5 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>addButton</sender>
-   <signal>clicked()</signal>
-   <receiver>NodeParamEditor</receiver>
-   <slot>onAddItem()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>47</x>
-     <y>21</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>341</x>
-     <y>194</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>removeButton</sender>
-   <signal>clicked()</signal>
-   <receiver>NodeParamEditor</receiver>
-   <slot>onRemoveItem()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>128</x>
-     <y>21</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>341</x>
-     <y>194</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
- <slots>
-  <signal>addItem()</signal>
-  <signal>removeItem()</signal>
-  <slot>onAddItem()</slot>
-  <slot>onRemoveItem()</slot>
- </slots>
+ <connections/>
 </ui>

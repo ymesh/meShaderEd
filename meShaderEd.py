@@ -1,7 +1,8 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 #
 # meShaderEd.py
 #
+# version 0.2.7 20 Sep 2012
 # version 0.2.6 29 Aug 2012
 # version 0.2.5 19 Jul 2012
 # version 0.2.0 27 May 2012
@@ -33,7 +34,8 @@ from core.meCommon import *
 from core.nodeLibrary import NodeLibrary
 from core.meRendererPreset import meRendererPreset
 
-from global_vars import app_global_vars
+from global_vars import app_global_vars, DEBUG_MODE
+
 
 root = normPath ( sys.path[0] )
 
@@ -74,7 +76,6 @@ app_renderer = meRendererPreset ( os.path.join ( root, 'renderers.xml' ), defRen
 #
 #
 def main ():
-  
   #global root
   
   app = QtGui.QApplication ( sys.argv )
@@ -141,10 +142,11 @@ def main ():
   app_global_vars[ 'TEX' ] = app_renderer.getCurrentValue( 'texture', 'extension' )
   app_global_vars[ 'SLO' ] = app_renderer.getCurrentValue( 'shader', 'extension' )
   
-  print 'TextureSearchPath = %s' % app_global_vars[ 'TextureSearchPath' ]
-  print 'ShaderSearchPath = %s' % app_global_vars[ 'ShaderSearchPath' ]
-  print 'ArchiveSearchPath = %s' % app_global_vars[ 'ArchiveSearchPath' ]
-  print 'Renderer = %s' % app_global_vars[ 'Renderer' ]
+  if DEBUG_MODE :
+    print 'TextureSearchPath = %s' % app_global_vars[ 'TextureSearchPath' ]
+    print 'ShaderSearchPath = %s' % app_global_vars[ 'ShaderSearchPath' ]
+    print 'ArchiveSearchPath = %s' % app_global_vars[ 'ArchiveSearchPath' ]
+    print 'Renderer = %s' % app_global_vars[ 'Renderer' ]
   
   #app_global_vars[ 'RibPath' ] = ''
   #app_global_vars[ 'DisplayPath' ] = ''
@@ -171,10 +173,17 @@ def main ():
 #
 #
 if __name__ == "__main__":
-  #safeEffects = QtCore.QT_VERSION >= 0x40600 and QtCore.PYQT_VERSION > 0x40704
-  print sys.version
-  print ( "QT_VERSION = %0X" ) % QtCore.QT_VERSION
-  print ( "PYQT_VERSION = %0X" ) % QtCore.PYQT_VERSION
+  #
+  if len( sys.argv ) > 1 :
+    if sys.argv[1].lower() == '-debug' or sys.argv[1].lower() == '-d':
+      print '>> Running in DEBUG mode ...'
+      DEBUG_MODE = True
+  
+  if DEBUG_MODE :
+    #safeEffects = QtCore.QT_VERSION >= 0x40600 and QtCore.PYQT_VERSION > 0x40704
+    print ( "* Python %s" ) % sys.version
+    print ( "* QT_VERSION = %0X" ) % QtCore.QT_VERSION
+    print ( "* PYQT_VERSION = %0X" ) % QtCore.PYQT_VERSION
   
   if ( sys.platform == 'win32' ) :  
     #pass

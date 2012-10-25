@@ -6,6 +6,7 @@
 #===============================================================================
 import os, sys
 import re
+import copy 
 from PyQt4 import QtCore
 
 from node import Node
@@ -19,7 +20,8 @@ class NodeParam ( QtCore.QObject ):
   #
   def __init__ ( self, xml_param = None, isRibParam = False ):
     #
-    QtCore.QObject.__init__ ( self )
+    super( NodeParam, self ).__init__ ()
+    #QtCore.QObject.__init__ ( self )
     
     self.name = None
     self.label = None
@@ -43,7 +45,7 @@ class NodeParam ( QtCore.QObject ):
     
     if xml_param != None :
       self.parseFromXML ( xml_param )
-    
+    #print "NodeParam.__init__"
   #
   #
   def setup ( self, name, label, detail, provider ):
@@ -55,6 +57,26 @@ class NodeParam ( QtCore.QObject ):
     self.provider = provider
   #
   #
+  def copy ( self ) : assert 0, 'copy needs to be implemented!'
+  #
+  #
+  def copySetup ( self, newParam ) :
+    newParam.name = self.name
+    newParam.label = self.label
+    newParam.type = self.type
+    newParam.help = self.help
+    newParam.shaderParam = self.shaderParam
+    newParam.isRibParam = self.isRibParam
+    newParam.display = self.display
+    newParam.detail = self.detail
+    newParam.provider = self.provider
+    newParam.subtype = self.subtype
+    newParam.range = self.range
+       
+    newParam.default = copy.deepcopy ( self.default )
+    newParam.value = copy.deepcopy ( self.value )
+  #
+  #
   def typeToStr ( self ):
     str = self.detail + ' ' + self.type
     return str.lstrip()
@@ -64,6 +86,8 @@ class NodeParam ( QtCore.QObject ):
   #
   #
   def setValueFromStr ( self, strValue ): self.value = self.valueFromStr( strValue )
+  #
+  #
   def setDefaultFromStr ( self, strValue ): self.default = self.valueFromStr( strValue )
   #
   # virtual function
@@ -76,7 +100,8 @@ class NodeParam ( QtCore.QObject ):
       return self.valueToStr ( self.value )
     else :
       return None
-      
+  #
+  #    
   def getDefaultToStr ( self ): 
     if self.default != None :
       return self.valueToStr ( self.default )
@@ -86,12 +111,11 @@ class NodeParam ( QtCore.QObject ):
   # virtual function
   #  
   def valueToStr ( self, value ) : return str( value )
-  #
-  #
-  def copy ( self ): assert 0, 'copy needs to be implemented!'
   #        
   #
-  def paramChanged ( self ): self.emit( QtCore.SIGNAL( 'paramChanged(QObject)' ), self ) 
+  def paramChanged ( self ): 
+    #print '>> NodeParam.paramChanged (name = %s)' % self.name
+    self.emit( QtCore.SIGNAL( 'paramChanged(QObject)' ), self ) 
   #
   # 
   def setupUI ( self, subtype, range ):
@@ -101,11 +125,13 @@ class NodeParam ( QtCore.QObject ):
     self.range = range
   #
   #
-  #
   def setValue ( self, value ) :
-    print '>> NodeParam.setValue'
-    self.value = value
-    self.paramChanged () 
+    #
+    if self.value != value :
+      print '>> NodeParam.setValue'
+      self.value = value
+      self.paramChanged () 
+    
   #
   #
   #
@@ -192,12 +218,18 @@ class FloatNodeParam ( NodeParam ):
   #
   #
   def __init__ ( self, xml_param = None, isRibParam = False ):
-    NodeParam.__init__ ( self, xml_param, isRibParam ) 
+    super( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
     self.type = 'float' 
     #print "FloatNodeParam.__init__"
   #
   #
-  def encodedTypeStr( self ): return 'f'    
+  def encodedTypeStr( self ): return 'f'   
+  #
+  #
+  def copy ( self ):
+    newParam = FloatNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam 
   #
   #
   def valueFromStr ( self, str ):
@@ -264,7 +296,13 @@ class IntNodeParam ( NodeParam ):
     #print "FloatNodeParam.__init__"
   #
   #
-  def encodedTypeStr( self ): return 'i'    
+  def encodedTypeStr( self ): return 'i' 
+  #
+  #
+  def copy ( self ):
+    newParam = IntNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam    
   #
   #
   def valueFromStr ( self, str ):
@@ -327,7 +365,13 @@ class ColorNodeParam ( NodeParam ):
     #print "ColorNodeParam.__init__"
   #
   #
-  def encodedTypeStr( self ): return 'c'           
+  def encodedTypeStr( self ): return 'c'  
+  #
+  #
+  def copy ( self ):
+    newParam = ColorNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam          
   #
   #
   def valueFromStr ( self, strValue ) :
@@ -401,7 +445,13 @@ class StringNodeParam ( NodeParam ):
     #print "FloatNodeParam.__init__"
   #
   #
-  def encodedTypeStr ( self ): return 's'    
+  def encodedTypeStr ( self ): return 's'  
+  #
+  #
+  def copy ( self ):
+    newParam = StringNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam   
   #
   #
   def valueFromStr ( self, str ): return str
@@ -447,7 +497,13 @@ class NormalNodeParam ( NodeParam ):
     #print "NormalNodeParam.__init__"
   #
   #
-  def encodedTypeStr ( self ): return 'n'           
+  def encodedTypeStr ( self ): return 'n'   
+  #
+  #
+  def copy ( self ):
+    newParam = NormalNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam         
   #
   #
   def valueFromStr ( self, str ):
@@ -492,7 +548,13 @@ class PointNodeParam ( NodeParam ):
     #print "PointNodeParam.__init__"
   #
   #
-  def encodedTypeStr ( self ): return 'p'           
+  def encodedTypeStr ( self ): return 'p'   
+  #
+  #
+  def copy ( self ):
+    newParam = PointNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam         
   #
   #
   def valueFromStr ( self, str ):
@@ -537,7 +599,13 @@ class VectorNodeParam( NodeParam ):
     #print "VectorNodeParam.__init__"
   #
   #
-  def encodedTypeStr ( self ): return 'v'           
+  def encodedTypeStr ( self ): return 'v'  
+  #
+  #
+  def copy ( self ):
+    newParam = VectorNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam          
   #
   #
   def valueFromStr ( self, str ):
@@ -582,7 +650,13 @@ class MatrixNodeParam( NodeParam ):
     #print "MatrixNodeParam.__init__"
   #
   #
-  def encodedTypeStr ( self ): return 'm'           
+  def encodedTypeStr ( self ): return 'm'    
+  #
+  #
+  def copy ( self ):
+    newParam = MatrixNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam        
   #
   #
   def valueFromStr ( self, str ):
@@ -616,9 +690,25 @@ class MatrixNodeParam( NodeParam ):
     return value        
   #
   #
-  def valueToStr ( self, value ):
+  def valueToStr ( self, value ) :
     flatMat = sum( value, [] )
-    return 'matrix(' + ''.join('%.3f' % f + ',' for f in flatMat[: - 1]) + '%.3f' % flatMat[ - 1] + ')'    
+    return 'matrix(' + ''.join('%.3f' % f + ',' for f in flatMat[: - 1]) + '%.3f' % flatMat[ - 1] + ')' 
+  #
+  #
+  def setValue ( self, value ) : 
+    #isNewValue = False
+    #for i in range ( 0, 3 ) :
+    #  for j in range( 0, 3 ) :
+    #    if self.value[ i ][ j ] != valuep[ j ][ j ] :
+    #      isNewValue = True
+    #      break
+    #  if isNewValue :
+    #    break
+    #if isNewValue :
+    if self.value != value :  
+      print '>> MatrixParam.setValue'
+      self.value = value
+      self.paramChanged ()  
 #
 # Surface
 # 
@@ -632,7 +722,12 @@ class SurfaceNodeParam ( NodeParam ):
   #
   def encodedTypeStr ( self ): return 'S' 
   #def valueToStr ( self, value ): return str( "\"" + value + "\"" )          
-  
+  #
+  #
+  def copy ( self ):
+    newParam = SurfaceNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam 
 #
 # Displacement
 # 
@@ -644,7 +739,13 @@ class DisplacementNodeParam ( NodeParam ):
     self.type = 'displacement' 
   #
   #
-  def encodedTypeStr ( self ): return 'D'           
+  def encodedTypeStr ( self ): return 'D'   
+  #
+  #
+  def copy ( self ):
+    newParam = DisplacementNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam         
   #def valueToStr ( self, value ): return str( "\"" + value + "\"" )
 #
 # Light
@@ -657,7 +758,13 @@ class LightNodeParam ( NodeParam ):
     self.type = 'light' 
   #
   #
-  def encodedTypeStr ( self ): return 'L'           
+  def encodedTypeStr ( self ): return 'L'   
+  #
+  #
+  def copy ( self ):
+    newParam = LightNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam         
   #def valueToStr ( self, value ): return str( "\"" + value + "\"" )
 #
 # Volume
@@ -670,7 +777,13 @@ class VolumeNodeParam ( NodeParam ):
     self.type = 'volume' 
   #
   #
-  def encodedTypeStr ( self ): return 'V'           
+  def encodedTypeStr ( self ): return 'V' 
+  #
+  #
+  def copy ( self ):
+    newParam = VolumeNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam           
   #def valueToStr ( self, value ): return str( "\"" + value + "\"" )
 #
 # RIB
@@ -685,7 +798,12 @@ class RibNodeParam ( NodeParam ):
   #
   #
   def encodedTypeStr ( self ): return 'R'           
- 
+  #
+  #
+  def copy ( self ):
+    newParam = RibNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam 
 #
 # Text
 # 
@@ -697,7 +815,13 @@ class TextNodeParam ( NodeParam ):
     self.type = 'text' 
   #
   #
-  def encodedTypeStr ( self ): return 'X'           
+  def encodedTypeStr ( self ): return 'X' 
+  #
+  #
+  def copy ( self ):
+    newParam = TextNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam           
 #
 # Transform parameter that used in RIB
 # 
@@ -710,6 +834,12 @@ class TransformNodeParam ( NodeParam ):
   #
   #
   def encodedTypeStr ( self ): return 'T' 
+  #
+  #
+  def copy ( self ):
+    newParam = TransformNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam 
   #
   #
   def valueFromStr ( self, strValue ):
@@ -737,6 +867,12 @@ class ImageNodeParam ( NodeParam ):
   #
   #
   def encodedTypeStr ( self ): return 'I'  
+  #
+  #
+  def copy ( self ):
+    newParam = ImageNodeParam()
+    self.copySetup ( newParam )                                
+    return newParam 
   #
   # if subtype == selector then return list of (label,value) pairs
   # It's supposed, that range is defined as "value1:value2:value3" 

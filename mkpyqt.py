@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 ##################################################################################
 #
 #  Shaderlink 0.4 - A RenderMan Shader Authoring Toolkit 
@@ -37,16 +37,23 @@ if sys.platform.startswith("darwin"):
     i = PATH.find("Resources")
     if i > -1:
         PATH = PATH[:i] + "bin"
-PYUIC4 = os.path.join(PATH, "pyuic4") # e.g. PYUIC4 = "/usr/bin/pyuic4"
+    PYUIC4 = "/System/Library/Frameworks/Python.framework/Versions/2.7/bin/pyuic4"
+else :
+  PYUIC4 = os.path.join(PATH, "pyuic4") # e.g. PYUIC4 = "/usr/bin/pyuic4"
 
-#if sys.platform.startswith("darwin"):
+
+if sys.platform.startswith("darwin"):
 #    PYUIC4 = os.path.dirname(sys.executable)
 #    i = PYUIC4.find("Resources")
 #    if i > -1:
 #        PYUIC4 = PYUIC4[:i] + "Lib/python2.5/site-packages/PyQt4/uic/pyuic.py"
-PYRCC4 = os.path.join(PATH, "pyrcc4")
 
-PYLUPDATE4 = os.path.join(PATH, "pylupdate4")
+  PYRCC4 = "/System/Library/Frameworks/Python.framework/Versions/2.7/bin/pyrcc4"
+  PYLUPDATE4 = "/System/Library/Frameworks/Python.framework/Versions/2.7/bin/pylupdate4"
+else :
+  PYRCC4 = os.path.join(PATH, "pyrcc4")
+  PYLUPDATE4 = os.path.join(PATH, "pylupdate4")
+
 LRELEASE = "lrelease"
 if platform.system() == "Windows":
     PYUIC4 = PYUIC4.replace("/", "\\") + ".bat"

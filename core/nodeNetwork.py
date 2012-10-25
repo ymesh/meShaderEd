@@ -9,7 +9,7 @@ import os, sys
 from PyQt4 import QtCore, QtXml
 from PyQt4.QtCore import QDir, QFile, QVariant
 
-from node import Node
+from node import *
 from rslNode import RSLNode
 from ribCodeNode import RIBCodeNode
 from ribNode import RIBNode
@@ -243,22 +243,7 @@ class NodeNetwork ( QtCore.QObject ):
   #  
   def addNodeFromXML ( self, xml_node ) :
     #
-    createNodeTable = { 'rib':RIBNode 
-                       ,'rib_code':RIBCodeNode 
-                       ,'image':ImageNode 
-                       ,'surface':RSLNode 
-                       ,'displacement':RSLNode
-                       ,'light':RSLNode 
-                       ,'volume':RSLNode 
-                      }  
-    
-    node_type = str ( xml_node.attributes().namedItem( 'type' ).nodeValue() )
-    createNode = Node
-    if node_type in createNodeTable.keys() :
-      createNode = createNodeTable[ node_type ] 
-    
-    #print '-> creating node type = %s (%s)' % ( node_type, str( createNode ) ) 
-    node = createNode ( xml_node )
+    node = createNodeFromXML ( xml_node ) 
     self.addNode ( node )
     return node          
   #
@@ -369,4 +354,26 @@ class NodeNetwork ( QtCore.QObject ):
     
     return ( nodes, links )
     
-    
+#
+#
+#  
+def createNodeFromXML ( xml_node ) :
+  #
+  createNodeTable = { 'rib':RIBNode 
+                     ,'rib_code':RIBCodeNode 
+                     ,'image':ImageNode 
+                     ,'surface':RSLNode 
+                     ,'displacement':RSLNode
+                     ,'light':RSLNode 
+                     ,'volume':RSLNode 
+                    }  
+  
+  node_type = str ( xml_node.attributes().namedItem( 'type' ).nodeValue() )
+  createNode = Node
+  if node_type in createNodeTable.keys() :
+    createNode = createNodeTable[ node_type ] 
+  
+  #print '-> creating node type = %s (%s)' % ( node_type, str( createNode ) ) 
+  node = createNode ( xml_node )
+
+  return node            

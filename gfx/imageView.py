@@ -167,4 +167,9 @@ class ImageView ( QtGui.QGraphicsView ):
     if self.pixmap is not None:
       #print ">> ImageView: painter.drawPixmap"
       painter.drawPixmap ( 0, 0, self.pixmap )  
-          
+  #
+  #
+  def resetZoom ( self ) :
+    self.setInteractive ( False )
+    self.resetTransform() 
+    self.setInteractive ( True )          

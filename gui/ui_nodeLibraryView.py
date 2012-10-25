@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui\ui_nodeLibraryView.ui'
+# Form implementation generated from reading ui file 'gui/ui_nodeLibraryView.ui'
 #
-# Created: Tue May 22 14:09:29 2012
-#      by: PyQt4 UI code generator snapshot-4.9.2-fa0ccc58c397
+# Created: Tue Oct  9 18:06:09 2012
+#      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -19,8 +19,12 @@ class Ui_nodeLibraryView(object):
         nodeLibraryView.setObjectName(_fromUtf8("nodeLibraryView"))
         nodeLibraryView.resize(447, 443)
         self.verticalLayout = QtGui.QVBoxLayout(nodeLibraryView)
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setContentsMargins(2, 2, 2, 0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setSpacing(-1)
+        self.horizontalLayout.setContentsMargins(8, -1, 8, -1)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.btn_reload = QtGui.QPushButton(nodeLibraryView)
         self.btn_reload.setMinimumSize(QtCore.QSize(60, 20))

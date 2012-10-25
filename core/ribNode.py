@@ -80,14 +80,10 @@ class RIBNode ( Node ):
     
     print '>> RIBNode renderCmd = %s' %  ' '.join( renderCmd ) 
     
-    import subprocess, errno
-    
     # call the process
-    try:
-    	retval = subprocess.call( renderCmd, 0, None, None )
-    except OSError, e:
-    	if e.errno != errno.EINTR:
-    		raise
+    from core.meCommon import launchProcess
+    
+    launchProcess ( renderCmd )
     
     return self.ribName
   #

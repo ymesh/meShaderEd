@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui\ui_nodeList.ui'
+# Form implementation generated from reading ui file 'gui/ui_nodeList.ui'
 #
-# Created: Wed Jul 18 14:28:14 2012
+# Created: Tue Oct  9 18:01:39 2012
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -43,7 +43,7 @@ class Ui_nodeList(object):
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
         self.verticalLayout = QtGui.QVBoxLayout(self.groupBox)
         self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setContentsMargins(2, 0, 2, 2)
+        self.verticalLayout.setMargin(2)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.infoText = QtGui.QTextEdit(self.groupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)

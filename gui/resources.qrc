@@ -12,6 +12,8 @@
     <file>resources/bg_pattern.png</file>
   </qresource>
   <qresource prefix="edit_icons">
+    <file>resources/minus.png</file>
+    <file>resources/plus.png</file>
     <file>resources/delete.png</file>
     <file>resources/redo.png</file>
     <file>resources/undo.png</file>

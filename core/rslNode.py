@@ -94,7 +94,7 @@ class RSLNode ( Node ):
     compiler =  app_global_vars[ 'ShaderCompiler' ]
     defines_str = app_global_vars[ 'ShaderDefines' ]
     includes_str = app_global_vars[ 'IncludePath' ]
-    
+
     shaderCmd = [ compiler ]
     
     if includes_str != '' :  
@@ -109,18 +109,14 @@ class RSLNode ( Node ):
       
     shaderCmd.append ( self.shaderName )
     
-    print '>> RSLNode shaderCmd = %s' %  ' '.join( shaderCmd ) 
-    
-    import subprocess, errno
-    
     os.chdir (  app_global_vars[ 'ProjectShaders' ] )
+
+    print '>> RSLNode shaderCmd = %s' %  ' '.join( shaderCmd ) 
+    print '>> ProjectShaders = %s' %  app_global_vars[ 'ProjectShaders' ] 
+
+    from core.meCommon import launchProcess
     
-    # call the process
-    try:
-    	retval = subprocess.call( shaderCmd, 0, None, None )
-    except OSError, e:
-    	if e.errno != errno.EINTR:
-    		raise 
+    launchProcess ( shaderCmd )
     
     return self.getInstanceName()
       

@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui/ui_nodeParam.ui'
 #
-# Created: Tue Apr 24 21:19:48 2012
-#      by: PyQt4 UI code generator 4.8.5
+# Created: Tue Oct  9 17:55:21 2012
+#      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -18,13 +18,13 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(370, 474)
-        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
         self.verticalLayout = QtGui.QVBoxLayout(Form)
+        self.verticalLayout.setSpacing(2)
+        self.verticalLayout.setMargin(4)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.labelLayout = QtGui.QHBoxLayout()
         self.labelLayout.setObjectName(_fromUtf8("labelLayout"))
         self.label = QtGui.QLabel(Form)
-        self.label.setText(QtGui.QApplication.translate("Form", "Node Label", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setObjectName(_fromUtf8("label"))
         self.labelLayout.addWidget(self.label)
         self.nodeLabelEdit = QtGui.QLineEdit(Form)
@@ -38,5 +38,6 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        pass
+        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("Form", "Node Label", None, QtGui.QApplication.UnicodeUTF8))
 

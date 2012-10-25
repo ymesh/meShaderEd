@@ -15,11 +15,13 @@ import gui.ui_settings as UI
 class ParamWidget ( QtGui.QWidget ) :
   #
   #
-  def __init__( self, param, gfxNode, parent = None ):
+  def __init__( self, param, gfxNode, parent = None, ignoreSubtype = False ):
     #print ">> ParamWidget  __init__"
     super ( QtGui.QWidget, self ).__init__( None )        
     self.param = param
     self.gfxNode = gfxNode
+    self.ignoreSubtype = ignoreSubtype # if widget is used in NodeEditor, then ignoreSubtype = True
+    
     self.buildGeneralGui ()
     self.buildGui ()
     self.ui.updateGui ( self.param.value ) 
@@ -54,21 +56,22 @@ class ParamWidget ( QtGui.QWidget ) :
     #
     # add 'isShaderParam' check box only for RSL nodes
     #
-    if not self.gfxNode.node.type in ['rib', 'rib_code', 'image']:
-      if self.param.provider != 'attribute' :
-      
-        self.check = QtGui.QCheckBox( self )
-        self.check.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
-        self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
-        self.check.setToolTip ( 'Use as Shader parameter' )
+    if self.gfxNode is not None :
+      if not self.gfxNode.node.type in ['rib', 'rib_code', 'image']:
+        if self.param.provider != 'attribute' :
         
-        self.check.setChecked ( self.param.shaderParam ) 
-        self.connect( self.check, QtCore.SIGNAL('stateChanged(int)'), self.onShaderParamChanged ) 
-        
-        self.hl.addWidget ( self.check )
-      else :
-        spacer = QtGui.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
-        self.hl.addItem ( spacer )
+          self.check = QtGui.QCheckBox( self )
+          self.check.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
+          self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
+          self.check.setToolTip ( 'Use as Shader parameter' )
+          
+          self.check.setChecked ( self.param.shaderParam ) 
+          self.connect( self.check, QtCore.SIGNAL('stateChanged(int)'), self.onShaderParamChanged ) 
+          
+          self.hl.addWidget ( self.check )
+        else :
+          spacer = QtGui.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
+          self.hl.addItem ( spacer )
 
     self.label = QtGui.QLabel ( self )
     font = QtGui.QFont ()

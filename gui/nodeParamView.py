@@ -34,19 +34,9 @@ class NodeParamView ( QtGui.QWidget ):
   #
   #
   def __init__ ( self ):
+    #
     QtGui.QWidget.__init__ ( self )
-    
     self.gfxNode = None
-    
-    # core.model.FloatProperty : modifier.view.FloatPropertyModifier,     
-    #self.modifiers = {core.model.ColorProperty : modifier.ColorWidget.ColorWidget,
-    #                  core.model.FloatProperty : modifier.FloatWidget.FloatWidget,
-    #                  core.model.MatrixProperty : modifier.view.MatrixPropertyModifier,
-    #                  core.model.PointProperty : modifier.view.Tuple3DPropertyModifier,
-    #                  core.model.VectorProperty : modifier.view.Tuple3DPropertyModifier,
-    #                  core.model.NormalProperty : modifier.view.Tuple3DPropertyModifier,
-    #                  core.model.StringProperty : modifier.view.StringPropertyModifier}
-    
     self.paramWidgets = {  'string' : StringWidget
                           ,'image' : StringWidget
                           ,'rib' : StringWidget
@@ -101,7 +91,7 @@ class NodeParamView ( QtGui.QWidget ):
   #
   def onParamChanged ( self, param ):
     print ">> NodeParamView: onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )  
-    self.emit( QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.gfxNode.node, param )   
+    self.emit( QtCore.SIGNAL( 'nodeParamChanged' ), self.gfxNode.node, param )   
   #
   #
   def nodeLabelChanged ( self ):
