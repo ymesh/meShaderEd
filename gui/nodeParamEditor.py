@@ -115,16 +115,31 @@ class NodeParamEditor ( QtGui.QWidget ):
     #
     self.connect ( self.param_default, QtCore.SIGNAL( 'paramChanged(QObject)' ), self.onParamDefValueChanged )
     #
-    self.connect ( self.ui.name_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrName  )
-    self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrLabel  )
+    self.connect ( self.ui.name_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditParamName )
+    self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditParamLabel )
+    self.connect ( self.ui.check_display, QtCore.SIGNAL( 'stateChanged(int)' ), self.onEditParamDisplay ) 
+    self.connect ( self.ui.check_shader, QtCore.SIGNAL( 'stateChanged(int)' ), self.onEditParamShader ) 
+    self.connect ( self.ui.type_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditParamType )
+    self.connect ( self.ui.detail_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditParamDetail )
+    self.connect ( self.ui.provider_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditParamProvider )
+    self.connect ( self.ui.subtype_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditParamSubtype )
+    self.connect ( self.ui.range_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditParamRange )
+    self.connect ( self.ui.descr_plainTextEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditParamHelp )
   #
   #
   def disconnectSignals ( self ) :
     if self.param_default is not None :
       self.disconnect ( self.param_default, QtCore.SIGNAL( 'paramChanged(QObject)' ), self.onParamDefValueChanged )
     if self.param is not None :
-      self.disconnect ( self.ui.name_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrName )
-      self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
+      self.disconnect ( self.ui.name_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditParamName )
+      self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditParamLabel )
+      self.disconnect ( self.ui.check_display, QtCore.SIGNAL( 'stateChanged(int)' ), self.onEditParamDisplay ) 
+      self.disconnect ( self.ui.check_shader, QtCore.SIGNAL( 'stateChanged(int)' ), self.onEditParamShader )
+      self.disconnect ( self.ui.type_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditParamType )
+      self.disconnect ( self.ui.detail_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditParamDetail )
+      self.disconnect ( self.ui.provider_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditParamProvider )
+      self.disconnect ( self.ui.subtype_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditParamSubtype )
+      self.disconnect ( self.ui.descr_plainTextEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditParamHelp )
   #
   #
   def reset ( self ) :  
@@ -225,5 +240,25 @@ class NodeParamEditor ( QtGui.QWidget ):
       self.reset ()
   #
   #
-  def onEditNodeStrAttrName ( self ) : self.param.name = str ( self.ui.name_lineEdit.text () )
-  def onEditNodeStrAttrLabel ( self ) : self.param.label = str ( self.ui.label_lineEdit.text () )
+  def onEditParamName ( self ) : 
+    #
+    # !!! ListWidget item for param also should be changed  
+    #
+    newName = str ( self.ui.name_lineEdit.text () )
+    self.emit( QtCore.SIGNAL( "changeParamName" ), self.param.name, newName )
+    self.param.name = newName
+    
+  def onEditParamLabel ( self ) : self.param.label = str ( self.ui.label_lineEdit.text () )
+  def onEditParamDisplay ( self, value ) : self.param.display = self.ui.check_display.isChecked()
+  def onEditParamShader ( self, value ) : self.param.shaderParam = self.ui.check_shader.isChecked()
+  def onEditParamType ( self, idx ) : 
+    #
+    # !!! UI for param.value and param.default also should be changed 
+    #
+    self.param.type = str ( self.ui.type_comboBox.itemText ( idx ) )
+  
+  def onEditParamDetail ( self, idx ) : self.param.detail = str ( self.ui.detail_comboBox.itemText ( idx ) )
+  def onEditParamProvider ( self, idx ) : self.param.provider = str ( self.ui.provider_comboBox.itemText ( idx ) )
+  def onEditParamSubtype ( self, idx ) : self.param.subtype = str ( self.ui.subtype_comboBox.itemText ( idx ) )
+  def onEditParamRange ( self ) : self.param.range = str ( self.ui.range_lineEdit.text () )
+  def onEditParamHelp ( self ) : self.param.help = str ( self.ui.descr_plainTextEdit.toPlainText () )

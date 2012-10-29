@@ -1,11 +1,13 @@
 
 meShaderEd.py
 
-version 0.2.7 (20 Sep 2012)
+version 0.2.7 (29 Oct 2012)
    ProjectSetup: Using relative pathes for resource directories (20 Sep 2012)
    ImageView: Auto update checkbox (9 Oct 2012)
    ImageView: Reset zoom button (9 Oct 2012)
    NodeEditorWindow: replaced by NodeEditorPanel
+   Format of root RSL nodes was changed (previose shader networks needs to replace those nodes) 
+   Added support for LightSource rib node in BascicPrimitive2
    
 version 0.2.6 (29 Aug 2012)
    Added nodeEditorWindow feature

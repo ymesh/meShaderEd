@@ -22,7 +22,7 @@ class RIBNode ( Node ):
     #
     Node.__init__ ( self, xml_node )
     self.ribName = ''
-    print ">> RIBNode __init__" 
+    #print ">> RIBNode __init__" 
   #
   #    
   def getInputParamValueByName ( self, name ):
@@ -40,9 +40,9 @@ class RIBNode ( Node ):
       #  self.computed_code += link.srcNode.computed_code
       
       if link.srcNode.type in [ 'rib', 'rib_code' ] :
-        result = '## start code from :' + link.srcNode.label
-        result += link.srcNode.parseLocalVars ( link.srcNode.code )
-        result += '## end code from :' + link.srcNode.label
+        #result = '## start code from :' + link.srcNode.label
+        result = link.srcNode.parseLocalVars ( link.srcNode.code )
+        #result += '## end code from :' + link.srcNode.label
       else :
         result = link.srcNode.parseGlobalVars ( link.srcParam.getValueToStr () )
     else :
@@ -52,7 +52,7 @@ class RIBNode ( Node ):
   #
   #
   def computeNode ( self ) :
-    print '>> RIBNode (%s).computeNode' % self.label
+    #print '>> RIBNode (%s).computeNode' % self.label
     #
     # inside code, imageName value can be assigned from different  
     # input parameters
@@ -107,7 +107,7 @@ class RIBNode ( Node ):
           parserPos = parsedStr.find ( ')', globStart )
           local_var_name = parsedStr [ globStart : ( parserPos ) ]
           
-          print '-> found local var %s' % local_var_name
+          # print '-> found local var %s' % local_var_name
           
           param = self.getInputParamByName ( local_var_name ) 
           if param is not None :

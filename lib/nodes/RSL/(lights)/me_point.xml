@@ -1,9 +1,10 @@
 <?xml version="1.0"?> 
 
-<node name="me_point" type="light" author="mesh">
+<node name="me_point" type="rsl_code" author="mesh">
 	<help>Point light.</help>
 	<input>
-		<property name="category" type="string" default="" detail="uniform"/>
+		<property name="category" type="string" default="" detail="uniform" provider="primitive"/>
+		<property name="from" type="point" detail="uniform" default="point(0,0,0)" provider="primitive"/>
 		
 		<property name="LightColor" type="color" default="color(1,1,1)">
 		<help>The color of your the light. You can connect a pattern generator here or
@@ -57,7 +58,7 @@
 	<code>
   <![CDATA[
 
-  illuminate( point "shader" (0,0,0) ) 
+  illuminate( $(from) ) 
   {
     float atten = 1 / pow(length(L), $(Falloff));
     

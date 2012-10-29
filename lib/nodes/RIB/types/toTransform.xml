@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<node name="toTransform" author="mesh" type="rib_code">
+	<help>Transform RIB code node from float values</help>
+	<input>
+	  <property name="value1" label="X" type="float" default="0"/>
+	  <property name="value2" label="Y" type="float" default="0"/>
+	  <property name="value3" label="Z" type="float" default="0"/>
+	</input>
+	<output>
+	  <property name="transform" type="transform" default="0 0 0"/>
+	</output>
+	<code_param>
+  <![CDATA[
+	]]>    
+	</code_param>
+	<code>
+  <![CDATA[
+  $(value1) $(value2) $(value3)
+  ]]>
+	</code>		
+</node>

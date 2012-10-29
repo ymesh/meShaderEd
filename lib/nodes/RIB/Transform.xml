@@ -3,18 +3,10 @@
 <node name="Transform" author="mesh" type="rib_code">
 	<help>Transform RIB code node</help>
 	<input>
-	  <property name="translateX" type="float" default="0"/>
-	  <property name="translateY" type="float" default="0"/>
-	  <property name="translateZ" type="float" default="0"/>
-	  
-	  <property name="scaleX" type="float" default="1"/>
-	  <property name="scaleY" type="float" default="1"/>
-	  <property name="scaleZ" type="float" default="1"/>
-	  
+	  <property name="translate" type="transform" default="0 0 0"/>
+	  <property name="scale" type="transform" default="1 1 1"/>
+	  <property name="axis" type="transform" default="1 0 0"/>
 	  <property name="Angle" type="float" default="0"/>
-	  <property name="rotateX" type="float" default="1"/>
-	  <property name="rotateY" type="float" default="0"/>
-	  <property name="rotateZ" type="float" default="0"/>
 	  
 	  <property name="rib_input" type="rib" default=""/>
 	</input>
@@ -27,15 +19,12 @@
 	</code_param>
 	<code>
   <![CDATA[
-  
-  TransformBegin 
-    Translate $(translateX) $(translateY) $(translateZ)
-    Scale $(scaleX) $(scaleY) $(scaleZ)
-    Rotate $(Angle) $(rotateX) $(rotateY) $(rotateZ)
-    
+  TransformBegin
+    Translate $(translate)
+    Scale $(scale) 
+    Rotate $(Angle) $(axis)
 	  $(rib_input)
-	TransformEnd 
-
-  ]]>
+	TransformEnd
+]]>
 	</code>		
 </node>

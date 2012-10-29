@@ -5,6 +5,9 @@
 	<input>
 		<property name="category" type="string" default="" detail="uniform"/>
 		
+		<property name="from" type="point" detail="uniform" default="point(0,0,0)" provider="primitive"/> 
+		<property name="to" type="point" detail="uniform" default="point(0,0,1)" provider="primitive"/>
+		
 		<property name="LightColor" type="color" default="color(1,1,1)">
 		<help>The color of your the light. You can connect a pattern generator here or
     simply use a constant color.  Two common choices are an image map or a spline which varies with distance.</help>
@@ -62,13 +65,11 @@
 	  
 	</output>
 	<internal>
-	<variable name="axis"/>
 	</internal>
 	<code>
   <![CDATA[
-	uniform vector $(axis) = vector "shader" (0,0,1);
 
-  solar( $(axis), 0.0 ) 
+  solar( $(to) - $(from), 0.0 ) 
   {
     varying float atten;
     varying point PP = transform( "shader", Ps );

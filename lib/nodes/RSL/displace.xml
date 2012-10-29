@@ -10,8 +10,16 @@
 	</output>
 	<code>
 	<![CDATA[
-	  P = $(P); 
-	  N = $(N);
+#define DISPLACEMENT_SHADER ${INSTANCENAME}
+displacement ${INSTANCENAME} ( 
+${PARAMS} 
+)
+{
+/* CODE BEGIN ${INSTANCENAME} */
+   P = $(P); 
+	 N = $(N);
+/* CODE END ${INSTANCENAME} */
+}		
 	]]>
 	</code>
 </node>

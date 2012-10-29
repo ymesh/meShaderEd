@@ -10,8 +10,16 @@
 	  <property name="surface" type="rib" default="Surface &quot;${NODELABEL}&quot;" />
 	</output>
 	<code><![CDATA[
-	  Ci = $(Ci) * $(Oi); 
-	  Oi = $(Oi);
+#define SURFACE_SHADER ${INSTANCENAME}
+surface ${INSTANCENAME} ( 
+${PARAMS} 
+)
+{
+  /* CODE BEGIN ${INSTANCENAME} */
+  Ci = $(Ci) * $(Oi); 
+  Oi = $(Oi);
+  /* CODE END ${INSTANCENAME} */
+}
 	]]>
 	</code>
 </node>

@@ -50,6 +50,16 @@ class NodeEditorPanel ( QtGui.QDialog ):
     QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onInputParamSelectionChanged )
     QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onOutputParamSelectionChanged  )
     QtCore.QObject.connect ( self.ui.tabs_param_list, QtCore.SIGNAL( "currentChanged(int)" ), self.updateGui )
+    if self.nodeParamEditor is not None :
+     QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onChangeParamName )
+  
+  def disconnectSignals ( self ) :
+    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onInputParamSelectionChanged )
+    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onOutputParamSelectionChanged  )
+    QtCore.QObject.disconnect ( self.ui.tabs_param_list, QtCore.SIGNAL( "currentChanged(int)" ), self.updateGui )
+    if self.nodeParamEditor is not None :
+      QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onChangeParamName )
+    
   # 
   #
   def setEditNode ( self, editNode ): 
@@ -90,7 +100,7 @@ class NodeEditorPanel ( QtGui.QDialog ):
   #
   #
   def updateGui ( self ):
-    #  
+    # 
     if self.editNode is not None :
       idx = self.ui.toolBox.currentIndex()
       
@@ -108,11 +118,13 @@ class NodeEditorPanel ( QtGui.QDialog ):
         self.nodeParamEditor.setParam ( param )
       elif idx == 2 : # Code
         self.ui.code_tabs.setVisible ( True )
+      
   #
   #
   def onToolBoxIndexChanged ( self, idx ) :
     print 'onToolBoxIndexChanged (idx = %d)' % idx
-    #    
+    # 
+    self.disconnectSignals ()   
     if idx != -1 :
       currentWidget = self.ui.side_stackedWidget.currentWidget ()
       self.ui.side_stackedWidget.removeWidget ( currentWidget )
@@ -142,7 +154,8 @@ class NodeEditorPanel ( QtGui.QDialog ):
         
         self.ui.code_tabs.setCurrentIndex ( 0 ) 
         self.ui.side_stackedWidget.addWidget ( self.ui.code_tabs )
-       
+      
+      self.connectSignals ()      
       self.updateGui ()
   #
   #
@@ -168,6 +181,21 @@ class NodeEditorPanel ( QtGui.QDialog ):
     #    self.nodeCodeEditor.setNodeCode ( self.editNode.param_code, 'python' )
     #  elif codeType == 'code' :
     #    self.nodeCodeEditor.setNodeCode ( self.editNode.code, 'SL' )
+  #
+  #
+  def onChangeParamName ( self, oldName, newName ) :
+    #
+    if DEBUG_MODE : print '>> NodeEditorPanel: onChangeParamName %s => %s' % ( oldName, newName )
+    tab_idx = self.ui.tabs_param_list.currentIndex()
+    if tab_idx == 0 : #input parameters
+      list_item = self.ui.input_list.ui.listWidget.currentItem()
+      if list_item is not None :
+        param = self.editNode.getInputParamByName( str( list_item.text() ) )
+    elif tab_idx == 1 : # output parametrs
+      list_item = self.ui.output_list.ui.listWidget.currentItem()
+      if list_item is not None :
+        param = self.editNode.getOutputParamByName( str( list_item.text() ) )
+    
   #
   #  
   def accept ( self ) :

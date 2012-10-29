@@ -194,10 +194,10 @@ class NodeNetwork ( QtCore.QObject ):
     
     nodes_tag = dom.createElement ( "nodes" )
     
-    print ':: parsing nodes to XML ...' 
+    #print ':: parsing nodes to XML ...' 
     for id in self.nodes.keys() :
       node = self.nodes [ id ]
-      print '=> parsing node to XML: %s ...' % node.label
+      #print '=> parsing node to XML: %s ...' % node.label
       xml_node = node.parseToXML ( dom )
       nodes_tag.appendChild ( xml_node )
     
@@ -205,18 +205,18 @@ class NodeNetwork ( QtCore.QObject ):
     
     links_tag = dom.createElement ( "links" )
     
-    print ':: parsing links to XML ...'
+    #print ':: parsing links to XML ...'
     for id in self.links.keys() :
       link = self.links [ id ]
-      print '=> parsing link to XML: ...' 
-      link.printInfo ()
+      #print '=> parsing link to XML: ...' 
+      #link.printInfo ()
       xml_link = link.parseToXML ( dom )
       links_tag.appendChild ( xml_link )
     
     root.appendChild ( links_tag )
       
     dom.appendChild ( root )
-    print ':: %s NodeNet have parsed to XML ...' % self.name
+    #print ':: %s NodeNet have parsed to XML ...' % self.name
   #
   #
   #  
@@ -225,7 +225,7 @@ class NodeNetwork ( QtCore.QObject ):
     self.name = str ( root.attributes().namedItem('name').nodeValue() )
     self.author = str ( root.attributes().namedItem('author').nodeValue() ) 
     
-    print '=> nodenet name = %s author = %s' % ( self.name, self.author )
+    #print '=> nodenet name = %s author = %s' % ( self.name, self.author )
                               
     xml_nodeList = root.elementsByTagName ( 'node' )
     for i in range( 0, xml_nodeList.length() ) :
@@ -236,7 +236,7 @@ class NodeNetwork ( QtCore.QObject ):
     for i in range( 0, xml_linkList.length() ) :
       xml_link = xml_linkList.item( i )
       link = NodeLink ( self, xml_link )
-      link.printInfo () 
+      #link.printInfo () 
       self.addLink ( link )
   #
   #
@@ -279,10 +279,10 @@ class NodeNetwork ( QtCore.QObject ):
         
         root = dom.documentElement() 
         if root.nodeName() == 'node' :
-          print ':: parsing node from XML ...'
+          #print ':: parsing node from XML ...'
           nodes.append ( self.addNodeFromXML ( root ) )
         elif root.nodeName() == 'nodenet' :
-          print ':: parsing nodenet from XML ...'
+          #print ':: parsing nodenet from XML ...'
           self.parseFromXML ( root ) 
           nodes = self.getNodesList ()
           links = self.getLinksList () 
@@ -304,7 +304,7 @@ class NodeNetwork ( QtCore.QObject ):
     self.node_id =  max_node_id
     self.link_id =  max_link_id
     
-    print ':: NodeNetwork node_id = %d link_id = %d' % ( self.node_id, self.link_id )
+    #print ':: NodeNetwork node_id = %d link_id = %d' % ( self.node_id, self.link_id )
           
     return ( nodes, links )   
   #
@@ -323,10 +323,10 @@ class NodeNetwork ( QtCore.QObject ):
         #self.fileName = fileName
         root = dom.documentElement() 
         if root.nodeName() == 'node' :
-          print ':: parsing node from XML ...'
+          #print ':: parsing node from XML ...'
           nodes.append ( self.addNodeFromXML ( root ) )
         elif root.nodeName() == 'nodenet' :
-          print ':: parsing nodenet from XML ...'
+          #print ':: parsing nodenet from XML ...'
           nodeNet = NodeNetwork ( 'tmp', root )
           nodeNet.fileName = fileName
            
@@ -350,7 +350,7 @@ class NodeNetwork ( QtCore.QObject ):
     self.node_id =  max_node_id
     self.link_id =  max_link_id
     
-    print ':: NodeNetwork node_id = %d link_id = %d' % ( self.node_id, self.link_id )
+    #print ':: NodeNetwork node_id = %d link_id = %d' % ( self.node_id, self.link_id )
     
     return ( nodes, links )
     
@@ -369,7 +369,7 @@ def createNodeFromXML ( xml_node ) :
                     }  
   
   node_type = str ( xml_node.attributes().namedItem( 'type' ).nodeValue() )
-  createNode = Node
+  createNode = RSLNode # Node
   if node_type in createNodeTable.keys() :
     createNode = createNodeTable[ node_type ] 
   

@@ -170,10 +170,7 @@ class Node ( QtCore.QObject ):
   #
   #
   def getInstanceName ( self ) : return self.label 
-  #
-  #
-  def getParams ( self ) :
-     return self.label 
+  
   #
   #    
   def getParamName ( self, param ):
@@ -366,63 +363,6 @@ class Node ( QtCore.QObject ):
     return xml_node
   #
   #
-  def collectComputed ( self, shaderCode, visitedNodes ) :
-    print '>> Node (%s).collectComputed' % self.label
-    #
-    self.computedInputParams = ''
-    self.computedLocals = ''
-    self.computedLocalParams = ''
-    self.computedIncludes = []
-    self.computedOutputParams = []
-    
-    #self.computedCode = ''
-    
-    for param in self.inputParams :
-      if self.isInputParamLinked ( param ) :
-        link = self.inputLinks[ param ]
-        
-        if not link.srcNode in visitedNodes :
-          #link.printInfo ()
-          shaderCode = link.srcNode.collectComputed ( shaderCode, visitedNodes )
-        
-          #if self.computedCode is not None :
-          #self.computedCode = link.srcNode.computedCode + self.computedCode
-          
-          self.computedInputParams = link.srcNode.computedInputParams + self.computedInputParams
-          self.computedLocalParams = link.srcNode.computedLocalParams + self.computedLocalParams
-          
-          for out_param in link.srcNode.computedOutputParams :
-            self.computedOutputParams.append( out_param )  
-          
-          for inc_name in link.srcNode.computedIncludes : 
-            self.computedIncludes.append( inc_name )  
-      
-      else :    
-        declare = self.getParamDeclaration ( param )
-        print '>> Node (%s).collectComputed: local param %s' % ( self.label, declare )
-        if param.shaderParam :
-          self.computedInputParams += declare
-        else :
-          self.computedLocalParams += declare 
-          
-    for param in self.outputParams :
-      if not param.type in ['rib', 'surface', 'displacement', 'light', 'volume'] : 
-        declare = self.getParamDeclaration ( param )
-        if param.provider == 'primitive' : 
-          self.computedOutputParams.append( 'output ' + declare )  
-        else :
-          self.computedLocalParams += declare 
-    
-    for inc_name in self.includes :      
-      self.computedIncludes.append( inc_name )
-    #print self.includes
-    
-    visitedNodes.add ( self )
-    shaderCode += self.parseLocalVars ( self.code )
-    
-    return shaderCode
-  #
-  #
   def computeNode ( self ) : 
     print '>> Node (%s).computeNode' % self.label
     self.execParamCode ()
@@ -434,6 +374,17 @@ class Node ( QtCore.QObject ):
       param_code = self.param_code.lstrip()
       if param_code != '' :
         exec param_code  
+  #
+  #
+  def getComputedParamList ( self ) :
+    print '-> getComputedParamList'
+    
+    param_list = self.computedInputParams 
+    # rslHeader += self.parseGlobalVars ( self.computedOutputParams )
+    # output parameters are stored in set to prevent duplication 
+    for out_param in set( self.computedOutputParams ) :
+      param_list += out_param
+    return param_list  
   #
   #
   def parseGlobalVars ( self, parsedStr ) :
@@ -455,7 +406,7 @@ class Node ( QtCore.QObject ):
           parserPos = parsedStr.find ( '}', globStart )
           global_var_name = parsedStr [ globStart : ( parserPos ) ]
           
-          print '-> found global var %s' % global_var_name
+          #print '-> found global var %s' % global_var_name
           
           if global_var_name in app_global_vars.keys() : 
             resultStr += app_global_vars [ global_var_name ]
@@ -463,7 +414,7 @@ class Node ( QtCore.QObject ):
             if global_var_name == 'INSTANCENAME' : resultStr += self.getInstanceName ()
             elif global_var_name == 'NODELABEL' : resultStr += self.getLabel ()
             elif global_var_name == 'NODENAME' : resultStr += self.getName ()
-            elif global_var_name == 'PARAMS' : resultStr += self.getParams ()
+            elif global_var_name == 'PARAMS' : resultStr += self.getComputedParamList ()
         else :
           # keep $ sign for otheer, non ${...} cases
           resultStr += '$'
@@ -474,64 +425,4 @@ class Node ( QtCore.QObject ):
     
     resultStr += parsedStr [ parserStart: ]
     
-    return resultStr
-  #
-  # RSL specific parser
-  #
-  def parseLocalVars ( self, parsedStr ) :
-    #print '-> parseLocalVars in %s' % parsedStr
-    resultStr = ''
-    parserStart = 0
-    parserPos = 0
-    
-    while parserPos != -1 :
-      parserPos = parsedStr.find ( '$', parserStart )
-      if parserPos != -1 :
-        # 
-        if parserPos != 0 :
-          resultStr += parsedStr [ parserStart : parserPos ]
-        
-        # check local variables
-        if parsedStr [ ( parserPos + 1 ) : ( parserPos + 2 ) ] == '(' :
-          globStart = parserPos + 2
-          parserPos = parsedStr.find ( ')', globStart )
-          local_var_name = parsedStr [ globStart : ( parserPos ) ]
-          
-          #print '> Node(%s).parseLocalVars: found local var %s' % ( self.label, local_var_name )
-          #
-          # check if variable is input parameter name
-          #
-          param = self.getInputParamByName ( local_var_name ) 
-          if param is not None :
-            if self.isInputParamLinked ( param ) :
-              link = self.inputLinks[ param ]
-              resultStr += link.srcNode.getParamName ( link.srcParam )  
-            else :
-              resultStr += self.getParamName ( param )       
-          else :
-            #
-            # check if variable is output parameter name
-            #
-            param = self.getOutputParamByName ( local_var_name )
-            if param is not None :
-              resultStr += self.getParamName ( param )        
-            else :
-              #
-              # check if this is just local variable 
-              #
-              if local_var_name in self.internals :
-                resultStr += self.getInstanceName () + '_' + local_var_name
-              else :
-                print '> Node(%s).parseLocalVars: ERROR. Local var %s is not defined !' % ( self.label, local_var_name )  
-        else :
-          # keep $ sign for otheer, non $(...) cases
-          resultStr += '$'
-          
-      #print 'parserPos = %d parserStart = %d' % ( parserPos, parserStart )
-      if parserPos != -1 :
-        parserStart = parserPos + 1
-    
-    resultStr += parsedStr [ parserStart: ]
-    
-    return resultStr
-    
+    return resultStr    

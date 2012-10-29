@@ -128,7 +128,7 @@ class NodeParam ( QtCore.QObject ):
   def setValue ( self, value ) :
     #
     if self.value != value :
-      print '>> NodeParam.setValue'
+      #print '>> NodeParam.setValue'
       self.value = value
       self.paramChanged () 
     
@@ -165,7 +165,7 @@ class NodeParam ( QtCore.QObject ):
     else :
       self.value = self.default
       
-    print ':: value = %s default = %s' % ( self.getValueToStr(), self.getDefaultToStr()  )
+    #print ':: value = %s default = %s' % ( self.getValueToStr(), self.getDefaultToStr()  )
     
     help_tag = xml_param.namedItem ( 'help' )
     
@@ -706,7 +706,7 @@ class MatrixNodeParam( NodeParam ):
     #    break
     #if isNewValue :
     if self.value != value :  
-      print '>> MatrixParam.setValue'
+      #print '>> MatrixParam.setValue'
       self.value = value
       self.paramChanged ()  
 #

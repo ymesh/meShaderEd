@@ -50,6 +50,12 @@
 	<variable name="dummy_F"/> 
 	</internal>
 	<code><![CDATA[
+#define SURFACE_SHADER ${INSTANCENAME}
+surface ${INSTANCENAME} ( 
+${PARAMS} 
+)
+{
+  # CODE BEGIN ${INSTANCENAME}	  
 	Ci = $(Ci) * $(Oi); 
 	Oi = $(Oi);
 	__color = $(color) * $(Oi);
@@ -71,7 +77,8 @@
 	
 	color $(dummy_C) = $(extra_C) * $(Oi);
 	float $(dummy_F) = comp ( $(extra_F) * $(Oi), 0 ); 
-	
+  # CODE END ${INSTANCENAME}
+}	
 	]]>
 	</code>
 </node>
