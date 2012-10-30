@@ -102,7 +102,7 @@ def main ():
   
   createMissingDirs ( [temp_dir, lib_dir, project_dir, project_shaders, project_textures] )
   createMissingDirs ( [shader_networks_dir, shader_sources_dir] )
-  createMissingDirs ( [node_dir, texture_dir, shaders_dir, archive_dir, include_dir] )
+  createMissingDirs ( [node_dir, texture_dir, shaders_dir, archive_dir ] ) # include_dir supposed to be a list
   
   #  path(), filePath(), absolutePath(), and absoluteFilePath().
   

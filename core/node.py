@@ -145,7 +145,7 @@ class Node ( QtCore.QObject ):
     if self.isInputParamLinked ( param ) :
       link = self.inputLinks[ param ]
       
-      link.printInfo ()
+      #link.printInfo ()
       link.srcNode.computeNode()
       
       if self.computed_code is not None :
@@ -377,7 +377,7 @@ class Node ( QtCore.QObject ):
   #
   #
   def getComputedParamList ( self ) :
-    print '-> getComputedParamList'
+    #print '-> getComputedParamList'
     
     param_list = self.computedInputParams 
     # rslHeader += self.parseGlobalVars ( self.computedOutputParams )
