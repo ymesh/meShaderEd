@@ -43,6 +43,8 @@ class NodeParam ( QtCore.QObject ):
     self.subtype = ''
     self.range = ''
     
+    self.space = None # actual for color, point, vector, normal, matrix
+    
     if xml_param != None :
       self.parseFromXML ( xml_param )
     #print "NodeParam.__init__"
@@ -72,6 +74,7 @@ class NodeParam ( QtCore.QObject ):
     newParam.provider = self.provider
     newParam.subtype = self.subtype
     newParam.range = self.range
+    newParam.space = self.space
        
     newParam.default = copy.deepcopy ( self.default )
     newParam.value = copy.deepcopy ( self.value )
@@ -158,6 +161,11 @@ class NodeParam ( QtCore.QObject ):
     self.subtype = str ( xml_param.attributes().namedItem( 'subtype' ).nodeValue() )
     self.range = str ( xml_param.attributes().namedItem( 'range' ).nodeValue() )
     
+    if not xml_param.attributes().namedItem( 'space' ).isNull() :
+      space = str ( xml_param.attributes().namedItem( 'space' ).nodeValue() )
+      if space != '' :
+        self.space = space
+    
     self.setDefaultFromStr ( str ( xml_param.attributes().namedItem( 'default' ).nodeValue() ) )
     
     if not xml_param.attributes().namedItem( 'value' ).isNull() :
@@ -193,6 +201,10 @@ class NodeParam ( QtCore.QObject ):
     # ui decorative parameters
     if self.subtype != '' : xmlnode.setAttribute ( "subtype", self.subtype )
     if self.range != '' : xmlnode.setAttribute ( "range", self.range )
+      
+    if self.space != None : 
+      if self.space != '' :
+        xmlnode.setAttribute ( "space", self.space )
       
     if self.default != None : 
       value = self.getDefaultToStr()
@@ -388,7 +400,11 @@ class ColorNodeParam ( NodeParam ):
       strValue = strValue.replace( ' ', '' )
       color3_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
       color1_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+\))'
+      color3_space_pattern_str = 'color"[A-z]*"\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
+      color1_space_pattern_str = 'color"[A-z]*"\(([+]?([0-9]*\.)?[0-9]+\))'
       float_pattern_str = '[+]?[0-9]*\.?[0-9]+'
+      space_pattern_str = '"[A-z]*"'
+      
       p = re.compile( color3_pattern_str )             
       match = p.match( strValue )
       if match :
@@ -405,7 +421,32 @@ class ColorNodeParam ( NodeParam ):
           f = map( float, f )               
           value = [ f[0], f[0], f[0] ]  
         else :
-          raise Exception ( 'Cannot parse color property %s values' % self.name )  
+          p = re.compile( color3_space_pattern_str )             
+          match = p.match( strValue )
+          if match :
+            p = re.compile( float_pattern_str )
+            f = p.findall( strValue ) 
+            f = map( float, f )               
+            value = [ f[0], f[1], f[2] ]
+            
+            p = re.compile( space_pattern_str )
+            s = p.findall( strValue )
+            self.space = s[0].strip('"')
+          else :
+            p = re.compile( color1_space_pattern_str )             
+            match = p.match( strValue )
+            if match :
+              p = re.compile( float_pattern_str )
+              f = p.findall( strValue ) 
+              f = map( float, f )               
+              value = [ f[0], f[0], f[0] ] 
+              
+              p = re.compile( space_pattern_str )
+              s = p.findall( strValue )
+              self.space = s[0].strip('"') 
+            else :
+              err = 'Cannot parse color %s values' % self.name
+              raise Exception ( err )    
     return value
   #
   #  
@@ -428,7 +469,11 @@ class ColorNodeParam ( NodeParam ):
   #
   #
   def getValueToRSL ( self, value ):
-    return 'color(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'
+    ret_str = 'color'
+    if self.space != None :
+      if self.space != '' :
+        ret_str += ' "' + self.space + '" '
+    return ret_str + '(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'
   #
   #
   def getValueToRIB ( self, value ):
@@ -513,29 +558,65 @@ class NormalNodeParam ( NodeParam ):
       str = str.replace( ' ', '' )
       normal3_pattern_str = 'normal\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
       normal1_pattern_str = 'normal\(([-+]?([0-9]*\.)?[0-9]+\))'
+      normal3_space_pattern_str = 'normal"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
+      normal1_space_pattern_str = 'normal"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+\))'
       float_pattern_str = '[-+]?[0-9]*\.?[0-9]+'
+      space_pattern_str = '"[a-z]*"'
       p = re.compile( normal3_pattern_str )             
       match = p.match( str )
       if match :
+        # normal(0,0,0)
         p = re.compile( float_pattern_str )
         f = p.findall( str ) 
         f = map( float, f )               
         value = [ f[0], f[1], f[2] ]
       else :
+        # normal(0)
         p = re.compile( normal1_pattern_str )             
         match = p.match( str )
         if match :
           p = re.compile( float_pattern_str )
           f = p.findall( str ) 
           f = map( float, f )               
-          value = [ f[0], f[0], f[0] ]  
+          value = [ f[0], f[0], f[0] ] 
         else :
-          raise Exception ( 'Cannot parse normal property %s values' % self.name )  
+          # normal "space" (0,0,0)
+          p = re.compile( normal3_space_pattern_str )
+          match = p.match( str )
+          if match :
+            p = re.compile( float_pattern_str )
+            f = p.findall( str ) 
+            f = map( float, f )               
+            value = [ f[0], f[1], f[2] ] 
+            
+            p = re.compile( space_pattern_str )
+            s = p.findall( str )
+            self.space = s[0].strip('"')
+          else :
+            # normal "space" (0)
+            p = re.compile( normal1_space_pattern_str )
+            match = p.match( str )
+            if match :
+              p = re.compile( float_pattern_str )
+              f = p.findall( str ) 
+              f = map( float, f )               
+              value = [ f[0], f[0], f[0] ] 
+              
+              p = re.compile( space_pattern_str )
+              s = p.findall( str )
+              self.space = s[0].strip('"')
+            else :
+              err = 'Cannot parse normal %s values' % self.name
+              raise Exception ( err )    
     return value      
   #
   #
   def valueToStr ( self, value ):
-    return 'normal(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'    
+    ret_str = 'normal'
+    if self.space != None :
+      if self.space != '' :
+        ret_str += ' "' + self.space + '" '
+    return ret_str + '(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'    
 #
 # Point
 # 
@@ -559,34 +640,70 @@ class PointNodeParam ( NodeParam ):
   #
   def valueFromStr ( self, str ):
     value = [ 0.0, 0.0, 0.0 ]
-    #print "PointNodeParam.setValueFromStr %s" % str
+    #print "PointNodeParam(%s).valueFromStr %s" % (self.name, str )
     if str != '' : 
       str = str.replace( ' ', '' )
       point3_pattern_str = 'point\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
       point1_pattern_str = 'point\(([-+]?([0-9]*\.)?[0-9]+\))'
+      point3_space_pattern_str = 'point"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
+      point1_space_pattern_str = 'point"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+\))'
       float_pattern_str = '[-+]?[0-9]*\.?[0-9]+'
+      space_pattern_str = '"[a-z]*"'
       p = re.compile( point3_pattern_str )             
       match = p.match( str )
       if match :
+        # point(0,0,0)
         p = re.compile( float_pattern_str )
         f = p.findall( str ) 
         f = map( float, f )               
         value = [ f[0], f[1], f[2] ]
       else :
+        # point(0)
         p = re.compile( point1_pattern_str )             
         match = p.match( str )
         if match :
           p = re.compile( float_pattern_str )
           f = p.findall( str ) 
           f = map( float, f )               
-          value = [ f[0], f[0], f[0] ]  
+          value = [ f[0], f[0], f[0] ] 
         else :
-          raise Exception ( 'Cannot parse point property %s values' % self.name )  
+          # point "space" (0,0,0)
+          p = re.compile( point3_space_pattern_str )
+          match = p.match( str )
+          if match :
+            p = re.compile( float_pattern_str )
+            f = p.findall( str ) 
+            f = map( float, f )               
+            value = [ f[0], f[1], f[2] ] 
+            
+            p = re.compile( space_pattern_str )
+            s = p.findall( str )
+            self.space = s[0].strip('"')
+          else :
+            # point "space" (0)
+            p = re.compile( point1_space_pattern_str )
+            match = p.match( str )
+            if match :
+              p = re.compile( float_pattern_str )
+              f = p.findall( str ) 
+              f = map( float, f )               
+              value = [ f[0], f[0], f[0] ] 
+              
+              p = re.compile( space_pattern_str )
+              s = p.findall( str )
+              self.space = s[0].strip('"')
+            else :
+              err = 'Cannot parse point %s values' % self.name
+              raise Exception ( err )  
     return value
   #
   #
   def valueToStr ( self, value ):
-    return 'point(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'     
+    ret_str = 'point'
+    if self.space != None :
+      if self.space != '' :
+        ret_str += ' "' + self.space + '" '
+    return ret_str + '(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'     
 #
 # Vector
 # 
@@ -615,29 +732,65 @@ class VectorNodeParam( NodeParam ):
       str = str.replace( ' ', '' )
       vector3_pattern_str = 'vector\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
       vector1_pattern_str = 'vector\(([-+]?([0-9]*\.)?[0-9]+\))'
+      vector3_space_pattern_str = 'vector"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
+      vector1_space_pattern_str = 'vector"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+\))'
       float_pattern_str = '[-+]?[0-9]*\.?[0-9]+'
+      space_pattern_str = '"[a-z]*"'
       p = re.compile( vector3_pattern_str )             
       match = p.match( str )
       if match :
+        # vector(0,0,0)
         p = re.compile( float_pattern_str )
         f = p.findall( str ) 
         f = map( float, f )               
         value = [ f[0], f[1], f[2] ]
       else :
+        # vector(0)
         p = re.compile( vector1_pattern_str )             
         match = p.match( str )
         if match :
           p = re.compile( float_pattern_str )
           f = p.findall( str ) 
           f = map( float, f )               
-          value = [ f[0], f[0], f[0] ]  
+          value = [ f[0], f[0], f[0] ] 
         else :
-          raise Exception ( 'Cannot parse vector property %s values' % self.name )
+          # vector "space" (0,0,0)
+          p = re.compile( vector3_space_pattern_str )
+          match = p.match( str )
+          if match :
+            p = re.compile( float_pattern_str )
+            f = p.findall( str ) 
+            f = map( float, f )               
+            value = [ f[0], f[1], f[2] ] 
+            
+            p = re.compile( space_pattern_str )
+            s = p.findall( str )
+            self.space = s[0].strip('"')
+          else :
+            # vector "space" (0)
+            p = re.compile( vector1_space_pattern_str )
+            match = p.match( str )
+            if match :
+              p = re.compile( float_pattern_str )
+              f = p.findall( str ) 
+              f = map( float, f )               
+              value = [ f[0], f[0], f[0] ] 
+              
+              p = re.compile( space_pattern_str )
+              s = p.findall( str )
+              self.space = s[0].strip('"')
+            else :
+              err = 'Cannot parse vector %s values' % self.name
+              raise Exception ( err )  
     return value        
   #
   #
   def valueToStr ( self, value ):
-    return 'vector(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'     
+    ret_str = 'vector'
+    if self.space != None :
+      if self.space != '' :
+        ret_str += ' "' + self.space + '" '
+    return ret_str +'(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'     
 #
 # Matrix
 # 
@@ -669,7 +822,11 @@ class MatrixNodeParam( NodeParam ):
         str = str.replace( ' ', '' )
         matrix16_pattern_str = 'matrix\(([-+]?([0-9]*\.)?[0-9]+,){15}[-+]?([0-9]*\.)?[0-9]+\)'
         matrix1_pattern_str = 'matrix\(([-+]?([0-9]*\.)?[0-9]+\))'
+        matrix16_space_pattern_str = 'matrix"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){15}[-+]?([0-9]*\.)?[0-9]+\)'
+        matrix1_space_pattern_str = 'matrix"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+\))'
         float_pattern_str = '[-+]?[0-9]*\.?[0-9]+'
+        space_pattern_str = '"[a-z]*"'
+        
         p = re.compile( matrix16_pattern_str )             
         match = p.match( str )
         if match :
@@ -686,25 +843,45 @@ class MatrixNodeParam( NodeParam ):
             f = map( float, f )               
             value = [[f[0], 0.0, 0.0, 0.0], [0.0, f[0], 0.0, 0.0], [0.0, 0.0, f[0], 0.0], [0.0, 0.0, 0.0, f[0]]] 
           else :
-            raise Exception ( 'Cannot parse matrix property %s values' % self.name )
+            p = re.compile( matrix16_space_pattern_str )             
+            match = p.match( str )
+            if match :
+              p = re.compile( float_pattern_str )
+              f = p.findall( str ) 
+              f = map( float, f )               
+              value = [ f[0:4], f[4:8], f[8:12], f[12:16] ]
+              
+              p = re.compile( space_pattern_str )
+              s = p.findall( str )
+              self.space = s[0].strip('"')
+            else :
+              p = re.compile( matrix1_space_pattern_str )             
+              match = p.match( str )
+              if match :
+                p = re.compile( float_pattern_str )
+                f = p.findall( str ) 
+                f = map( float, f )               
+                value = [[f[0], 0.0, 0.0, 0.0], [0.0, f[0], 0.0, 0.0], [0.0, 0.0, f[0], 0.0], [0.0, 0.0, 0.0, f[0]]] 
+                
+                p = re.compile( space_pattern_str )
+                s = p.findall( str )
+                self.space = s[0].strip('"')
+              else :
+                err = 'Cannot parse matrix %s values' % self.name
+                raise Exception ( err )
     return value        
   #
   #
   def valueToStr ( self, value ) :
     flatMat = sum( value, [] )
-    return 'matrix(' + ''.join('%.3f' % f + ',' for f in flatMat[: - 1]) + '%.3f' % flatMat[ - 1] + ')' 
+    ret_str = 'matrix'
+    if self.space != None :
+      if self.space != '' :
+        ret_str += ' "' + self.space + '" '
+    return ret_str +'(' + ''.join('%.3f' % f + ',' for f in flatMat[: - 1]) + '%.3f' % flatMat[ - 1] + ')' 
   #
   #
   def setValue ( self, value ) : 
-    #isNewValue = False
-    #for i in range ( 0, 3 ) :
-    #  for j in range( 0, 3 ) :
-    #    if self.value[ i ][ j ] != valuep[ j ][ j ] :
-    #      isNewValue = True
-    #      break
-    #  if isNewValue :
-    #    break
-    #if isNewValue :
     if self.value != value :  
       #print '>> MatrixParam.setValue'
       self.value = value

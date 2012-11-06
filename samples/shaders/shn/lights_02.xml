@@ -1,5 +1,5 @@
-<!DOCTYPE lights_01>
-<nodenet author="meShaderEd" name="lights_01">
+<!DOCTYPE lights_02>
+<nodenet author="meShaderEd" name="lights_02">
  <help>Short NodeNetwork description</help>
  <nodes>
   <node icon="" type="image" author="mesh" id="1" name="imageViewer" label="imageViewer">
@@ -20,7 +20,7 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 
 
 ]]></param_code>
-   <offset x="257" y="-195"/>
+   <offset x="241" y="-203"/>
   </node>
   <node icon="" type="rib" author="mesh" id="2" name="BasicPrimitive2" label="BasicPrimitive2">
    <help>Basic primitive preview RIB with custom lights and volume shaders</help>
@@ -127,7 +127,7 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
 
   WorldEnd
   ]]></code>
-   <offset x="98" y="-203"/>
+   <offset x="87" y="-231"/>
   </node>
   <node icon="" type="surface" author="mesh" id="3" name="surface" label="surf">
    <help>Basic surface shader.</help>
@@ -189,7 +189,31 @@ ${PARAMS}
  
  $(outColor)= $(SurfaceColor) * ($(Ia)+ $(Id)+ $(Itr)+ $(incandescence));
  ]]></code>
-   <offset x="-425" y="98"/>
+   <offset x="-440" y="98"/>
+  </node>
+  <node icon="" type="rib_code" author="mesh" id="33" name="Transform" label="Transform">
+   <help>Transform RIB code node</help>
+   <input>
+    <property default="0.000 0.000 0.000" type="transform" value="0.000 0.000 0.000" name="translate" label="translate"/>
+    <property default="1.000 1.000 1.000" type="transform" value="1.000 1.000 1.000" name="scale" label="scale"/>
+    <property default="1.000 0.000 0.000" type="transform" value="1.000 0.000 0.000" name="axis" label="axis"/>
+    <property default="0.000" type="float" value="0.000" name="Angle" label="Angle"/>
+    <property default="" type="rib" value="" name="rib_input" label="rib_input"/>
+   </input>
+   <output>
+    <property default="" type="rib" value="" name="rib_out" label="rib"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+  TransformBegin
+    Translate $(translate)
+    Scale $(scale) 
+    Rotate $(Angle) $(axis)
+	  $(rib_input)
+	TransformEnd
+]]></code>
+   <offset x="-96" y="-372"/>
   </node>
   <node icon="" type="light" author="mesh" id="8" name="light" label="dist_light">
    <help>Root light shader.</help>
@@ -213,7 +237,24 @@ ${PARAMS}
   /* CODE END ${INSTANCENAME} */
 }	  
 	  ]]></code>
-   <offset x="-434" y="-185"/>
+   <offset x="-480" y="-172"/>
+  </node>
+  <node icon="" type="rib_code" author="mesh" id="34" name="toTransform" label="toTransform">
+   <help>Transform RIB code node from float values</help>
+   <input>
+    <property default="0.000" type="float" value="1.000" name="value1" label="X"/>
+    <property default="0.000" type="float" value="-3.000" name="value2" label="Y"/>
+    <property default="0.000" type="float" value="0.000" name="value3" label="Z"/>
+   </input>
+   <output>
+    <property default="0.000 0.000 0.000" type="transform" value="0.000 0.000 0.000" name="transform" label="transform"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+  $(value1) $(value2) $(value3)
+  ]]></code>
+   <offset x="-349" y="-478"/>
   </node>
   <node icon="" type="rib" author="mesh" id="16" name="LightSource" label="LightSource">
    <help>Connect RIB code node</help>
@@ -230,7 +271,7 @@ ${PARAMS}
    <code><![CDATA[
   $(light) $(handle)
   ]]></code>
-   <offset x="-287" y="-192"/>
+   <offset x="-355" y="-222"/>
   </node>
   <node icon="" type="rib" author="mesh" id="17" name="LightSource" label="LightSource0">
    <help>Connect RIB code node</help>
@@ -247,7 +288,7 @@ ${PARAMS}
    <code><![CDATA[
   $(light) $(handle)
   ]]></code>
-   <offset x="-293" y="-314"/>
+   <offset x="-354" y="-334"/>
   </node>
   <node icon="" type="light" author="mesh" id="19" name="light" label="point_light">
    <help>Root light shader.</help>
@@ -271,7 +312,7 @@ ${PARAMS}
   /* CODE END ${INSTANCENAME} */
 }	  
 	  ]]></code>
-   <offset x="-427" y="-321"/>
+   <offset x="-483" y="-335"/>
   </node>
   <node icon="" type="rib_code" author="mesh" id="20" name="ConnectRib" label="ConnectRib">
    <help>Connect RIB code node</help>
@@ -290,7 +331,7 @@ ${PARAMS}
   $(rib_input2)
 
   ]]></code>
-   <offset x="-128" y="-235"/>
+   <offset x="-222" y="-301"/>
   </node>
   <node icon="" type="displacement" author="mesh" id="21" name="displace" label="displace">
    <help>Root displacement shader.</help>
@@ -315,7 +356,7 @@ ${PARAMS}
 /* CODE END ${INSTANCENAME} */
 }		
 	]]></code>
-   <offset x="-149" y="-79"/>
+   <offset x="-148" y="-80"/>
   </node>
   <node icon="" type="variable" author="mesh" id="22" name="P" label="P">
    <help>Global point P.</help>
@@ -339,7 +380,7 @@ ${PARAMS}
 	  $(P) = Pv;
 	  #endif
 	  ]]></code>
-   <offset x="-446" y="-43"/>
+   <offset x="-476" y="-50"/>
   </node>
   <node icon="" type="variable" author="mesh" id="23" name="N" label="N">
    <help>Global normal N.</help>
@@ -363,7 +404,7 @@ ${PARAMS}
 	  $(N) = Nv;
 	  #endif
 	]]></code>
-   <offset x="-452" y="16"/>
+   <offset x="-474" y="17"/>
   </node>
   <node icon="IDbubbly.png" type="rsl_code" author="Ivan DeWolf" id="24" name="IDbubbly" label="IDbubbly">
    <help>bubbly.sl written a while ago by Ivan DeWolf ivan@martian-tools.com
@@ -436,7 +477,7 @@ ${PARAMS}
 	  $(outP) = $(P); 
 	  $(outN) = $(N);
 	  ]]></code>
-   <offset x="-307" y="-64"/>
+   <offset x="-323" y="-80"/>
   </node>
   <node icon="" type="rib_code" author="mesh" id="25" name="RenderGlobals" label="RenderGlobals">
    <help>RenderGlobals options</help>
@@ -469,7 +510,7 @@ ${PARAMS}
   
   $(Channels)
   ]]></code>
-   <offset x="-137" y="-392"/>
+   <offset x="-99" y="-510"/>
   </node>
   <node icon="" type="rsl_code" author="mesh" id="30" name="me_point" label="me_point">
    <help>Point light shader</help>
@@ -534,7 +575,7 @@ ${PARAMS}
       $(Cl) =  (1 - __inShadowC) * $(Cl) +  __inShadowC * $(ShadowColor);
   }
 	]]></code>
-   <offset x="-623" y="-417"/>
+   <offset x="-635" y="-426"/>
   </node>
   <node icon="" type="rsl_code" author="mesh" id="31" name="me_distant" label="me_distant">
    <help>Distant light shader.</help>
@@ -622,7 +663,7 @@ ${PARAMS}
       $(Cl) =  (1 - __inShadowC) * $(Cl) +  __inShadowC * $(ShadowColor);
   }
 	]]></code>
-   <offset x="-623" y="-71"/>
+   <offset x="-629" y="-89"/>
   </node>
  </nodes>
  <links>
@@ -631,16 +672,18 @@ ${PARAMS}
   <link srcNode_id="24" dstNode_id="21" id="34" srcParam="outN" dstParam="N"/>
   <link srcNode_id="21" dstNode_id="2" id="35" srcParam="disp" dstParam="FG_disp"/>
   <link srcNode_id="25" dstNode_id="2" id="36" srcParam="rib" dstParam="Globals"/>
+  <link srcNode_id="34" dstNode_id="33" id="5" srcParam="transform" dstParam="translate"/>
   <link srcNode_id="30" dstNode_id="19" id="1" srcParam="Cl" dstParam="Cl"/>
   <link srcNode_id="2" dstNode_id="1" id="40" srcParam="ImageFile" dstParam="image"/>
-  <link srcNode_id="20" dstNode_id="2" id="9" srcParam="rib_out" dstParam="LightSource"/>
+  <link srcNode_id="4" dstNode_id="3" id="41" srcParam="outColor" dstParam="Ci"/>
+  <link srcNode_id="3" dstNode_id="2" id="42" srcParam="surface" dstParam="FG_surf"/>
   <link srcNode_id="31" dstNode_id="8" id="2" srcParam="Cl" dstParam="Cl"/>
-  <link srcNode_id="3" dstNode_id="2" id="3" srcParam="surface" dstParam="FG_surf"/>
+  <link srcNode_id="20" dstNode_id="33" id="3" srcParam="rib_out" dstParam="rib_input"/>
   <link srcNode_id="8" dstNode_id="16" id="23" srcParam="light" dstParam="light"/>
   <link srcNode_id="19" dstNode_id="17" id="25" srcParam="light" dstParam="light"/>
   <link srcNode_id="17" dstNode_id="20" id="26" srcParam="rib_out" dstParam="rib_input1"/>
   <link srcNode_id="16" dstNode_id="20" id="27" srcParam="rib_out" dstParam="rib_input2"/>
-  <link srcNode_id="4" dstNode_id="3" id="4" srcParam="outColor" dstParam="Ci"/>
+  <link srcNode_id="33" dstNode_id="2" id="4" srcParam="rib_out" dstParam="LightSource"/>
   <link srcNode_id="22" dstNode_id="24" id="31" srcParam="P" dstParam="P"/>
  </links>
 </nodenet>

@@ -11,7 +11,7 @@ import os, sys
 from PyQt4 import QtCore, QtGui
 
 from core.meCommon import *
-from global_vars import app_global_vars
+from global_vars import app_global_vars, DEBUG_MODE
 from core.nodeParam import *
 
 import gui.ui_settings as UI
@@ -102,12 +102,12 @@ class NodeParamEditor ( QtGui.QWidget ):
   # we need to cynchronize changing of param_default.value with param.default  
   #
   def onParamDefValueChanged ( self, param ) :
-    print '* onParamDefValueChanged'
+    if DEBUG_MODE : print '* onParamDefValueChanged'
     self.param.default = self.param_default.value
   #
   #
   def onParamValueChanged ( self, param ) :
-    print '* onParamValueChanged'
+    if DEBUG_MODE : print '* onParamValueChanged'
     self.param.value = param.value
   #
   #
@@ -244,11 +244,22 @@ class NodeParamEditor ( QtGui.QWidget ):
     #
     # !!! ListWidget item for param also should be changed  
     #
-    newName = str ( self.ui.name_lineEdit.text () )
-    self.emit( QtCore.SIGNAL( "changeParamName" ), self.param.name, newName )
-    self.param.name = newName
+    newName = str ( self.ui.name_lineEdit.text () ).strip()
+    if newName == '' :
+      newName = self.param.name
+      self.ui.name_lineEdit.setText ( self.param.name ) 
+    if newName != self.param.name :
+      self.emit( QtCore.SIGNAL( "changeParamName" ), self.param.name, newName )
+  #
+  #  
+  def onEditParamLabel ( self ) : 
+    newName  = str ( self.ui.label_lineEdit.text () ).strip()
+    if newName == '' :
+      newName = self.param.label
+      self.ui.label_lineEdit.setText ( self.param.label ) 
+    if newName != self.param.label :  
+      self.emit( QtCore.SIGNAL( "changeParamLabel" ), self.param.label, newName )
     
-  def onEditParamLabel ( self ) : self.param.label = str ( self.ui.label_lineEdit.text () )
   def onEditParamDisplay ( self, value ) : self.param.display = self.ui.check_display.isChecked()
   def onEditParamShader ( self, value ) : self.param.shaderParam = self.ui.check_shader.isChecked()
   def onEditParamType ( self, idx ) : 

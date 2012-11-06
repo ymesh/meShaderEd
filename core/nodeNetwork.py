@@ -17,6 +17,8 @@ from imageNode import ImageNode
 
 from nodeParam import NodeParam
 from nodeLink import NodeLink
+
+from global_vars import DEBUG_MODE
 #
 # NodeNetwork
 # 
@@ -24,7 +26,7 @@ class NodeNetwork ( QtCore.QObject ):
   #
   #  
   def __init__ ( self, name = '', xml_nodenet = None ):
-    print '>> NodeNetwork: __init__ ' + name
+    if DEBUG_MODE : print '>> NodeNetwork: __init__ ' + name
     QtCore.QObject.__init__( self )
     
     self.node_id = 0       
@@ -42,49 +44,33 @@ class NodeNetwork ( QtCore.QObject ):
     
     if xml_nodenet != None :
       self.parseFromXML ( xml_nodenet )
-  #
-  #
-  def __del__ ( self ) :
-    print '>> NodeNetwork: __del__ ' + self.name
-    # QtCore.QObject.__del__( self )
-  
-  #
-  #
-  def nodeLabelExists ( self, label ):
-    ret = False
-    for node in self.nodes.values ():
-      #print ">> NodeNetwork: Check " + node.label
-      if label == node.label : 
-        print ">> NodeNetwork: Name exists :" + label
-        ret = True
-        break
-    return ret
+
   #
   #
   def renameNodeLabel ( self, node, newLabel ):
     # assign new unique label to node
-    label = newLabel
-    i = 0
-    while True :
-      if self.nodeLabelExists ( label ) :
-        label = newLabel + str (i)
-        #print ">> NodeNetwork: next try " + label
-        i += 1
-        continue
-      else :
-        break
-
-    node.label = str ( label )
+    from meCommon import getUniqueName
+    labels = []
+    for nd in self.getNodesList () : labels.append ( nd.label )
+    node.label = getUniqueName ( newLabel, labels )
+    return node.label
+  #
+  #
+  def renameNodeName ( self, node, newName ):
+    # assign new unique label to node
+    from meCommon import getUniqueName
+    names = []
+    for nd in self.getNodesList () : names.append ( nd.name )
+    node.name = getUniqueName ( newName, names )
+    return node.name
   #
   # get list of nodes
   #
-  def getNodesList ( self ) :
-    return self.nodes.values()
+  def getNodesList ( self ) : return self.nodes.values()
   #
   # get list of links
   #
-  def getLinksList ( self ) :
-    return self.links.values()  
+  def getLinksList ( self ) : return self.links.values()  
   #
   #    
   def addNode ( self, node ):
@@ -125,16 +111,18 @@ class NodeNetwork ( QtCore.QObject ):
   #
   #                        
   def removeNode ( self, node ):
-    print '>>NodeNetwork: removing node ' + node.name
+    if DEBUG_MODE :print ':: NodeNetwork: removing node %s (%d)' % ( node.name, node.id )
     # remove from NodeNetwork
-    if node.id in self.nodes :
+    if node.id in self.nodes.keys() :
+      if DEBUG_MODE :print '...found in keys'
       nodePopped = self.nodes.pop( node.id )        
   #
   #
   def removeLink ( self, link ):
-    print '>>NodeNetwork: removing link'
+    if DEBUG_MODE :print ':: NodeNetwork: removing link (%d)' % link.id
     # remove from model links
-    if link.id in self.links :
+    if link.id in self.links.keys() :
+      if DEBUG_MODE :print '...found in keys'
       linkPopped = self.links.pop( link.id )
       
       # detach node from links
@@ -155,7 +143,7 @@ class NodeNetwork ( QtCore.QObject ):
   #
   #      
   def clear ( self ):
-    print ':: NodeNetwork: clearing nodes ...'
+    if DEBUG_MODE :print ':: NodeNetwork: clearing nodes ...'
     # remove links
     for link in self.links.values():
       self.removeLink ( link )
@@ -180,7 +168,7 @@ class NodeNetwork ( QtCore.QObject ):
   #
   #  
   def parseToXML ( self, dom ) :
-
+    #
     root = dom.createElement( "nodenet" )
     root.setAttribute ( "name", self.name )
     root.setAttribute ( "author", "meShaderEd" )
@@ -197,7 +185,7 @@ class NodeNetwork ( QtCore.QObject ):
     #print ':: parsing nodes to XML ...' 
     for id in self.nodes.keys() :
       node = self.nodes [ id ]
-      #print '=> parsing node to XML: %s ...' % node.label
+      #if DEBUG_MODE :print '=> parsing node to XML: %s ...' % node.label
       xml_node = node.parseToXML ( dom )
       nodes_tag.appendChild ( xml_node )
     
@@ -224,8 +212,6 @@ class NodeNetwork ( QtCore.QObject ):
     #
     self.name = str ( root.attributes().namedItem('name').nodeValue() )
     self.author = str ( root.attributes().namedItem('author').nodeValue() ) 
-    
-    #print '=> nodenet name = %s author = %s' % ( self.name, self.author )
                               
     xml_nodeList = root.elementsByTagName ( 'node' )
     for i in range( 0, xml_nodeList.length() ) :

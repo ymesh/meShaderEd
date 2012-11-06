@@ -10,6 +10,7 @@ from PyQt4 import QtCore, QtGui
 from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
 
+from global_vars import DEBUG_MODE
 #
 # GfxNode
 # 	 
@@ -114,7 +115,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
   #
   #
   def remove ( self ) :
-    print ">>GfxNode remove gfxNode (temp)"
+    if DEBUG_MODE : print ">> GfxNode remove gfxNode (temp)"
     for connect in self.inputConnectors :
       connect.removeAllLinks ()
 

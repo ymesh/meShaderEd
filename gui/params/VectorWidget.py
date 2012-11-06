@@ -42,11 +42,22 @@ class Ui_VectorWidget_field ( object ):
     self.floatEdit1.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     self.floatEdit2.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     
+    self.selector = QtGui.QComboBox ( VectorWidget )
+    self.selector.setEditable ( False )
+    #self.selector.setMinimumSize ( QtCore.QSize ( UI.COMBO_WIDTH, UI.COMBO_HEIGHT ) )
+    self.selector.setMaximumSize ( QtCore.QSize( UI.MAX, UI.COMBO_HEIGHT ) )
+    
+    for label in [ "current", "shader", "object", "camera", "world", "raster", "NDC", "screen" ] :
+      self.selector.addItem ( label )
+    if self.widget.param.space != None :
+      self.selector.setCurrentIndex( self.selector.findText ( self.widget.param.space ) )
+    
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
     self.widget.hl.addWidget ( self.floatEdit0 )
     self.widget.hl.addWidget ( self.floatEdit1 )
     self.widget.hl.addWidget ( self.floatEdit2 )
+    self.widget.hl.addWidget ( self.selector )
     
     self.widget.hl.addItem ( spacer )
     
@@ -58,12 +69,14 @@ class Ui_VectorWidget_field ( object ):
     VectorWidget.connect ( self.floatEdit0, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
     VectorWidget.connect ( self.floatEdit1, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
     VectorWidget.connect ( self.floatEdit2, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
+    VectorWidget.connect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged ) 
   #
   #
   def disconnectSignals ( self, VectorWidget ):
     VectorWidget.disconnect ( self.floatEdit0, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
     VectorWidget.disconnect ( self.floatEdit1, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
     VectorWidget.disconnect ( self.floatEdit2, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
+    VectorWidget.disconnect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged ) 
   #
   #                      
   def onFloatEditEditingFinished ( self ):
@@ -75,7 +88,12 @@ class Ui_VectorWidget_field ( object ):
     f2 = floatStr2.toFloat()[0]
     
     self.widget.param.setValue ( [ f0, f1, f2 ] )
-
+  #
+  #                      
+  def onCurrentIndexChanged ( self, idx ):
+    space = str ( self.selector.currentText () ) 
+    if space == 'current' : space = None
+    self.widget.param.space = space
   #
   #
   #      

@@ -7,9 +7,9 @@
 import os, sys
 from PyQt4 import QtCore
 
-from global_vars import app_global_vars
-from core.node_global_vars import node_global_vars
 
+from global_vars import app_global_vars, DEBUG_MODE
+from core.node_global_vars import node_global_vars
 
 #from core.nodeParam import NodeParam
 #
@@ -75,21 +75,39 @@ class Node ( QtCore.QObject ):
   #
   #
   def addInputParam ( self, param ) :
+    param.isInput = True
+    # to be sure that name and label is unique
+    if param.name in self.getParamsNames() : self.renameParamName ( param, param.name ) 
+    if param.label in self.getParamsLabels() : self.renameParamLabel ( param, param.label ) 
     self.inputParams.append ( param ) 
   #
   #
   def addOutputParam ( self, param ) :
+    param.isInput = False
+    # to be sure that name and label is unique
+    if param.name in self.getParamsNames() : self.renameParamName ( param, param.name ) 
+    if param.label in self.getParamsLabels() : self.renameParamLabel ( param, param.label ) 
     self.outputParams.append ( param ) 
   #
   #
-  def addInternal ( self, internal ) :
+  def addInternal ( self, newName ) :
     #print '--> add internal: %s' % internal
-    if internal != '' : self.internals.append ( internal )
+    internal = newName
+    if internal != '' :
+      from meCommon import getUniqueName
+      internal = getUniqueName ( newName, self.internals )
+      self.internals.append ( internal )
+    return internal
   #
   #
-  def addInclude ( self, include ) :
+  def addInclude ( self, newName ) :
     #print '--> add include: %s' % include
-    if include != '' : self.includes.append ( include )
+    include = newName
+    if include != '' :
+      from meCommon import getUniqueName
+      include = getUniqueName ( newName, self.includes )
+      self.includes.append ( include )
+    return include
   #
   #
   def attachOutputParamToLink ( self, param, link ):
@@ -111,12 +129,32 @@ class Node ( QtCore.QObject ):
   #    
   def detachInputParamFromLink ( self, param ):
     if param in self.inputLinks.keys() :
-      self.inputLinks.pop ( param )      
+      self.inputLinks.pop ( param )  
+  #
+  #      
+  def detachOutputParamFromLink ( self, param ):
+    while param in self.outputLinks.keys() :
+      self.outputLinks.pop ( param )   
   #
   #    
   def isInputParamLinked ( self, param ):
     return param in self.inputLinks.keys()   
+  #
+  #    
+  def isOutputParamLinked ( self, param ):
+    return param in self.outputLinks.keys()   
   
+  #
+  #    
+  def removeParam ( self, param ):
+    if param.isInput :
+      if self.isInputParamLinked ( param ) :
+        self.detachInputParamFromLink ( param )   
+      self.inputParams.remove ( param )
+    else :
+      if self.isOutputParamLinked ( param ) :
+        self.detachOutputParamFromLink ( param )  
+      self.outputParams.remove ( param )     
   #
   #    
   def getInputParamByName ( self, name ):
@@ -157,9 +195,42 @@ class Node ( QtCore.QObject ):
     
     return result
   #
+  # return common list for input and output parameters
+  #
+  def getParamsList ( self ) :
+    params = self.inputParams + self.outputParams
+    return params
+  #
+  #
+  def getParamsNames ( self ) :
+    names = []
+    for pm in self.getParamsList () : names.append ( pm.name )
+    return names
+  #
+  #
+  def getParamsLabels ( self ) :
+    labels = []
+    for pm in self.getParamsList () : labels.append ( pm.label )
+    return labels
+  #
+  #
+  def renameParamName ( self, param, newName ):
+    # assign new unique name to param
+    from meCommon import getUniqueName
+    param.name = getUniqueName ( newName, self.getParamsNames() )
+    return param.name
+  #
+  #
+  def renameParamLabel ( self, param, newName ):
+    # assign new unique label to param
+    from meCommon import getUniqueName
+    param.label = getUniqueName ( newName, self.getParamsLabels() )
+    return param.label
+  #
   #
   def onParamChanged ( self, param ):
-    print ">> Node: onParamChanged node = %s param = %s" % ( self.label, param.name )  
+    if DEBUG_MODE : print ">> Node: onParamChanged node = %s param = %s" % ( self.label, param.name )  
+    pass
     #self.emit( QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self, param ) 
   #
   #
@@ -209,42 +280,41 @@ class Node ( QtCore.QObject ):
     if not help_tag.isNull() :
       self.help = help_tag.toElement().text()
       #print '-> help= %s' % self.help
-      
-    self.icon = str ( xml_node.attributes().namedItem( 'icon' ).nodeValue() )   
-      
-    from core.nodeParam import *
+    self.icon = str ( xml_node.attributes().namedItem( 'icon' ).nodeValue() ) 
     
-    createParamTable = {   'float':FloatNodeParam
-                            ,'int':IntNodeParam 
-                            ,'color':ColorNodeParam 
-                            ,'string':StringNodeParam
-                            ,'normal':NormalNodeParam 
-                            ,'point':PointNodeParam 
-                            ,'vector':VectorNodeParam
-                            ,'matrix':MatrixNodeParam
-                            ,'surface':SurfaceNodeParam
-                            ,'displacement':DisplacementNodeParam
-                            ,'volume':VolumeNodeParam
-                            ,'light':LightNodeParam
-                            ,'rib':RibNodeParam
-                            ,'text':TextNodeParam
-                            ,'transform':TransformNodeParam
-                            ,'image':ImageNodeParam
-                         }
-                         
+#    from core.nodeParam import *
+#    createParamTable = {   'float':FloatNodeParam
+#                            ,'int':IntNodeParam 
+#                            ,'color':ColorNodeParam 
+#                            ,'string':StringNodeParam
+#                            ,'normal':NormalNodeParam 
+#                            ,'point':PointNodeParam 
+#                            ,'vector':VectorNodeParam
+#                            ,'matrix':MatrixNodeParam
+#                            ,'surface':SurfaceNodeParam
+#                            ,'displacement':DisplacementNodeParam
+#                            ,'volume':VolumeNodeParam
+#                            ,'light':LightNodeParam
+#                            ,'rib':RibNodeParam
+#                            ,'text':TextNodeParam
+#                            ,'transform':TransformNodeParam
+#                            ,'image':ImageNodeParam
+#                         }
+                        
     input_tag = xml_node.namedItem ( 'input' )
     if not input_tag.isNull() :
       xml_paramList = input_tag.toElement().elementsByTagName ( 'property' )
       for i in range( 0, xml_paramList.length() ) :
         xml_param = xml_paramList.item( i )
-        param_type = str( xml_param.attributes().namedItem( 'type' ).nodeValue() )
+        #param_type = str( xml_param.attributes().namedItem( 'type' ).nodeValue() )
         #
         # some parameters (String, Color, Point, Vector, Normal, Matrix ...)
         # have different string interpretation in RIB
         #
         isRibParam = ( self.type == 'rib' or self.type == 'rib_code' )
-        param = createParamTable[ param_type ]( xml_param, isRibParam )
-        param.isInput = True
+        param = createParamFromXml ( xml_param, isRibParam, True ) # #param.isInput = True
+        #param = createParamTable[ param_type ]( xml_param, isRibParam )
+        #param.isInput = True
         self.addInputParam ( param )
         #print '--> param = %s value = %s (isRibParam = %d )' % ( param.label, param.getValueToStr(), isRibParam )
     
@@ -253,14 +323,15 @@ class Node ( QtCore.QObject ):
       xml_paramList = output_tag.toElement().elementsByTagName ( 'property' )
       for i in range( 0, xml_paramList.length() ) :
         xml_param = xml_paramList.item( i )
-        param_type = str( xml_param.attributes().namedItem( 'type' ).nodeValue() )
+        #param_type = str( xml_param.attributes().namedItem( 'type' ).nodeValue() )
         #
         # some parameters (Color, Point, Vector, Normal, Matrix ...)
         # have different string interpretation in RIB
         #
         isRibParam = ( self.type == 'rib' or self.type == 'rib_code' )
-        param = createParamTable[ param_type ]( xml_param, isRibParam )
-        param.isInput = False
+        param = createParamFromXml ( xml_param, isRibParam, False ) # #param.isInput = False
+        #param = createParamTable[ param_type ]( xml_param, isRibParam )
+        #param.isInput = False
         self.addOutputParam ( param ) 
         #print '--> param = %s value = %s' % ( param.label, param.getValueToStr() )
     
@@ -364,7 +435,7 @@ class Node ( QtCore.QObject ):
   #
   #
   def computeNode ( self ) : 
-    print '>> Node (%s).computeNode' % self.label
+    if DEBUG_MODE : print '>> Node (%s).computeNode' % self.label
     self.execParamCode ()
   #
   #
@@ -426,3 +497,49 @@ class Node ( QtCore.QObject ):
     resultStr += parsedStr [ parserStart: ]
     
     return resultStr    
+#
+# name and type must be specified in xml
+#
+def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
+  from core.nodeParam import FloatNodeParam
+  from core.nodeParam import IntNodeParam
+  from core.nodeParam import ColorNodeParam 
+  from core.nodeParam import StringNodeParam
+  from core.nodeParam import NormalNodeParam 
+  from core.nodeParam import PointNodeParam 
+  from core.nodeParam import VectorNodeParam
+  from core.nodeParam import MatrixNodeParam
+  from core.nodeParam import SurfaceNodeParam
+  from core.nodeParam import DisplacementNodeParam
+  from core.nodeParam import VolumeNodeParam
+  from core.nodeParam import LightNodeParam
+  from core.nodeParam import RibNodeParam
+  from core.nodeParam import TextNodeParam
+  from core.nodeParam import TransformNodeParam
+  from core.nodeParam import ImageNodeParam
+
+  param = None  
+  createParamTable = {   'float':FloatNodeParam
+                          ,'int':IntNodeParam 
+                          ,'color':ColorNodeParam 
+                          ,'string':StringNodeParam
+                          ,'normal':NormalNodeParam 
+                          ,'point':PointNodeParam 
+                          ,'vector':VectorNodeParam
+                          ,'matrix':MatrixNodeParam
+                          ,'surface':SurfaceNodeParam
+                          ,'displacement':DisplacementNodeParam
+                          ,'volume':VolumeNodeParam
+                          ,'light':LightNodeParam
+                          ,'rib':RibNodeParam
+                          ,'text':TextNodeParam
+                          ,'transform':TransformNodeParam
+                          ,'image':ImageNodeParam
+                       }
+  param_type = str( xml_param.attributes().namedItem( 'type' ).nodeValue() )
+  if param_type in createParamTable.keys() :
+    param = createParamTable[ param_type ]( xml_param, isRibParam )
+    param.isInput = isInput
+  else :
+    print '* Error: unknown param type !'
+  return param

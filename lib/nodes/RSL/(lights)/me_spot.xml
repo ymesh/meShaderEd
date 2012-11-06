@@ -4,6 +4,8 @@
 	<help>Spot light shader.</help>
 	<input>
 		<property name="category" type="string" default="" detail="uniform"/>
+		<property name="from" type="point" detail="uniform" default="point(0,0,0)" space="shader" provider="primitive"/> 
+		<property name="to" type="point" detail="uniform" default="point(0,0,1)" space="shader" provider="primitive"/>
 		
 		<property name="LightColor" type="color" default="color(1,1,1)">
 		<help>The color of your the light. You can connect a pattern generator here or
@@ -70,8 +72,8 @@
 	<code>
   <![CDATA[
 
-	vector $(axis) = normalize( vector "shader" (0,0,1) );
-	point $(from) = point "shader"(0,0,0);
+	vector $(axis) = ( $(to) - $(from) ) / length( $(to) - $(from) );
+
   uniform float $(angle) = radians( $(ConeAngle) );
   uniform float $(penumbra) = radians( $(Penumbra) );
   uniform float $(cosoutside) = cos( $(angle) );

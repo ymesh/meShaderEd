@@ -159,7 +159,7 @@ class Ui_IntWidget_selector ( object ):
     print ">> Ui_IntWidget_selector setValue = %s" % setValue
     rangeList = self.widget.param.getRangeValues ()
     for ( label, value ) in rangeList :
-      print ( "label = %s : value = %s" ) % ( label, value )
+      #print ( "label = %s : value = %s" ) % ( label, value )
       if setValue == value : 
         currentIdx = i
         break

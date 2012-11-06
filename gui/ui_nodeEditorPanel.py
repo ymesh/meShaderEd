@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui/ui_nodeEditorPanel.ui'
 #
-# Created: Thu Oct 11 19:06:31 2012
+# Created: Mon Nov  5 23:42:53 2012
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,10 +18,8 @@ class Ui_NodeEditorPanel(object):
     def setupUi(self, NodeEditorPanel):
         NodeEditorPanel.setObjectName(_fromUtf8("NodeEditorPanel"))
         NodeEditorPanel.resize(530, 552)
-        self.verticalLayout_6 = QtGui.QVBoxLayout(NodeEditorPanel)
-        self.verticalLayout_6.setSpacing(4)
-        self.verticalLayout_6.setMargin(4)
-        self.verticalLayout_6.setObjectName(_fromUtf8("verticalLayout_6"))
+        self.verticalLayout = QtGui.QVBoxLayout(NodeEditorPanel)
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.splitter = QtGui.QSplitter(NodeEditorPanel)
         self.splitter.setFrameShape(QtGui.QFrame.Panel)
         self.splitter.setFrameShadow(QtGui.QFrame.Sunken)
@@ -41,7 +39,7 @@ class Ui_NodeEditorPanel(object):
         self.toolBox.setMidLineWidth(0)
         self.toolBox.setObjectName(_fromUtf8("toolBox"))
         self.node = QtGui.QWidget()
-        self.node.setGeometry(QtCore.QRect(0, 0, 461, 436))
+        self.node.setGeometry(QtCore.QRect(0, 0, 450, 400))
         self.node.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.node.setObjectName(_fromUtf8("node"))
         self.verticalLayout_7 = QtGui.QVBoxLayout(self.node)
@@ -53,7 +51,7 @@ class Ui_NodeEditorPanel(object):
         self.verticalLayout_7.addWidget(self.nodes_listWidget)
         self.toolBox.addItem(self.node, _fromUtf8(""))
         self.parameters = QtGui.QWidget()
-        self.parameters.setGeometry(QtCore.QRect(0, 0, 461, 436))
+        self.parameters.setGeometry(QtCore.QRect(0, 0, 450, 400))
         self.parameters.setObjectName(_fromUtf8("parameters"))
         self.verticalLayout_8 = QtGui.QVBoxLayout(self.parameters)
         self.verticalLayout_8.setSpacing(0)
@@ -84,7 +82,7 @@ class Ui_NodeEditorPanel(object):
         self.verticalLayout_8.addWidget(self.tabs_param_list)
         self.toolBox.addItem(self.parameters, _fromUtf8(""))
         self.code = QtGui.QWidget()
-        self.code.setGeometry(QtCore.QRect(0, 0, 461, 436))
+        self.code.setGeometry(QtCore.QRect(0, 0, 450, 400))
         self.code.setObjectName(_fromUtf8("code"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.code)
         self.verticalLayout_3.setSpacing(0)
@@ -130,12 +128,19 @@ class Ui_NodeEditorPanel(object):
         self.side_stackedWidgetPage1.setObjectName(_fromUtf8("side_stackedWidgetPage1"))
         self.side_stackedWidget.addWidget(self.side_stackedWidgetPage1)
         self.gridLayout.addWidget(self.side_stackedWidget, 0, 0, 1, 1)
-        self.verticalLayout_6.addWidget(self.splitter)
-        self.buttonBox = QtGui.QDialogButtonBox(NodeEditorPanel)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close|QtGui.QDialogButtonBox.Save)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.verticalLayout_6.addWidget(self.buttonBox)
+        self.verticalLayout.addWidget(self.splitter)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.btn_save = QtGui.QPushButton(NodeEditorPanel)
+        self.btn_save.setObjectName(_fromUtf8("btn_save"))
+        self.horizontalLayout.addWidget(self.btn_save)
+        self.btn_close = QtGui.QPushButton(NodeEditorPanel)
+        self.btn_close.setObjectName(_fromUtf8("btn_close"))
+        self.horizontalLayout.addWidget(self.btn_close)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout.setStretch(0, 1)
 
         self.retranslateUi(NodeEditorPanel)
         self.toolBox.setCurrentIndex(2)
@@ -143,8 +148,8 @@ class Ui_NodeEditorPanel(object):
         self.tabs_param_list.setCurrentIndex(0)
         self.tabs_code_list.setCurrentIndex(0)
         QtCore.QObject.connect(self.toolBox, QtCore.SIGNAL(_fromUtf8("currentChanged(int)")), NodeEditorPanel.onToolBoxIndexChanged)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), NodeEditorPanel.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), NodeEditorPanel.reject)
+        QtCore.QObject.connect(self.btn_save, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeEditorPanel.accept)
+        QtCore.QObject.connect(self.btn_close, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeEditorPanel.reject)
         QtCore.QMetaObject.connectSlotsByName(NodeEditorPanel)
 
     def retranslateUi(self, NodeEditorPanel):
@@ -156,5 +161,7 @@ class Ui_NodeEditorPanel(object):
         self.tabs_code_list.setTabText(self.tabs_code_list.indexOf(self.internals_tab), QtGui.QApplication.translate("NodeEditorPanel", "Local variables", None, QtGui.QApplication.UnicodeUTF8))
         self.tabs_code_list.setTabText(self.tabs_code_list.indexOf(self.includes_tab), QtGui.QApplication.translate("NodeEditorPanel", "Includes", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.code), QtGui.QApplication.translate("NodeEditorPanel", "Code", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_save.setText(QtGui.QApplication.translate("NodeEditorPanel", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_close.setText(QtGui.QApplication.translate("NodeEditorPanel", "Close", None, QtGui.QApplication.UnicodeUTF8))
 
 from nodeNamesEditor import NodeNamesEditor

@@ -419,8 +419,8 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   #
   def keyPressEvent ( self, event ) : 
-    print ">> WorkArea: keyPressEvent"
-    QtGui.QGraphicsView.keyPressEvent( self, event)
+    #print ">> WorkArea: keyPressEvent"
+    QtGui.QGraphicsView.keyPressEvent ( self, event)
     #event.ignore()
     #event.accept()
   #

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_imageViewWidget.ui'
 #
-# Created: Mon Oct 15 12:08:24 2012
+# Created: Tue Oct 30 13:51:50 2012
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -61,7 +61,7 @@ class Ui_imageViewWidget(object):
 
     def retranslateUi(self, imageViewWidget):
         imageViewWidget.setWindowTitle(QtGui.QApplication.translate("imageViewWidget", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("imageViewWidget", "Image Node", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("imageViewWidget", "Node", None, QtGui.QApplication.UnicodeUTF8))
         self.btn_reset.setToolTip(QtGui.QApplication.translate("imageViewWidget", "Reset zoom", None, QtGui.QApplication.UnicodeUTF8))
         self.btn_reset.setText(QtGui.QApplication.translate("imageViewWidget", "1:1", None, QtGui.QApplication.UnicodeUTF8))
         self.chk_auto.setText(QtGui.QApplication.translate("imageViewWidget", "auto", None, QtGui.QApplication.UnicodeUTF8))

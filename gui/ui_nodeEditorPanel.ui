@@ -13,13 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_6">
-   <property name="spacing">
-    <number>4</number>
-   </property>
-   <property name="margin">
-    <number>4</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="frameShape">
@@ -85,8 +79,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>461</width>
-         <height>436</height>
+         <width>450</width>
+         <height>400</height>
         </rect>
        </property>
        <property name="maximumSize">
@@ -115,8 +109,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>461</width>
-         <height>436</height>
+         <width>450</width>
+         <height>400</height>
         </rect>
        </property>
        <attribute name="label">
@@ -175,8 +169,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>461</width>
-         <height>436</height>
+         <width>450</width>
+         <height>400</height>
         </rect>
        </property>
        <attribute name="label">
@@ -261,14 +255,35 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Save</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_save">
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_close">
+       <property name="text">
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -299,14 +314,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
+   <sender>btn_save</sender>
+   <signal>clicked()</signal>
    <receiver>NodeEditorPanel</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>264</x>
-     <y>535</y>
+     <x>403</x>
+     <y>523</y>
     </hint>
     <hint type="destinationlabel">
      <x>264</x>
@@ -315,14 +330,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
+   <sender>btn_close</sender>
+   <signal>clicked()</signal>
    <receiver>NodeEditorPanel</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>264</x>
-     <y>535</y>
+     <x>479</x>
+     <y>523</y>
     </hint>
     <hint type="destinationlabel">
      <x>264</x>

@@ -92,7 +92,15 @@ class Ui_MatrixWidget_field ( object ):
     self.floatEdit14.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     self.floatEdit15.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     
+    self.selector = QtGui.QComboBox ( MatrixWidget )
+    self.selector.setEditable ( False )
+    #self.selector.setMinimumSize ( QtCore.QSize ( UI.COMBO_WIDTH, UI.COMBO_HEIGHT ) )
+    self.selector.setMaximumSize ( QtCore.QSize( UI.MAX, UI.COMBO_HEIGHT ) )
     
+    for label in [ "current", "shader", "object", "camera", "world", "raster", "NDC", "screen" ] :
+      self.selector.addItem ( label )
+    if self.widget.param.space != None :
+      self.selector.setCurrentIndex( self.selector.findText ( self.widget.param.space ) )
     
         
     #spacer1 = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
@@ -111,6 +119,8 @@ class Ui_MatrixWidget_field ( object ):
     self.hl1.addWidget ( self.floatEdit1 )
     self.hl1.addWidget ( self.floatEdit2 )
     self.hl1.addWidget ( self.floatEdit3 )
+    self.widget.hl.addWidget ( self.selector )
+    
     spacer1 = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     self.hl1.addItem ( spacer1 )
     
@@ -193,6 +203,8 @@ class Ui_MatrixWidget_field ( object ):
     MatrixWidget.connect ( self.floatEdit13, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
     MatrixWidget.connect ( self.floatEdit14, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
     MatrixWidget.connect ( self.floatEdit15, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
+    
+    MatrixWidget.connect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged ) 
   #
   #
   def disconnectSignals ( self, MatrixWidget ):
@@ -215,6 +227,8 @@ class Ui_MatrixWidget_field ( object ):
     MatrixWidget.disconnect ( self.floatEdit13, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
     MatrixWidget.disconnect ( self.floatEdit14, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
     MatrixWidget.disconnect ( self.floatEdit15, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
+    
+    MatrixWidget.disconnect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged ) 
   #
   #                      
   def onFloatEditEditingFinished ( self ):
@@ -263,7 +277,12 @@ class Ui_MatrixWidget_field ( object ):
     #self.widget.param.value[ 3 ] = [ f12, f13, f14, f15 ]
     
     self.widget.param.setValue ( [ [ f0, f1, f2, f3 ], [ f4, f5, f6, f7 ], [ f8, f9, f10, f11 ],[ f12, f13, f14, f15 ] ] )
-
+  #
+  #                      
+  def onCurrentIndexChanged ( self, idx ):
+    space = str ( self.selector.currentText () ) 
+    if space == 'current' : space = None
+    self.widget.param.space = space
   #
   # value  = [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]]   
   #      

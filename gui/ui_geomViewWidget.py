@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui/ui_geomViewWidget.ui'
+# Form implementation generated from reading ui file 'gui\ui_geomViewWidget.ui'
 #
-# Created: Tue Oct  9 17:55:21 2012
+# Created: Tue Oct 30 13:51:49 2012
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_geomViewWidget(object):
     def setupUi(self, geomViewWidget):
         geomViewWidget.setObjectName(_fromUtf8("geomViewWidget"))
-        geomViewWidget.resize(479, 520)
+        geomViewWidget.resize(513, 554)
         self.verticalLayout = QtGui.QVBoxLayout(geomViewWidget)
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(4)
@@ -52,7 +52,7 @@ class Ui_geomViewWidget(object):
 
     def retranslateUi(self, geomViewWidget):
         geomViewWidget.setWindowTitle(QtGui.QApplication.translate("geomViewWidget", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("geomViewWidget", "Geom Node", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("geomViewWidget", "Node", None, QtGui.QApplication.UnicodeUTF8))
         self.btn_render.setText(QtGui.QApplication.translate("geomViewWidget", "Update", None, QtGui.QApplication.UnicodeUTF8))
 
 from gfx.geomView import GeomView

@@ -129,6 +129,15 @@ def launchProcess ( cmdList ) :
       retval = subprocess.call( cmdList )
   except OSError, e:
     if e.errno != errno.EINTR : raise 
-    
+#
+#
+#
+def getUniqueName  ( name, nameList ) :
+  newName = name
+  sfx = 0
+  while newName in nameList :
+    newName = name + str ( sfx )
+    sfx += 1
+  return newName  
   
   

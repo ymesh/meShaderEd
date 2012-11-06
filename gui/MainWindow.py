@@ -6,9 +6,9 @@
 #===============================================================================
 import os, sys
 
-from PyQt4 import QtCore, QtGui,  QtXml
+from PyQt4 import QtCore, QtGui, QtXml
 
-from global_vars import app_global_vars
+from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import *
 
 from gfx.gfxNode import GfxNode
@@ -132,7 +132,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onProjectSetup ( self ):
     #
-    print ">> MainWindow: onProjectSetup" 
+    if DEBUG_MODE : print ">> MainWindow: onProjectSetup" 
     projectSetupDlg = ProjectSetup ( app_settings )
     projectSetupDlg.exec_()
     self.ui.project_ctl.setLibrary ( app_global_vars[ 'ProjectNetworks' ] )
@@ -140,7 +140,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onSettingsSetup ( self ):
     #
-    print ">> MainWindow: onSettingsSetup" 
+    if DEBUG_MODE : print ">> MainWindow: onSettingsSetup" 
     settingsSetupDlg = SettingsSetup ( app_settings )
     settingsSetupDlg.exec_()
     self.ui.nodeList_ctl.setLibrary ( app_global_vars[ 'NodesPath' ] )
@@ -148,7 +148,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onRenderSettings ( self ):
     #
-    print ">> MainWindow: onRenderSettings" 
+    if DEBUG_MODE : print ">> MainWindow: onRenderSettings" 
     renderSettingsDlg = meRendererSetup ( app_renderer )
     QtCore.QObject.connect( renderSettingsDlg, QtCore.SIGNAL("presetChanged"), self.onRenderPresetChanged )
     QtCore.QObject.connect( renderSettingsDlg, QtCore.SIGNAL("savePreset"), self.onRenderSavePreset )
@@ -158,7 +158,7 @@ class MainWindow ( QtGui.QMainWindow ):
   def onRenderPresetChanged ( self ):
     #
     presetName = app_renderer.getCurrentPresetName()
-    print ">> MainWindow: onRenderPresetChanged preset = %s" % presetName 
+    if DEBUG_MODE : print ">> MainWindow: onRenderPresetChanged preset = %s" % presetName 
     self.setWindowTitle ( "meShaderEd (" + presetName + ")")
     app_settings.setValue ( 'defRenderer', presetName )
     
@@ -172,13 +172,13 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onRenderSavePreset ( self ):
     #
-    print ">> MainWindow: onRenderSavePreset  preset = %s" % app_renderer.getCurrentPresetName()
+    if DEBUG_MODE : print ">> MainWindow: onRenderSavePreset  preset = %s" % app_renderer.getCurrentPresetName()
     app_renderer.saveSettings ()
   #
   #
   def onShowGrid ( self, check ):
     #
-    print ">> MainWindow: onShowGrid = %d" % check
+    if DEBUG_MODE : print ">> MainWindow: onShowGrid = %d" % check
     self.workArea.drawGrid = bool( check ) 
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'grid_enabled', bool( check ) )
@@ -190,7 +190,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onSnapGrid ( self, check ):
     #
-    print ">> MainWindow: onSnapGrid = %d" % check
+    if DEBUG_MODE : print ">> MainWindow: onSnapGrid = %d" % check
     self.workArea.gridSnap = bool( check ) 
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'grid_snap', bool( check ) )
@@ -201,7 +201,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onReverseFlow ( self, check ):
     #
-    print ">> MainWindow: onReverseFlow = %d" % check   
+    if DEBUG_MODE : print ">> MainWindow: onReverseFlow = %d" % check   
     self.workArea.reverseFlow = bool( check ) 
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'reverse_flow', bool( check ) )
@@ -212,7 +212,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onStraightLinks ( self, check ):
     #
-    print ">> MainWindow: onStraightLinks = %d" % check 
+    if DEBUG_MODE : print ">> MainWindow: onStraightLinks = %d" % check 
     self.workArea.straightLinks = bool( check ) 
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'straight_links', bool( check ) )
@@ -221,7 +221,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   #
   def setActiveNodeList ( self, nodeList ) :
-    print '>> MainWindow: setActiveNodeList'
+    if DEBUG_MODE : print '>> MainWindow: setActiveNodeList'
     if self.activeNodeList != None :
       QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL( "addNode" ), self.workArea.insertNodeNet  )  
     self.activeNodeList = nodeList  
@@ -250,26 +250,26 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onRemoveGfxNode ( self, gfxNode ):
     #
-    print ">> MainWindow: onRemoveGfxNode = %s" % gfxNode.node.label
+    if DEBUG_MODE : print ">> MainWindow: onRemoveGfxNode = %s" % gfxNode.node.label
     if gfxNode.node.type == 'image' :
       self.ui.imageView_ctl.removeViewer ( gfxNode )
       #QtCore.QObject.disconnect ( self.ui.nodeParam_ctl, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.ui.imageView_ctl.onNodeParamChanged ) 
   #
   #
   def onEditGfxNode ( self, gfxNode ):
-    print ">> MainWindow: onEditGfxNode" 
+    if DEBUG_MODE : print ">> MainWindow: onEditGfxNode" 
     #import copy
     #editNode = copy.deepcopy( gfxNode.node )
     dom = QtXml.QDomDocument ( gfxNode.node.name ) 
     xml_node = gfxNode.node.parseToXML ( dom )
     nodeEditDlg = NodeEditorPanel ( xml_node )
     if ( nodeEditDlg.exec_() == QtGui.QDialog.Accepted ) :
-      print '>> MainWindow: onEditGfxNode Accepted'
+      if DEBUG_MODE : print '>> MainWindow: onEditGfxNode Accepted'
   #
   #
   def onDelete ( self ):
     #
-    print ">> MainWindow: onDelete"
+    if DEBUG_MODE : print ">> MainWindow: onDelete"
     
     selected = self.workArea.scene().selectedItems()
     if len ( selected ) :
@@ -299,42 +299,42 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   #
   def onNodeParamChanged ( self, node, param ) :
-    print ">> MainWindow: onNodeParamChanged"
+    if DEBUG_MODE : print ">> MainWindow: onNodeParamChanged"
     #param.shaderParam = not gfxNode.node.isInputParamLinked ( param )
     
     # from WorkArea we have GfxNode in signal nodeConnectionChanged
     # hence need to update nodeParam_ctl
     if isinstance ( node, GfxNode ) :
-      print "* update nodeView" 
+      if DEBUG_MODE : print "* update nodeView" 
       node.updateInputParams ()
       self.ui.nodeParam_ctl.updateGui ()
       
     if self.ui.imageView_ctl.autoUpdate () :
-      print "* auto update" 
+      if DEBUG_MODE : print "* auto update" 
       self.ui.imageView_ctl.updateViewer()
   #
   #
   def onFitAll ( self ) :    
-    print ">> MainWindow: onFitAll"
+    if DEBUG_MODE : print ">> MainWindow: onFitAll"
   #
   #
   def onFitSelected ( self ) :    
-    print ">> MainWindow: onFitSelected"
+    if DEBUG_MODE : print ">> MainWindow: onFitSelected"
   #
   #
   def onZoomReset ( self ) :    
-    print ">> MainWindow: onZoomReset"
+    if DEBUG_MODE : print ">> MainWindow: onZoomReset"
     self.workArea.resetZoom()
     
   #
   #
   def onNewParamView ( self ) :    
-    print ">> MainWindow: onNewParamView"
+    if DEBUG_MODE : print ">> MainWindow: onNewParamView"
   #
   #
   def onTabSelected ( self, idx ) :
     #
-    print '>> MainWindow: onTabSelected (%d)' % idx 
+    if DEBUG_MODE : print '>> MainWindow: onTabSelected (%d)' % idx 
     self.disconnectWorkAreaSignals () 
     
     self.ui.imageView_ctl.removeAllViewers ()
@@ -352,7 +352,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onTabCloseRequested ( self, idx ) :
     #
-    print '>> MainWindow: onTabCloseRequested (%d)' % idx 
+    if DEBUG_MODE : print '>> MainWindow: onTabCloseRequested (%d)' % idx 
     if self.ui.tabs.count() > 1 :
       self.workArea.nodeNet.clear()
       self.ui.tabs.removeTab ( idx )
@@ -369,10 +369,10 @@ class MainWindow ( QtGui.QMainWindow ):
       return ret 
     
     newName = tabName
-    print '->  self.ui.tabs.count() = %d ' % self.ui.tabs.count()
+    if DEBUG_MODE : print '->  self.ui.tabs.count() = %d ' % self.ui.tabs.count()
     
     if self.workArea != None :
-      print '->  create new WorkArea widget'
+      if DEBUG_MODE : print '->  create new WorkArea widget'
       # set unique new name
       name = newName
       i = 0
@@ -387,7 +387,7 @@ class MainWindow ( QtGui.QMainWindow ):
       workArea = WorkArea ()  # create new WorkArea instance
       newTab = self.ui.tabs.addTab ( workArea, newName )
     else :
-      print '->  use initial WorkArea widget'
+      if DEBUG_MODE : print '->  use initial WorkArea widget'
       workArea = self.ui.workArea # use initial WorkArea widget
       self.workArea = workArea
       self.connectWorkAreaSignals () 
@@ -400,14 +400,14 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   #
   def onOpen ( self ):
-    print ">> MainWindow: onOpen"
+    if DEBUG_MODE : print ">> MainWindow: onOpen"
     #
     curDir = app_global_vars[ 'ProjectNetworks' ]
     typeFilter = 'Shader networks *.xml;;All files *.*;;'
     
     filename = str( QtGui.QFileDialog.getOpenFileName( self, "Open file", curDir, typeFilter ) )
     if filename != '' : 
-      print "-> open file %s" %  filename 
+      if DEBUG_MODE : print "-> open file %s" %  filename 
       ( name, ext ) = os.path.splitext( os.path.basename( filename ) )
       
       self.ui.imageView_ctl.removeAllViewers ()
@@ -421,31 +421,31 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   #
   def onImport ( self ):
-    print ">> MainWindow: onImport"  
+    if DEBUG_MODE : print ">> MainWindow: onImport"  
     # 
     curDir = app_global_vars[ 'ProjectNetworks' ]
     typeFilter = 'Shader networks *.xml;;All files *.*;;'
     
     filename = str( QtGui.QFileDialog.getOpenFileName( self, "Import file", curDir, typeFilter ) )
     if filename != '' : 
-      print "-> import file %s" %  filename 
+      if DEBUG_MODE : print "-> import file %s" %  filename 
       self.workArea.insertNodeNet ( normPath ( filename ) ) 
   #
   #
   def onSave ( self ):
-    print ">> MainWindow: onSave"
+    if DEBUG_MODE : print ">> MainWindow: onSave"
     # if file is new -- use onSaveAs function
     #
     curDir = app_global_vars[ 'ProjectNetworks' ]
     if self.workArea.nodeNet.fileName == '' :
       self.onSaveAs () 
     else :
-      print '-> save file %s' % self.workArea.nodeNet.fileName 
+      if DEBUG_MODE : print '-> save file %s' % self.workArea.nodeNet.fileName 
       self.workArea.nodeNet.save ()
   #
   #
   def onSaveAs ( self ):
-    print ">> MainWindow: onSaveAs"
+    if DEBUG_MODE : print ">> MainWindow: onSaveAs"
     #
     curDir = app_global_vars[ 'ProjectNetworks' ]
     saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
@@ -453,7 +453,7 @@ class MainWindow ( QtGui.QMainWindow ):
 
     filename = str( QtGui.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
     if filename != '' :
-      print '-> save file As %s' % filename
+      if DEBUG_MODE : print '-> save file As %s' % filename
       ( name, ext ) = os.path.splitext( os.path.basename( filename ) )
       self.workArea.nodeNet.fileName = normPath ( filename )
       self.workArea.nodeNet.name = name

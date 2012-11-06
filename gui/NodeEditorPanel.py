@@ -9,7 +9,7 @@
 #===============================================================================
 
 import os, sys
-from PyQt4 import QtCore, QtGui
+from PyQt4 import Qt, QtCore, QtGui, QtXml
 
 from core.meCommon import *
 from global_vars import app_global_vars, DEBUG_MODE
@@ -43,23 +43,66 @@ class NodeEditorPanel ( QtGui.QDialog ):
     #self.debugPrint()
     self.buildGui ()
     self.setEditNode ( self.editNode )
+
+    self.ui.btn_save.setDefault ( False )
+    self.ui.btn_close.setDefault ( True )
     self.updateGui ()
   #
   #
   def connectSignals ( self ) :
     QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onInputParamSelectionChanged )
     QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onOutputParamSelectionChanged  )
+    
+    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL( "addItem" ), self.onAddParam )
+    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL( "addItem" ), self.onAddParam )
+    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL( "renameItem" ), self.onRenameParam )
+    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL( "renameItem" ), self.onRenameParam )
+    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveParam )
+    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveParam )
+    
     QtCore.QObject.connect ( self.ui.tabs_param_list, QtCore.SIGNAL( "currentChanged(int)" ), self.updateGui )
+    
     if self.nodeParamEditor is not None :
-     QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onChangeParamName )
+      QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onRenameParam )
+      QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamLabel" ), self.onRenameParamLabel )
+      
+    QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL( "addItem" ), self.onAddInternal )
+    QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL( "addItem" ), self.onAddInclude )
+    
+    QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL( "renameItem" ), self.onRenameInternal )
+    QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL( "renameItem" ), self.onRenameInclude )
+    
+    QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveInternal )
+    QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveInclude )
   
   def disconnectSignals ( self ) :
     QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onInputParamSelectionChanged )
     QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onOutputParamSelectionChanged  )
+    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL( "addItem" ), self.onAddParam )
+    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL( "addItem" ), self.onAddParam )
+    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL( "renameItem" ), self.onRenameParam )
+    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL( "renameItem" ), self.onRenameParam )
+    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveParam )
+    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveParam )
+
     QtCore.QObject.disconnect ( self.ui.tabs_param_list, QtCore.SIGNAL( "currentChanged(int)" ), self.updateGui )
-    if self.nodeParamEditor is not None :
-      QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onChangeParamName )
     
+    if self.nodeParamEditor is not None :
+      QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onRenameParam )
+      QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamLabel" ), self.onRenameParamLabel )
+      
+    QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL( "addItem" ), self.onAddInternal )
+    QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL( "addItem" ), self.onAddInclude )
+    
+    QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL( "renameItem" ), self.onRenameInternal )
+    QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL( "renameItem" ), self.onRenameInclude )
+    
+    QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveInternal )
+    QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveInclude )
+  #
+  #
+  def setupInputParams () :
+    pass    
   # 
   #
   def setEditNode ( self, editNode ): 
@@ -122,7 +165,7 @@ class NodeEditorPanel ( QtGui.QDialog ):
   #
   #
   def onToolBoxIndexChanged ( self, idx ) :
-    print 'onToolBoxIndexChanged (idx = %d)' % idx
+    if DEBUG_MODE : print '>> NodeEditorPanel::onToolBoxIndexChanged (idx = %d)' % idx
     # 
     self.disconnectSignals ()   
     if idx != -1 :
@@ -149,7 +192,7 @@ class NodeEditorPanel ( QtGui.QDialog ):
         self.nodeCodeEditor.setNodeCode ( self.editNode.code, 'SL' )
         self.paramCodeEditor.setNodeCode ( self.editNode.param_code, 'python' )
         
-        self.ui.tab_code = self.ui.code_tabs.addTab ( self.nodeCodeEditor, 'Code' )
+        self.ui.tab_code = self.ui.code_tabs.addTab ( self.nodeCodeEditor, 'Node Code' )
         self.ui.tab_code = self.ui.code_tabs.addTab ( self.paramCodeEditor, 'Control Code' )
         
         self.ui.code_tabs.setCurrentIndex ( 0 ) 
@@ -160,13 +203,13 @@ class NodeEditorPanel ( QtGui.QDialog ):
   #
   #
   def onInputParamSelectionChanged ( self, paramName ) :
-    if DEBUG_MODE : print '>> NodeEditorPanel: onInputParamSelectionChanged (%s)' % paramName
+    if DEBUG_MODE : print '>> NodeEditorPanel::onInputParamSelectionChanged (%s)' % paramName
     param = self.editNode.getInputParamByName( str( paramName ) ) 
     self.nodeParamEditor.setParam ( param )
   #
   #
   def onOutputParamSelectionChanged ( self, paramName ) :
-    if DEBUG_MODE : print '>> NodeEditorPanel: onOutputParamSelectionChanged (%s)' % paramName
+    if DEBUG_MODE : print '>> NodeEditorPanel::onOutputParamSelectionChanged (%s)' % paramName
     param = self.editNode.getOutputParamByName( str( paramName ) ) 
     self.nodeParamEditor.setParam ( param )  
   #
@@ -183,21 +226,202 @@ class NodeEditorPanel ( QtGui.QDialog ):
     #    self.nodeCodeEditor.setNodeCode ( self.editNode.code, 'SL' )
   #
   #
-  def onChangeParamName ( self, oldName, newName ) :
-    #
-    if DEBUG_MODE : print '>> NodeEditorPanel: onChangeParamName %s => %s' % ( oldName, newName )
+  #
+  def onRemoveInternal ( self, internal ) :
+    internalsListWidget = self.ui.internals_list.ui.listWidget
+    self.editNode.internals.remove ( internal )
+    item = internalsListWidget.currentItem()
+    internalsListWidget.takeItem ( internalsListWidget.currentRow () )
+    internalsListWidget.removeItemWidget ( item )
+    internalsListWidget.clearSelection ()
+    internalsListWidget.setCurrentItem ( None )
+  #
+  #
+  #
+  def onRemoveInclude ( self, include ) :
+    includesListWidget = self.ui.includes_list.ui.listWidget
+    self.editNode.includes.remove ( include )
+    item = includesListWidget.currentItem()
+    includesListWidget.takeItem ( includesListWidget.currentRow () )
+    includesListWidget.removeItemWidget ( item )
+    includesListWidget.clearSelection ()
+    includesListWidget.setCurrentItem ( None )
+  #
+  #
+  #
+  def onRemoveParam ( self, paramName ) :
+    isInputParam = False
     tab_idx = self.ui.tabs_param_list.currentIndex()
-    if tab_idx == 0 : #input parameters
-      list_item = self.ui.input_list.ui.listWidget.currentItem()
-      if list_item is not None :
-        param = self.editNode.getInputParamByName( str( list_item.text() ) )
-    elif tab_idx == 1 : # output parametrs
-      list_item = self.ui.output_list.ui.listWidget.currentItem()
-      if list_item is not None :
-        param = self.editNode.getOutputParamByName( str( list_item.text() ) )
+    if tab_idx == 0 : isInputParam = True
+    param = None
+    paramList = None
+    if isInputParam :
+      param = self.editNode.getInputParamByName ( paramName )
+      paramList = self.ui.input_list
+    else :
+      param = self.editNode.getOutputParamByName ( paramName )
+      paramList = self.ui.output_list
     
+    self.editNode.removeParam ( param )
+    
+    item = paramList.ui.listWidget.currentItem()
+    paramList.ui.listWidget.takeItem ( paramList.ui.listWidget.currentRow () )
+    paramList.ui.listWidget.removeItemWidget ( item )
+    paramList.ui.listWidget.clearSelection ()
+    paramList.ui.listWidget.setCurrentItem ( None )
+  #
+  #
+  #
+  def onRenameInternal ( self, oldName, newName ) :
+    internalsListWidget = self.ui.internals_list.ui.listWidget
+    from core.meCommon import getUniqueName
+    idx = self.editNode.internals.index ( oldName )
+    newName = getUniqueName ( newName, self.editNode.internals ) 
+    self.editNode.internals[ idx ] = newName
+    
+    item = internalsListWidget.findItems( oldName, QtCore.Qt.MatchExactly )[0]
+    item.setText ( newName )
+    self.ui.internals_list.setName ( newName )
+    internalsListWidget.clearSelection ()
+    internalsListWidget.setCurrentItem ( item ) 
+  #
+  #
+  #
+  def onRenameInclude ( self, oldName, newName ) :
+    includesListWidget = self.ui.includes_list.ui.listWidget
+    from core.meCommon import getUniqueName
+    idx = self.editNode.includes.index ( oldName )
+    newName = getUniqueName ( newName, self.editNode.includes ) 
+    self.editNode.includes[ idx ] = newName
+    
+    item = includesListWidget.findItems( oldName, QtCore.Qt.MatchExactly )[0]
+    item.setText ( newName )
+    self.ui.includes_list.setName ( newName )
+    includesListWidget.clearSelection ()
+    includesListWidget.setCurrentItem ( item ) 
+  #
+  #
+  #
+  def onRenameParam ( self, oldName, newName ) :
+    isInputParam = False
+    tab_idx = self.ui.tabs_param_list.currentIndex()
+    if tab_idx == 0 : isInputParam = True
+    param = None
+    paramList = None
+    if isInputParam :
+      param = self.editNode.getInputParamByName ( oldName )
+      paramList = self.ui.input_list
+    else :
+      param = self.editNode.getOutputParamByName ( oldName )
+      paramList = self.ui.output_list
+    
+    self.editNode.renameParamName ( param, newName )
+    
+    item = paramList.ui.listWidget.findItems( oldName, QtCore.Qt.MatchExactly )[0]
+    item.setText ( param.name )
+    paramList.setName ( param.name )
+    paramList.ui.listWidget.clearSelection ()
+    paramList.ui.listWidget.setCurrentItem ( item ) 
+  #
+  #
+  #
+  def onRenameParamLabel ( self, oldName, newName ) :
+    param = self.nodeParamEditor.param
+    self.editNode.renameParamLabel ( param, newName )
+    self.nodeParamEditor.ui.label_lineEdit.setText ( param.label )
+  #
+  #
+  #
+  def onAddInternal ( self, newName ) :
+    if DEBUG_MODE : print '>> NodeEditorPanel::onAddInternal (%s) ' % (newName) 
+    # name can be changed to be unique
+    newName = self.editNode.addInternal ( newName )  
+    internalsListWidget = self.ui.internals_list.ui.listWidget
+    internalsListWidget.addItem ( newName )
+    internalsListWidget.setCurrentItem ( internalsListWidget.findItems( newName, QtCore.Qt.MatchExactly )[0] ) 
+  #
+  #
+  #
+  def onAddInclude ( self, newName ) :
+    if DEBUG_MODE : print '>> NodeEditorPanel::onAddInclude (%s) ' % (newName)  
+    # name can be changed to be unique
+    newName = self.editNode.addInclude ( newName )  
+    includesListWidget = self.ui.includes_list.ui.listWidget
+    includesListWidget.addItem ( newName )
+    includesListWidget.setCurrentItem ( includesListWidget.findItems( newName, QtCore.Qt.MatchExactly )[0] ) 
+  #
+  #
+  #
+  def onAddParam ( self, newName ) :
+    if DEBUG_MODE : print '>> NodeEditorPanel::onAddParam (%s) ' % (newName) 
+    isInputParam = False
+    paramType = None
+    isRibParam = ( self.editNode.type == 'rib' or self.editNode.type == 'rib_code' )
+    tab_idx = self.ui.tabs_param_list.currentIndex()
+    if tab_idx == 0 : isInputParam = True
+    # ask user about param type
+    typeDialog = QtGui.QDialog () # Qt.MSWindowsFixedSizeDialogHint 
+    typeDialog.setModal ( True )
+
+    typeDialog.setWindowTitle ( 'Parameter Type' )
+    typeDialog.resize (180, 100 )
+    sizePolicy = QtGui.QSizePolicy ( QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed )
+    sizePolicy.setHorizontalStretch ( 0 )
+    sizePolicy.setVerticalStretch ( 0 )
+    sizePolicy.setHeightForWidth ( typeDialog.sizePolicy().hasHeightForWidth() )
+    typeDialog.setSizePolicy ( sizePolicy )
+    typeDialog.setSizeGripEnabled ( False )
+    
+    typeDialog.verticalLayout = QtGui.QVBoxLayout ( typeDialog )
+    typeDialog.verticalLayout.setSizeConstraint ( QtGui.QLayout.SetMinimumSize )
+    typeDialog.type_comboBox = QtGui.QComboBox ( typeDialog )
+    for label in [ 'float', 'int', 'color', 'string', 'normal', 'point', 'vector', 'matrix', 
+                   'surface', 'displacement', 'volume', 'light', 
+                   'rib', 'text', 'transform','image'  ]  :
+      typeDialog.type_comboBox.addItem ( label )
+    typeDialog.verticalLayout.addWidget ( typeDialog.type_comboBox )
+    
+    typeDialog.btnBox = QtGui.QDialogButtonBox ( QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel, parent = typeDialog )
+    typeDialog.btnBox.setCenterButtons ( True )
+    typeDialog.verticalLayout.addWidget ( typeDialog.btnBox )
+           
+    QtCore.QObject.connect ( typeDialog.btnBox, QtCore.SIGNAL('accepted()'), typeDialog.accept )
+    QtCore.QObject.connect ( typeDialog.btnBox, QtCore.SIGNAL('rejected()'), typeDialog.reject )
+    
+    if typeDialog.exec_() == QtGui.QDialog.Accepted  :
+      paramType = str ( typeDialog.type_comboBox.currentText () )
+      if DEBUG_MODE : print '>> NodeEditorPanel::onAddParam typeDialog Accepted (%s)' % paramType
+      # create empty xml node parameter
+      dom = QtXml.QDomDocument ( newName )
+      xmlnode = dom.createElement( "property" )
+  
+      xmlnode.setAttribute ( "name", newName )
+      xmlnode.setAttribute ( "label", newName )
+      xmlnode.setAttribute ( "type", paramType )
+      param = createParamFromXml ( xmlnode, isRibParam, isInputParam )
+      item = QtGui.QListWidgetItem( param.name )  
+      
+      paramListWidget = self.ui.input_list.ui.listWidget
+      if isInputParam :
+        self.editNode.addInputParam ( param )
+      else :
+        self.editNode.addOutputParam ( param )
+        paramListWidget = self.ui.output_list.ui.listWidget
+        
+      paramListWidget.addItem ( param.name )
+      paramListWidget.setCurrentItem ( paramListWidget.findItems( param.name, QtCore.Qt.MatchExactly )[0] )
+      #self.nodeParamEditor.setParam ( param )
+  #
+  # Ignore default Enter press event
+  #
+  def keyPressEvent ( self, event  ) :
+    #if DEBUG_MODE : print '>> NodeEditorPanel::keyPressEvent' 
+    if  event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
+      event.ignore()
+    else:
+      QtGui.QDialog.keyPressEvent ( self, event )  
   #
   #  
   def accept ( self ) :
-    print '>> NodeEditorPanel: accept'  
+    if DEBUG_MODE : print '>> NodeEditorPanel::accept'  
     self.done ( QtGui.QDialog.Accepted )

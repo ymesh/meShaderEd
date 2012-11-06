@@ -163,10 +163,10 @@ class Ui_FloatWidget_selector ( object ):
   def updateGui ( self, setValue ): 
     currentIdx = -1
     i = 0
-    print ">> Ui_FloatWidget_selector setValue = %s" % setValue
+    #print ">> Ui_FloatWidget_selector setValue = %s" % setValue
     rangeList = self.widget.param.getRangeValues ()
     for ( label, value ) in rangeList :
-      print ( "label = %s : value = %s" ) % ( label, value )
+      #print ( "label = %s : value = %s" ) % ( label, value )
       if setValue == value : 
         currentIdx = i
         break
@@ -219,7 +219,7 @@ class Ui_FloatWidget_slider ( object ):
     intMaxVal = int ( floatMaxVal * multiplier )
     intStep = int ( floatStep * multiplier )
     
-    print 'intMinVal = %d intMaxVal = %d' % ( intMinVal, intMaxVal )
+    #print 'intMinVal = %d intMaxVal = %d' % ( intMinVal, intMaxVal )
     
     self.slider.setRange ( intMinVal, intMaxVal )
     self.slider.setSingleStep ( intStep )

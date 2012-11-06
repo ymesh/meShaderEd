@@ -106,7 +106,7 @@ class Ui_StringWidget_selector ( object ):
   def onCurrentIndexChanged ( self, idx ):
     pass
     stringValue = self.selector.itemData ( idx ).toString()
-    print ">> Ui_StringWidget_selector idx = %d setValue = %s" % ( idx, stringValue )
+    #print ">> Ui_StringWidget_selector idx = %d setValue = %s" % ( idx, stringValue )
     self.widget.param.setValue ( str( stringValue ) )
 
   #
@@ -176,7 +176,7 @@ class Ui_StringWidget_file ( object ):
       print "label = %s value = %s" % ( label, value )
       typeFilter += ( label + ' ' + value + ';;' )
       #self.selector.addItem ( label, value )
-    print '>> Ui_StringWidget_file typeFilter = %s' % typeFilter   
+    #print '>> Ui_StringWidget_file typeFilter = %s' % typeFilter   
     
     #from meShaderEd import app_settings
     from global_vars import app_global_vars

@@ -57,9 +57,22 @@ class Ui_ColorWidget_field ( object ):
     self.colorEdit.setMaximumSize( QtCore.QSize( UI.COLOR_WIDTH, UI.HEIGHT ) )
 
     self.colorEdit.setObjectName("colorEdit")
+    
+    self.selector = QtGui.QComboBox ( ColorWidget )
+    self.selector.setEditable ( False )
+    #self.selector.setMinimumSize ( QtCore.QSize ( UI.COMBO_WIDTH, UI.COMBO_HEIGHT ) )
+    self.selector.setMaximumSize ( QtCore.QSize( UI.MAX, UI.COMBO_HEIGHT ) )
+    
+    for label in [ "rgb", "hsv", "hsl", "xyz", "XYZ", "YIQ" ] :
+      self.selector.addItem ( label )
+    if self.widget.param.space != None :
+      self.selector.setCurrentIndex( self.selector.findText ( self.widget.param.space ) )
+      
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
     self.widget.hl.addWidget ( self.colorEdit )
+    self.widget.hl.addWidget ( self.selector )
+    
     self.widget.hl.addItem ( spacer )
     
     QtCore.QMetaObject.connectSlotsByName ( ColorWidget )
@@ -75,12 +88,14 @@ class Ui_ColorWidget_field ( object ):
     # register signal propertyChanged for updating the gui
     #self.connect( self.colorProperty, QtCore.SIGNAL('propertyChanged()'), self.onPropertyChanged )
     ColorWidget.connect( ColorWidget, QtCore.SIGNAL('clicked()'), self.onClicked )
+    ColorWidget.connect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged ) 
   #
   #
   def disconnectSignals( self, ColorWidget ):
     # register signal propertyChanged for updating the gui
     #self.disconnect( self.colorProperty, QtCore.SIGNAL('propertyChanged()'), self.onPropertyChanged )
-    ColorWidget.disconnect( ColorWidget, QtCore.SIGNAL('clicked()'), self.onClicked )      
+    ColorWidget.disconnect( ColorWidget, QtCore.SIGNAL('clicked()'), self.onClicked ) 
+    ColorWidget.disconnect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged )      
   #
   #
   def onClicked ( self ): 
@@ -96,7 +111,12 @@ class Ui_ColorWidget_field ( object ):
       self.widget.param.setValue ( newValue )
       #self.widget.param.paramChanged ()
       self.updateGui ( self.widget.param.value )
-
+  #
+  #                      
+  def onCurrentIndexChanged ( self, idx ):
+    space = str ( self.selector.currentText () ) 
+    if space == 'rgb' : space = None
+    self.widget.param.space = space
   #
   #
   def updateGui ( self, value ):

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>479</width>
-    <height>520</height>
+    <width>513</width>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Geom Node</string>
+        <string>Node</string>
        </property>
       </widget>
      </item>
