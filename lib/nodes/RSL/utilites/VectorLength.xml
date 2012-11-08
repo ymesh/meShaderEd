@@ -1,0 +1,21 @@
+<?xml version="1.0"?> 
+
+<node name="VectorLength" author="Pixar" type="rsl_code">
+<help>The length of a vector.
+</help>
+	<input>
+		<property name="scale" type="float" default="1" subtype="slider" range="-10 10 .01">
+		<help>Scales the length of the vector.</help></property>
+		<property name="V" type="vector" default="vector(1)"/>
+	</input>
+	<internal>
+	</internal>
+	<output>
+		<property name="result" type="float" />		
+	</output>
+	<code>
+<![CDATA[
+  $(result) = $(scale) * length ( $(V) );
+]]>
+	</code>		
+</node>

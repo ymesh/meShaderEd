@@ -1,0 +1,23 @@
+<?xml version="1.0"?> 
+
+<node name="Time" author="Pixar" type="rsl_code">
+<help>Provides access to the standard RenderMan "time" variable.  
+This value is that specified via the RiShutter call in the RIB file and is often measured in seconds.  
+You can generate effects that repeat over time by connecting this function to a wave generator.
+</help>
+	<input>
+		<property name="offset" type="float" default="0"/>
+    <property name="scale" type="float" default="1"/>
+	</input>
+	<internal>
+	</internal>
+	<output>
+		<property name="result" type="float" />		
+	</output>
+	<code>
+	<![CDATA[
+extern float time;
+$(result) = $(offset) + $(scale) * time;
+]]>
+	</code>		
+</node>

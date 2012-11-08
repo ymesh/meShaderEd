@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 
 <node name="noiseF" author="Libero Spagnolini" icon="noiseF.png">
-	<help>Simple noise float.</help>
+	<help>Simple float noise.</help>
 	<input>
 		<property name="p" type="point" default="point(0.0, 0.0, 0.0)" />
 		<property name="freq" type="float" default="10.0" />		

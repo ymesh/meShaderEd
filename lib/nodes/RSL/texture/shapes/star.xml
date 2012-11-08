@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<node name="Star" author="Pixar" icon="Star.png">
+	<help>Generator of 5 ends star shape</help>
+	<input>
+		<property name="rmax" label="Max Radius" type="float" default="0.45" subtype="slider" range="0.01 0.5 .01"/>
+		<property name="rmin" label="Min Radius" type="float" default="0.14" subtype="slider" range="0.01 0.5 .01"/>
+    <property name="Filter" type="string" default="gaussian" detail="uniform" subtype="selector" range="box:triangle:catmull-rom:gaussian"/>
+    <property name="Fuzziness" type="float" default="0" subtype="slider" range="0 4 .01"/>
+    
+		<property name="Invert" type="float" detail="uniform" default="0" subtype="switch"/>
+		
+		<property name="Q" type="point"/>
+		<property name="duQ" type="vector"/>	
+		<property name="dvQ" type="vector"/>	
+	</input>
+	<output>
+		<property name="result" type="float"/>		
+	</output>
+	<internal>
+	  <variable name="x"/>
+	  <variable name="y"/>
+	  <variable name="starangle"/>	
+	  <variable name="p0"/>
+	  <variable name="p1"/>
+	  <variable name="d0"/>
+	  <variable name="d1"/>
+	  <variable name="r"/>
+	  <variable name="a"/>
+	  <variable name="angle"/>
+	  <variable name="Qr"/>
+	</internal>
+	<code><![CDATA[
+		varying float	$(x), $(y);
+
+    /* from peachey */
+    uniform float $(starangle) = 2 * PI / 5;
+    uniform point $(p0) = $(rmax) * ( cos ( 0 ), sin ( 0 ), 0 );
+    uniform point $(p1) = $(rmin) * ( cos ( $(starangle) / 2 ), sin ( $(starangle) / 2 ), 0 );
+    uniform vector $(d0) = $(p1) - $(p0);
+    vector $(d1);
+    float $(r), $(a), $(angle);
+
+    varying point	$(Qr);
+
+    $(angle) = $(starangle) * zcomp ( $(Q) );
+    $(Qr) = rotate ( $(Q) - .5, $(angle), point ( 0, 0, 0 ), point ( 0, 0, 1 ) );
+    $(x) = xcomp ( $(Qr) );
+    $(y) = ycomp ( $(Qr) );
+
+    $(angle) = atan ( $(x), $(y) ) + PI;
+    $(r) = sqrt ( $(x) * $(x) + $(y) * $(y) );
+    $(a) = mod ( $(angle), $(starangle) ) / $(starangle) ;
+    if ( $(a) >= .5 )
+        $(a) = 1 - $(a);
+
+    $(d1) = $(r) * ( cos ( $(a) ), sin ( $(a) ), 0 ) - $(p0) ;
+
+    $(result) = ( 1 - filterstep ( $(rmax), $(r), "width", 1 + 4 * $(Fuzziness), "filter", $(Filter) )) *
+       filterstep ( 0, zcomp( $(d0) ^ $(d1) ), "width", 1 + 4 * $(Fuzziness), "filter", $(Filter) );
+       
+    if( $(Invert) != 0 )
+      $(result) = 1 - $(result);
+			    	
+  ]]>
+	</code>
+</node>

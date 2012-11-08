@@ -3,8 +3,8 @@
 <node name="voronoi2d" author="Sler guys" icon="voronoi2d.png">
 	<help>Standard voronoi 2D.</help>
 	<input>
-		<property name="freq" type="float" default="20.0" />
-		<property name="jitter" type="float" default="1.0" />		
+		<property name="freq" type="float" default="20.0" subtype="slider" range="0.1 100 0.1"/>
+		<property name="jitter" type="float" default="1.0" subtype="slider" range="0 1 0.01"/>		
 		<property name="s" type="float" default="0.0" />		
 		<property name="t" type="float" default="0.0" />		
 	</input>

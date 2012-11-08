@@ -51,11 +51,5 @@
     if( $(invert) ) 
       $(result) = 1 - $(result);
 ]]>
-	</code>
-	<preview>
-		<shader type="surface">
-			<code><![CDATA[Ci = $(outValue); Oi = 1.0;]]>
-			</code>
-		</shader>
-	</preview>	
+	</code>	
 </node>

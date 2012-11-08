@@ -129,12 +129,7 @@ class Node ( QtCore.QObject ):
   #    
   def detachInputParamFromLink ( self, param ):
     if param in self.inputLinks.keys() :
-      self.inputLinks.pop ( param )  
-  #
-  #      
-  def detachOutputParamFromLink ( self, param ):
-    while param in self.outputLinks.keys() :
-      self.outputLinks.pop ( param )   
+      self.inputLinks.pop ( param )     
   #
   #    
   def isInputParamLinked ( self, param ):
@@ -153,7 +148,8 @@ class Node ( QtCore.QObject ):
       self.inputParams.remove ( param )
     else :
       if self.isOutputParamLinked ( param ) :
-        self.detachOutputParamFromLink ( param )  
+        while param in self.outputLinks.keys() :
+          self.outputLinks.pop ( param )    
       self.outputParams.remove ( param )     
   #
   #    

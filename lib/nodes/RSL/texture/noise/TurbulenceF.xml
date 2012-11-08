@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="BrownianF" author="Larry Gritz" icon="BrownianF.png">
+<node name="TurbulenceF" author="Larry Gritz" icon="TurbulenceF.png">
 	<help>template derived from:
 "Advanced RenderMan: Creating CGI for Motion Pictures"
 by Larry Gritz and Tony Apodaca cc 1999</help>
@@ -21,19 +21,15 @@ by Larry Gritz and Tony Apodaca cc 1999</help>
 		subtype="slider" range="0 4 .01">
 		<help>scaling factor between successive octaves</help>
 		</property>
-		<property name="Rescale" type="float" default="0" detail="uniform" 
-		subtype="selector" 
-		range="off:on:on+clamp">
-		<help></help>
-		</property>
+		<property name="Invert" type="float" default="0" detail="uniform" subtype="switch"/> 
 		<property name="FourthDimension" type="float" default="0" >
 		<help>You can get 4D brownian noise by connecting
 	    this parameter to any float function.  Often you'll
 	    want to connect some function of time here.</help>
 		</property>
-		<property name="p" type="point" default="point(0,0,0)"/>	
-		<property name="dpu" type="vector" default="vector(0,0,0)"/>	
-		<property name="dpv" type="vector" default="vector(0,0,0)"/>	
+		<property name="Q" type="point" default="point(0,0,0)"/>	
+		<property name="duQ" type="vector" default="vector(0,0,0)"/>	
+		<property name="dvQ" type="vector" default="vector(0,0,0)"/>	
 	</input>
 	<output>
 	  <property name="result" type="float" default="0"/>
@@ -44,32 +40,35 @@ by Larry Gritz and Tony Apodaca cc 1999</help>
 	</include>
 	<internal>
 	  <variable name="amp"/>
+	  <variable name="sum"/>
 	  <variable name="i"/>
 	  <variable name="pp"/>
 	  <variable name="fw"/>
 	</internal>
 	<code><![CDATA[	
   uniform float $(amp) = 1;
-  varying point $(pp) = $(baseFreq) * $(p);
-  varying float $(fw) = pxslFilterWidth( $(baseFreq)*$(dpu), $(baseFreq)*$(dpv));
+  uniform float $(sum) = 0;
+  varying point $(pp) = $(baseFreq) * $(Q);
+  varying float $(fw) = pxslFilterWidth ( $(baseFreq) * $(duQ), $(baseFreq) * $(dvQ) );
   uniform float $(i);
+  extern float du, dv; /* for filterwidth macro */
   
   for ( $(i) = 0; $(i) < $(octaves) ; $(i) += 1) 
   {
 #pragma nolint
-    $(result) += $(amp) * filteredsnoiset($(pp), $(fw), $(FourthDimension));
+    float n = filteredsnoiset ( $(pp), $(fw), $(FourthDimension) );
+		float dn = filterwidth ( n );
+		$(result) += $(amp) * filteredabs ( n, dn) ;
+		$(sum) += $(amp);  
 		$(amp) *= $(Gain);  
 		$(pp) *= $(Lacunarity);  
 		$(fw) *= $(Lacunarity); 
-	}
-  if ( $(Rescale) != 0 )
-  {
-    $(result) = .5 * (1 + $(result) );
-    if ( $(Rescale) == 2 )
-    {
-      $(result) = clamp( $(result), 0, 1 );
-    } 
   }
+  $(result) /= .5 * $(sum);
+
+  if ( $(Invert) != 0 )
+    $(result) = 1 - $(result);
+    
   ]]>
 	</code>	
 </node>

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<node name="Diamond" author="Pixar" icon="Diamond.png">
+	<help>Generator of diamond shape</help>
+	<input>
+		<property name="size" label="Size" type="float" default="0.45" subtype="slider" range="0.01 0.5 .01"/>
+		<property name="Fuzziness" type="float" default="0" subtype="slider" range="0 4 .01"/>
+    
+		<property name="Invert" type="float" detail="uniform" default="0" subtype="switch"/>
+		
+		<property name="Q" type="point"/>
+		<property name="duQ" type="vector"/>	
+		<property name="dvQ" type="vector"/>	
+	</input>
+	<output>
+		<property name="result" type="float"/>		
+	</output>
+	<internal>
+	  <variable name="x"/>
+	  <variable name="y"/>
+	  <variable name="dx"/>
+	  <variable name="dy"/>
+	  <variable name="w"/>	
+	  <variable name="angle"/>
+	  <variable name="Qr"/>
+	  <variable name="duQr"/>
+	  <variable name="dvQr"/>
+	</internal>
+	<code><![CDATA[
+
+		varying float	$(x), $(y);
+    varying float	$(dx), $(dy);
+    
+		uniform float	$(w) = $(size) / sqrt ( 2.0 );
+		varying float	$(angle) = radians ( 45 ) + PI / 2 * zcomp ( $(Q) );
+
+    varying point	$(Qr);
+    varying vector $(duQr), $(dvQr);
+
+#pragma nolint 4
+    $(Qr) = rotate ( $(Q) - .5, $(angle), point ( 0, 0, 0 ), point ( 0, 0, 1 ) ); 
+    $(duQr) = rotate ( $(duQ), $(angle), point ( 0, 0, 0 ), point ( 0, 0, 1 ) ); 
+    $(dvQr) = rotate ( $(dvQ), $(angle), point ( 0, 0, 0 ), point ( 0, 0, 1 ) ); 
+
+    $(x) = xcomp ( $(Qr) );
+    $(y) = ycomp ( $(Qr) );
+    $(dx) = max ( .5 * $(Fuzziness), abs ( xcomp ( $(duQr) ) ) + abs ( xcomp ( $(dvQr) ) ) );
+    $(dy) = max ( .5 * $(Fuzziness), abs ( ycomp ( $(duQr) ) ) + abs ( ycomp ( $(dvQr) ) ) );
+
+    $(result) = filterstep ( - $(w), $(x), $(x) + $(dx) ) - filterstep ( $(w), $(x), $(x) + $(dx) );
+    $(result) *= filterstep ( -$(w), $(y), $(y) + $(dy) ) - filterstep ( $(w), $(y), $(y) + $(dy) );
+			    		    	   
+    if( $(Invert) != 0 )
+      $(result) = 1 - $(result);
+			    	
+  ]]>
+	</code>
+</node>

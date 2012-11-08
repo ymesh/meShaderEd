@@ -1,0 +1,16 @@
+<?xml version="1.0"?> 
+
+<node name="absF" author="Pixar">
+	<help>Return the absolute value of the input.</help>
+	<input>
+		<property name="input" type="float" default="1"/>				
+	</input>
+	<output>
+		<property name="result" type="float" />		
+	</output>
+	<code>
+<![CDATA[
+ $(result) = abs ( $(input) );
+]]>
+	</code>
+</node>

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<node name="Ramp" author="Pixar" icon="Ramp.png">
+	<help>Generator of ramp shape</help>
+	<input>
+		<property name="direction" type="float" default="0" detail="uniform" subtype="selector" range="S:T:diagonal"/>
+		<property name="Fuzziness" type="float" default="0" detail="uniform" subtype="slider" range="0 4 .01"/>
+    
+		<property name="Invert" type="float" detail="uniform" default="0" subtype="switch"/>
+		
+		<property name="Q" type="point"/>
+		<property name="duQ" type="vector"/>	
+		<property name="dvQ" type="vector"/>	
+	</input>
+	<output>
+		<property name="result" type="float"/>		
+	</output>
+	<internal>
+	  <variable name="x"/>
+	  <variable name="y"/>
+	  <variable name="dx"/>
+	  <variable name="dy"/>
+	</internal>
+	<code><![CDATA[
+
+		varying float	$(x), $(y);
+    varying float	$(dx), $(dy);
+    
+    if ( $(direction) == 0 ) /* S ramp */
+		{
+			$(x) = xcomp ( $(Q) ) ; /* -.5; */
+			$(dx) = max ( .5 * $(Fuzziness), abs ( xcomp ( $(duQ) ) ) + abs ( xcomp ( $(dvQ) ) ) );
+			$(result) = mix ( $(x) + 1, $(x), filterstep ( 0, $(x), $(x) + $(dx) ) );
+		}
+		else
+		  if ( $(direction) == 1 ) /* T ramp */
+		  {
+			  $(y) = ycomp ( $(Q) ) ; /* - .5; */
+			  $(dy) = max ( .5 * $(Fuzziness), abs ( ycomp ( $(duQ) ) ) + abs ( ycomp ( $(dvQ) ) ) );
+			  $(result) = mix ( $(y) + 1, $(y), filterstep ( 0, $(y), $(y) + $(dy) ) );
+		  }
+		  else
+		    if ( $(direction) == 2 ) /* diagonal ramp */
+		    {
+          $(x) = xcomp ( $(Q) ) ; /* - .5; */
+          $(y) = ycomp ( $(Q) ) ; /* - .5; */
+          $(dx) = max ( .5 * $(Fuzziness), abs ( xcomp ( $(duQ) ) ) + abs ( xcomp ( $(dvQ) ) ) );
+          $(dy) = max ( .5 * $(Fuzziness), abs ( ycomp ( $(duQ) ) ) + abs ( ycomp ( $(dvQ) ) ) );
+    
+          $(result) = mix ( $(x) + 1, $(x), filterstep ( 0, $(x), $(x) + $(dx) ) );
+          $(result) += mix ( $(y) + 1, $(y), filterstep ( 0, $(y), $(y) + $(dy) ) );
+          $(result) *= .5;
+        }
+				    		    	   
+    if( $(Invert) != 0 )
+      $(result) = 1 - $(result);
+			    	
+  ]]>
+	</code>
+</node>

@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 
-<node name="Cells" author="mesh" icon="Cells.png">
+<node name="CellsF" author="Pixar" icon="CellsF.png">
 	<help>Cells pattern</help>
 	<input>
-		<property name="frequency" type="float" default="4.0" subtype="slider" range="1 128 1"/>
+		<property name="frequency" type="float" default="4.0" subtype="slider" range="1 128 0.1"/>
 		<property name="Pt" type="point"/>	
 		<property name="duP" type="vector"/>	
 		<property name="dvP" type="vector"/>	
 	</input>
 	<output>
-		<property name="result" type="color" default="color( 0, 0, 0 )"/>	
+		<property name="result" type="float" default="0"/>	
 	</output>
 	<include>
 	  <file name="pxslUtil.h"/>

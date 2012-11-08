@@ -1,0 +1,32 @@
+<?xml version="1.0"?> 
+
+<node name="FilteredNoiseC" author="Pixar" icon="FilteredNoiseC.png">
+	<help>Color filtered noise.</help>
+	<input>
+		<property name="frequency" type="float" default="1.0" subtype="slider" range="0 100 .1"/>		
+	  
+	  <property name="Q" type="point" default="point(0,0,0)"/>	
+		<property name="duQ" type="vector" default="vector(0,0,0)"/>	
+		<property name="dvQ" type="vector" default="vector(0,0,0)"/>	
+	</input>
+	
+	<output>
+		<property name="result" type="color"/>
+	</output>
+	<include>
+	<file name="pxslUtil.h"/>
+	</include>
+	<internal>
+	  <variable name="pp"/>
+	  <variable name="dppu"/>
+	  <variable name="dppv"/>
+	</internal>
+	<code>
+<![CDATA[
+	  point $(pp) = $(frequency) * $(Q);
+    vector $(dppu) = $(frequency) * $(duQ);
+    vector $(dppv) = $(frequency) * $(dvQ);
+    $(result) = pxslFilteredCNoise ( $(pp), $(dppu), $(dppv) );
+]]>
+	</code>
+</node>
