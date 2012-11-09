@@ -261,8 +261,8 @@
    <addaction name="actionZoomReset"/>
    <addaction name="actionShowGrid"/>
    <addaction name="actionSnapGrid"/>
-   <addaction name="actionReverseFlow"/>
    <addaction name="actionStraightLinks"/>
+   <addaction name="actionReverseFlow"/>
   </widget>
   <widget class="QDockWidget" name="dockPreview">
    <property name="baseSize">
@@ -606,6 +606,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/show_icons/resources/ledoff.png</normaloff>
@@ -614,6 +617,9 @@
    <property name="text">
     <string>Reverse Flow</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionStraightLinks">
    <property name="checkable">
@@ -621,8 +627,8 @@
    </property>
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/show_icons/resources/ledoff.png</normaloff>
-     <normalon>:/show_icons/resources/ledon.png</normalon>:/show_icons/resources/ledoff.png</iconset>
+     <normaloff>:/show_icons/resources/straight_off.png</normaloff>
+     <normalon>:/show_icons/resources/straight_on.png</normalon>:/show_icons/resources/straight_off.png</iconset>
    </property>
    <property name="text">
     <string>Staright Links</string>
@@ -637,8 +643,8 @@
    </property>
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/show_icons/resources/ledoff.png</normaloff>
-     <normalon>:/show_icons/resources/ledon.png</normalon>:/show_icons/resources/ledoff.png</iconset>
+     <normaloff>:/show_icons/resources/snap_off.png</normaloff>
+     <normalon>:/show_icons/resources/snap_on.png</normalon>:/show_icons/resources/snap_off.png</iconset>
    </property>
    <property name="text">
     <string>Snap To Grid</string>
@@ -651,15 +657,28 @@
    <property name="text">
     <string>Fit All</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionFitSelected">
    <property name="text">
     <string>Fit Selected</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionZoomReset">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/show_icons/resources/zoom_reset.png</normaloff>:/show_icons/resources/zoom_reset.png</iconset>
+   </property>
    <property name="text">
-    <string>1:1</string>
+    <string>Reset Zoom</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset Zoom</string>
    </property>
   </action>
   <action name="actionNewParamView">

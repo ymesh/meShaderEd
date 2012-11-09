@@ -5,6 +5,11 @@
     <file>resources/new.png</file>
   </qresource>
   <qresource prefix="show_icons">
+    <file>resources/straight_off.png</file>
+    <file>resources/straight_on.png</file>
+    <file>resources/zoom_reset.png</file>
+    <file>resources/snap_off.png</file>
+    <file>resources/snap_on.png</file>
     <file>resources/grid_off.png</file>
     <file>resources/grid_on.png</file>
     <file>resources/ledoff.png</file>

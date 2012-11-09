@@ -218,6 +218,7 @@ class MainWindow ( QtGui.QMainWindow ):
     app_settings.setValue ( 'straight_links', bool( check ) )
     app_settings.endGroup ()
     self.workArea.resetCachedContent () 
+    self.workArea.adjustLinks ()
   #
   #
   def setActiveNodeList ( self, nodeList ) :
@@ -348,6 +349,7 @@ class MainWindow ( QtGui.QMainWindow ):
     
     self.connectWorkAreaSignals ()
     self.ui.nodeParam_ctl.setNode ( self.workArea.inspectedNode )
+    self.workArea.adjustLinks ()
   #
   #
   def onTabCloseRequested ( self, idx ) :

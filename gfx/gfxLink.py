@@ -6,6 +6,9 @@
 #===============================================================================
 import os, sys
 from PyQt4 import QtCore, QtGui
+
+from global_vars import DEBUG_MODE
+from meShaderEd import app_settings
 #
 # GfxLink
 #
@@ -36,7 +39,9 @@ class GfxLink ( QtGui.QGraphicsItem ):
   #
   def __init__ ( self, link = None, srcConnector = None, dstConnector = None ):
     QtGui.QGraphicsItem.__init__ ( self )
-    self.isStraight = True
+    
+    from meShaderEd import getDefaultValue
+    self.isStraight = getDefaultValue ( app_settings, 'WorkArea', 'straight_links' )
     
     # qt graphics stuff
     self.brushSelected = QtGui.QBrush ( QtGui.QColor ( 250, 250, 250 ) )
@@ -58,11 +63,11 @@ class GfxLink ( QtGui.QGraphicsItem ):
   #
   #
   def __delete__ ( self, instance ) :
-    print ">> delete gfxLink"
+    if DEBUG_MODE : print ">> delete gfxLink"
   #
   #
   def remove ( self ) :
-    print ">>GfxLink remove gfxLink"
+    if DEBUG_MODE : print ">> GfxLink::remove"
     
     if self.srcConnector is not None : 
       self.srcConnector.removeLink( self )
@@ -146,6 +151,9 @@ class GfxLink ( QtGui.QGraphicsItem ):
   #
   #
   def adjust ( self ):
+    from meShaderEd import getDefaultValue
+    self.isStraight = getDefaultValue ( app_settings, 'WorkArea', 'straight_links' )
+    
     if self.srcConnector is not None : self.srcPoint = self.srcConnector.getCenterPoint()        
     if self.dstConnector is not None : self.dstPoint = self.dstConnector.getCenterPoint()
 
@@ -155,88 +163,57 @@ class GfxLink ( QtGui.QGraphicsItem ):
     self.path = None
     if self.srcPoint is not None and self.dstPoint is not None :
       self.path = QtGui.QPainterPath ()
+      
+      # first point 
       self.points.append ( self.srcPoint )
       self.path.moveTo ( self.points[ 0 ] )
+      
+      # draw curved spline if isStraight is False    
       if not self.isStraight :
-        pass
+        # hull spline
+        hull = QtCore.QRectF ( self.srcPoint, self.dstPoint )
+        centerX = hull.center().x()
+        centerY = hull.center().y()
+        # second point
+        offsetVX = abs ( ( hull.topRight().x() - hull.topLeft().x()) * 0.2 )
+        offsetVY = 0.0
+        
+        p2 = self.srcPoint + QtCore.QPointF ( offsetVX, offsetVY )
+        self.points.append ( p2 )
+        
+        # third point
+        p3 =   QtCore.QPointF ( centerX, self.srcPoint.y() ) 
+        self.points.append ( p3 )
+        
+        # fourth point
+        p4 = QtCore.QPointF ( centerX, centerY )
+        self.points.append ( p4 )
+        
+        # fifth point (bezier tangent)
+        p5 = QtCore.QPointF ( centerX, centerY )
+        self.points.append ( p5 )
+    
+        # sixth point
+        p6 = QtCore.QPointF ( centerX, self.dstPoint.y() )
+        self.points.append ( p6 )
+        
+        # seventh point
+        p7 = self.dstPoint - QtCore.QPointF ( offsetVX, offsetVY )
+        self.points.append( p7 )
+      
+      
+      # last point
       self.points.append ( self.dstPoint ) 
-      self.path.lineTo ( self.points[ -1 ] )
+      
+      if self.isStraight :
+        #if DEBUG_MODE : print '* GfxLink: Straight mode'
+        self.path.lineTo ( self.points[ -1 ] )
+      else:
+        #if DEBUG_MODE : print '* GfxLink: Curved mode'
+        self.path.cubicTo ( self.points[1], self.points[2], self.points[3] )
+        self.path.cubicTo ( self.points[5], self.points[6], self.points[7] )
+        
       self.rect = self.path.boundingRect()
-  #
-  #
-  def adjust_old ( self, computeFromGfxNodes = False ):
-    if computeFromGfxNodes:
-      sourceP = self.link.sourceNode.gfxNode.pointFromProperty ( self.link.sourceProp )
-      self.sourcePoint = self.mapToItem(self, sourceP)
-      destP = self.link.destNode.gfxNode.pointFromProperty ( self.link.destProp )
-      self.destPoint = self.mapToItem ( self, destP )
-    
-    # clear bezier points
-    self.points = []
-        
-    self.prepareGeometryChange()
-            
-    # hull spline
-    hull = QtCore.QRectF (self.sourcePoint, self.destPoint )
-    centerX = hull.center().x()
-    centerY = hull.center().y()
-
-    # first 
-    self.points.append(self.sourcePoint)
-    
-    # second point
-    offsetVX = abs((hull.topRight().x() - hull.topLeft().x()) * 0.35)
-    offsetVY = 0.0
-    
-    secondP = self.sourcePoint + QtCore.QPointF(offsetVX, offsetVY)
-    self.points.append(secondP)
-    
-    # third point
-    thirdPX =  centerX
-    thirdPY = self.sourcePoint.y()
-    self.points.append(QtCore.QPointF(thirdPX, thirdPY))
-    
-    # fourth point
-    self.points.append(QtCore.QPointF(centerX, centerY))
-    
-    # fifth point (bezier tangent)
-    self.points.append(QtCore.QPointF(centerX, centerY))
-
-    # sixth point
-    sixthPX =  centerX
-    sixthPY = self.destPoint.y()
-    self.points.append(QtCore.QPointF(sixthPX, sixthPY))
-    
-    # seventh point
-    seventhP = self.destPoint - QtCore.QPointF(offsetVX, offsetVY)
-    self.points.append(seventhP)
-    
-    # last
-    self.points.append(self.destPoint)
-    
-    # bezier curve path
-    self.path = QtGui.QPainterPath()
-    self.path.moveTo ( self.points[0] )
-    self.path.cubicTo ( self.points[1], self.points[2], self.points[3] )
-    self.path.cubicTo ( self.points[5], self.points[6], self.points[7] )
-    
-    # arrow
-    arrowSize = 3
-    if hull.topRight() == self.destPoint:
-      arrowAnchor = hull.topRight()
-    else:
-      arrowAnchor = hull.bottomRight()
-        
-    firstArrowP = arrowAnchor 
-    secondArrowP = QtCore.QPointF ( arrowAnchor.x() - arrowSize, arrowAnchor.y() - arrowSize )
-    thirdArrowP = QtCore.QPointF ( arrowAnchor.x() - arrowSize, arrowAnchor.y() + arrowSize )
-    fourthArrowP = arrowAnchor
-    
-    arrow = QtGui.QPolygonF ( [firstArrowP, secondArrowP, thirdArrowP, fourthArrowP] )
-    self.path.addPolygon ( arrow )
-    
-    # rect
-    self.rect = self.path.boundingRect()
   #
   #
   def paint ( self, painter, option, widget ):        

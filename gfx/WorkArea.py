@@ -16,6 +16,7 @@ from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
 
 from meShaderEd import app_settings
+from global_vars import DEBUG_MODE
 
 #from ui_workArea import Ui_workArea
 #
@@ -88,7 +89,7 @@ class WorkArea ( QtGui.QGraphicsView ):
     QtCore.QObject.connect( self.scene(), QtCore.SIGNAL( "onGfxNodeRemoved" ), self.onRemoveNode )
     QtCore.QObject.connect( self.scene(), QtCore.SIGNAL( "onGfxLinkRemoved" ), self.onRemoveLink )
     
-    print ">> WorkArea: __init__"
+    if DEBUG_MODE : print ">> WorkArea: __init__"
   #    
   #
   #
@@ -131,7 +132,7 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   #    
   def clear ( self ):
-    print ">> WorkArea: clearing nodes ..."
+    if DEBUG_MODE : print ">> WorkArea: clearing nodes ..."
     
     for item in self.scene().items() :
       self.scene().removeItem ( item )
@@ -194,6 +195,12 @@ class WorkArea ( QtGui.QGraphicsView ):
     gfxNode.setSelected ( True )
     
     self.emit ( QtCore.SIGNAL( "gfxNodeAdded" ), gfxNode ) 
+  #
+  #
+  #
+  def adjustLinks ( self ) :
+    for item in self.scene().items() :
+      if isinstance ( item, GfxLink ): item.adjust ()   
   #    
   #
   #
@@ -242,7 +249,7 @@ class WorkArea ( QtGui.QGraphicsView ):
     #
     srcNode = connector.parentItem().node
     srcParam = connector.param
-    print ">> WorkArea: onCreateNodeLink from %s (%s)" % ( srcNode.label, srcParam.label )  
+    if DEBUG_MODE : print ">> WorkArea: onCreateNodeLink from %s (%s)" % ( srcNode.label, srcParam.label )  
     
     srcConnector = connector  
     self.state = 'traceNodeLink'
@@ -350,7 +357,7 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   #
   def removeSelected ( self ):
-    print ":: (before) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )    
+    if DEBUG_MODE : print ":: (before) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )    
     selected = self.scene().selectedItems() 
 
     for item in selected:
@@ -385,7 +392,7 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   #        
   def dropEvent ( self, event ):
-    print ">> WorkArea: onDropEvent"
+    if DEBUG_MODE : print ">> WorkArea: onDropEvent"
     file_list = []
     mimedata = event.mimeData()
     
@@ -396,7 +403,7 @@ class WorkArea ( QtGui.QGraphicsView ):
       filename = QtCore.QString()
       stream >> filename
       
-      print "itemFilename = %s" % ( filename )
+      if DEBUG_MODE : print "itemFilename = %s" % ( filename )
       
       file_list.append ( filename )
       event.setDropAction ( QtCore.Qt.CopyAction )
@@ -408,7 +415,7 @@ class WorkArea ( QtGui.QGraphicsView ):
         filename = str ( QtCore.QUrl( item ).toLocalFile () )
         
         ( name, ext ) = os.path.splitext( os.path.basename( filename ) )
-        print ':: %s (%s)' % ( filename, ext )
+        if DEBUG_MODE : print ':: %s (%s)' % ( filename, ext )
         if ext == '.xml' :
           file_list.append ( filename )  
     else:
@@ -504,7 +511,7 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   #
   def resetZoom ( self ) :
-    print ">> WorkArea: resetZoom"
+    if DEBUG_MODE : print ">> WorkArea: resetZoom"
     self.setInteractive ( False )
     self.resetTransform() 
     self.setInteractive ( True )   
@@ -537,7 +544,7 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   def insertNodeNet ( self, filename, pos = None ) :
     #
-    print ":: (before insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) ) 
+    if DEBUG_MODE : print ":: (before insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) ) 
     
     ( nodes, links ) = self.nodeNet.insert ( normPath ( filename ) ) 
 
@@ -553,4 +560,4 @@ class WorkArea ( QtGui.QGraphicsView ):
     for node in nodes : self.addGfxNode ( node, pos )  
     for link in links : self.addGfxLink ( link )   
       
-    print ":: (after insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )     
+    if DEBUG_MODE : print ":: (after insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )     

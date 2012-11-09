@@ -80,6 +80,9 @@ class NodeParamEditor ( QtGui.QWidget ):
     self.ui.type_comboBox.setMinimumSize ( QtCore.QSize ( UI.COMBO_WIDTH, UI.COMBO_HEIGHT ) )
     self.ui.type_comboBox.setMaximumSize ( QtCore.QSize( UI.MAX, UI.COMBO_HEIGHT ) )
     
+    # temporary disabled, until "how to do it gracefully" will be clear ... 
+    self.ui.type_comboBox.setEnabled ( False )
+    
     for label in [ 'None', 'uniform', 'varying', ]  :
       self.ui.detail_comboBox.addItem ( label )
     self.ui.detail_comboBox.setCurrentIndex ( -1 )

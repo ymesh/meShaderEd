@@ -93,6 +93,10 @@ class NodeEditor ( QtGui.QWidget ):
           currentIdx = i
         i += 1
       self.ui.type_comboBox.setCurrentIndex( currentIdx )
+      
+      # temporary disabled, until "how to do it gracefully" will be clear ... 
+      self.ui.type_comboBox.setEnabled ( False )
+      
       self.connectSignals ()
   #
   #

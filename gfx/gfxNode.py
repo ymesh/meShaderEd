@@ -11,6 +11,7 @@ from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
 
 from global_vars import DEBUG_MODE
+from meShaderEd import app_settings
 #
 # GfxNode
 # 	 
@@ -333,8 +334,20 @@ class GfxNode ( QtGui.QGraphicsItem ):
               items[ i ].stackBefore ( self )
         #scene.setFocusItem ( self )
     elif change == QtGui.QGraphicsItem.ItemPositionHasChanged:
-      # print '>> GfxNode.itemChange = ItemPositionHasChanged (%f, %f)' % ( self.x(), self.y() )
-      self.node.offset = ( self.x(), self.y() )
+      from meShaderEd import getDefaultValue
+      grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
+      grid_size = int( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
+      
+      x = self.x()
+      y = self.y()
+      if grid_snap :
+        #if DEBUG_MODE : print '* snap to grid  (size = %d)' % grid_size 
+        x -= ( x % grid_size )
+        y -= ( y % grid_size )
+        self.setPos ( x, y )
+            
+      #if DEBUG_MODE : print '* GfxNode.itemChange = ItemPositionHasChanged (%f, %f)' % ( x, y )
+      self.node.offset = ( x, y )
       self.adjustLinks ()  
     
     return QtGui.QGraphicsItem.itemChange ( self, change, value )

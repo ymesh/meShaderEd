@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Sat Sep 01 22:17:49 2012
+# Created: Fri Nov 09 02:13:47 2012
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -241,24 +241,37 @@ class Ui_MainWindow(object):
         self.actionSettings.setObjectName(_fromUtf8("actionSettings"))
         self.actionReverseFlow = QtGui.QAction(MainWindow)
         self.actionReverseFlow.setCheckable(True)
+        self.actionReverseFlow.setEnabled(False)
         icon10 = QtGui.QIcon()
         icon10.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/ledoff.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon10.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/ledon.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.actionReverseFlow.setIcon(icon10)
+        self.actionReverseFlow.setVisible(False)
         self.actionReverseFlow.setObjectName(_fromUtf8("actionReverseFlow"))
         self.actionStraightLinks = QtGui.QAction(MainWindow)
         self.actionStraightLinks.setCheckable(True)
-        self.actionStraightLinks.setIcon(icon10)
+        icon11 = QtGui.QIcon()
+        icon11.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/straight_off.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon11.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/straight_on.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.actionStraightLinks.setIcon(icon11)
         self.actionStraightLinks.setObjectName(_fromUtf8("actionStraightLinks"))
         self.actionSnapGrid = QtGui.QAction(MainWindow)
         self.actionSnapGrid.setCheckable(True)
-        self.actionSnapGrid.setIcon(icon10)
+        icon12 = QtGui.QIcon()
+        icon12.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/snap_off.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon12.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/snap_on.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.actionSnapGrid.setIcon(icon12)
         self.actionSnapGrid.setObjectName(_fromUtf8("actionSnapGrid"))
         self.actionFitAll = QtGui.QAction(MainWindow)
+        self.actionFitAll.setVisible(False)
         self.actionFitAll.setObjectName(_fromUtf8("actionFitAll"))
         self.actionFitSelected = QtGui.QAction(MainWindow)
+        self.actionFitSelected.setVisible(False)
         self.actionFitSelected.setObjectName(_fromUtf8("actionFitSelected"))
         self.actionZoomReset = QtGui.QAction(MainWindow)
+        icon13 = QtGui.QIcon()
+        icon13.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/zoom_reset.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionZoomReset.setIcon(icon13)
         self.actionZoomReset.setObjectName(_fromUtf8("actionZoomReset"))
         self.actionNewParamView = QtGui.QAction(MainWindow)
         self.actionNewParamView.setObjectName(_fromUtf8("actionNewParamView"))
@@ -325,8 +338,8 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionZoomReset)
         self.toolBar.addAction(self.actionShowGrid)
         self.toolBar.addAction(self.actionSnapGrid)
-        self.toolBar.addAction(self.actionReverseFlow)
         self.toolBar.addAction(self.actionStraightLinks)
+        self.toolBar.addAction(self.actionReverseFlow)
 
         self.retranslateUi(MainWindow)
         self.tabs.setCurrentIndex(0)
@@ -411,7 +424,8 @@ class Ui_MainWindow(object):
         self.actionSnapGrid.setToolTip(QtGui.QApplication.translate("MainWindow", "Snap to grid", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFitAll.setText(QtGui.QApplication.translate("MainWindow", "Fit All", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFitSelected.setText(QtGui.QApplication.translate("MainWindow", "Fit Selected", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionZoomReset.setText(QtGui.QApplication.translate("MainWindow", "1:1", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionZoomReset.setText(QtGui.QApplication.translate("MainWindow", "Reset Zoom", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionZoomReset.setToolTip(QtGui.QApplication.translate("MainWindow", "Reset Zoom", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNewParamView.setText(QtGui.QApplication.translate("MainWindow", "New Parameter View", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNewImageView.setText(QtGui.QApplication.translate("MainWindow", "New Image View", None, QtGui.QApplication.UnicodeUTF8))
 

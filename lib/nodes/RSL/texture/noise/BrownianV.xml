@@ -54,7 +54,7 @@ by Larry Gritz and Tony Apodaca cc 1999</help>
   for ( $(i) = 0; $(i) < $(octaves) ; $(i) += 1) 
   {
 #pragma nolint
-    $(result) += $(amp) * filteredsnoiset($(pp), $(fw), $(FourthDimension));
+    $(result) += $(amp) * filteredvsnoiset($(pp), $(fw), $(FourthDimension));
     $(sum) += $(amp);  
 		$(amp) *= $(Gain);  
 		$(pp) *= $(Lacunarity);  
