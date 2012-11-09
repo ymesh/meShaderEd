@@ -39,6 +39,9 @@ class GfxNode ( QtGui.QGraphicsItem ):
     self.swatchSize = 48
     self.hasSwatch = False
     
+    self.shadow_offset = 4
+    self.shadow_opacity = 0.2
+    
     self.PenBorderNormal = QtGui.QPen( QtGui.QBrush( QtGui.QColor( 0, 0, 0 ) ), 
                                    1.0, 
                                    QtCore.Qt.SolidLine,
@@ -51,10 +54,16 @@ class GfxNode ( QtGui.QGraphicsItem ):
                                    QtCore.Qt.RoundCap,
                                    QtCore.Qt.RoundJoin )  
                                                                  
+    
     self.PenNodeShaderParam = QtGui.QPen( QtGui.QColor( 250, 250, 250 ) )
                                    
     self.BrushNodeNormal = QtGui.QBrush ( QtGui.QColor( 128, 128, 128 ) )  
     self.BrushNodeSelected = QtGui.QBrush ( QtGui.QColor( 140, 140, 140 ) )
+    
+    shadowColor = QtGui.QColor( 0, 0, 0 )
+    shadowColor.setAlphaF ( self.shadow_opacity )
+    self.BrushShadow = QtGui.QBrush ( shadowColor ) 
+    self.PenShadow = QtGui.QPen ( shadowColor ) 
 
     
     self.paramsBrushes = {   'c' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkRed)) 
@@ -162,10 +171,16 @@ class GfxNode ( QtGui.QGraphicsItem ):
     self.setupInputParamsGeometry( self.x_offset, hi_header + 2 * self.y_offset + hi_output )  
   #
   #
+  def shadowRect ( self ): 
+    shadowRect = QtCore.QRectF ( self.rect )
+    shadowRect.translate ( self.shadow_offset, self.shadow_offset )
+    return shadowRect
+  #
+  #
   def boundingRect ( self ): 
     #print ( "GfxNode.boundingRect" )        
-    bound_rect = QtCore.QRectF ( self.rect )
-    bound_rect.adjust( -6, 0, 6, 0 ) 
+    bound_rect = QtCore.QRectF ( self.rect ).united( self.shadowRect () )
+    bound_rect.adjust( -8, 0, 8, 0 ) 
     return bound_rect
   #
   #
@@ -353,16 +368,23 @@ class GfxNode ( QtGui.QGraphicsItem ):
     return QtGui.QGraphicsItem.itemChange ( self, change, value )
   #
   #        
-  def paint ( self, painter, option, widget ):        
+  def paint ( self, painter, option, widget ): 
     # print ( ">> GfxNode.paint" ) 
+    painter.setRenderHint ( QtGui.QPainter.Antialiasing )
+    painter.setRenderHint ( QtGui.QPainter.SmoothPixmapTransform )
+    
+    self.paintShadow ( painter )
     self.paintFrame ( painter ) 
+  #
+  #  
+  def paintShadow ( self, painter ):
+    painter.setBrush ( self.BrushShadow )
+    painter.setPen ( self.PenShadow )
+    painter.drawRoundedRect ( self.shadowRect (), self.radius, self.radius, QtCore.Qt.AbsoluteSize )
   #
   #  
   def paintFrame ( self, painter ):
     #print ( ">> GfxNode.paintWindowFrame" ) 
-    painter.setRenderHint ( QtGui.QPainter.Antialiasing )
-    painter.setRenderHint ( QtGui.QPainter.SmoothPixmapTransform )
-    
     pen = self.PenBorderNormal
     brush = self.BrushNodeNormal
     if self.isSelected() :

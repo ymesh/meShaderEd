@@ -175,31 +175,31 @@ class GfxLink ( QtGui.QGraphicsItem ):
         centerX = hull.center().x()
         centerY = hull.center().y()
         # second point
-        offsetVX = abs ( ( hull.topRight().x() - hull.topLeft().x()) * 0.2 )
+        offsetVX = min( abs ( hull.topRight().x() - hull.topLeft().x() ) * 0.1, 40 )
         offsetVY = 0.0
         
-        p2 = self.srcPoint + QtCore.QPointF ( offsetVX, offsetVY )
-        self.points.append ( p2 )
+        p1 = self.srcPoint + QtCore.QPointF ( offsetVX, offsetVY )
+        self.points.append ( p1 )
         
         # third point
-        p3 =   QtCore.QPointF ( centerX, self.srcPoint.y() ) 
-        self.points.append ( p3 )
+        p2 =   QtCore.QPointF ( centerX, self.srcPoint.y() ) 
+        self.points.append ( p2 )
         
         # fourth point
-        p4 = QtCore.QPointF ( centerX, centerY )
-        self.points.append ( p4 )
+        p3 = QtCore.QPointF ( centerX, centerY )
+        self.points.append ( p3 )
         
         # fifth point (bezier tangent)
-        p5 = QtCore.QPointF ( centerX, centerY )
-        self.points.append ( p5 )
+        p4 = QtCore.QPointF ( centerX, centerY )
+        self.points.append ( p4 )
     
         # sixth point
-        p6 = QtCore.QPointF ( centerX, self.dstPoint.y() )
-        self.points.append ( p6 )
+        p5 = QtCore.QPointF ( centerX, self.dstPoint.y() )
+        self.points.append ( p5 )
         
         # seventh point
-        p7 = self.dstPoint - QtCore.QPointF ( offsetVX, offsetVY )
-        self.points.append( p7 )
+        p6 = self.dstPoint - QtCore.QPointF ( offsetVX, offsetVY )
+        self.points.append ( p6 )
       
       
       # last point
@@ -207,11 +207,15 @@ class GfxLink ( QtGui.QGraphicsItem ):
       
       if self.isStraight :
         #if DEBUG_MODE : print '* GfxLink: Straight mode'
-        self.path.lineTo ( self.points[ -1 ] )
+        self.path.lineTo ( self.dstPoint )
       else:
         #if DEBUG_MODE : print '* GfxLink: Curved mode'
-        self.path.cubicTo ( self.points[1], self.points[2], self.points[3] )
-        self.path.cubicTo ( self.points[5], self.points[6], self.points[7] )
+        #self.path.cubicTo ( self.points[1], self.points[2], self.points[3] )
+        #self.path.cubicTo ( self.points[5], self.points[6], self.points[7] )
+        
+        self.path.cubicTo ( p1, p1, p3 )
+        
+        self.path.cubicTo ( p6, p6, self.dstPoint )
         
       self.rect = self.path.boundingRect()
   #

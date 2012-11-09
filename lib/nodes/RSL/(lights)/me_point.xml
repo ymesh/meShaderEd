@@ -37,9 +37,9 @@
 		</property>
 		
 		
-		<property name="Diffuse" type="float" default="1" subtype="slider" range="0 1 .01"/>
-		<property name="Specular" type="float" default="1" subtype="slider" range="0 1 .01"/>
-		<property name="SSS" type="float" default="0" subtype="slider" range="0 1 .01"/>
+		<property name="Diffuse" type="float" default="1" detail="uniform" subtype="slider" range="0 1 .01"/>
+		<property name="Specular" type="float" default="1" detail="uniform" subtype="slider" range="0 1 .01"/>
+		<property name="SSS" type="float" default="0" detail="uniform" subtype="slider" range="0 1 .01"/>
 	</input>
 	<output>
 	  <property name="Cl" type="color" default="color(0,0,0)" />
