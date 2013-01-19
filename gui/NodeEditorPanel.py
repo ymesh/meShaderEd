@@ -29,10 +29,10 @@ from ui_nodeEditorPanel import Ui_NodeEditorPanel
 class NodeEditorPanel ( QtGui.QDialog ):
   #
   #
-  def __init__ ( self, xml_node = None ):
+  def __init__ ( self, node = None ):
     QtGui.QDialog.__init__ ( self )
 
-    self.editNode = createNodeFromXML ( xml_node ) 
+    self.editNode = None
     
     self.nodeEditor = None
     self.nodeParamEditor = None
@@ -42,7 +42,7 @@ class NodeEditorPanel ( QtGui.QDialog ):
           
     #self.debugPrint()
     self.buildGui ()
-    self.setEditNode ( self.editNode )
+    self.setEditNode ( node )
 
     self.ui.btn_save.setDefault ( False )
     self.ui.btn_close.setDefault ( True )
@@ -66,6 +66,12 @@ class NodeEditorPanel ( QtGui.QDialog ):
       QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onRenameParam )
       QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamLabel" ), self.onRenameParamLabel )
       
+    if self.nodeCodeEditor is not None :
+      QtCore.QObject.connect ( self.nodeCodeEditor.ui.textEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditCode )
+    
+    if self.paramCodeEditor is not None :
+      QtCore.QObject.connect ( self.paramCodeEditor.ui.textEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditParamCode)
+    
     QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL( "addItem" ), self.onAddInternal )
     QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL( "addItem" ), self.onAddInclude )
     
@@ -91,6 +97,13 @@ class NodeEditorPanel ( QtGui.QDialog ):
       QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onRenameParam )
       QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamLabel" ), self.onRenameParamLabel )
       
+    if self.nodeCodeEditor is not None :
+      QtCore.QObject.disconnect ( self.nodeCodeEditor.ui.textEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditCode )
+    
+    if self.paramCodeEditor is not None :
+      QtCore.QObject.disconnect ( self.paramCodeEditor.ui.textEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditParamCode)
+
+
     QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL( "addItem" ), self.onAddInternal )
     QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL( "addItem" ), self.onAddInclude )
     
@@ -411,6 +424,22 @@ class NodeEditorPanel ( QtGui.QDialog ):
       paramListWidget.addItem ( param.name )
       paramListWidget.setCurrentItem ( paramListWidget.findItems( param.name, QtCore.Qt.MatchExactly )[0] )
       #self.nodeParamEditor.setParam ( param )
+  #
+  #
+  #
+  def onEditCode ( self ) :
+    if DEBUG_MODE : print '>> NodeEditorPanel::onEditCode'
+    if self.nodeCodeEditor is not None :
+      #self.nodeCodeEditor.ui.textEdit
+      self.editNode.code = str ( self.nodeCodeEditor.ui.textEdit.toPlainText () )
+  #
+  #
+  #
+  def onEditParamCode ( self ) :
+    if DEBUG_MODE : print '>> NodeEditorPanel::onEditParamCode'
+    if self.paramCodeEditor is None :
+      #self.paramCodeEditor.ui.textEdit
+      self.editNode.param_code = str ( self.paramCodeEditor.ui.textEdit.toPlainText () )
   #
   # Ignore default Enter press event
   #

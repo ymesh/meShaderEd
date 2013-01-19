@@ -10,7 +10,7 @@ from PyQt4 import QtCore
 from core.node import Node
 from core.nodeParam import NodeParam
 
-from global_vars import app_global_vars
+from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
 
 #
@@ -22,11 +22,16 @@ class RSL_code ( Node ):
   def __init__ ( self, xml_node = None ):
     #
     Node.__init__ ( self, xml_node )
+    #super( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
     self.shaderName = ''
     #print ">> RSL_code __init__" 
   #
   #
-
+  def copy ( self ):
+    if DEBUG_MODE : print '>> RSL_code::copy (%s)' % self.label
+    newNode = RSL_code()
+    self.copySetup ( newNode )                                
+    return newNode 
 #
 # RSLNode
 #
@@ -38,7 +43,13 @@ class RSLNode ( Node ):
     Node.__init__ ( self, xml_node )
     self.shaderName = ''
     #print ">> RSLNode __init__" 
-
+  #
+  #
+  def copy ( self ):
+    if DEBUG_MODE : print '>> RSLNode::copy (%s)' % self.label
+    newNode = RSLNode()
+    self.copySetup ( newNode )                                
+    return newNode 
   #
   #
   def collectComputed ( self, shaderCode, visitedNodes ) :
@@ -94,7 +105,7 @@ class RSLNode ( Node ):
     
     visitedNodes.add ( self )
     
-    node_code = self.parseLocalVars ( self.code )
+    node_code = str( self.parseLocalVars ( self.code ) )
     
     if self.type in [ 'surface', 'displacement', 'light', 'volume' ] :
       # find begin block position '{' for inserting computed code

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<node name="E" author="mesh" type="variable">
+	<help>Position of the eye</help>
+	<output>
+		<property name="E" type="point"/>
+	</output>
+	<code><![CDATA[
+	$(E) = E;
+	]]>
+	</code>
+</node>

@@ -89,7 +89,7 @@ class WorkArea ( QtGui.QGraphicsView ):
     QtCore.QObject.connect( self.scene(), QtCore.SIGNAL( "onGfxNodeRemoved" ), self.onRemoveNode )
     QtCore.QObject.connect( self.scene(), QtCore.SIGNAL( "onGfxLinkRemoved" ), self.onRemoveLink )
     
-    if DEBUG_MODE : print ">> WorkArea: __init__"
+    if DEBUG_MODE : print ">> WorkArea:: __init__"
   #    
   #
   #
@@ -132,7 +132,7 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   #    
   def clear ( self ):
-    if DEBUG_MODE : print ">> WorkArea: clearing nodes ..."
+    if DEBUG_MODE : print ">> WorkArea:: clearing nodes ..."
     
     for item in self.scene().items() :
       self.scene().removeItem ( item )
@@ -151,7 +151,7 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   def addGfxLink ( self, link ) :
     #
-    #print '>> WorkArea: addGfxLink'
+    if DEBUG_MODE : print '>> WorkArea::addGfxLink (id=%d)' % link.id
     gfxLink = GfxLink( link )
     
     srcNode = link.srcNode
@@ -249,7 +249,7 @@ class WorkArea ( QtGui.QGraphicsView ):
     #
     srcNode = connector.parentItem().node
     srcParam = connector.param
-    if DEBUG_MODE : print ">> WorkArea: onCreateNodeLink from %s (%s)" % ( srcNode.label, srcParam.label )  
+    if DEBUG_MODE : print ">> WorkArea::onStartNodeLink from %s (%s)" % ( srcNode.label, srcParam.label )  
     
     srcConnector = connector  
     self.state = 'traceNodeLink'
@@ -349,26 +349,26 @@ class WorkArea ( QtGui.QGraphicsView ):
       dstConnector = gfxLink.dstConnector  
       self.nodeNet.removeLink ( gfxLink.link )
       if srcConnector is not None :  
-        print "srcConnector.parentItem().node.label = %s " % srcConnector.parentItem().node.label
+        if DEBUG_MODE : print "srcConnector.parentItem().node.label = %s " % srcConnector.parentItem().node.label
         #self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), srcConnector.parentItem(), srcConnector.param )
       if dstConnector is not None :
-        print "dstConnector.parentItem().node.label = %s " % dstConnector.parentItem().node.label
+        if DEBUG_MODE : print "dstConnector.parentItem().node.label = %s " % dstConnector.parentItem().node.label
         self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), dstConnector.parentItem(), dstConnector.param ) 
   #
   #
   def removeSelected ( self ):
-    if DEBUG_MODE : print ":: (before) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )    
+    if DEBUG_MODE : print ">> WorkArea::removeSelected: (before) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )    
     selected = self.scene().selectedItems() 
 
     for item in selected:
       if isinstance ( item, GfxLink ): item.remove()
       if isinstance ( item, GfxNode ): item.remove()  
 
-    print ":: (after) nodes = %d links = %d" % ( len( self.nodeNet.nodes.values()), len( self.nodeNet.links.values()) )        
+    if DEBUG_MODE : print ">> WorkArea::removeSelected (after) nodes = %d links = %d" % ( len( self.nodeNet.nodes.values()), len( self.nodeNet.links.values()) )        
   #
   #
   def dragEnterEvent(self, event):
-    print ">> WorkArea: onDragEnterEvent"
+    print ">> WorkArea::onDragEnterEvent"
     #for form_str in event.mimeData().formats():
     #  print str ( form_str )
     #  if form_str == 'text/uri-list' :
@@ -522,7 +522,7 @@ class WorkArea ( QtGui.QGraphicsView ):
     # case QEvent::TouchUpdate:
     # case QEvent::TouchEnd:
     if event.type() == QtCore.QEvent.TouchBegin :
-      print ">> WorkArea: QEvent.TouchBegin"
+      if DEBUG_MODE : print ">> WorkArea: QEvent.TouchBegin"
     return QtGui.QGraphicsView.viewportEvent ( self, event )
   #
   #
@@ -544,7 +544,7 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   def insertNodeNet ( self, filename, pos = None ) :
     #
-    if DEBUG_MODE : print ":: (before insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) ) 
+    if DEBUG_MODE : print "::insertNodeNet (before insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) ) 
     
     ( nodes, links ) = self.nodeNet.insert ( normPath ( filename ) ) 
 
@@ -560,4 +560,4 @@ class WorkArea ( QtGui.QGraphicsView ):
     for node in nodes : self.addGfxNode ( node, pos )  
     for link in links : self.addGfxLink ( link )   
       
-    if DEBUG_MODE : print ":: (after insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )     
+    if DEBUG_MODE : print "::insertNodeNet (after insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )     

@@ -9,6 +9,7 @@ from PyQt4 import QtCore
 
 from core.node import Node
 from core.nodeParam import NodeParam
+from global_vars import app_global_vars, DEBUG_MODE
 #
 # ImageNode
 #
@@ -18,11 +19,15 @@ class ImageNode( Node ):
   def __init__ ( self, xml_node = None ):
     #
     Node.__init__( self, xml_node )
-    
     self.imageName = ''
-    
-    print ">> ImageNode __init__" 
-    
+    if DEBUG_MODE : print ">> ImageNode __init__" 
+  #
+  #
+  def copy ( self ):
+    if DEBUG_MODE : print '>> ImageNode::copy (%s)' % self.label
+    newNode = ImageNode()
+    self.copySetup ( newNode )                                
+    return newNode   
   #
   #    
   def getInputParamValueByName ( self, name ):

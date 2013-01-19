@@ -78,6 +78,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
     #if self.link is not None :
     scene = self.scene() 
     if scene != None :  
+      if DEBUG_MODE : print ">> GfxLink::remove emit( onGfxLinkRemoved )"
       scene.emit ( QtCore.SIGNAL( "onGfxLinkRemoved" ), self )
   #
   #

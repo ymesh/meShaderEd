@@ -22,7 +22,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
   def __init__ ( self, node ):
     QtGui.QGraphicsItem.__init__ ( self )  
     
-    self.node = node  
+ 
     self.header = {}
     
     self.outputParamLabels = []
@@ -90,13 +90,12 @@ class GfxNode ( QtGui.QGraphicsItem ):
     #self.gfxNodeBuilder = GfxNodeBuilder(self.node)
     #self.isNodeSelected = False
     
-    self.setupHeader()
-    self.setupParams( self.node.outputParams, self.outputParamLabels, self.outputConnectors )
-    self.setupParams( self.node.inputParams, self.inputParamLabels, self.inputConnectors )
+    self.node = node 
+    if node is not None :
+      self.updateNode ()
+      ( x, y ) = self.node.offset
+      self.setPos ( x, y )
     
-    ( x, y ) = self.node.offset
-    self.setPos ( x, y )
-    self.setupGeometry ()
     
     #for param in self.node.inputParams :
     #  self.node.connect( param, QtCore.SIGNAL( 'paramChanged(QObject)' ), self.node.onParamChanged )
@@ -104,6 +103,34 @@ class GfxNode ( QtGui.QGraphicsItem ):
   #    
   def type ( self ):
     return GfxNode.Type
+  #
+  #
+  def updateNode ( self ) :
+          
+    # remove all GfxLinks
+    for connect in self.inputConnectors :
+      connect.removeAllLinks ()
+
+    for connect in self.outputConnectors :
+      connect.removeAllLinks ()
+      
+    # remove all children
+    for item in self.childItems () :
+      self.scene().removeItem ( item )
+    
+    self.header = {}
+    self.setupHeader()
+    
+    self.outputParamLabels = []
+    self.inputParamLabels = []
+  
+    self.outputConnectors = []
+    self.inputConnectors = []
+  
+    self.setupParams ( self.node.outputParams, self.outputParamLabels, self.outputConnectors )
+    self.setupParams ( self.node.inputParams, self.inputParamLabels, self.inputConnectors )
+    self.setupGeometry ()
+      
   #
   #  
   def getInputConnectorByParam ( self, param ) :
@@ -248,7 +275,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
       
       # parent controls from header
       for ctrl in self.header.keys() : 
-        self.header[ ctrl ].setParentItem( self )        
+        self.header[ ctrl ].setParentItem ( self )        
   #
   #
   def setupOutputParamsGeometry ( self, xs, ys ) : 

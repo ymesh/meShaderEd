@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<node name="gammaCF" label="gammaCF" author="DRL" icon="gammaColorFloat.png">
+	<help>Gamma-correct color value.</help>
+	<input>
+		<property name="input" type="color" default="color(0)"/>
+		<property name="gamma" type="float" default="1" detail="uniform"/>
+	</input>
+	<output>
+		<property name="result" type="color"/>
+	</output>
+	<internal>
+		<variable name="power"/> 
+	</internal>
+	<code><![CDATA[
+
+uniform float $(power) = 1 / $(gamma);
+$(result) = color (
+	pow( comp( $(input), 0), $(power) ),
+	pow( comp( $(input), 1), $(power) ),
+	pow( comp( $(input), 2), $(power) )
+);
+	]]>
+	</code>
+</node>

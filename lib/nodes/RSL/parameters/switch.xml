@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<node name="switch" label="switch" author="DRL">
+	<help>Dummy float switch. 
+	Useful for connecting switch inputs from the other nodes to a single value.</help>
+	<input>
+		<property name="switch" type="float" default="0" detail="uniform" subtype="switch"/>
+	</input>
+	<output>
+		<property name="output" type="float" detail="uniform"/>
+	</output>
+	<code><![CDATA[
+
+$(output) = $(switch);
+	]]>
+	</code>
+</node>

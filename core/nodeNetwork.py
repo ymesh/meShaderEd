@@ -85,12 +85,19 @@ class NodeNetwork ( QtCore.QObject ):
       
     # check if node with this label already exists and assign new label
     self.renameNodeLabel ( node, node.label )
+    
+    if node.id in self.nodes :
+      print '!!! node.id %d already exists !!!' % node.id 
+      while node.id in self.nodes : node.id += 1
+      print '!!! node.id changed to %d !!!' % node.id 
+
     # add node to NodeNetwork
     self.nodes[ node.id ] = node
   #
   #    
   def addLink ( self, link ):
-    #print '>> NodeNetwork: adding link'
+    #
+    print '>> NodeNetwork: adding link.id = %s' % str( link.id )
     if link.id == None :
       self.link_id = self.link_id + 1
       link.id = self.link_id
@@ -98,6 +105,13 @@ class NodeNetwork ( QtCore.QObject ):
       # while importing from other NodeNet
       link.nodenet = self
       link.id = self.link_id + link.id  
+      
+    print '>> NodeNetwork: linkid changed to -> %d' % link.id
+    
+    if link.id in self.links :
+      print '!!! link.id %d already exists !!!' % link.id
+      while link.id in self.links : link.id += 1
+      print '!!! link.id changed to %d !!!' % link.id 
     
     # add link to NodeNetwork
     self.links[ link.id ] = link
@@ -290,7 +304,7 @@ class NodeNetwork ( QtCore.QObject ):
     self.node_id =  max_node_id
     self.link_id =  max_link_id
     
-    #print ':: NodeNetwork node_id = %d link_id = %d' % ( self.node_id, self.link_id )
+    if DEBUG_MODE : print '>> NodeNetwork::open node_id = %d link_id = %d' % ( self.node_id, self.link_id )
           
     return ( nodes, links )   
   #
@@ -336,7 +350,7 @@ class NodeNetwork ( QtCore.QObject ):
     self.node_id =  max_node_id
     self.link_id =  max_link_id
     
-    #print ':: NodeNetwork node_id = %d link_id = %d' % ( self.node_id, self.link_id )
+    if DEBUG_MODE : print '>> NodeNetwork::insert node_id = %d link_id = %d' % ( self.node_id, self.link_id )
     
     return ( nodes, links )
     

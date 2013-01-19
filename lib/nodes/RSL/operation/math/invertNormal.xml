@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<node name="invertNormal" label="invertNormal" author="DRL">
+	<help>Inverts normal direction.</help>
+	<input>
+		<property name="input" type="normal" default="normal(0,0,0)"/>
+	</input>
+	<output>
+		<property name="output" type="normal"/>
+	</output>
+	<code><![CDATA[
+
+$(output) = -$(input);
+	]]>
+	</code>
+</node>

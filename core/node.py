@@ -70,8 +70,10 @@ class Node ( QtCore.QObject ):
     # set unique id while building
     Node.id += 1
     node.id = Node.id
-    
     return node
+  #
+  #
+  def copy ( self ) : assert 0, 'copy needs to be implemented!'
   #
   #
   def addInputParam ( self, param ) :
@@ -262,8 +264,8 @@ class Node ( QtCore.QObject ):
     if not id_node.isNull() :
       self.id = int ( id_node.nodeValue() )
     else :
-      pass
-      print ':: id is None'
+      if DEBUG_MODE : print '>> Node::parseFromXML id is None'
+      
     self.name = str ( xml_node.attributes().namedItem( 'name' ).nodeValue() )
     self.label = str ( xml_node.attributes().namedItem( 'label' ).nodeValue() )
     if self.label == '' : self.label = self.name
@@ -367,7 +369,9 @@ class Node ( QtCore.QObject ):
   def parseToXML ( self, dom ) :
     #
     xml_node = dom.createElement( 'node' )
-    
+    if DEBUG_MODE : print '>> Node::parseToXML (id=%d)' % ( self.id )
+    if self.id is None :
+      if DEBUG_MODE : print '>> Node::parseToXML id is None'
     xml_node.setAttribute ( 'id', str( self.id ) )
     xml_node.setAttribute ( 'name', self.name )
     if self.label != None : xml_node.setAttribute ( 'label', self.label )
@@ -461,7 +465,7 @@ class Node ( QtCore.QObject ):
     parserPos = 0
     
     while parserPos != -1 :
-      parserPos = parsedStr.find ( '$', parserStart )
+      parserPos = str( parsedStr ).find ( '$', parserStart )
       if parserPos != -1 :
         # 
         if parserPos != 0 :
@@ -470,7 +474,7 @@ class Node ( QtCore.QObject ):
         # check global vars first
         if parsedStr [ ( parserPos + 1 ) : ( parserPos + 2 ) ] == '{' :
           globStart = parserPos + 2
-          parserPos = parsedStr.find ( '}', globStart )
+          parserPos = str( parsedStr ).find ( '}', globStart )
           global_var_name = parsedStr [ globStart : ( parserPos ) ]
           
           #print '-> found global var %s' % global_var_name
@@ -493,6 +497,40 @@ class Node ( QtCore.QObject ):
     resultStr += parsedStr [ parserStart: ]
     
     return resultStr    
+  #
+  #
+  #
+  def copySetup ( self, newNode ) :
+    if DEBUG_MODE : print '>> Node::copySetup (%s)' % self.label
+    newNode.id = self.id
+    newNode.name = self.name 
+    newNode.label = self.label
+    newNode.type = self.type
+    newNode.author = self.author
+    newNode.help = self.help
+    newNode.icon = self.icon 
+    newNode.master = self.master
+    
+    import copy
+    newNode.code = copy.copy( self.code )
+    newNode.param_code = copy.copy( self.param_code )
+    #self.computed_code = None
+       
+    newNode.internals = copy.copy ( self.internals )
+    newNode.includes = copy.copy ( self.includes )
+    
+    if len ( newNode.inputParams ) :
+      if DEBUG_MODE : print '>> Node::copySetup %s inputParams cleared ' % newNode.label
+      newNode.inputParams = []
+    for param in self.inputParams :
+      newNode.inputParams.append ( param.copy() )  
+    
+    if len ( newNode.outputParams ) :
+      if DEBUG_MODE : print '>> Node::copySetup %s outputParams cleared ' % newNode.label
+      newNode.outputParams = []
+    for param in self.outputParams :
+      newNode.outputParams.append ( param.copy() )  
+    return newNode
 #
 # name and type must be specified in xml
 #

@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+
+<node name="indirect_ptc_fast" label="indirect_ptc_fast" author="DRL">
+	<help>Optimized version of point-based indirect illumination (or blurry reflections). 
+	Allows to execute much faster computations for Nth trace depth.</help>
+	<input>
+		<property name="Ns" type="normal" default="normal(0,0,0)">
+			<help>Shading normal. 
+			It has to be normalized (of 1 unit length) and should be faceforwarded. 
+			You really want to plug ShadingNormal node here. Or normalized reflection vector (converted to normal).</help>
+		</property>
+		<property name="rayDepth" type="float" default="0" detail="uniform">
+			<help>Traced depth of the current ray. 
+			Connect rayDepth node to this input.</help>
+		</property>
+		<property name="ConeAngle" type="float" default="80" detail="uniform"
+			subtype="slider"
+			range="0 90 .01">
+			<help>The sampled cone is defined by vector +- ConeAngle measured in degrees. 
+			Therefore, angle of sampled cone = ConeAngle * 2!!! 
+			90 = entire hemisphere.</help>
+		</property>
+		<property name="SampleBase" type="float" default="1" detail="uniform"
+		subtype="slider"
+		range="0 1 .01">
+			<help>Specifies the (float) jittering of the hemisphere ray origins. 
+			A value of 1 corresponds to jittering over the size of a micropolygon. 
+			This is useful to smooth out aliased occlusion next to edges. 
+			Default is 1.</help>
+		</property>
+		<property name="MaxDist" type="float" default="1.0e38"  detail="uniform">
+			<help>Only consider intersections closer than this distance. 
+			Default is 1e38.</help>
+		</property>
+		<property name="EnvMap" type="string" default="" detail="uniform" subtype="file"/>
+		<property name="EnvSpace" type="string" default="world" detail="uniform"/>
+		<property name="FalloffMode" type="float" default="0" detail="uniform"
+			subtype="selector"
+			range="Exponential=0:Polynomial=1">
+			<help>Falloff curve to use. 
+			0 is exponential (default) and 1 is polynomial.</help>
+		</property>
+		<property name="FalloffValue" type="float" default="0" detail="uniform"/>
+		<property name="HitSides" type="string" default="front" detail="uniform"
+			subtype="selector"
+			range="front:back:both"/>
+		<property name="MaxSolidAngle" type="float" default="0.1" detail="uniform"
+		subtype="slider"
+		range="0 0.1 0.001">
+			<help>Quality vs speed control. The lower, the better, but slower. 
+			For final render should be below 0.05. 
+			Default is 0.1.</help>
+		</property>
+		<property name="clamp" type="float" default="1" detail="uniform" subtype="switch"/>
+		<property name="SortBleeding" type="float" default="1" detail="uniform" subtype="switch">
+			<help>If 1, and clamp is also 1, color bleeding computations take the ordering of surfaces into account. 
+			It is recommanded to set this parameter to 1. 
+			Default is 0.</help>
+		</property>
+		<property name="ptcFile" type="string" default="" detail="uniform" subtype="file"/>
+		<property name="CoordSys" type="string" default="world" detail="uniform">
+			<help>Coordinate system in which ptc-file was baked.</help>
+		</property>
+		<property name="rayDepthMax" type="float" default="1" detail="uniform"
+			subtype="slider"
+			range="0 8 1">
+			<help>Maximum traced depth of the ray, at which color bleeding will be calculated. For higher trace depth simplified indirectdiffuse is performed. 
+			0 - direct visibility, 1 - reflections of the 1st level.
+			Default is 1.</help>
+		</property>
+		<property name="ptcFile_simple" type="string" default="" detail="uniform" subtype="file">
+			<help>Simplified point-cloud file, which is used for trace depths higher than rayDepthMax. 
+			If you set absolutely empty point-cloud file here, the simpliest comptation will be performed: it will only make an envMap lookup.</help>
+		</property>
+		<property name="MaxSolidAngle_simple" type="float" default="0.1" detail="uniform"
+		subtype="slider"
+		range="0 0.1 0.001">
+			<help>Quality setting used for trace depths higher than rayDepthMax. 
+			You can set higher value here to gain some render speed without making picture significantly worse.</help>
+		</property>
+	</input>
+	<output>
+		<property name="indirectDiffuse" type="color" default="color(0)"/>
+		<property name="occlusion" type="float" default="0"/>
+		<property name="avg_Distance" type="float" default="0"/>
+		<property name="avg_EnvDir" type="vector" default="vector( 0, 0, 0 )"/>
+		<property name="EnvColor" type="color" default="color(0)"/>
+	</output>
+	<include>
+	</include>
+	<internal>
+		<variable name="sampledAngle"/>
+	</internal>
+	<code><![CDATA[
+
+// code begin - indirect_ptc_fast
+uniform float
+	$(sampledAngle) = radians( $(ConeAngle) );
+
+if ( $(rayDepth) <= $(rayDepthMax) ) {
+	$(indirectDiffuse) = indirectdiffuse (P, $(Ns), 0,
+		"coneangle", $(sampledAngle),
+		"samplebase", $(SampleBase),
+		"maxdist", $(MaxDist),
+		"environmentmap", $(EnvMap),
+		"environmentspace", $(EnvSpace),
+		"falloffmode", $(FalloffMode),
+		"falloff", $(FalloffValue),
+		"pointbased", 1,
+		"filename", $(ptcFile),
+		"coordsystem", $(CoordSys),
+		"hitsides", $(HitSides),
+		"maxsolidangle", $(MaxSolidAngle),
+		"clamp", $(clamp),
+		"sortbleeding", $(SortBleeding),
+		// Output:
+		"environmentcolor", $(EnvColor),
+		"environmentdir", $(avg_EnvDir),
+		"occlusion", $(occlusion),
+		"distance", $(avg_Distance)
+	);
+	$(avg_EnvDir) = vtransform("world", $(avg_EnvDir) );
+} else {
+	$(indirectDiffuse) = indirectdiffuse (P, $(Ns), 0,
+		"coneangle", $(sampledAngle),
+		"samplebase", $(SampleBase),
+		"maxdist", $(MaxDist),
+		"environmentmap", $(EnvMap),
+		"environmentspace", $(EnvSpace),
+		"falloffmode", $(FalloffMode),
+		"falloff", $(FalloffValue),
+		"pointbased", 1,
+		"filename", $(ptcFile_simple),
+		"coordsystem", $(CoordSys),
+		"hitsides", $(HitSides),
+		"maxsolidangle", $(MaxSolidAngle_simple),
+		"clamp", $(clamp),
+		"sortbleeding", $(SortBleeding)
+	);
+	$(avg_Distance) = $(MaxDist);
+	$(avg_EnvDir) = vector ntransform("world", $(Ns) );
+	$(EnvColor) = $(indirectDiffuse);
+}
+// code end - indirect_ptc_fast
+  ]]>
+	</code>
+</node>

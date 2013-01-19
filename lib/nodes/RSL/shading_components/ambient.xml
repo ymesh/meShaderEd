@@ -1,0 +1,13 @@
+<?xml version="1.0"?> 
+
+<node name="ambient" label="ambient" author="DRL">
+	<help>Ambient component of the lighting model.</help>
+	<output>
+		<property name="output" type="color"/>		
+	</output>
+	<code><![CDATA[
+
+$(output) = ambient();
+]]>
+	</code>
+</node>

@@ -1,6 +1,19 @@
 
 meShaderEd.py
 
+version 0.2.8 (20 Jan 2013)
+  Few texture nodes were added to Library (analogs of some useful Slim nodes),
+  and a bunch of very interesting nodes from DRL (aka Lex Darlog)
+  Added shadow to GfxNode (9 Nov 2012)
+  Added curved links support (8 Nov 2012)
+  Added "Snap to grid" support (8 Nov 2012)
+  Added general functions for renaming nodes and parameters (2 Nov 2012) 
+  Added space option support for parameters: (30 Oct 2012)
+   ["rgb", "hsv", "hsl", "xyz", "XYZ", "YIQ"] for color
+   ["current", "shader", "object", "camera", "world", "raster", "NDC", "screen"] 
+   for point, vector, normal, matrix 
+  And very annoying bug with lost links after saving was fixed. (I hope)
+  
 version 0.2.7 (29 Oct 2012)
    ProjectSetup: Using relative pathes for resource directories (20 Sep 2012)
    ImageView: Auto update checkbox (9 Oct 2012)

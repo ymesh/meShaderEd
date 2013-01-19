@@ -10,7 +10,7 @@ from PyQt4 import QtCore
 from core.node import Node
 from core.nodeParam import NodeParam
 
-from global_vars import app_global_vars
+from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
 #
 # RIBNode
@@ -23,6 +23,13 @@ class RIBCodeNode ( Node ):
     Node.__init__ ( self, xml_node )
     self.ribName = ''
     #print ">> RIBCodeNode __init__" 
+  #
+  #
+  def copy ( self ):
+    if DEBUG_MODE : print '>> RIBCodeNode::copy (%s)' % self.label
+    newNode = RIBCodeNode()
+    self.copySetup ( newNode )                                
+    return newNode 
   #
   #    
   def getInputParamValueByName ( self, name ):

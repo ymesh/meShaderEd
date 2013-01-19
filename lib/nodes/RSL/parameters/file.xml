@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<node name="file" label="file" author="DRL">
+	<help>Dummy string file parameter. 
+	Useful for connecting filename inputs (such as envMap) from the other nodes to a single value.</help>
+	<input>
+		<property name="file" type="string" default="" detail="uniform" subtype="file"/>
+	</input>
+	<output>
+		<property name="output" type="string" detail="uniform"/>
+	</output>
+	<code><![CDATA[
+
+$(output) = $(file);
+	]]>
+	</code>
+</node>

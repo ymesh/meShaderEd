@@ -1,0 +1,29 @@
+<?xml version="1.0"?> 
+
+<node name="specularBlinn" label="specularBlinn" author="DRL" icon="specularBlinn.png">
+	<help>Blinn specular component of the lighting model.</help>
+	<input>
+		<property name="Ns" type="normal" default="normal(0,0,0)">
+			<help>Shading normal. 
+			It has to be normalized (of 1 unit length) and should be faceforwarded. 
+			You really want to plug ShadingNormal node here.</help>
+		</property>
+		<property name="Vn" type="vector" default="vector(0,0,0)">
+			<help>Inverted normalized vector I (i.e. Vn comes FROM surface TO camera and is of 1 unit length).</help>
+		</property>
+		<property name="roughness" type="float" default="0.2" detail="uniform"
+			subtype="slider"
+			range="0 1 0.01">
+			<help>Hardness of the specular highlight. Lhe lower, the harder and smaller the highlight is. 
+			Normally, it should never go above 1 or even 0.5.</help>
+		</property>
+	</input>
+	<output>
+		<property name="output" type="color"/>		
+	</output>
+	<code><![CDATA[
+
+$(output) = specular( $(Ns), $(Vn), $(roughness) );
+]]>
+	</code>
+</node>

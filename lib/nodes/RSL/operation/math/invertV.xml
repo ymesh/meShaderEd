@@ -2,7 +2,7 @@
 
 <node name="invertV" author="mesh">
 	<help>
-	Invert float value
+	Invert vector value
 	</help>
 	<input>
 	  <property name="input" type="vector" default="vector(0,0,0)"/>	

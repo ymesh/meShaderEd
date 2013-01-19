@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<node name="rayLabel" label="rayLabel" author="DRL">
+	<help>Returns the label of the incoming ray.</help>
+	<output>
+		<property name="label" type="string" detail="uniform"/>
+	</output>
+	<code><![CDATA[
+
+rayinfo("label", $(label) );
+	]]>
+	</code>
+</node>

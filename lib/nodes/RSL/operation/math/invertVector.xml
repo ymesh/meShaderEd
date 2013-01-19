@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<node name="invertVector" label="invertVector" author="DRL">
+	<help>Inverts vector direction.</help>
+	<input>
+		<property name="input" type="vector" default="vector(0,0,0)"/>
+	</input>
+	<output>
+		<property name="output" type="vector"/>
+	</output>
+	<code><![CDATA[
+
+$(output) = -$(input);
+	]]>
+	</code>
+</node>

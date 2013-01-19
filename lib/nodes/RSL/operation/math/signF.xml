@@ -1,0 +1,16 @@
+<?xml version="1.0"?> 
+
+<node name="signF" author="Pixar">
+	<help>sign returns -1 if its argument is negative, 1 if its argument is positive, and 0 if its argument is zero</help>
+	<input>
+		<property name="input" type="float" default="1"/>				
+	</input>
+	<output>
+		<property name="result" type="float" />		
+	</output>
+	<code>
+<![CDATA[
+ $(result) = sign( $(input) );
+]]>
+	</code>
+</node>

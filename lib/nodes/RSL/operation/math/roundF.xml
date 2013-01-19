@@ -1,0 +1,16 @@
+<?xml version="1.0"?> 
+
+<node name="roundF" author="Pixar">
+	<help>round returns the integer closest to x.</help>
+	<input>
+		<property name="input" type="float" default="1"/>				
+	</input>
+	<output>
+		<property name="result" type="float" />		
+	</output>
+	<code>
+<![CDATA[
+ $(result) = round( $(input) );
+]]>
+	</code>
+</node>

@@ -21,8 +21,13 @@
 		<property name="occ" type="float" default="0"/>
 		<property name="occ_C" type="color" default="color(0)"/>
 		
+		<property name="area" type="float" default="1"/>
+		
 		<property name="mask" type="float" default="1"/>
 		<property name="mask_C" type="color" default="color(1,0,0)"/>
+		
+		<property name="mask_reflect" type="color" default="color(0,0,0)"/>
+		
 		<property name="extra_C" type="color" default="color(1,0,0)"/>
 		<property name="extra_F" type="float" default="1"/>
 	</input>
@@ -42,8 +47,12 @@
 		<property name="__occ" type="float" detail="varying" provider="primitive" default="0"/>
 		<property name="__occ_C" type="color" detail="varying" provider="primitive" default="color(0)"/>
 		
+		<property name="_area" type="float" detail="varying" provider="primitive" default="1"/>
+		
 		<property name="__mask" type="float" detail="varying" provider="primitive" default="1"/>
 		<property name="__mask_C" type="color" detail="varying" provider="primitive" default="color(1,0,0)"/>
+		
+		<property name="__mask_reflect" type="color" detail="varying" provider="primitive" default="color(0,0,0)"/>
 	</output>
 	<internal>
 	<variable name="dummy_C"/> 
@@ -55,7 +64,7 @@ surface ${INSTANCENAME} (
 ${PARAMS} 
 )
 {
-  # CODE BEGIN ${INSTANCENAME}	  
+  /* CODE BEGIN ${INSTANCENAME} */	  
 	Ci = $(Ci) * $(Oi); 
 	Oi = $(Oi);
 	__color = $(color) * $(Oi);
@@ -72,12 +81,16 @@ ${PARAMS}
 	__occ = comp ( $(occ) * $(Oi), 0 );
 	__occ_C = $(occ_C) * $(Oi);
 	
+	_area = comp ( $(area) * $(Oi), 0 );
+	
 	__mask = comp ( $(mask) * $(Oi), 0 );
 	__mask_C = $(mask_C) * $(Oi);
 	
+	__mask_reflect = $(mask_reflect) * $(Oi);
+	
 	color $(dummy_C) = $(extra_C) * $(Oi);
 	float $(dummy_F) = comp ( $(extra_F) * $(Oi), 0 ); 
-  # CODE END ${INSTANCENAME}
+  /* CODE END ${INSTANCENAME} */
 }	
 	]]>
 	</code>

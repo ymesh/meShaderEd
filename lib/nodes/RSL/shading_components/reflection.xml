@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+
+<node name="reflection" label="reflection" author="DRL" icon="reflection.png">
+	<help>Simple reflection using "gather" construct and environment map for ray misses.</help>
+	<input>
+		<property name="rflDir" type="vector" default="vector(0,0,0)"/>
+		<property name="ConeAngle" type="float" default="0" detail="uniform"
+			subtype="slider"
+			range="0 90 .01">
+			<help>The sampled cone is defined by vector +- ConeAngle measured in degrees. 
+			Therefore, angle of sampled cone = ConeAngle * 2!!! 
+			90 = entire hemisphere.</help>
+		</property>
+		<property name="samples" type="float" default="1" detail="uniform"
+			subtype="slider"
+			range="1 32 1"/>
+		<property name="MaxDist" type="float" default="1.0e38"  detail="uniform">
+			<help>Only render surfaces closer than this distance. 
+			Default is 1e38.</help>
+		</property>
+		<property name="EnvMap_Ci" type="string" default="" detail="uniform" subtype="file">
+			<help>Color envMap file for rays that don't hit any surface.</help>
+		</property>
+		<property name="EnvMap_Oi" type="string" default="" detail="uniform" subtype="file">
+			<help>Opacity envMap file for rays that don't hit any surface.</help>
+		</property>
+		<property name="env_space" type="string" default="world" detail="uniform"/>
+		<property name="env_samples" type="float" default="4" detail="uniform"
+			subtype="slider"
+			range="1 32 1">
+			<help>Samples multiplier for envMap lookup. Controls antialiasing quality of environment.</help>
+		</property>
+		<property name="filter" type="string" default="gaussian" detail="uniform"
+			subtype="selector"
+			range="gaussian:triangle:box"/>
+		<property name="filterWidth" type="float" default="1" detail="uniform"
+			subtype="slider"
+			range="0 4 0.01"/>
+		<property name="expand" type="float" default="1" detail="uniform" subtype="switch">
+			<help>Duplicates values from single-channel envMaps to all color channels. 
+			Fills missing channels with "fill" color otherwise.</help>
+		</property>
+		<property name="fill_Ci" type="float" default="0" detail="uniform"
+			subtype="slider"
+			range="0 1 .01">
+			<help>If "expand" is off and "EnvMap_Ci" is single-channel texture, fills missing channels with this value.</help>
+		</property>
+		<property name="fill_Oi" type="float" default="0" detail="uniform"
+			subtype="slider"
+			range="0 1 .01">
+			<help>If "expand" is off and "EnvMap_Oi" is single-channel texture, fills missing channels with this value.</help>
+		</property>
+		<property name="env_Ci" type="color" default="color(0)" detail="uniform">
+			<help>Flat color value, added to "EnvMap_Ci". 
+			Sets environment color if no envMap is specified.</help>
+		</property>
+		<property name="env_Oi" type="color" default="color(0)" detail="uniform">
+			<help>Flat color value, added to "EnvMap_Oi". 
+			Sets environment color if no envMap is specified.</help>
+		</property>
+	</input>
+	<output>
+		<property name="Ci" type="color" default="color(0)"/>
+		<property name="Oi" type="color" default="color(0)"/>
+		<property name="rayLength" type="float" default="0"/>
+	</output>
+	<internal>
+		<variable name="inc_Ci"/> 
+		<variable name="inc_Oi"/>
+		<variable name="inc_len"/>
+		<variable name="envDir"/>
+		<variable name="blur"/>
+		<variable name="sampledAngle"/>
+	</internal>
+	<code><![CDATA[
+
+color
+	$(inc_Ci) = 0,
+	$(inc_Oi) = 0;
+float $(inc_len) = 0;
+uniform float
+	$(blur) = $(ConeAngle) / 180,
+	$(sampledAngle) = radians( $(ConeAngle) );
+vector $(envDir) = vtransform( $(env_space), $(rflDir) );
+
+gather ( "illuminance", P, $(rflDir), $(sampledAngle), $(samples),
+	"maxdist", $(MaxDist),
+	"surface:Ci", $(inc_Ci),
+	"surface:Oi", $(inc_Oi),
+	"ray:length", $(inc_len)
+) {
+	$(Ci) += $(inc_Ci);
+	$(Oi) += $(inc_Oi);
+	$(rayLength) += $(inc_len);
+} else {
+	$(Ci) += color environment( $(EnvMap_Ci), $(envDir),
+		"blur", $(blur),
+		"filter", $(filter),
+		"width", $(filterWidth),
+		"samples", $(env_samples),
+		"expand", $(expand),
+		"fill", $(fill_Ci)
+	);
+	$(Ci) += $(env_Ci);
+	$(Oi) += environment( $(EnvMap_Oi), $(envDir),
+		"blur", $(blur),
+		"filter", $(filter),
+		"width", $(filterWidth),
+		"samples", $(env_samples),
+		"expand", $(expand),
+		"fill", $(fill_Oi)
+	);
+	$(Oi) += $(env_Oi);
+	$(rayLength) += $(MaxDist);
+}
+$(Ci) /= $(samples);
+$(Oi) /= $(samples);
+$(rayLength) /= $(samples);
+	]]>
+	</code>		
+</node>

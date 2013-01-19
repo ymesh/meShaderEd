@@ -2,13 +2,14 @@
 #
 # meShaderEd.py
 #
-# version 0.2.7 20 Sep 2012
-# version 0.2.6 29 Aug 2012
-# version 0.2.5 19 Jul 2012
-# version 0.2.0 27 May 2012
-# version 0.1.1 16 May 2012
-# version 0.1.0 13 May 2012
-# version 0.0.1 5 Mar 2011
+# version 0.2.8 (20 Jan 2012)
+# version 0.2.7 (20 Sep 2012)
+# version 0.2.6 (29 Aug 2012)
+# version 0.2.5 (19 Jul 2012)
+# version 0.2.0 (27 May 2012)
+# version 0.1.1 (16 May 2012)
+# version 0.1.0 (13 May 2012)
+# version 0.0.1 (5 Mar 2011)
 #
 # written by Yuri.Meshalkin (mesh@kpp.kiev.ua)
 #

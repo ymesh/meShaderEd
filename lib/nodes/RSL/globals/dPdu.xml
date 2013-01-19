@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<node name="dPdu" author="mesh" type="variable">
+	<help>Derivative of surface position along u</help>
+	<output>
+		<property name="dPdu" type="vector"/>
+	</output>
+	<code>
+  <![CDATA[
+	  $(dPdu) = dPdu;
+	  ]]>
+	</code>
+</node>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?> 
+
+<node name="vectorTo3Float" author="mesh" type="rsl_code">
+	<help>Vector to 3 float components</help>
+	<input>
+		<property name="input" type="vector" default="vector (0, 0, 0)" />
+	</input>
+	<output>
+		<property name="x" type="float"/>
+		<property name="y" type="float"/>
+		<property name="z" type="float"/>
+	</output>
+	<code>
+	  <![CDATA[
+	  $(x) = xcomp( $(input) )
+	  $(y) = ycomp( $(input) )
+	  $(z) = zcomp( $(input) )
+	  ]]>
+	</code>
+</node>

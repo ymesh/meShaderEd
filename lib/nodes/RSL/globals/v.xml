@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<node name="v" author="mesh" type="variable">
+	<help>Surface parameter v.</help>
+	<output>
+		<property name="v" type="float"/>
+	</output>
+	<code>
+  <![CDATA[
+	  $(v) = v;
+	  ]]>
+	</code>
+</node>

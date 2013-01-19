@@ -1,0 +1,16 @@
+<?xml version="1.0"?> 
+
+<node name="area" author="mesh">
+	<help></help>
+	<input>
+		<property name="P" type="point"/>		
+	</input>
+	<output>
+		<property name="output" type="float"/>		
+	</output>
+	<code>
+<![CDATA[
+ $(output) = area( $(P),"dicing" ); /* micropolygon area */
+]]>
+	</code>
+</node>

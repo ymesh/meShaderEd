@@ -138,6 +138,6 @@ def getUniqueName  ( name, nameList ) :
   while newName in nameList :
     newName = name + str ( sfx )
     sfx += 1
-  return newName  
+  return str( newName )  
   
   

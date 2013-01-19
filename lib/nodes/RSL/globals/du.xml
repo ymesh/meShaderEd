@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<node name="du" author="mesh" type="variable">
+	<help>Change in surface parameters u.</help>
+	<output>
+		<property name="du" type="float"/>
+	</output>
+	<code>
+  <![CDATA[
+	  $(du) = du;
+	  ]]>
+	</code>
+</node>
