@@ -1,6 +1,10 @@
 
 meShaderEd.py
 
+version 0.2.9 (27 Jan 2013)
+  TextParam widget 
+  NoteNode -- UI node for scene description
+
 version 0.2.8 (20 Jan 2013)
   Few texture nodes were added to Library (analogs of some useful Slim nodes),
   and a bunch of very interesting nodes from DRL (aka Lex Darlog)

@@ -1,0 +1,15 @@
+<?xml version="1.0"?> 
+
+<node name="pointToVector" type="rsl_code">
+	<help>Point to vector converter.</help>
+	<input>
+		<property name="inPoint" type="point" default="point(0)"/>
+	</input>
+	<output>
+		<property name="outVector" type="vector"/>
+	</output>
+	<code><![CDATA[
+
+$(outVector) = vector( $(inPoint) );
+]]></code>
+</node>

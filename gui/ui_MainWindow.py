@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Fri Nov 09 02:13:47 2012
+# Created: Fri Jan 25 16:17:02 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -277,6 +277,10 @@ class Ui_MainWindow(object):
         self.actionNewParamView.setObjectName(_fromUtf8("actionNewParamView"))
         self.actionNewImageView = QtGui.QAction(MainWindow)
         self.actionNewImageView.setObjectName(_fromUtf8("actionNewImageView"))
+        self.actionDuplicate = QtGui.QAction(MainWindow)
+        self.actionDuplicate.setObjectName(_fromUtf8("actionDuplicate"))
+        self.actionDuplicateWithLinks = QtGui.QAction(MainWindow)
+        self.actionDuplicateWithLinks.setObjectName(_fromUtf8("actionDuplicateWithLinks"))
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -294,6 +298,8 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.actionCut)
         self.menuEdit.addAction(self.actionPaste)
         self.menuEdit.addSeparator()
+        self.menuEdit.addAction(self.actionDuplicate)
+        self.menuEdit.addAction(self.actionDuplicateWithLinks)
         self.menuEdit.addAction(self.actionDelete)
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionRendererOptions)
@@ -361,6 +367,8 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.actionOpen, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onOpen)
         QtCore.QObject.connect(self.actionSettings, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onSettingsSetup)
         QtCore.QObject.connect(self.actionImport, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onImport)
+        QtCore.QObject.connect(self.actionDuplicate, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onDuplicate)
+        QtCore.QObject.connect(self.actionDuplicateWithLinks, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onDuplicateWithLinks)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -428,6 +436,10 @@ class Ui_MainWindow(object):
         self.actionZoomReset.setToolTip(QtGui.QApplication.translate("MainWindow", "Reset Zoom", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNewParamView.setText(QtGui.QApplication.translate("MainWindow", "New Parameter View", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNewImageView.setText(QtGui.QApplication.translate("MainWindow", "New Image View", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionDuplicate.setText(QtGui.QApplication.translate("MainWindow", "Duplicate", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionDuplicate.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+D", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionDuplicateWithLinks.setText(QtGui.QApplication.translate("MainWindow", "Duplicate with links", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionDuplicateWithLinks.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+D", None, QtGui.QApplication.UnicodeUTF8))
 
 from nodeLibraryView import NodeLibraryView
 from geomViewWidget import GeomViewWidget

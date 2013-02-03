@@ -118,6 +118,8 @@
     <addaction name="actionCut"/>
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
+    <addaction name="actionDuplicate"/>
+    <addaction name="actionDuplicateWithLinks"/>
     <addaction name="actionDelete"/>
     <addaction name="separator"/>
     <addaction name="actionRendererOptions"/>
@@ -691,6 +693,22 @@
     <string>New Image View</string>
    </property>
   </action>
+  <action name="actionDuplicate">
+   <property name="text">
+    <string>Duplicate</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionDuplicateWithLinks">
+   <property name="text">
+    <string>Duplicate with links</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
   <zorder>dockNodes</zorder>
   <zorder>dockPreview</zorder>
   <zorder>dockParam</zorder>
@@ -1020,6 +1038,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionDuplicate</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onDuplicate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>556</x>
+     <y>442</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionDuplicateWithLinks</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onDuplicateWithLinks()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>556</x>
+     <y>442</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onProjectSetup()</slot>
@@ -1040,5 +1090,7 @@
   <slot>onOpen()</slot>
   <slot>onSettingsSetup()</slot>
   <slot>onImport()</slot>
+  <slot>onDuplicate()</slot>
+  <slot>onDuplicateWithLinks()</slot>
  </slots>
 </ui>

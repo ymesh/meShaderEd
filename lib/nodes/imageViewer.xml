@@ -23,6 +23,4 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 	  $(output) = $(input)
 	  ]]>
 	</code>
-	<preview>
-	</preview>		
 </node>

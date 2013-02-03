@@ -27,6 +27,7 @@ from gui.params.NormalWidget import NormalWidget
 from gui.params.PointWidget import PointWidget
 from gui.params.VectorWidget import VectorWidget
 from gui.params.MatrixWidget import MatrixWidget
+from gui.params.TextWidget import TextWidget
 #
 #
 #
@@ -37,21 +38,22 @@ class NodeParamView ( QtGui.QWidget ):
     #
     QtGui.QWidget.__init__ ( self )
     self.gfxNode = None
-    self.paramWidgets = {  'string' : StringWidget
-                          ,'image' : StringWidget
-                          ,'rib' : StringWidget
-                          ,'surface' : StringWidget 
+    self.paramWidgets = {  'string'       : StringWidget
+                          ,'image'        : StringWidget
+                          ,'rib'          : StringWidget
+                          ,'surface'      : StringWidget 
                           ,'displacement' : StringWidget 
-                          ,'light' : StringWidget  
-                          ,'volume' : StringWidget
-                          ,'float' : FloatWidget
-                          ,'int' : IntWidget
-                          ,'color' : ColorWidget
-                          ,'normal' : NormalWidget
-                          ,'transform' : PointWidget
-                          ,'point' : PointWidget
-                          ,'vector' : VectorWidget
-                          ,'matrix' : MatrixWidget
+                          ,'light'        : StringWidget  
+                          ,'volume'       : StringWidget
+                          ,'float'        : FloatWidget
+                          ,'int'          : IntWidget
+                          ,'color'        : ColorWidget
+                          ,'normal'       : NormalWidget
+                          ,'transform'    : PointWidget
+                          ,'point'        : PointWidget
+                          ,'vector'       : VectorWidget
+                          ,'matrix'       : MatrixWidget
+                          ,'text'         : TextWidget
                         }
     self.buildGui ()
     self.updateGui ()
@@ -59,11 +61,11 @@ class NodeParamView ( QtGui.QWidget ):
   #
   #
   def connectLabelSignals ( self ) :
-    self.connect( self.nameEdit, QtCore.SIGNAL( 'editingFinished()' ), self.nodeLabelChanged )
+    self.connect( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
   #
   #
   def disconnectLabelSignals ( self ) :
-    self.disconnect( self.nameEdit, QtCore.SIGNAL( 'editingFinished()' ), self.nodeLabelChanged )
+    self.disconnect( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
     
   #
   #
@@ -71,14 +73,14 @@ class NodeParamView ( QtGui.QWidget ):
     #print ">> NodeParamView: connectParamSignals"
     if self.gfxNode is not None :
       for inputParam in self.gfxNode.node.inputParams:
-        self.connect( inputParam, QtCore.SIGNAL( 'paramChanged(QObject)' ), self.onParamChanged )
+        self.connect ( inputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
   #
   #
   def disconnectParamSignals ( self ) :
     #print ">> NodeParamView: disconnectParamSignals"
     if self.gfxNode is not None :
       for inputParam in self.gfxNode.node.inputParams:
-        self.disconnect( inputParam, QtCore.SIGNAL( 'paramChanged(QObject)' ), self.onParamChanged )          
+        self.disconnect ( inputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )          
   #
   #
   def setNode ( self, gfxNode ):
@@ -91,20 +93,20 @@ class NodeParamView ( QtGui.QWidget ):
   #
   def onParamChanged ( self, param ):
     print ">> NodeParamView: onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )  
-    self.emit( QtCore.SIGNAL( 'nodeParamChanged' ), self.gfxNode.node, param )   
+    self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode.node, param )   
   #
   #
   def nodeLabelChanged ( self ):
     if self.gfxNode is not None : 
-      newLabel = self.nameEdit.text().simplified()
+      newLabel = self.nameEdit.text ().simplified ()
       newLabel = newLabel.replace ( ' ', "_" )
-      if not newLabel.isEmpty() :
+      if not newLabel.isEmpty () :
         # update label only if realy changed    
         if newLabel != self.gfxNode.node.label :
           # rename node label if same name exists in NodeNet      
-          self.emit( QtCore.SIGNAL( 'nodeLabelChanged' ), self.gfxNode, newLabel ) 
-          self.nameEdit.clear()
-      self.nameEdit.setText( self.gfxNode.node.label )
+          self.emit ( QtCore.SIGNAL ( 'nodeLabelChanged' ), self.gfxNode, newLabel ) 
+          self.nameEdit.clear ()
+      self.nameEdit.setText ( self.gfxNode.node.label )
   #
   #
   def buildGui ( self ):
@@ -115,7 +117,7 @@ class NodeParamView ( QtGui.QWidget ):
     label.setMinimumSize ( QtCore.QSize ( UI.NODE_LABEL_WIDTH, UI.HEIGHT ) )
     label.setMaximumSize ( QtCore.QSize ( UI.NODE_LABEL_WIDTH, UI.HEIGHT ) )
     
-    font = QtGui.QFont()
+    font = QtGui.QFont ()
     label.setFont ( font )
     #label.setAlignment(QtCore.Qt.AlignCenter)
     label.setText ('Node Label')
@@ -123,18 +125,18 @@ class NodeParamView ( QtGui.QWidget ):
     self.nameEdit = QtGui.QLineEdit () 
     self.nameEdit.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )   
         
-    headerLayout = QtGui.QHBoxLayout()
+    headerLayout = QtGui.QHBoxLayout ()
     headerLayout.setSpacing ( UI.SPACING )
     headerLayout.setMargin ( UI.SPACING )
     
-    headerLayout.addWidget( label )
-    headerLayout.addWidget( self.nameEdit )
+    headerLayout.addWidget ( label )
+    headerLayout.addWidget ( self.nameEdit )
     
     self.stackedWidget = QtGui.QStackedWidget ( self )
-    frame = QtGui.QFrame()
+    frame = QtGui.QFrame ()
     self.stackedWidget.addWidget ( frame )
     
-    mainLayout = QtGui.QVBoxLayout()
+    mainLayout = QtGui.QVBoxLayout ()
     mainLayout.addLayout ( headerLayout )
     mainLayout.addWidget ( self.stackedWidget )
    
@@ -146,7 +148,6 @@ class NodeParamView ( QtGui.QWidget ):
     currentWidget = self.stackedWidget.currentWidget ()
     self.stackedWidget.removeWidget ( currentWidget )
     
-    
     frame = QtGui.QFrame()
         
     frameLayout = QtGui.QVBoxLayout ()
@@ -154,20 +155,19 @@ class NodeParamView ( QtGui.QWidget ):
     frameLayout.setMargin ( UI.SPACING )
     frameLayout.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
     
-    frame.setLayout( frameLayout )
+    frame.setLayout ( frameLayout )
     
-    self.nameEdit.clear()
+    self.nameEdit.clear ()
     
     if self.gfxNode is not None :
       self.nameEdit.setText ( self.gfxNode.node.label )
       for inputParam in self.gfxNode.node.inputParams:
         if inputParam.display :
-          if not self.gfxNode.node.isInputParamLinked( inputParam ):
-            if inputParam.type in self.paramWidgets.keys() :
+          if not self.gfxNode.node.isInputParamLinked ( inputParam ):
+            if inputParam.type in self.paramWidgets.keys () :
               #print '%s type = %s' % ( inputParam.label, inputParam.type )  
               paramWidget = apply ( self.paramWidgets [ inputParam.type ], [ inputParam, self.gfxNode, self ] )
               frameLayout.addWidget ( paramWidget ) 
-            
     
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding )
     frameLayout.addItem ( spacer )
@@ -177,5 +177,3 @@ class NodeParamView ( QtGui.QWidget ):
     scrollArea.setWidget ( frame )
     
     self.stackedWidget.addWidget ( scrollArea )
-  
-    

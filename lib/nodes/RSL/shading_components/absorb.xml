@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<node name="absorb" label="absorb" author="DRL" icon="absorb.png">
+	<help>Absorption component. 
+	You may want to multiply refraction by it's output to create light absorption effect.</help>
+	<input>
+		<property name="rayLength" type="float" default="0">
+			<help>The legth of a ray travelled through the substance. 
+			You really want to connect "lengthI" node here.</help>
+		</property>
+		<property name="absorbColor" type="color" default="color(1)">
+			<help>This is how much light is left after travelling through 1 unit of substance. 
+			You need to specify a color darker than white.</help>
+		</property>
+	</input>
+	<output>
+		<property name="absorb" type="color" default="color(1)"/>
+	</output>
+	<code><![CDATA[
+
+$(absorb) = color (
+	pow( comp($(absorbColor), 0), $(rayLength) ),
+	pow( comp($(absorbColor), 1), $(rayLength) ),
+	pow( comp($(absorbColor), 2), $(rayLength) )
+);
+]]>
+	</code>
+</node>

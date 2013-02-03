@@ -50,68 +50,68 @@ class NodeEditorPanel ( QtGui.QDialog ):
   #
   #
   def connectSignals ( self ) :
-    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onInputParamSelectionChanged )
-    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onOutputParamSelectionChanged  )
+    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui ) # onInputParamSelectionChanged )
+    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui ) # onOutputParamSelectionChanged  )
     
-    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL( "addItem" ), self.onAddParam )
-    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL( "addItem" ), self.onAddParam )
-    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL( "renameItem" ), self.onRenameParam )
-    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL( "renameItem" ), self.onRenameParam )
-    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveParam )
-    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveParam )
+    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'addItem' ), self.onAddParam )
+    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'addItem' ), self.onAddParam )
+    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameParam )
+    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameParam )
+    QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveParam )
+    QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveParam )
     
-    QtCore.QObject.connect ( self.ui.tabs_param_list, QtCore.SIGNAL( "currentChanged(int)" ), self.updateGui )
+    QtCore.QObject.connect ( self.ui.tabs_param_list, QtCore.SIGNAL ( 'currentChanged(int)' ), self.updateGui )
     
     if self.nodeParamEditor is not None :
-      QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onRenameParam )
-      QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamLabel" ), self.onRenameParamLabel )
+      QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL ( 'changeParamName' ), self.onRenameParam )
+      QtCore.QObject.connect ( self.nodeParamEditor, QtCore.SIGNAL ( 'changeParamLabel' ), self.onRenameParamLabel )
       
     if self.nodeCodeEditor is not None :
-      QtCore.QObject.connect ( self.nodeCodeEditor.ui.textEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditCode )
+      QtCore.QObject.connect ( self.nodeCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditCode )
     
     if self.paramCodeEditor is not None :
-      QtCore.QObject.connect ( self.paramCodeEditor.ui.textEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditParamCode)
+      QtCore.QObject.connect ( self.paramCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditParamCode )
     
-    QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL( "addItem" ), self.onAddInternal )
-    QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL( "addItem" ), self.onAddInclude )
+    QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL ( 'addItem' ), self.onAddInternal )
+    QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL ( 'addItem' ), self.onAddInclude )
     
-    QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL( "renameItem" ), self.onRenameInternal )
-    QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL( "renameItem" ), self.onRenameInclude )
+    QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameInternal )
+    QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameInclude )
     
-    QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveInternal )
-    QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveInclude )
+    QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveInternal )
+    QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveInclude )
   
   def disconnectSignals ( self ) :
-    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onInputParamSelectionChanged )
-    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL( "selectionChanged" ), self.updateGui ) # onOutputParamSelectionChanged  )
-    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL( "addItem" ), self.onAddParam )
-    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL( "addItem" ), self.onAddParam )
-    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL( "renameItem" ), self.onRenameParam )
-    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL( "renameItem" ), self.onRenameParam )
-    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveParam )
-    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveParam )
+    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui ) # onInputParamSelectionChanged )
+    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui ) # onOutputParamSelectionChanged  )
+    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'addItem' ), self.onAddParam )
+    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'addItem' ), self.onAddParam )
+    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameParam )
+    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameParam )
+    QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveParam )
+    QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveParam )
 
-    QtCore.QObject.disconnect ( self.ui.tabs_param_list, QtCore.SIGNAL( "currentChanged(int)" ), self.updateGui )
+    QtCore.QObject.disconnect ( self.ui.tabs_param_list, QtCore.SIGNAL ( "currentChanged(int)" ), self.updateGui )
     
     if self.nodeParamEditor is not None :
-      QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamName" ), self.onRenameParam )
-      QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL( "changeParamLabel" ), self.onRenameParamLabel )
+      QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL ( 'changeParamName' ), self.onRenameParam )
+      QtCore.QObject.disconnect ( self.nodeParamEditor, QtCore.SIGNAL ( 'changeParamLabel' ), self.onRenameParamLabel )
       
     if self.nodeCodeEditor is not None :
-      QtCore.QObject.disconnect ( self.nodeCodeEditor.ui.textEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditCode )
+      QtCore.QObject.disconnect ( self.nodeCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditCode )
     
     if self.paramCodeEditor is not None :
-      QtCore.QObject.disconnect ( self.paramCodeEditor.ui.textEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditParamCode)
+      QtCore.QObject.disconnect ( self.paramCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditParamCode)
 
 
-    QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL( "addItem" ), self.onAddInternal )
-    QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL( "addItem" ), self.onAddInclude )
+    QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL ( 'addItem' ), self.onAddInternal )
+    QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL ( 'addItem' ), self.onAddInclude )
     
-    QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL( "renameItem" ), self.onRenameInternal )
-    QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL( "renameItem" ), self.onRenameInclude )
+    QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameInternal )
+    QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameInclude )
     
-    QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveInternal )
-    QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL( "removeItem" ), self.onRemoveInclude )
+    QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveInternal )
+    QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveInclude )
   #
   #
   def setupInputParams () :
@@ -123,54 +123,54 @@ class NodeEditorPanel ( QtGui.QDialog ):
     self.editNode = editNode 
     
     for name in editNode.internals :
-      item = QtGui.QListWidgetItem( name )  
-      self.ui.internals_list.ui.listWidget.addItem( item )
+      item = QtGui.QListWidgetItem ( name )  
+      self.ui.internals_list.ui.listWidget.addItem ( item )
       
     for name in editNode.includes :
-      item = QtGui.QListWidgetItem( name )  
-      self.ui.includes_list.ui.listWidget.addItem( item )
+      item = QtGui.QListWidgetItem ( name )  
+      self.ui.includes_list.ui.listWidget.addItem ( item )
       
     for param in editNode.inputParams :
-      item = QtGui.QListWidgetItem( param.name )  
-      self.ui.input_list.ui.listWidget.addItem( param.name )
+      item = QtGui.QListWidgetItem ( param.name )  
+      self.ui.input_list.ui.listWidget.addItem ( param.name )
       
     for param in editNode.outputParams :
-      item = QtGui.QListWidgetItem( param.name )  
-      self.ui.output_list.ui.listWidget.addItem( param.name )
+      item = QtGui.QListWidgetItem ( param.name )  
+      self.ui.output_list.ui.listWidget.addItem ( param.name )
       
-    item = QtGui.QListWidgetItem( editNode.name )
-    self.ui.nodes_listWidget.addItem( item )
+    item = QtGui.QListWidgetItem ( editNode.name )
+    self.ui.nodes_listWidget.addItem ( item )
     
-    self.connectSignals()
+    self.connectSignals ()
     
     #self.updateGui ()
-    self.ui.toolBox.setCurrentIndex( 0 )
+    self.ui.toolBox.setCurrentIndex ( 0 )
   #
   #
   def buildGui ( self ):
     # build the gui created with QtDesigner
     self.ui = Ui_NodeEditorPanel ( )
     self.ui.setupUi ( self )
-    self.ui.code_tabs = QtGui.QTabWidget( self.ui.side_stackedWidget )
+    self.ui.code_tabs = QtGui.QTabWidget ( self.ui.side_stackedWidget )
     self.ui.code_tabs.setVisible ( False )
   #
   #
   def updateGui ( self ):
     # 
     if self.editNode is not None :
-      idx = self.ui.toolBox.currentIndex()
+      idx = self.ui.toolBox.currentIndex ()
       
       if idx == 1 :  # Parameters
-        tab_idx = self.ui.tabs_param_list.currentIndex()
+        tab_idx = self.ui.tabs_param_list.currentIndex ()
         param = None
         if tab_idx == 0 : #input parameters
-          list_item = self.ui.input_list.ui.listWidget.currentItem()
+          list_item = self.ui.input_list.ui.listWidget.currentItem ()
           if list_item is not None :
-            param = self.editNode.getInputParamByName( str( list_item.text() ) )
+            param = self.editNode.getInputParamByName( str ( list_item.text () ) )
         elif tab_idx == 1 : # output parametrs
-          list_item = self.ui.output_list.ui.listWidget.currentItem()
+          list_item = self.ui.output_list.ui.listWidget.currentItem ()
           if list_item is not None :
-            param = self.editNode.getOutputParamByName( str( list_item.text() ) )
+            param = self.editNode.getOutputParamByName( str ( list_item.text () ) )
         self.nodeParamEditor.setParam ( param )
       elif idx == 2 : # Code
         self.ui.code_tabs.setVisible ( True )
@@ -187,20 +187,20 @@ class NodeEditorPanel ( QtGui.QDialog ):
       # Node
       if idx == 0 :  
         if self.nodeEditor is None :
-          self.nodeEditor = NodeEditor( self )
-        self.nodeEditor.setNode( self.editNode )
+          self.nodeEditor = NodeEditor ( self )
+        self.nodeEditor.setNode ( self.editNode )
         self.ui.side_stackedWidget.addWidget ( self.nodeEditor )
       # Input, Output Parameters
       elif idx == 1  : # Parameters
         if self.nodeParamEditor is None :
-          self.nodeParamEditor = NodeParamEditor( self )
+          self.nodeParamEditor = NodeParamEditor ( self )
         self.ui.side_stackedWidget.addWidget ( self.nodeParamEditor )
       # Includes, Local Names   
       elif idx == 2 : # Code
         if self.nodeCodeEditor is None :
-          self.nodeCodeEditor = NodeCodeEditor( self )
+          self.nodeCodeEditor = NodeCodeEditor ( self )
         if self.paramCodeEditor is None :
-          self.paramCodeEditor = NodeCodeEditor( self )
+          self.paramCodeEditor = NodeCodeEditor ( self )
         
         self.nodeCodeEditor.setNodeCode ( self.editNode.code, 'SL' )
         self.paramCodeEditor.setNodeCode ( self.editNode.param_code, 'python' )

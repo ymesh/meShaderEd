@@ -44,6 +44,4 @@ if self.getInputParamByName ( 'selector' ).value == 'image7': self.imageName = s
 	  $(output) = $(input)
 	  ]]>
 	</code>
-	<preview>
-	</preview>		
 </node>

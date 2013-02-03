@@ -877,7 +877,8 @@ class MatrixNodeParam( NodeParam ):
   #
   #
   def valueToStr ( self, value ) :
-    flatMat = sum( value, [] )
+    #
+    flatMat = sum ( value, [] )
     ret_str = 'matrix'
     if self.space != None :
       if self.space != '' :
@@ -886,6 +887,7 @@ class MatrixNodeParam( NodeParam ):
   #
   #
   def setValue ( self, value ) :
+    #
     if self.value != value :
       #print '>> MatrixParam.setValue'
       self.value = value
@@ -897,6 +899,7 @@ class SurfaceNodeParam ( NodeParam ):
   #
   #
   def __init__ ( self, xml_param = None, isRibParam = False ):
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'surface'
   #
@@ -906,6 +909,7 @@ class SurfaceNodeParam ( NodeParam ):
   #
   #
   def copy ( self ):
+    #
     newParam = SurfaceNodeParam()
     self.copySetup ( newParam )
     return newParam
@@ -916,6 +920,7 @@ class DisplacementNodeParam ( NodeParam ):
   #
   #
   def __init__ ( self, xml_param = None, isRibParam = False ):
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'displacement'
   #
@@ -924,7 +929,8 @@ class DisplacementNodeParam ( NodeParam ):
   #
   #
   def copy ( self ):
-    newParam = DisplacementNodeParam()
+    #
+    newParam = DisplacementNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #def valueToStr ( self, value ): return str( "\"" + value + "\"" )
@@ -935,6 +941,7 @@ class LightNodeParam ( NodeParam ):
   #
   #
   def __init__ ( self, xml_param = None, isRibParam = False ):
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'light'
   #
@@ -943,7 +950,8 @@ class LightNodeParam ( NodeParam ):
   #
   #
   def copy ( self ):
-    newParam = LightNodeParam()
+    #
+    newParam = LightNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #def valueToStr ( self, value ): return str( "\"" + value + "\"" )
@@ -954,6 +962,7 @@ class VolumeNodeParam ( NodeParam ):
   #
   #
   def __init__ ( self, xml_param = None, isRibParam = False ):
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'volume'
   #
@@ -962,6 +971,7 @@ class VolumeNodeParam ( NodeParam ):
   #
   #
   def copy ( self ):
+    #
     newParam = VolumeNodeParam()
     self.copySetup ( newParam )
     return newParam
@@ -973,6 +983,7 @@ class RibNodeParam ( NodeParam ):
   #
   #
   def __init__ ( self, xml_param = None, isRibParam = False ):
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'rib'
 
@@ -982,6 +993,7 @@ class RibNodeParam ( NodeParam ):
   #
   #
   def copy ( self ):
+    #
     newParam = RibNodeParam()
     self.copySetup ( newParam )
     return newParam
@@ -992,6 +1004,7 @@ class TextNodeParam ( NodeParam ):
   #
   #
   def __init__ ( self, xml_param = None, isRibParam = False ):
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'text'
   #
@@ -1000,7 +1013,8 @@ class TextNodeParam ( NodeParam ):
   #
   #
   def copy ( self ):
-    newParam = TextNodeParam()
+    #
+    newParam = TextNodeParam ()
     self.copySetup ( newParam )
     return newParam
 #
@@ -1010,6 +1024,7 @@ class TransformNodeParam ( NodeParam ):
   #
   #
   def __init__ ( self, xml_param = None, isRibParam = True ):
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'transform'
   #
@@ -1018,17 +1033,19 @@ class TransformNodeParam ( NodeParam ):
   #
   #
   def copy ( self ):
-    newParam = TransformNodeParam()
+    #
+    newParam = TransformNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #
   #
   def valueFromStr ( self, strValue ):
+    #
     value = [ 0.0, 0.0, 0.0 ]
     if strValue != '' :
       #str = str.replace( ' ', '' )
-      transform_values = strValue.split( ' ' )
-      f = map( float, transform_values )
+      transform_values = strValue.split ( ' ' )
+      f = map ( float, transform_values )
       value = [ f[0], f[1], f[2] ]
     return value
   #
@@ -1043,6 +1060,7 @@ class ImageNodeParam ( NodeParam ):
   #
   #
   def __init__ ( self, xml_param = None, isRibParam = False ):
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'image'
   #
@@ -1051,7 +1069,8 @@ class ImageNodeParam ( NodeParam ):
   #
   #
   def copy ( self ):
-    newParam = ImageNodeParam()
+    #
+    newParam = ImageNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #
@@ -1060,19 +1079,19 @@ class ImageNodeParam ( NodeParam ):
   # or "label1=value1:label2=value2:label3=value3:"
   #
   def getRangeValues ( self ):
-
+    #
     rangeList = []
 
     if self.range != '' : # and self.subtype == 'texture':
-      tmp_list = str( self.range ).split( ':' )
+      tmp_list = str ( self.range ).split ( ':' )
       for s in tmp_list :
-        pair = s.split( '=' )
+        pair = s.split ( '=' )
         if len( pair ) > 1 :
-          label = pair[0]
-          value = pair[1]
+          label = pair [ 0 ]
+          value = pair [ 1 ]
         else :
           label = s
           value = s
-        rangeList.append( (label, value) )
+        rangeList.append ( (label, value) )
 
     return rangeList

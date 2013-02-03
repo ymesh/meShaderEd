@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<node name="lengthVector" label="length" author="DRL">
+	<help>Calculates the length of a given vector.</help>
+	<input>
+		<property name="vector" type="vector" default="vector(0)"/>
+	</input>
+	<output>
+		<property name="length" type="float"/>
+	</output>
+	<code><![CDATA[
+
+$(length) = length( $(vector) );
+]]></code>
+</node>
