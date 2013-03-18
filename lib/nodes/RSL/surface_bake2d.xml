@@ -1,0 +1,33 @@
+<?xml version="1.0"?> 
+
+<node name="surface_bake2d" label="surf_bk2d" type="surface" author="DRL">
+	<help>Shader for baking the scene to the 3delight texture.</help>
+	<input>
+		<property name="Ci" type="color" default="color(0)" />
+		<property name="Oi" type="color" default="color(1)" />
+		<property name="s" type="float" default="0" />
+		<property name="t" type="float" default="0" />
+		<property name="bakeFile" type="string" default="" detail="uniform" subtype="file"/>
+	</input>
+	<output>
+		<property name="surface" type="rib" default="Surface &quot;${NODELABEL}&quot;" />
+	</output>
+	<code><![CDATA[
+#define SURFACE_SHADER ${INSTANCENAME}
+surface ${INSTANCENAME} (
+${PARAMS}
+)
+{
+/* CODE BEGIN ${INSTANCENAME} */
+Oi = Os * $(Oi);
+Ci = Cs * $(Ci) * Oi;
+bake(
+	concat( $(bakeFile), "&binary" ),
+	$(s), $(t),
+	Ci
+);
+/* CODE END ${INSTANCENAME} */
+}
+	]]>
+	</code>
+</node>

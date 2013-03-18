@@ -1,33 +1,44 @@
 <?xml version="1.0"?> 
 
-<node name="bake3d" label="bake3d" type="surface" author="DRL">
-	<help>Shader for baking the scene to the point cloud.</help>
+<node name="bake3d" label="bk3d" author="DRL">
+	<help>Bake color to a 3d pointcloud scene.</help>
 	<input>
-		<property name="Ci" type="color" default="color(0.0, 0.0, 0.0)" />
-		<property name="Oi" type="color" default="color(1.0, 1.0, 1.0)" />
+		<property name="in" type="color" default="color(0)">
+			<help>Any color component used just for connecting this node to the shader network.</help>
+		</property>
+
+	  <property name="P" type="point" default="point (0)"/>
+		<property name="N" type="normal" default="normal (0, 1, 0)"/>
+		
+		<property name="clr" type="color" default="color(0)">
+			<help>Color to be baked.</help>
+		</property>
+		<property name="opc" type="color" default="color(1)">
+			<help>Opacity to be baked.</help>
+		</property>
 		<property name="ptcFile" type="string" default="" detail="uniform" subtype="file"/>
 		<property name="CoordSys" type="string" default="world" detail="uniform"/>
+		<property name="interpolate" type="float" default="1" detail="uniform">
+			<help>When set to 1, saves the centers of the micro-polygons instead of its corners. 
+			For color-bleeding, you do want to convert micro-polygons to points, since you're interested in micro-polygons' centers and not corners. 
+			So, for color-bleeding and AO, you need to LEAVE THIS SETTING'S VALUE TO 1.</help>
+		</property>
 	</input>
 	<output>
-		<property name="surface" type="rib" default="Surface &quot;${NODELABEL}&quot;" />
+		<property detail="varying" name="out" type="color" default="color(0)"/>
 	</output>
 	<code><![CDATA[
-#define SURFACE_SHADER ${INSTANCENAME}
-surface ${INSTANCENAME} (
-${PARAMS}
-)
-{
-/* CODE BEGIN ${INSTANCENAME} */
-Oi = Os * $(Oi);
-Ci = Cs * $(Ci) * Oi;
-bake3d ($(ptcFile), "", P, N,
+
+// code begin - bake3d
+$(out) = $(in);
+bake3d ($(ptcFile), "", $(P), $(N),
 	"coordsystem", $(CoordSys),
-	"_radiosity", Ci, // Color-bleeding color
-	"_opacity", Oi,
-	"interpolate", 1 // Required for color-bleeding
+	"_radiosity", $(clr), // Color-bleeding color
+	"_opacity", $(opc),
+	"interpolate", $(interpolate) // Required for color-bleeding
 );
-/* CODE END ${INSTANCENAME} */
-}
-	]]>
+// code end - bake3d
+
+]]>
 	</code>
 </node>
