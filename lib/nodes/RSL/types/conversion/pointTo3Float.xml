@@ -12,9 +12,9 @@
 	</output>
 	<code>
 	  <![CDATA[
-	  $(x) = xcomp( $(input) )
-	  $(y) = ycomp( $(input) )
-	  $(z) = zcomp( $(input) )
+	  $(x) = xcomp( $(input) );
+	  $(y) = ycomp( $(input) );
+	  $(z) = zcomp( $(input) );
 	  ]]>
 	</code>
 </node>
