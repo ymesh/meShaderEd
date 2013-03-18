@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<node name="EdgeDetect" author="Christos Obretenov" >
+	<help>Shader example from RND301: Production Shader Writing Fundamentals And Physically Plausible Shading</help>
+	<input>
+		<property name="N" type="normal" default="normal(1)" />
+		<property name="steps" type="float" default="1" subtype="slider" range="1 8 1"/>
+		<property name="invert" type="float" detail="uniform" default="1" subtype="switch"/>
+	</input>
+	<output>
+		<property name="result" type="float"/>
+	</output>
+	<internal>
+	  <variable name="NprevU"/>
+	  <variable name="NprevV"/>
+	  <variable name="i"/>
+	  <variable name="Nn"/>
+	  <variable name="NdiffU"/>
+	  <variable name="NdiffV"/>
+	  <variable name="NdiffUV"/>
+	</internal>
+	<code><![CDATA[
+	  vector $(NprevU) = Du ( $(N) );
+    vector $(NprevV) = Dv ( $(N) );
+
+    uniform float $(i) = 1;
+    for ( $(i) = 1 ; $(i) < $(steps) ; $(i) += 1 )
+    {
+        $(NprevU) = Du ( $(NprevU) );
+        $(NprevV) = Dv ( $(NprevV) );
+    }
+
+    normal $(Nn) = normalize ( $(N) );
+    $(NprevU) = normalize ( $(NprevU) );
+    $(NprevV) = normalize ( $(NprevV) );
+
+    float $(NdiffU) = abs ( $(Nn) . $(NprevU) );
+    float $(NdiffV) = abs ( $(Nn) . $(NprevV) );
+    float $(NdiffUV) = max ( $(NdiffU) , $(NdiffV) );
+
+    $(result) = clamp ( 2 * pow ( $(NdiffUV), 2 ), 0, 1 );
+
+    if ( $(invert) )
+      $(result) = 1 - $(result);
+
+  ]]>
+	</code>
+</node>
