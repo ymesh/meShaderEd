@@ -3,7 +3,7 @@
 <node name="normalTo3Float" author="mesh" type="rsl_code">
 	<help>Normal to 3 float components</help>
 	<input>
-		<property name="input" type="normal" default="vector (0, 0, 0)" />
+		<property name="input" type="normal" default="normal (0, 1, 0)" />
 	</input>
 	<output>
 		<property name="x" type="float"/>
@@ -12,9 +12,9 @@
 	</output>
 	<code>
 	  <![CDATA[
-	  $(x) = xcomp( $(input) )
-	  $(y) = ycomp( $(input) )
-	  $(z) = zcomp( $(input) )
+	  $(x) = xcomp( $(input) );
+	  $(y) = ycomp( $(input) );
+	  $(z) = zcomp( $(input) );
 	  ]]>
 	</code>
 </node>

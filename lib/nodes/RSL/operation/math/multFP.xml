@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<node name="multFP" author="DRL">
+	<help>Scale a point by a float.</help>
+	<input>
+		<property name="inF" type="float"/>
+		<property name="inP" type="point"/>
+	</input>
+	<output>
+		<property name="outValue" type="point" />
+	</output>
+	<code><![CDATA[
+$(outValue) = $(inF) * $(inP);
+]]>
+	</code>
+</node>

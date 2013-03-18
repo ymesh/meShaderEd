@@ -3,7 +3,7 @@
 <node name="gradeFC" label="gradeFC" author="DRL">
 	<help>Remap float value in [0-1] range to color between new min and max.</help>
 	<input>
-		<property name="input" type="color" default="color(0)"/>
+		<property name="input" type="float" default="0"/>
 		<property name="min" type="color" default="color(0)" detail="uniform"/>
 		<property name="max" type="color" default="color(1)" detail="uniform"/>
 	</input>
