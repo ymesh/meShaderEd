@@ -1,0 +1,22 @@
+<?xml version="1.0"?> 
+
+<node name="iColorAOV" label="colorAOV" author="DRL">
+	<help>This node produces "i_color" AOV. 
+	ATTENTION: you really don't want to use this node more then once in any shader.</help>
+	<input>
+		<property name="mnClr" type="color" default="color(0)">
+			<help>Main color AOV.</help>
+		</property>
+	</input>
+	
+	<output>
+		<property detail="varying" provider="primitive" name="i_color" type="color" default="color(0)"/>
+	</output>
+	
+	<code><![CDATA[
+
+i_color = $(mnClr);
+
+]]>
+	</code>
+</node>

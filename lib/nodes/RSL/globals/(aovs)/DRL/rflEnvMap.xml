@@ -1,0 +1,26 @@
+<?xml version="1.0"?> 
+
+<node name="rflEnvMapAOV" label="rflEnvAOV" author="DRL">
+	<help>This node produces "rfl_envMap" AOV. 
+	ATTENTION: you really don't want to use this node more then once in any shader.</help>
+	<input>
+		<property name="input" type="color" default="color(0)">
+			<help>Any color component used just for connecting this node to shader network.</help>
+		</property>
+		<property name="envMap" type="color" default="color(0)">
+			<help>Reflected environment map AOV.</help>
+		</property>
+	</input>
+	
+	<output>
+		<property detail="varying" name="output" type="color" default="color(0)"/>
+		<property detail="varying" provider="primitive" name="rfl_envMap" type="color" default="color(0)"/>
+	</output>
+	
+	<code><![CDATA[
+
+$(output) = $(input);
+rfl_envMap = $(envMap);
+
+]]></code>
+</node>
