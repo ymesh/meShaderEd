@@ -1,0 +1,33 @@
+<?xml version="1.0"?> 
+
+<node name="surface_disp" label="surfDisp" type="surface" author="DRL">
+	<help>Surface shader with integrated displacement.</help>
+	<input>
+		<property name="Ci" type="color" default="color(0)" />
+		<property name="Oi" type="color" default="color(1)" />
+	  <property name="P" type="point" default="point (0)">
+			<help>The displaced point in default "current" space.</help>
+		</property>
+		<property name="N" type="normal" default="normal (0, 1, 0)">
+			<help>The normal of displaced point in default "current" space.</help>
+		</property>
+	</input>
+	<output>
+		<property name="surface" type="rib" default="Surface &quot;${NODELABEL}&quot;" />
+	</output>
+	<code><![CDATA[
+#define SURFACE_SHADER ${INSTANCENAME}
+surface ${INSTANCENAME} (
+${PARAMS}
+)
+{
+/* CODE BEGIN ${INSTANCENAME} */
+P = $(P);
+N = $(N);
+Oi = Os * $(Oi);
+Ci = Cs * $(Ci) * Oi;
+/* CODE END ${INSTANCENAME} */
+}
+]]>
+	</code>
+</node>
