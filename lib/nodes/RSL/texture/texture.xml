@@ -1,32 +1,45 @@
 <?xml version="1.0"?>
 
-<node name="texture" author="Libero Spagnolini" icon="ImageFileC.png">
-	<help>Loads file texture, given projection and space</help>
-	<include>
-		<file name="project.h"/>
-	</include>	
-	<input>	
-		<property name="fileName" type="string" default="" subtype="file"
-		  range="All files=*.*:TEX=*.tex:TIFF=*.tif"/>
-		<property name="projType" type="string" default="spherical" subtype="selector"
-              range="st:planar:perspective:spherical:cylindrical"/>
-		<property name="projSpace" type="string" default="shader" />
-		<property name="offsetMatrix" type="matrix" default="matrix(1.0,0.0,0.0,0.0, 0.0,1.0,0.0,0.0, 0.0,0.0,1.0,0.0, 0.0,0.0,0.0,1.0)" />
-		<property name="blur" type="float" default="0.0" />
+<node name="texture" label="texture" author="DRL">
+	<help>Simple texture read node.</help>
+	<input>
+		<property name="file" type="string" default="" detail="uniform" subtype="file"/>
+		<property name="startChannel" label="Starting channel" type="float" default="0" detail="uniform">
+			<help>For multi-channel textures, which channel to start reading from. 
+			Indexes are 0-based. I.e., to read GBA channels as R, G and B respectively, set 1 here. 
+			Default is 0.</help>
+		</property>
+		<property name="s" type="float" default="0"/>
+		<property name="t" type="float" default="0"/>
+		<property name="blur" type="float" default="0"/>
+		<property name="filter" type="string" default="gaussian" detail="uniform"
+			subtype="selector"
+			range="gaussian:triangle:box"/>
+		<property name="filterWidth" type="float" default="1" detail="uniform"
+			subtype="slider"
+			range="0 4 0.01"/>
+		<property name="expand" type="float" default="1" detail="uniform" subtype="switch">
+			<help>Duplicates values from single-channel texture to all color channels. 
+			Fills missing channels with "fill" color otherwise.</help>
+		</property>
+		<property name="fill" type="float" default="0" detail="uniform"
+			subtype="slider"
+			range="0 1 .01">
+			<help>If "expand" is off and the texture is single-channel, fills missing channels with this value.</help>
+		</property>
 	</input>
 	<output>
-		<property name="outColor" type="color"/>
-		<property name="outAlpha" type="float"/>
+		<property name="output" type="color"/>
 	</output>
 	<code><![CDATA[
-	$(outColor) = GetColorTextureAndAlpha($(fileName), 
-												  $(projType), 
-												  P,
-												  $(projSpace), 
-												  $(offsetMatrix), 
-												  $(blur),
-												  3,
-												  $(outAlpha));
-]]>
-	</code>
+$(output) = color texture(
+	$(file)[$(startChannel)],
+	$(s), $(t),
+	"blur", $(blur),
+	"filter", $(filter),
+	"width", $(filterWidth),
+	"expand", $(expand),
+	"fill", $(fill)
+);
+]]></code>
 </node>
