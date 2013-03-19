@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
+# Form implementation generated from reading ui file 'gui/ui_MainWindow.ui'
 #
-# Created: Fri Jan 25 16:17:02 2013
+# Created: Tue Feb  5 21:27:01 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(1113, 886)
+        MainWindow.resize(1113, 756)
         MainWindow.setDockOptions(QtGui.QMainWindow.AllowTabbedDocks|QtGui.QMainWindow.AnimatedDocks)
         MainWindow.setUnifiedTitleAndToolBarOnMac(False)
         self.centralwidget = QtGui.QWidget(MainWindow)
@@ -42,7 +42,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.tabs, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1113, 19))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1113, 22))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Lucida Sans"))
         font.setPointSize(9)
@@ -281,6 +281,12 @@ class Ui_MainWindow(object):
         self.actionDuplicate.setObjectName(_fromUtf8("actionDuplicate"))
         self.actionDuplicateWithLinks = QtGui.QAction(MainWindow)
         self.actionDuplicateWithLinks.setObjectName(_fromUtf8("actionDuplicateWithLinks"))
+        self.actionSelectAll = QtGui.QAction(MainWindow)
+        self.actionSelectAll.setObjectName(_fromUtf8("actionSelectAll"))
+        self.actionSelectBelow = QtGui.QAction(MainWindow)
+        self.actionSelectBelow.setObjectName(_fromUtf8("actionSelectBelow"))
+        self.actionSelectAbove = QtGui.QAction(MainWindow)
+        self.actionSelectAbove.setObjectName(_fromUtf8("actionSelectAbove"))
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -293,6 +299,10 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionExit)
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
+        self.menuEdit.addSeparator()
+        self.menuEdit.addAction(self.actionSelectAll)
+        self.menuEdit.addAction(self.actionSelectBelow)
+        self.menuEdit.addAction(self.actionSelectAbove)
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionCopy)
         self.menuEdit.addAction(self.actionCut)
@@ -369,6 +379,12 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.actionImport, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onImport)
         QtCore.QObject.connect(self.actionDuplicate, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onDuplicate)
         QtCore.QObject.connect(self.actionDuplicateWithLinks, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onDuplicateWithLinks)
+        QtCore.QObject.connect(self.actionCopy, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onCopy)
+        QtCore.QObject.connect(self.actionCut, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onCut)
+        QtCore.QObject.connect(self.actionSelectAll, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onSelectAll)
+        QtCore.QObject.connect(self.actionPaste, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onPaste)
+        QtCore.QObject.connect(self.actionSelectAbove, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onSelectAbove)
+        QtCore.QObject.connect(self.actionSelectBelow, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onSelectBelow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -440,6 +456,14 @@ class Ui_MainWindow(object):
         self.actionDuplicate.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+D", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDuplicateWithLinks.setText(QtGui.QApplication.translate("MainWindow", "Duplicate with links", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDuplicateWithLinks.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+D", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSelectAll.setText(QtGui.QApplication.translate("MainWindow", "Select All", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSelectAll.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+A", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSelectBelow.setText(QtGui.QApplication.translate("MainWindow", "Select below", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSelectBelow.setToolTip(QtGui.QApplication.translate("MainWindow", "Select hierarchy below", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSelectBelow.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Down", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSelectAbove.setText(QtGui.QApplication.translate("MainWindow", "Select above", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSelectAbove.setToolTip(QtGui.QApplication.translate("MainWindow", "Select hierarchy above", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSelectAbove.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Up", None, QtGui.QApplication.UnicodeUTF8))
 
 from nodeLibraryView import NodeLibraryView
 from geomViewWidget import GeomViewWidget

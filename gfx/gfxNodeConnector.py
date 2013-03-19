@@ -17,7 +17,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
   isRound = True
   #
   #
-  def __init__ ( self, param = None, radius=2, isRound=True, node=None ):
+  def __init__ ( self, param = None, radius=5, isRound=True, node=None ):
     QtGui.QGraphicsItem.__init__ ( self )
     self.brush = QtGui.QBrush ( QtGui.QColor ( 140, 140, 140 ) ) # ( 128, 128, 128 ) ( 132, 132, 132 )
     self.PenBorderNormal = QtGui.QPen ( QtGui.QColor ( 0, 0, 0 ) )
@@ -42,68 +42,20 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
       self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable )
       self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable )
       self.setZValue ( 1 )
+      ( x, y ) = self.node.offset
+      self.setPos ( x, y )
 
     #self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable )
   #
+  # type
   #
   def type ( self ): return GfxNodeConnector.Type
   #
+  # boundingRect
   #
   def boundingRect ( self ): return self.rect
   #
-  #
-  def getCenterPoint ( self ): return self.mapToScene ( self.rect.center () )
-  #
-  #
-  def addLink ( self, link ): self.links.append ( link )
-  #
-  #
-  def getFirstLink ( self ): return self.links[0] ##copy.copy( self.links[0] )
-  #
-  #
-  def removeLink ( self, link ):
-    print '>> GfxNodeConnector removeLink'
-    if link in self.links : self.links.remove ( link )
-  #
-  #
-  def removeAllLinks ( self ):
-    print '>> GfxNodeConnector removeAllLinks (%d)' % len ( self.links )
-    for link in list( self.links ) :
-      link.remove () # link will be removed from list
-      #self.links.remove ( link )
-      #self.scene().removeItem ( link )
-  #
-  #
-  def remove ( self ) :
-    if DEBUG_MODE : print '>> GfxNodeConnector remove gfxNode (temp)'
-    #for connect in self.inputConnectors : connect.removeAllLinks ()
-    #for connect in self.outputConnectors : connect.removeAllLinks ()
-    self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
-  #
-  #
-  def isInput ( self ): return self.param.isInput
-  #
-  #
-  def isNode ( self ): return ( self.node is not None)
-  #
-  #
-  def isLinked ( self ):
-    isLinked = False
-    if len ( self.links ) > 0 : isLinked = True
-    return isLinked
-  #
-  #
-  def hasThisLink ( self, tstLink ):
-    hasLink = False
-    cpyLink = copy.copy( tstLink )
-    cpyLink.dstConnector = self
-
-    for link in self.links :
-      if link.isEqual ( cpyLink ) :
-        hasLink = True
-        break
-    return hasLink
-  #
+  # shape
   #
   def shape ( self ) :
     shape = QtGui.QPainterPath ()
@@ -111,6 +63,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
     shape.addEllipse ( shape_rect )
     return shape
   #
+  # paint
   #
   def paint ( self, painter, option, widget ) :
     pen = self.PenBorderNormal
@@ -123,11 +76,172 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
     painter.drawEllipse ( self.rect )
     # print ( ">> GfxNodeConnector.paint" )
   #
+  # getCenterPoint
+  #
+  def getCenterPoint ( self ): return self.mapToScene ( self.rect.center () )
+  #
+  # addLink
+  #
+  def addLink ( self, link ): self.links.append ( link )
+  #
+  # getFirstGfxLink
+  #
+  def getFirstGfxLink ( self ) : return self.links [ 0 ] ##copy.copy( self.links[0] )
+  #
+  # getFirstInputParam
+  #
+  def getFirstInputParam ( self ) : return self.getNode ().inputParams [ 0 ]
+  #
+  # getInputParam
+  #
+  def getInputParam ( self ) : 
+    param = self.param
+    if self.isNode () :
+      param = self.node.inputParams [ 0 ]
+    return param
+  #
+  # getFirstOutputParam
+  #
+  def getFirstOutputParam ( self ) : return self.getNode ().outputParams [ 0 ]
+  #
+  # getOutputParam
+  #
+  def getOutputParam ( self ) : 
+    param = self.param
+    if self.isNode () :
+      param = self.node.outputParams [ 0 ]
+    return param
+  #
+  # removeLink
+  #
+  def removeLink ( self, gfxLink ):
+    print '>> GfxNodeConnector removeLink'
+    if gfxLink in self.links : self.links.remove ( gfxLink )
+  #
+  # removeAllLinks
+  #
+  def removeAllLinks ( self ):
+    print '>> GfxNodeConnector removeAllLinks (%d)' % len ( self.links )
+    for gfxLink in list ( self.links ) :
+      gfxLink.remove () # link will be removed from list
+  #
+  # removeInputGfxLinks
+  #
+  def removeInputGfxLinks ( self ) :
+    for gfxLink in self.getInputGfxLinks () :
+      gfxLink.remove ()
+  #
+  #
+  def remove ( self ) :
+    if DEBUG_MODE : print '>> GfxNodeConnector remove gfxNode (temp)'
+    if self.isNode () :
+      # !!! temporary solution
+      # TODO! check if node is connected
+      # and replace existing links
+      self.removeAllLinks ()
+    self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+  #
+  # isInput
+  #
+  def isInput ( self ): return self.param.isInput
+  #
+  # isConnectedToInput
+  #
+  def isConnectedToInput ( self ): 
+    result = False
+    if self.isNode () :
+      if DEBUG_MODE : print '* isConnectedToInput isNode'
+      outputGfxLinks = self.getOutputGfxLinks ()
+      for gfxLink in outputGfxLinks :
+        dstConnector = gfxLink.dstConnector
+        if dstConnector is not None :
+          result = dstConnector.isConnectedToInput ()
+        if result is True :
+          break
+    else :
+      result = self.isInput ()  
+    return result
+  #
+  # isNode
+  #
+  def isNode ( self ) : return ( self.node is not None )
+  #
+  # getNode
+  #
+  def getNode ( self ) : return self. getGfxNode ().node
+  #
+  # getGfxNode
+  #
+  def getGfxNode ( self ) :
+    node = self
+    if not self.isNode () :
+      node = self.parentItem ()
+    return node
+  #
+  # isLinked
+  #
+  def isLinked ( self ):
+    isLinked = False
+    if len ( self.links ) > 0 : isLinked = True
+    return isLinked
+  #
+  # hasThisLink
+  #
+  def hasThisLink ( self, tstLink ):
+    hasLink = False
+    cpyLink = copy.copy( tstLink )
+    cpyLink.dstConnector = self
+
+    for link in self.links :
+      if link.isEqual ( cpyLink ) :
+        hasLink = True
+        break
+    return hasLink
+  #
+  # getInputLinks
+  #
+  def getInputLinks ( self ) :
+    inputLinks = []
+    nodeInputLinks = self.getNode ().inputLinks
+    for link in nodeInputLinks.values () :
+      inputLinks.append ( link )
+    return inputLinks
+  #
+  # getOutputLinks
+  #
+  def getOutputLinks ( self ) :
+    outputLinks = []
+    nodeOutputLinks = self.getNode ().outputLinks
+    for link_list in nodeOutputLinks.values () :
+      for link in link_list :
+        outputLinks.append ( link )
+    return outputLinks
+  #
+  # getInputGfxLinks
+  #
+  def getInputGfxLinks ( self ) :
+    inputGfxLinks = []
+    for gfxLink in self.links :
+      if gfxLink.dstConnector == self :
+        inputGfxLinks.append ( gfxLink )
+    return inputGfxLinks
+  #
+  # getOutputGfxLinks
+  #
+  def getOutputGfxLinks ( self ) :
+    outputGfxLinks = []
+    for gfxLink in self.links :
+      if gfxLink.srcConnector == self :
+        outputGfxLinks.append ( gfxLink )
+    return outputGfxLinks
+  #
+  # adjustLinks
   #
   def adjustLinks ( self ) :
     # print ">> Connected links = %d" % len ( self.links )
     for link in self.links : link.adjust ()
   #
+  # getScene
   #
   def getScene ( self ) :
     scene = self.scene ()
@@ -135,6 +249,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
       scene = self.parentItem ().scene ()
     return scene
   #
+  # itemChange
   #
   def itemChange ( self, change, value ) :
     if change == QtGui.QGraphicsItem.ItemSelectedHasChanged :
@@ -144,8 +259,8 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
       #  if node is not None :
       #    if DEBUG_MODE : print ">> selected conector for node %s (id = %d)" % ( node.label, node.id )
     elif change == QtGui.QGraphicsItem.ItemPositionHasChanged:
-      #print ">> ItemPositionHasChanged conector for node %s (param = %d)" % ( node.label, self.param.label )
       if self.isNode () :
+        #if DEBUG_MODE : print ">> ItemPositionHasChanged conector for node %s ( %d, %d )" % ( self.node.label, self.x(), self.y() )
         from meShaderEd import getDefaultValue
         grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
         grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
@@ -164,11 +279,13 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
 
     return QtGui.QGraphicsItem.itemChange ( self, change, value )
   #
+  # hilite
   #
   def hilite ( self, state ) :
     self.isNodeSelected = state
     self.update()
   #
+  # mousePressEvent
   #
   def mousePressEvent ( self, event ) :
     #print ">> mousePressEvent"
@@ -188,8 +305,8 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
       event.accept ()
     else :
       QtGui.QGraphicsItem.mousePressEvent ( self, event )
-
   #
+  # mouseMoveEvent
   #
   def mouseMoveEvent ( self, event ) :
     #print ">> mouseMoveEvent at %d %d" % ( event.scenePos().x(), event.scenePos().y() )
@@ -203,6 +320,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
       QtGui.QGraphicsItem.mouseMoveEvent ( self, event )
 
   #
+  # mouseReleaseEvent
   #
   def mouseReleaseEvent ( self, event ) :
     #print ">> mouseReleaseEvent"
@@ -210,9 +328,6 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
       self.getScene ().emit ( QtCore.SIGNAL ( 'endNodeLink' ), self, event.scenePos () )
     elif self.state == 'traceNodeConnector' :
       self.getScene ().emit ( QtCore.SIGNAL ( 'endNodeConnector' ), self, event.scenePos () )
-
-
-
     if self.state != 'idle' :
       self.hilite ( False )
       self.state = 'idle'

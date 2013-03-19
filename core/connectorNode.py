@@ -1,7 +1,7 @@
 #===============================================================================
 # coonectorNode.py
 #
-# 
+#
 #
 #===============================================================================
 import os, sys
@@ -19,14 +19,17 @@ class ConnectorNode( Node ):
   def __init__ ( self, xml_node = None ):
     #
     Node.__init__( self, xml_node )
-    if DEBUG_MODE : print ">> ConnectorNode __init__" 
+    if xml_node is None :
+      self.type = 'connector'
+      self.name = self.label = self.type
+    if DEBUG_MODE : print ">> ConnectorNode __init__"
   #
   #
   def copy ( self ):
     if DEBUG_MODE : print '>> ConnectorNode::copy (%s)' % self.label
-    newNode = ConnectorNode()
-    self.copySetup ( newNode )                                
-    return newNode   
+    newNode = ConnectorNode ()
+    self.copySetup ( newNode )
+    return newNode
   #
   #
   def computeNode ( self ) :

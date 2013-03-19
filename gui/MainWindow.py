@@ -40,13 +40,12 @@ class MainWindow ( QtGui.QMainWindow ):
 
     # This is always the same
     self.ui = Ui_MainWindow ()
-    
+
     self.ui.setupUi ( self )
     self.setupMenuBar ()
     self.setupPanels ()
 
-    self.setWindowTitle ( 'meShaderEd %s (%s)' % ( app_global_vars [ 'version' ], app_renderer.getCurrentPresetName() ) )
-
+    self.clipboard = None
     self.activeNodeList = None
     self.workArea = None # current work area
     self.onNew () # create new document
@@ -70,6 +69,9 @@ class MainWindow ( QtGui.QMainWindow ):
 
     self.ui.nodeList_ctl.setLibrary ( app_global_vars [ 'NodesPath' ] )
     self.ui.project_ctl.setLibrary ( app_global_vars [ 'ProjectNetworks' ] )
+    
+    #self.ui.dockNodes.setWindowTitle ( 'Library: %s' % app_global_vars [ 'NodesPath' ] )
+    #self.ui.dockProject.setWindowTitle ( 'Project: %s' % app_global_vars [ 'ProjectNetworks' ] )
 
     QtCore.QObject.connect ( self.ui.nodeList_ctl.ui.nodeList, QtCore.SIGNAL ( 'setActiveNodeList' ), self.setActiveNodeList )
     QtCore.QObject.connect ( self.ui.project_ctl.ui.nodeList, QtCore.SIGNAL ( 'setActiveNodeList' ), self.setActiveNodeList )
@@ -79,9 +81,10 @@ class MainWindow ( QtGui.QMainWindow ):
 
     QtCore.QObject.connect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'nodeLabelChanged' ), self.onNodeLabelChanged  )
     QtCore.QObject.connect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'nodeParamChanged' ), self.onNodeParamChanged  )
-    
+
     self.setupActions ()
-    
+    self.setupWindowTitle ()
+
   #
   # connectWorkAreaSignals
   #
@@ -106,6 +109,15 @@ class MainWindow ( QtGui.QMainWindow ):
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.onEditGfxNode )
+  #
+  #
+  #
+  def setupWindowTitle ( self ) :
+    self.setWindowTitle ( 'meShaderEd %s (%s) %s' % ( app_global_vars [ 'version' ], app_renderer.getCurrentPresetName(), app_global_vars [ 'ProjectPath' ]  ) )
+    self.ui.dockNodes.setToolTip ( app_global_vars [ 'NodesPath' ] )
+    self.ui.dockNodes.setStatusTip ( app_global_vars [ 'NodesPath' ] )
+    self.ui.dockProject.setToolTip ( app_global_vars [ 'ProjectNetworks' ] )
+    self.ui.dockProject.setStatusTip ( app_global_vars [ 'ProjectNetworks' ] )
   #
   # setupMenuBar
   #
@@ -141,14 +153,26 @@ class MainWindow ( QtGui.QMainWindow ):
   def setupActions ( self ) :
     enableForNodes = False
     enableForLinks = False
+    enableForPaste = False
+    enableSelectAll = False
+    if self.clipboard is not None : enableForPaste = True
     if self.workArea is not None :
+      enableSelectAll = True
       if len ( self.workArea.selectedNodes ) > 0 : enableForNodes = True
       if len ( self.workArea.selectedLinks ) > 0 : enableForLinks = True
-    
+
+    self.ui.actionSelectAll.setEnabled ( enableSelectAll )
+    self.ui.actionSelectAbove.setEnabled ( len ( self.workArea.selectedNodes ) == 1 )
+    self.ui.actionSelectBelow.setEnabled ( len ( self.workArea.selectedNodes ) == 1 )
+
     self.ui.actionDuplicate.setEnabled ( enableForNodes )
     self.ui.actionDuplicateWithLinks.setEnabled ( enableForNodes )
     self.ui.actionDelete.setEnabled ( enableForNodes or enableForLinks )
-      
+
+    self.ui.actionCut.setEnabled ( enableForNodes )
+    self.ui.actionCopy.setEnabled ( enableForNodes )
+    self.ui.actionPaste.setEnabled ( enableForPaste )
+
   #
   # onProjectSetup
   #
@@ -158,6 +182,7 @@ class MainWindow ( QtGui.QMainWindow ):
     projectSetupDlg = ProjectSetup ( app_settings )
     projectSetupDlg.exec_()
     self.ui.project_ctl.setLibrary ( app_global_vars [ 'ProjectNetworks' ] )
+    self.setupWindowTitle ()
   #
   # onSettingsSetup
   #
@@ -167,6 +192,7 @@ class MainWindow ( QtGui.QMainWindow ):
     settingsSetupDlg = SettingsSetup ( app_settings )
     settingsSetupDlg.exec_()
     self.ui.nodeList_ctl.setLibrary ( app_global_vars [ 'NodesPath' ] )
+    
   #
   # onRenderSettings
   #
@@ -184,7 +210,7 @@ class MainWindow ( QtGui.QMainWindow ):
     #
     presetName = app_renderer.getCurrentPresetName()
     if DEBUG_MODE : print '>> MainWindow: onRenderPresetChanged preset = %s' % presetName
-    self.setWindowTitle ( 'meShaderEd %s (%s)' % ( app_global_vars [ 'version' ], presetName ) )
+    #self.setWindowTitle ( 'meShaderEd %s (%s) %s' % ( app_global_vars [ 'version' ], presetName, app_global_vars [ 'ProjectNetworks' ] ) )
     app_settings.setValue ( 'defRenderer', presetName )
 
     app_global_vars [ 'Renderer' ] = app_renderer.getCurrentValue ( 'renderer', 'name' )
@@ -193,6 +219,7 @@ class MainWindow ( QtGui.QMainWindow ):
     app_global_vars [ 'ShaderDefines' ] = app_renderer.getCurrentValue ( 'shader', 'defines' )
     app_global_vars [ 'TEX' ] = app_renderer.getCurrentValue ( 'texture', 'extension' )
     app_global_vars [ 'SLO' ] = app_renderer.getCurrentValue ( 'shader', 'extension' )
+    self.setupWindowTitle ()
   #
   # onRenderSavePreset
   #
@@ -201,7 +228,7 @@ class MainWindow ( QtGui.QMainWindow ):
     if DEBUG_MODE : print '>> MainWindow: onRenderSavePreset  preset = %s' % app_renderer.getCurrentPresetName()
     app_renderer.saveSettings ()
   #
-  # onShowGrid 
+  # onShowGrid
   #
   def onShowGrid ( self, check ):
     #
@@ -315,10 +342,10 @@ class MainWindow ( QtGui.QMainWindow ):
     nodeEditDlg = NodeEditorPanel ( editNode )
     if ( nodeEditDlg.exec_() == QtGui.QDialog.Accepted ) :
       if DEBUG_MODE : print '>> MainWindow: onEditGfxNode Accepted'
-      # 
+      #
       #
       return
-      
+
       if gfxNode.node.label != editNode.label : self.ui.imageView_ctl.onNodeLabelChanged ( gfxNode, editNode.label )
       editNode.copySetup ( gfxNode.node )
 
@@ -340,33 +367,69 @@ class MainWindow ( QtGui.QMainWindow ):
     if DEBUG_MODE : print '>> MainWindow: onDelete'
 
     selected = self.workArea.scene ().selectedItems ()
-    if len ( selected ) : 
+    if len ( selected ) :
       self.workArea.removeSelected ()
     else :
       self.ui.imageView_ctl.removeAllViewers ()
       self.workArea.clear()
   #
+  # onSelectAll
+  #
+  def onSelectAll ( self ):
+    if DEBUG_MODE : print '>> MainWindow: onSelectAll'
+    self.workArea.selectAllNodes ()
+  #
+  # onSelectAbove
+  #
+  def onSelectAbove ( self ) :
+    selectedGfxNode = self.workArea.selectedNodes [ 0 ]
+    if DEBUG_MODE : print '>> MainWindow: onSelectAbove'
+    self.workArea.selectAbove ( selectedGfxNode )
+  #
+  # onSelectBelow
+  #
+  def onSelectBelow ( self ) :
+    if DEBUG_MODE : print '>> MainWindow: onSelectBelow'
+    selectedGfxNode = self.workArea.selectedNodes [ 0 ]
+    self.workArea.selectBelow ( selectedGfxNode )
+  #
+  # onCopy
+  #
+  def onCopy ( self ):
+    if DEBUG_MODE : print '>> MainWindow: onCopy'
+  #
+  # onCut
+  #
+  def onCut ( self ):
+    if DEBUG_MODE : print '>> MainWindow: onCut'
+  #
+  # onPaste
+  #
+  def onPaste ( self ):
+    if DEBUG_MODE : print '>> MainWindow: onPaste'
+
+  #
   # onDuplicateNode
   #
   def onDuplicateNode ( self, preserveLinks = False ):
     if DEBUG_MODE : print '>> MainWindow: onDuplicateNode ( preserveLinks = %s )'  % str ( preserveLinks )
-    
+
     for gfxNode in self.workArea.selectedNodes :
       newNode = gfxNode.node.copy ()
-      
-      
+
+
   #
   # onDuplicate
   #
   def onDuplicate ( self ):
     if DEBUG_MODE : print '>> MainWindow: onDuplicate '
-    self.onDuplicateNode ( False )  
+    self.onDuplicateNode ( False )
   #
   # onDuplicateWithLinks
   #
   def onDuplicateWithLinks ( self ):
-    if DEBUG_MODE : print '>> MainWindow: onDuplicateWithLinks' 
-    self.onDuplicateNode ( True ) 
+    if DEBUG_MODE : print '>> MainWindow: onDuplicateWithLinks'
+    self.onDuplicateNode ( True )
   #
   # onSelectGfxNodes
   #

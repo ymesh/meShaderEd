@@ -22,7 +22,6 @@ class GfxNode ( QtGui.QGraphicsItem ):
   def __init__ ( self, node ):
     QtGui.QGraphicsItem.__init__ ( self )
 
-
     self.header = {}
 
     self.outputParamLabels = []
@@ -95,14 +94,14 @@ class GfxNode ( QtGui.QGraphicsItem ):
       self.updateNode ()
       ( x, y ) = self.node.offset
       self.setPos ( x, y )
-
-
     #for param in self.node.inputParams :
     #  self.node.connect( param, QtCore.SIGNAL( 'paramChanged(QObject)' ), self.node.onParamChanged )
   #
+  # type
   #
   def type ( self ): return GfxNode.Type
   #
+  # updateNode
   #
   def updateNode ( self ) :
     # remove all GfxLinks
@@ -120,6 +119,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     self.setupParams ( self.node.inputParams, self.inputParamLabels, self.inputConnectors )
     self.setupGeometry ()
   #
+  # getInputConnectorByParam
   #
   def getInputConnectorByParam ( self, param ) :
     connector = None
@@ -129,6 +129,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
         break
     return connector
   #
+  # getOutputConnectorByParam
   #
   def getOutputConnectorByParam ( self, param ) :
     connector = None
@@ -138,6 +139,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
         break
     return connector
   #
+  # remove
   #
   def remove ( self ) :
     if DEBUG_MODE : print '>> GfxNode remove gfxNode (temp)'
@@ -145,6 +147,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     for connect in self.outputConnectors : connect.removeAllLinks ()
     self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
   #
+  # updateNodeLabel
   #
   def updateNodeLabel ( self ) :
     self.header['label'].label = self.node.label
@@ -152,6 +155,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     self.update ()
     self.adjustLinks ()
   #
+  # updateInputParams
   #
   def updateInputParams ( self ):
     i = 0
@@ -166,6 +170,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
         label.update()
         i += 1
   #
+  # setupGeometry
   #
   def setupGeometry ( self ):
     ( wi_header, hi_header ) = self.getHeaderSize ()
@@ -180,12 +185,14 @@ class GfxNode ( QtGui.QGraphicsItem ):
     self.setupOutputParamsGeometry ( wi_max - self.x_offset, hi_header + 2 * self.y_offset )
     self.setupInputParamsGeometry ( self.x_offset, hi_header + 2 * self.y_offset + hi_output )
   #
+  # shadowRect
   #
   def shadowRect ( self ):
     shadowRect = QtCore.QRectF ( self.rect )
     shadowRect.translate ( self.shadow_offset, self.shadow_offset )
     return shadowRect
   #
+  # boundingRect
   #
   def boundingRect ( self ):
     #print ( "GfxNode.boundingRect" )
@@ -193,6 +200,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     bound_rect.adjust( -8, 0, 8, 0 )
     return bound_rect
   #
+  # shape
   #
   def shape ( self ):
     shape = QtGui.QPainterPath ()
@@ -201,6 +209,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     #shape += self.header['output'].shape()
     return shape
   #
+  # setupHeader
   #
   def setupHeader ( self ) :
     if self.node.type != 'variable' :
@@ -224,6 +233,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
       #self.header['input'] = GfxNodeConnector( 6 )
       #self.header['output'] = GfxNodeConnector( 6 )
   #
+  # getHeaderSize
   #
   def getHeaderSize ( self ) :
     wi = 80 # minimal node width
@@ -238,6 +248,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
         wi += self.swatchSize
     return ( wi, hi )
   #
+  # setupHeaderGeometry
   #
   def setupHeaderGeometry ( self, x, y ) :
     if self.node.type != 'variable' :
@@ -250,15 +261,16 @@ class GfxNode ( QtGui.QGraphicsItem ):
         #                                  y + self.swatchSize / 2 - self.header['output'].radius )
         x += self.header [ 'swatch' ].rect.width () + self.x_offset
 
-      (wi, hi) = self.header [ 'label' ].getLabelSize ()
+      ( wi, hi ) = self.header [ 'label' ].getLabelSize ()
       self.header [ 'label' ].rect = QtCore.QRectF ( x, y, wi, hi )
       y += hi
-      (wi, hi) = self.header [ 'name' ].getLabelSize()
+      ( wi, hi ) = self.header [ 'name' ].getLabelSize()
       self.header [ 'name' ].rect = QtCore.QRectF ( x, y, wi, hi )
 
       # parent controls from header
       for ctrl in self.header.keys() : self.header [ ctrl ].setParentItem ( self )
   #
+  # setupOutputParamsGeometry
   #
   def setupOutputParamsGeometry ( self, xs, ys ) :
     y = ys
@@ -277,6 +289,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
       y += hi
       connector.setParentItem ( self )
   #
+  # setupInputParamsGeometry 
   #
   def setupInputParamsGeometry ( self, xs, ys ) :
     y = ys
@@ -294,6 +307,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
       y += hi
       connector.setParentItem ( self )
   #
+  # getParamsSize
   #
   def getParamsSize ( self, paramLabels ) :
     wi = 0
@@ -304,6 +318,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
       wi = max ( wi, wi_label )
     return ( wi, hi )
   #
+  # setupParams
   #
   def setupParams ( self, params, labels, connectors ):
     for param in params :
@@ -314,21 +329,22 @@ class GfxNode ( QtGui.QGraphicsItem ):
         label.PenNormal = self.PenBorderNormal
         if not param.isInput : label.font.setBold ( True )
         if param.shaderParam : label.PenNormal = self.PenNodeShaderParam
-        labels.append( label )
-        connector = GfxNodeConnector ( param, 5 )
+        labels.append ( label )
+        connector = GfxNodeConnector ( param, 5, node = None )
         if not param.isInput:
           connector.singleLinkOnly = False
         if param.encodedTypeStr () in self.paramsBrushes.keys () :
           connector.brush = self.paramsBrushes [ param.encodedTypeStr () ]
-
         connectors.append ( connector )
   #
+  # adjustLinks
   #
   def adjustLinks ( self ) :
     # invalidate all the links attached
     for connect in self.inputConnectors : connect.adjustLinks ()
     for connect in self.outputConnectors : connect.adjustLinks ()
   #
+  # itemChange
   #
   def itemChange ( self, change, value ):
     if change == QtGui.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
@@ -337,8 +353,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
         # variable node has not header
         self.header['label'].isNodeSelected = value.toBool ()
         #self.header['swatch'].isNodeSelected = self.isNodeSelected
-
-      if value.toBool() :
+      if value.toBool () :
         items = self.scene ().items ()
         for i in range ( len ( items ) - 1, -1, -1 ) :
           if items [ i ].parentItem() is None :
@@ -349,21 +364,19 @@ class GfxNode ( QtGui.QGraphicsItem ):
       from meShaderEd import getDefaultValue
       grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
       grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
-
-      x = self.x()
-      y = self.y()
+      x = self.x ()
+      y = self.y ()
       if grid_snap :
         #if DEBUG_MODE : print '* snap to grid  (size = %d)' % grid_size
         x -= ( x % grid_size )
         y -= ( y % grid_size )
         self.setPos ( x, y )
-
       #if DEBUG_MODE : print '* GfxNode.itemChange = ItemPositionHasChanged (%f, %f)' % ( x, y )
       self.node.offset = ( x, y )
       self.adjustLinks ()
-
     return QtGui.QGraphicsItem.itemChange ( self, change, value )
   #
+  # paint
   #
   def paint ( self, painter, option, widget ):
     # print ( ">> GfxNode.paint" )
@@ -373,18 +386,20 @@ class GfxNode ( QtGui.QGraphicsItem ):
     self.paintShadow ( painter )
     self.paintFrame ( painter )
   #
+  # paintShadow
   #
   def paintShadow ( self, painter ):
     painter.setBrush ( self.BrushShadow )
     painter.setPen ( self.PenShadow )
     painter.drawRoundedRect ( self.shadowRect (), self.radius, self.radius, QtCore.Qt.AbsoluteSize )
   #
+  # paintFrame
   #
   def paintFrame ( self, painter ):
     #print ( ">> GfxNode.paintWindowFrame" )
     pen = self.PenBorderNormal
     brush = self.BrushNodeNormal
-    if self.isSelected() :
+    if self.isSelected () :
       pen =  self.PenBorderSelected
       # brush = self.BrushNodeSelected
 
@@ -415,31 +430,30 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ):
     self.isNodeSelected = False
     self.rect = QtCore.QRectF ()
   #
+  # type
   #
   def type ( self ): return GfxNodeLabel.Type
   #
+  # boundingRect
   #
   def boundingRect ( self ): return self.rect
   #
+  # getLabelSize
   #
   def getLabelSize ( self ):
-
-    labelFontMetric = QtGui.QFontMetricsF( self.font )
-    height = labelFontMetric.height() + 1
+    labelFontMetric = QtGui.QFontMetricsF ( self.font )
+    height = labelFontMetric.height () + 1
     width = labelFontMetric.width( self.label ) + 1
     return ( width, height )
   #
+  # paint
   #
   def paint ( self, painter, option, widget ):
     # print ( ">> GfxNode.paint" )
-
     painter.fillRect ( self.rect, self.brush )
-
     painter.setFont ( self.font )
     pen = self.PenNormal
-
     if self.isNodeSelected : pen = self.PenSelected
-
     painter.setPen ( pen )
     painter.drawText ( self.rect, QtCore.Qt.AlignLeft, self.label )
 #
@@ -461,29 +475,31 @@ class GfxNodeSwatch ( QtGui.QGraphicsItem ):
     self.swatchSize = swatchSize
     self.rect = QtCore.QRectF ( 0, 0, swatchSize, swatchSize )
   #
+  # type
   #
   def type ( self ): return GfxNodeSwatch.Type
   #
+  # boundingRect
   #
   def boundingRect ( self ): return self.rect
   #
+  # shape
   #
   def shape ( self ):
     shape = QtGui.QPainterPath ()
     shape.addRect ( self.rect )
     return shape
   #
+  # paint
   #
   def paint ( self, painter, option, widget ):
     # print ( ">> GfxNodeSwatch.paint" )
     painter.setRenderHint ( QtGui.QPainter.Antialiasing )
     painter.setRenderHint ( QtGui.QPainter.SmoothPixmapTransform )
-
     pen = self.PenBorderNormal
-    if self.parentItem().isSelected():
+    if self.parentItem ().isSelected ():
       pen =  self.PenBorderSelected
       # brush = self.BrushNodeSelected
-
     painter.setPen ( pen )
     painter.setBrush ( self.brush )
     painter.drawRoundedRect ( self.rect, self.radius, self.radius, QtCore.Qt.AbsoluteSize )
