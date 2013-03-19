@@ -1,2 +1,3 @@
 # Force all python scripts to have unix-like line endings
 *.py text eol=lf
+*.xml text eol=lf
