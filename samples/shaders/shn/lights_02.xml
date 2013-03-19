@@ -146,10 +146,10 @@ surface ${INSTANCENAME} (
 ${PARAMS} 
 )
 {
-  # CODE BEGIN ${INSTANCENAME}
+  /* CODE BEGIN ${INSTANCENAME} */
   Ci = $(Ci) * $(Oi); 
   Oi = $(Oi);
-  # CODE END ${INSTANCENAME}
+  /* CODE END ${INSTANCENAME} */
 }
 	]]></code>
    <offset x="-149" y="82"/>
@@ -540,9 +540,9 @@ ${PARAMS}
      <help>The color of the shadow. Values other than black
           can simulate the effect of semi-transparent shadowing.</help>
     </property>
-    <property space="0 1 .01" default="1.000" range="0 1 .01" subtype="slider" type="float" value="1.000" name="Diffuse" label="Diffuse"/>
-    <property space="0 1 .01" default="1.000" range="0 1 .01" subtype="slider" type="float" value="1.000" name="Specular" label="Specular"/>
-    <property space="0 1 .01" default="0.000" range="0 1 .01" subtype="slider" type="float" value="0.000" name="SSS" label="SSS"/>
+    <property space="0 1 .01" default="1.000" range="0 1 .01" subtype="slider" type="float" value="1.000" detail="uniform" name="Diffuse" label="Diffuse"/>
+    <property space="0 1 .01" default="1.000" range="0 1 .01" subtype="slider" type="float" value="1.000" detail="uniform" name="Specular" label="Specular"/>
+    <property space="0 1 .01" default="0.000" range="0 1 .01" subtype="slider" type="float" value="0.000" detail="uniform" name="SSS" label="SSS"/>
    </input>
    <output>
     <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="Cl" label="Cl"/>
@@ -614,9 +614,9 @@ ${PARAMS}
      <help>The color of the shadow. Values other than black
           can simulate the effect of semi-transparent shadowing.</help>
     </property>
-    <property space="0 1 .01" default="1.000" range="0 1 .01" subtype="slider" type="float" value="1.000" name="Diffuse" label="Diffuse"/>
-    <property space="0 1 .01" default="1.000" range="0 1 .01" subtype="slider" type="float" value="1.000" name="Specular" label="Specular"/>
-    <property space="0 1 .01" default="0.000" range="0 1 .01" subtype="slider" type="float" value="0.000" name="SSS" label="SSS"/>
+    <property space="0 1 .01" default="1.000" range="0 1 .01" subtype="slider" type="float" value="1.000" detail="uniform" name="Diffuse" label="Diffuse"/>
+    <property space="0 1 .01" default="1.000" range="0 1 .01" subtype="slider" type="float" value="1.000" detail="uniform" name="Specular" label="Specular"/>
+    <property space="0 1 .01" default="0.000" range="0 1 .01" subtype="slider" type="float" value="0.000" detail="uniform" name="SSS" label="SSS"/>
    </input>
    <output>
     <property default="color(0.000,0.000,0.000)" type="color" value="color(0.000,0.000,0.000)" name="Cl" label="Cl"/>
