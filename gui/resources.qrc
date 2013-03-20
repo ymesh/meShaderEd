@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="file_icons">
+    <file>resources/recentFile.png</file>
     <file>resources/open.png</file>
     <file>resources/save.png</file>
     <file>resources/new.png</file>

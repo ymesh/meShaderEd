@@ -42,6 +42,12 @@ class MainWindow ( QtGui.QMainWindow ):
     self.ui = Ui_MainWindow ()
 
     self.ui.setupUi ( self )
+    
+    self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
+    self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
+    
+    self.addRecentProject ( app_global_vars [ 'ProjectPath' ] )
+    
     self.setupMenuBar ()
     self.setupPanels ()
 
@@ -52,7 +58,7 @@ class MainWindow ( QtGui.QMainWindow ):
 
     grid_enabled = getDefaultValue ( app_settings, 'WorkArea', 'grid_enabled' )
     grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
-    grid_size = int( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
+    grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
     reverse_flow = getDefaultValue ( app_settings, 'WorkArea', 'reverse_flow' )
     straight_links = getDefaultValue ( app_settings, 'WorkArea', 'straight_links' )
 
@@ -136,6 +142,41 @@ class MainWindow ( QtGui.QMainWindow ):
     self.ui.menuCommand.setFont ( font )
     self.ui.menuWindow.setFont ( font )
     self.ui.menuHelp.setFont ( font )
+    
+    self.buildRecentProjectsMenu ()
+    self.buildRecentNetworksMenu ()
+  #
+  # buildRecentProjectsMenu
+  #
+  def buildRecentProjectsMenu ( self ) :
+    #self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
+    #self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
+    self.ui.menuRecent_Projects.clear ()
+    
+    if len ( self.recentProjects ) :
+      icon =  QtGui.QIcon.fromTheme ( 'folder', QtGui.QIcon ( ':/file_icons/resources/open.png' ) )
+      # QtGui.QIcon ( ':/file_icons/resources/recentFile.png' ) 'folder'
+      for i, fname in enumerate ( self.recentProjects ) :
+        # QtCore.QFileInfo ( fname ).fileName ()
+        action = QtGui.QAction ( icon, '&%d %s' % ( i + 1, fname ), self ) 
+        action.setData ( QtCore.QVariant ( fname ) )
+        self.connect ( action, QtCore.SIGNAL ( 'triggered()' ), self.onOpenRecentProject )
+        self.ui.menuRecent_Projects.addAction ( action )  
+  #
+  # buildRecentNetworksMenu
+  #
+  def buildRecentNetworksMenu ( self ) :
+    #
+    self.ui.menuRecent_Networks.clear ()
+    
+    if len ( self.recentNetworks ) :
+      for i, fname in enumerate ( self.recentNetworks ) :
+        icon =  QtGui.QIcon.fromTheme ( 'document-new', QtGui.QIcon ( ':/file_icons/resources/new.png' ) )
+        # QtCore.QFileInfo ( fname ).fileName ()
+        action = QtGui.QAction ( icon, '&%d %s' % ( i + 1, fname ), self ) 
+        action.setData ( QtCore.QVariant ( fname ) )
+        self.connect ( action, QtCore.SIGNAL ( 'triggered()' ), self.onOpenRecentNetwork )
+        self.ui.menuRecent_Networks.addAction ( action )  
   #
   # setupPanels
   #
@@ -147,6 +188,36 @@ class MainWindow ( QtGui.QMainWindow ):
     self.removeDockWidget ( self.ui.dockParam )
     self.addDockWidget ( QtCore.Qt.DockWidgetArea ( 2 ), self.ui.dockParam )
     self.ui.dockParam.show ()
+  #
+  # addRecentProject
+  #
+  def addRecentProject ( self, project ) :
+    if project is not None :
+      recent_projects_max = getDefaultValue ( app_settings, '', 'recent_projects_max' )
+      
+      if not self.recentProjects.contains ( project ) :
+        self.recentProjects.prepend ( QtCore.QString ( project ) )
+      
+      while self.recentProjects.count () > recent_projects_max :
+        self.recentProjects.takeLast ()
+      
+      recentProjects = QtCore.QVariant ( self.recentProjects ) if self.recentProjects else QtCore.QVariant () 
+      app_settings.setValue ( 'RecentProjects', recentProjects )
+  #
+  # addRecentNetwork
+  #
+  def addRecentNetwork ( self, network ) :
+    if network is not None :
+      recent_networks_max = getDefaultValue ( app_settings, '', 'recent_networks_max' )
+      
+      if not self.recentNetworks.contains ( network ) :
+        self.recentNetworks.prepend ( QtCore.QString ( network ) )
+      
+      while self.recentNetworks.count () > recent_networks_max :
+        self.recentNetworks.takeLast ()
+      
+      recentNetworks = QtCore.QVariant ( self.recentNetworks ) if self.recentNetworks else QtCore.QVariant () 
+      app_settings.setValue ( 'RecentNetworks', recentNetworks )
   #
   # setupActions
   #
@@ -182,7 +253,10 @@ class MainWindow ( QtGui.QMainWindow ):
     projectSetupDlg = ProjectSetup ( app_settings )
     projectSetupDlg.exec_()
     self.ui.project_ctl.setLibrary ( app_global_vars [ 'ProjectNetworks' ] )
+    createDefaultProject ( app_settings )
     self.setupWindowTitle ()
+    self.addRecentProject ( app_global_vars [ 'ProjectPath' ] )
+    self.buildRecentProjectsMenu ()
   #
   # onSettingsSetup
   #
@@ -563,19 +637,72 @@ class MainWindow ( QtGui.QMainWindow ):
     curDir = app_global_vars [ 'ProjectNetworks' ]
     typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-    filename = str( QtGui.QFileDialog.getOpenFileName ( self, "Open file", curDir, typeFilter ) )
+    filename = str ( QtGui.QFileDialog.getOpenFileName ( self, "Open file", curDir, typeFilter ) )
     if filename != '' :
-      if DEBUG_MODE : print "-> open file %s" %  filename
+      if self.openNetwork ( filename ) :
+        self.addRecentNetwork ( normPath ( filename ) )
+        self.buildRecentNetworksMenu ()
+  #
+  # openNetwork
+  #
+  def openNetwork ( self, filename ) :
+    #
+    ret = True
+    if DEBUG_MODE : print "-> open file %s" %  filename
+    if QtCore.QFile.exists ( filename ) :
       ( name, ext ) = os.path.splitext( os.path.basename ( filename ) )
-
+  
       self.ui.imageView_ctl.removeAllViewers ()
-
+  
       self.workArea.clear ()
       self.workArea.nodeNet.name = name
       self.workArea.nodeNet.fileName = ''
       self.ui.tabs.setTabText ( self.ui.tabs.indexOf ( self.workArea ), name )
-
+  
       self.workArea.openNodeNet ( normPath ( filename ) )
+    else :
+      print "ERROR! filename %s doesn't exist" %  filename
+      ret = False
+    return ret
+  #
+  # onOpenRecentNetwork
+  #
+  def onOpenRecentNetwork ( self ) :
+    #
+    action = self.sender ()
+    if isinstance ( action, QtGui.QAction ):
+      network = unicode ( action.data ().toString () )
+      if network is not None :
+        if DEBUG_MODE : print '>> onOpenRecentNetwork : %s' % network  
+        if not self.openNetwork ( network ) :
+          # TODO!!! remove network from rescentNetworks
+          pass
+          
+  #
+  # onOpenRecentProject
+  #
+  def onOpenRecentProject ( self ) :
+    #
+    action = self.sender ()
+    if isinstance ( action, QtGui.QAction ):
+      project = unicode ( action.data ().toString () )
+      if project is not None :
+        print '>> onOpenRecentProject : %s' % project 
+        if openDefaultProject ( app_settings, app_global_vars, project ) :
+          # very strange... app_settings doesn't update inside meCommon.openDefaultProject...
+          # though app_global_vars does
+          # have to duplicate this action here...
+          app_settings.setValue ( 'project', app_global_vars [ 'ProjectPath' ] )
+          app_settings.setValue ( 'project_shaders', app_global_vars [ 'ProjectShaders' ] )
+          app_settings.setValue ( 'project_textures', app_global_vars [ 'ProjectTextures' ] )
+          app_settings.setValue ( 'shader_networks', app_global_vars [ 'ProjectNetworks' ] )
+          app_settings.setValue ( 'shader_sources', app_global_vars [ 'ProjectSources' ] )
+
+          self.ui.project_ctl.setLibrary ( app_global_vars [ 'ProjectNetworks' ] )
+          self.setupWindowTitle ()
+        else :
+          print "ERROR! project %s doesn't exist" %  project 
+          # TODO!!! remove project from rescentProjects
   #
   # onImport
   #
@@ -619,7 +746,8 @@ class MainWindow ( QtGui.QMainWindow ):
       self.workArea.nodeNet.fileName = normPath ( filename )
       self.workArea.nodeNet.name = name
       self.ui.tabs.setTabText ( self.ui.tabs.indexOf ( self.workArea ), name )
-
       self.workArea.nodeNet.save ()
+      self.addRecentNetwork ( normPath ( filename ) )
+      self.buildRecentNetworksMenu ()
       self.ui.project_ctl.onReload ()
 

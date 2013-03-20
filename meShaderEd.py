@@ -2,7 +2,7 @@
 #
 # meShaderEd.py
 #
-# version 0.2.9 (27 Jan 2012)
+# version 0.2.9 (19 Mar 2013)
 # version 0.2.8 (20 Jan 2012)
 # version 0.2.7 (20 Sep 2012)
 # version 0.2.6 (29 Aug 2012)
@@ -42,32 +42,32 @@ from global_vars import app_global_vars, DEBUG_MODE
 root = normPath ( sys.path[0] )
 version = '0.2.9'
 
-app_settings = QtCore.QSettings( QtCore.QSettings.IniFormat, 
-                                 QtCore.QSettings.UserScope,
-                                 "mesh",  "meShaderEd" ) 
+app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat, 
+                                  QtCore.QSettings.UserScope,
+                                  'mesh', 'meShaderEd' ) 
 
 #
 #
 def setDefaultValue ( key, def_value ) :
-  if not app_settings.contains( key ):
+  if not app_settings.contains ( key ):
     app_settings.setValue ( key, def_value )
   
-  value = app_settings.value( key )
-  if value.toString() == 'true' : value = True
-  elif value.toString() == 'false' : value = False
+  value = app_settings.value ( key )
+  if value.toString () == 'true' : value = True
+  elif value.toString () == 'false' : value = False
   else :
-    value = str ( value.toString() )
+    value = str ( value.toString () )
   return value
 #
 #
 def getDefaultValue ( settings, group, key ) :
   if group != '' : settings.beginGroup ( group )
-  value = settings.value( key )
+  value = settings.value ( key )
   if group != '' : settings.endGroup ( )
-  if value.toString() == 'true' : value = True
-  elif value.toString() == 'false' : value = False
+  if value.toString () == 'true' : value = True
+  elif value.toString () == 'false' : value = False
   else :
-    value = str ( value.toString() )
+    value = str ( value.toString () )
   return value  
 #
 #  
@@ -85,6 +85,7 @@ def main ():
   
   app_settings.setValue ( 'version', version )
   app_settings.setValue ( 'root', normPath ( root ) )
+  project_filename = setDefaultValue ( 'project_filename', 'meshadered.prj' )
   
   temp_dir = setDefaultValue ( 'temp', normPath ( os.path.join ( root, 'tmp' ) ) )
   
@@ -107,6 +108,11 @@ def main ():
   createMissingDirs ( [ temp_dir, lib_dir, project_dir, project_shaders, project_textures ] )
   createMissingDirs ( [ shader_networks_dir, shader_sources_dir ] )
   createMissingDirs ( [ node_dir, texture_dir, shaders_dir, archive_dir ] ) # include_dir supposed to be a list
+  #
+  # Recent projects/networks
+  #
+  setDefaultValue ( 'recent_projects_max', 10 ) 
+  setDefaultValue ( 'recent_networks_max', 10 ) 
 
   #
   # setup globals
@@ -135,32 +141,34 @@ def main ():
   app_global_vars [ 'ProjectSearchShaders' ] = sanitizeSearchPath ( project_shaders )
   app_global_vars [ 'ProjectSearchTextures' ] = sanitizeSearchPath ( project_textures )
   
-  app_global_vars [ 'Renderer' ] = app_renderer.getCurrentValue( 'renderer', 'name' ) 
-  app_global_vars [ 'RendererFlags' ] = app_renderer.getCurrentValue( 'renderer', 'flags' ) 
-  app_global_vars [ 'ShaderCompiler' ] = app_renderer.getCurrentValue( 'shader', 'compiler' )
-  app_global_vars [ 'ShaderDefines' ] = app_renderer.getCurrentValue( 'shader', 'defines' )
-  app_global_vars [ 'TEX' ] = app_renderer.getCurrentValue( 'texture', 'extension' )
-  app_global_vars [ 'SLO' ] = app_renderer.getCurrentValue( 'shader', 'extension' )
+  app_global_vars [ 'Renderer' ] = app_renderer.getCurrentValue ( 'renderer', 'name' ) 
+  app_global_vars [ 'RendererFlags' ] = app_renderer.getCurrentValue ( 'renderer', 'flags' ) 
+  app_global_vars [ 'ShaderCompiler' ] = app_renderer.getCurrentValue ( 'shader', 'compiler' )
+  app_global_vars [ 'ShaderDefines' ] = app_renderer.getCurrentValue ( 'shader', 'defines' )
+  app_global_vars [ 'TEX' ] = app_renderer.getCurrentValue ( 'texture', 'extension' )
+  app_global_vars [ 'SLO' ] = app_renderer.getCurrentValue ( 'shader', 'extension' )
+  
+  createDefaultProject ( app_settings, True ) # check_if_exist = True
   
   if DEBUG_MODE :
-    print 'TextureSearchPath = %s' % app_global_vars[ 'TextureSearchPath' ]
-    print 'ShaderSearchPath = %s' % app_global_vars[ 'ShaderSearchPath' ]
-    print 'ArchiveSearchPath = %s' % app_global_vars[ 'ArchiveSearchPath' ]
-    print 'Renderer = %s' % app_global_vars[ 'Renderer' ]
+    print 'TextureSearchPath = %s' % app_global_vars [ 'TextureSearchPath' ]
+    print 'ShaderSearchPath = %s' % app_global_vars [ 'ShaderSearchPath' ]
+    print 'ArchiveSearchPath = %s' % app_global_vars [ 'ArchiveSearchPath' ]
+    print 'Renderer = %s' % app_global_vars [ 'Renderer' ]
   
   #app_global_vars[ 'RibPath' ] = ''
   #app_global_vars[ 'DisplayPath' ] = ''
     
-  app_settings.beginGroup( 'WorkArea' )
+  app_settings.beginGroup ( 'WorkArea' )
   
   #grid_enabled = bool( setDefaultValue( 'grid_enabled', True ).toString() )
   grid_enabled = setDefaultValue ( 'grid_enabled', True )
-  grid_size = int( setDefaultValue ( 'grid_size', 10 ) )
+  grid_size = int ( setDefaultValue ( 'grid_size', 10 ) )
   grid_snap = setDefaultValue ( 'grid_snap', True )
   reverse_flow = setDefaultValue ( 'reverse_flow', False )
   straight_links = setDefaultValue ( 'straight_links', True )
   
-  app_settings.endGroup( )
+  app_settings.endGroup ()
   
   from gui.MainWindow import MainWindow
    
@@ -177,7 +185,7 @@ if __name__ == "__main__":
   print '* meShaderEd version %s' % version
   
   if len( sys.argv ) > 1 :
-    if sys.argv[1].lower() == '-debug' or sys.argv[1].lower() == '-d':
+    if sys.argv [ 1 ].lower () == '-debug' or sys.argv [ 1 ].lower () == '-d':
       print '>> Running in DEBUG mode ...'
       DEBUG_MODE = True
   
@@ -189,7 +197,7 @@ if __name__ == "__main__":
   
   if ( sys.platform == 'win32' ) :  
     #pass
-    QtGui.QApplication.setStyle(QtGui.QStyleFactory.create ( "Cleanlooks" ) )
-    QtGui.QApplication.setPalette( QtGui.QApplication.style().standardPalette() )
+    QtGui.QApplication.setStyle(QtGui.QStyleFactory.create ( 'Cleanlooks' ) )
+    QtGui.QApplication.setPalette( QtGui.QApplication.style ().standardPalette () )
   
   main()

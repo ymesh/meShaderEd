@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui/ui_MainWindow.ui'
+# Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Tue Feb  5 21:27:01 2013
+# Created: Tue Mar 19 21:47:17 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -42,7 +42,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.tabs, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1113, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1113, 19))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Lucida Sans"))
         font.setPointSize(9)
@@ -54,6 +54,10 @@ class Ui_MainWindow(object):
         font.setPointSize(8)
         self.menuFile.setFont(font)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
+        self.menuRecent_Projects = QtGui.QMenu(self.menuFile)
+        self.menuRecent_Projects.setObjectName(_fromUtf8("menuRecent_Projects"))
+        self.menuRecent_Networks = QtGui.QMenu(self.menuFile)
+        self.menuRecent_Networks.setObjectName(_fromUtf8("menuRecent_Networks"))
         self.menuEdit = QtGui.QMenu(self.menubar)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("MS Shell Dlg 2"))
@@ -287,6 +291,8 @@ class Ui_MainWindow(object):
         self.actionSelectBelow.setObjectName(_fromUtf8("actionSelectBelow"))
         self.actionSelectAbove = QtGui.QAction(MainWindow)
         self.actionSelectAbove.setObjectName(_fromUtf8("actionSelectAbove"))
+        self.menuRecent_Projects.addSeparator()
+        self.menuRecent_Networks.addSeparator()
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -295,6 +301,9 @@ class Ui_MainWindow(object):
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionImport)
         self.menuFile.addAction(self.actionExport)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.menuRecent_Projects.menuAction())
+        self.menuFile.addAction(self.menuRecent_Networks.menuAction())
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
         self.menuEdit.addAction(self.actionUndo)
@@ -391,6 +400,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "meShaderEd", None, QtGui.QApplication.UnicodeUTF8))
         self.tabs.setTabText(self.tabs.indexOf(self.workArea), QtGui.QApplication.translate("MainWindow", "none", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuRecent_Projects.setTitle(QtGui.QApplication.translate("MainWindow", "Recent Projects", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuRecent_Networks.setTitle(QtGui.QApplication.translate("MainWindow", "Recent Networks", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.menuCommand.setTitle(QtGui.QApplication.translate("MainWindow", "Command", None, QtGui.QApplication.UnicodeUTF8))
         self.menuWindow.setTitle(QtGui.QApplication.translate("MainWindow", "Window", None, QtGui.QApplication.UnicodeUTF8))
