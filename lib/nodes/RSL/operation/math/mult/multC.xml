@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="mulC" author="Libero Spagnolini">
+<node name="multC" author="Libero Spagnolini">
 	<help>Multiple two colors.</help>
 	<input>
 		<property name="inColor1" type="color"/>		

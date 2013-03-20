@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<node name="gammaCF_mask" label="gammaCF_mask" author="mesh" icon="gammaColorFloat.png">
+	<help>Gamma-correct color value by mask.</help>
+	<input>
+		<property name="input" type="color" default="color(0)"/>
+		<property name="gamma" type="float" default="1" detail="uniform"/>
+		<property name="mask" type="float" default="1" />
+	</input>
+	<output>
+		<property name="result" type="color"/>
+	</output>
+	<internal>
+		<variable name="power"/> 
+		<variable name="adjusted"/> 
+	</internal>
+	<code><![CDATA[
+
+uniform float $(power) = 1 / $(gamma);
+color $(adjusted) = color (
+	pow( comp( $(input), 0), $(power) ),
+	pow( comp( $(input), 1), $(power) ),
+	pow( comp( $(input), 2), $(power) )
+);
+$(result) = mix( $(input), $(adjusted), $(mask) );
+
+	]]>
+	</code>
+</node>

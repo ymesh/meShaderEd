@@ -3,10 +3,7 @@
 <node name="me_spec_glossy" author="mesh" icon="me_spec_glossy.png">
 	<help>Specularity with close falloff for a wet apearance</help>
 	<input>
-	  <property name="direction" type="vector" default="vector(0,1,0)" >
-	  
-	  </property>		
-	  
+	  <property name="N" type="normal" default="normal(0,1,0)" />	  
 		<property name="category" type="string" default=""/>
 		<property name="specColor" type="color" default="color( 1, 1, 1 )"/>
 		<property name="Ks" type="float" default="1.0"/>
