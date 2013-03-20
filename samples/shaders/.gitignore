@@ -1,0 +1,9 @@
+# ignore compiled shader files
+*.slo
+*.slb
+*.slc
+*.slx
+*.sdl
+*.sdr
+*.dll
+*.lif
