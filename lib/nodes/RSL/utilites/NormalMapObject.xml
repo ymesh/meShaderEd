@@ -1,0 +1,26 @@
+<?xml version="1.0"?> 
+
+<node name="NormalMapObject" label="nmO" author="DRL">
+	<help>Normalmap texture in object space.</help>
+	
+	<input>
+		<property name="N" type="normal" default="normal (0, 1, 0)">
+			<help>Normal vector from detailed (displaced) version of the mesh, in "current" space.</help>
+		</property>
+	</input>
+	
+	<output>
+		<property detail="varying" name="NM" type="color" default="color(0.5, 0.5, 1)"/>
+	</output>
+	
+	<code><![CDATA[
+
+// code begin - objectNormalMap
+$(NM) = color( normalize( transform( "object", $(N) )));
+$(NM) = ( $(NM) + color(1) ) / 2; // grade NM to [0-1] color range
+$(NM) = clamp( $(NM), color(0), color(1) );
+// code end - objectNormalMap
+
+]]>
+	</code>
+</node>

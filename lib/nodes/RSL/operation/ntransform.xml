@@ -11,7 +11,7 @@
 	</output>
 	<code>
 <![CDATA[
-$(outNormal) = transform($(coords), $(inNormal));
+$(outNormal) = transform($(space), $(inNormal));
 ]]>
 	</code>
 </node>
