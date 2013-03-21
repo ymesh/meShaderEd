@@ -3,9 +3,9 @@
 <node name="mixF" author="Libero Spagnolini">
 	<help>Mix two floats.</help>
 	<input>
-		<property name="F1" type="float"/>		
-		<property name="F2" type="float"/>		
-		<property name="factor" type="float"/>		
+		<property name="F1" type="float" default="0"/>		
+		<property name="F2" type="float" default="0"/>		
+		<property name="factor" type="float" default="0.5"/>		
 	</input>
 	<output>
 		<property name="outValue" type="float" />		
