@@ -1,17 +1,17 @@
 <?xml version="1.0"?> 
 
-<node name="addC" author="Libero Spagnolini">
+<node name="addC" author="DRL">
 	<help>Add two colors.</help>
 	<input>
-		<property name="inColor1" type="color"/>		
-		<property name="inColor2" type="color"/>		
+		<property name="C1" type="color" default="color(0)"/>		
+		<property name="C2" type="color" default="color(0)"/>		
 	</input>
 	<output>
-		<property name="outColor" type="color" />		
+		<property name="outC" type="color"/>		
 	</output>
 	<code>
 <![CDATA[
- $(outColor) = $(inColor1) + $(inColor2);
+ $(outC) = $(C1) + $(C2);
 ]]>
 	</code>
 </node>

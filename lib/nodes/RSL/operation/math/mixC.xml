@@ -1,0 +1,18 @@
+<?xml version="1.0"?> 
+
+<node name="mixC" author="Libero Spagnolini">
+	<help>Mix two colors.</help>
+	<input>
+		<property name="C1" type="color" default="color(0)"/>		
+		<property name="C2" type="color" default="color(0)"/>		
+		<property name="factor" type="float" default="0.5"/>		
+	</input>
+	<output>
+		<property name="outColor" type="color"/>		
+	</output>
+	<code>
+<![CDATA[
+ $(outColor) = mix(($(C1)), ($(C2)), ($(factor)));
+]]>
+	</code>		
+</node>

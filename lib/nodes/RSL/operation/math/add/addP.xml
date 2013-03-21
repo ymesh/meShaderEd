@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<node name="addP" author="DRL">
+	<help>Add two points.</help>
+	<input>
+		<property name="P1" type="point" default="point(0)"/>
+		<property name="P2" type="point" default="point(0)"/>
+	</input>
+	<output>
+		<property name="outP" type="point"/>
+	</output>
+	<code>
+<![CDATA[
+ $(outP) = $(P1) + $(P2);
+]]>
+	</code>
+</node>

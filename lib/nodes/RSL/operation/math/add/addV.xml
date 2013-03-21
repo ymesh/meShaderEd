@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<node name="addV" author="DRL">
+	<help>Add two vectors.</help>
+	<input>
+		<property name="V1" type="vector" default="vector(0)"/>
+		<property name="V2" type="vector" default="vector(0)"/>
+	</input>
+	<output>
+		<property name="outV" type="vector"/>
+	</output>
+	<code>
+<![CDATA[
+ $(outV) = $(V1) + $(V2);
+]]>
+	</code>
+</node>
