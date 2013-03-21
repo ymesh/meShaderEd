@@ -3,8 +3,8 @@
 <node name="mixF" author="Libero Spagnolini">
 	<help>Mix two floats.</help>
 	<input>
-		<property name="inValue1" type="float"/>		
-		<property name="inValue2" type="float"/>		
+		<property name="F1" type="float"/>		
+		<property name="F2" type="float"/>		
 		<property name="factor" type="float"/>		
 	</input>
 	<output>
@@ -12,7 +12,7 @@
 	</output>
 	<code>
 <![CDATA[
-$(outValue) = mix(($(inValue1)), ($(inValue2)), ($(factor)));
+$(outValue) = mix(($(F1)), ($(F2)), ($(factor)));
 ]]>
 	</code>		
 </node>
