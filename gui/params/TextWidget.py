@@ -5,6 +5,7 @@
 #
 #===============================================================================
 from PyQt4 import QtGui, QtCore
+
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
 #
@@ -12,7 +13,8 @@ from paramWidget import ParamWidget
 #
 class TextWidget ( ParamWidget ) :
   #
-  #                 
+  # buildGui
+  #                
   def buildGui ( self ):
     #
     self.ui = Ui_TextWidget_field ()    
@@ -20,10 +22,11 @@ class TextWidget ( ParamWidget ) :
 #
 # Ui_StringWidget_field
 #
-class Ui_TextWidget_field ( object ):
+class Ui_TextWidget_field ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, TextWidget ):
+  def setupUi ( self, TextWidget ) :
     #
     self.widget = TextWidget
     self.text_plainTextEdit = QtGui.QPlainTextEdit ( TextWidget )
@@ -42,21 +45,25 @@ class Ui_TextWidget_field ( object ):
     QtCore.QMetaObject.connectSlotsByName ( TextWidget )
     self.connectSignals ( TextWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, TextWidget ):
+  def connectSignals ( self, TextWidget ) :
     TextWidget.connect ( self.text_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onTextEditEditingFinished )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, TextWidget ):
+  def disconnectSignals ( self, TextWidget ) :
     TextWidget.disconnect ( self.text_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onTextEditEditingFinished )
   #
-  #                      
-  def onTextEditEditingFinished ( self ):
-    stringValue = str ( self.text_plainTextEdit.toPlainText () )
+  # onTextEditEditingFinished
+  #                     
+  def onTextEditEditingFinished ( self ) :
+    stringValue = self.text_plainTextEdit.toPlainText ()
     self.widget.param.setValue ( stringValue )
   #
-  #      
-  def updateGui ( self, value ): 
+  # updateGui
+  #     
+  def updateGui ( self, value ) : 
     self.doc.setPlainText ( value )
     self.text_plainTextEdit.setDocument ( self.doc )  
 

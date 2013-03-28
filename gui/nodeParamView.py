@@ -31,10 +31,11 @@ from gui.params.TextWidget import TextWidget
 #
 #
 #
-class NodeParamView ( QtGui.QWidget ):
+class NodeParamView ( QtGui.QWidget ) :
   #
+  # __init__
   #
-  def __init__ ( self ):
+  def __init__ ( self ) :
     #
     QtGui.QWidget.__init__ ( self )
     self.gfxNode = None
@@ -59,15 +60,18 @@ class NodeParamView ( QtGui.QWidget ):
     self.updateGui ()
     self.connectLabelSignals ()              
   #
+  # connectLabelSignals
   #
   def connectLabelSignals ( self ) :
     self.connect( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
   #
+  # disconnectLabelSignals
   #
   def disconnectLabelSignals ( self ) :
     self.disconnect( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
     
   #
+  # connectParamSignals
   #
   def connectParamSignals ( self ) :
     #print ">> NodeParamView: connectParamSignals"
@@ -75,6 +79,7 @@ class NodeParamView ( QtGui.QWidget ):
       for inputParam in self.gfxNode.node.inputParams:
         self.connect ( inputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
   #
+  # disconnectParamSignals
   #
   def disconnectParamSignals ( self ) :
     #print ">> NodeParamView: disconnectParamSignals"
@@ -82,21 +87,24 @@ class NodeParamView ( QtGui.QWidget ):
       for inputParam in self.gfxNode.node.inputParams:
         self.disconnect ( inputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )          
   #
+  # setNode
   #
-  def setNode ( self, gfxNode ):
+  def setNode ( self, gfxNode ) :
     self.disconnectParamSignals ()
     self.gfxNode = gfxNode
     self.nameEdit.setEnabled ( self.gfxNode is not None )
     self.updateGui ()
     self.connectParamSignals ()
   #
+  # onParamChanged
   #
-  def onParamChanged ( self, param ):
+  def onParamChanged ( self, param ) :
     print ">> NodeParamView: onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )  
-    self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode.node, param )   
+    self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node  
   #
+  # nodeLabelChanged
   #
-  def nodeLabelChanged ( self ):
+  def nodeLabelChanged ( self ) :
     if self.gfxNode is not None : 
       newLabel = self.nameEdit.text ().simplified ()
       newLabel = newLabel.replace ( ' ', "_" )
@@ -108,6 +116,7 @@ class NodeParamView ( QtGui.QWidget ):
           self.nameEdit.clear ()
       self.nameEdit.setText ( self.gfxNode.node.label )
   #
+  # buildGui
   #
   def buildGui ( self ):
     #currentWidget = self.stackedWidget.currentWidget()
@@ -143,6 +152,7 @@ class NodeParamView ( QtGui.QWidget ):
     self.setLayout ( mainLayout )
     self.nameEdit.setEnabled ( False )
   #
+  # updateGui
   #
   def updateGui ( self ):
     currentWidget = self.stackedWidget.currentWidget ()

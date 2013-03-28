@@ -1,14 +1,12 @@
 <?xml version="1.0"?>
-
 <node name="note" author="mesh" type="note">
 	<help>Text note</help>
 	<input>
-	  <property name="color" label="Normal Color" type="color" default="color(0)" provider="attribute"/>
+	  <property name="text_color" label="Text Color" type="color" default="color(0.7,0,0)" provider="attribute"/>
+	  <property name="bg_color" label="Background" type="color" default="color(1,1,0)" provider="attribute"/>
+	  <property name="opacity" label="Opacity" type="float" default="0.5" subtype="slider" range="0 1 0.1" provider="attribute"/>
+	  <property name="border" label="Show Border" type="int" default="1" provider="attribute" subtype="switch" />
 	  <property name="justify" type="int" default="0" provider="attribute" subtype="selector"  range="left:center:right"/>
-    <property name="text" type="text" default="Write some notes here" provider="attribute" />		
+    <property name="text" type="text" default="Write here some notes &#xA;or  network description ..." provider="attribute" />		
 	</input>
-	<output>
-	</output>
-	<param_code>
-
 </node>

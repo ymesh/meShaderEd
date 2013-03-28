@@ -19,8 +19,9 @@ class NodeParam ( QtCore.QObject ):
   isRibParam = False
   id = 0
   #
+  # __init__
   #
-  def __init__ ( self, xml_param = None, isRibParam = False ):
+  def __init__ ( self, xml_param = None, isRibParam = False ) :
     #
     super( NodeParam, self ).__init__ ()
     #QtCore.QObject.__init__ ( self )
@@ -47,12 +48,11 @@ class NodeParam ( QtCore.QObject ):
 
     self.space = None # actual for color, point, vector, normal, matrix
 
-    if xml_param != None :
-      self.parseFromXML ( xml_param )
-    #print "NodeParam.__init__"
+    if xml_param != None : self.parseFromXML ( xml_param )
   #
+  # setup
   #
-  def setup ( self, name, label, detail, provider ):
+  def setup ( self, name, label, detail, provider ) :
     self.name = name
     if label == '' : self.label = name
     else: self.label = label
@@ -60,11 +60,14 @@ class NodeParam ( QtCore.QObject ):
     self.detail = detail
     self.provider = provider
   #
+  # copy
   #
   def copy ( self ) : assert 0, 'copy needs to be implemented!'
   #
+  # copySetup
   #
   def copySetup ( self, newParam ) :
+    #
     if DEBUG_MODE : print '>> NodeParam:: copySetup (%s)' % self.label
     newParam.id = self.id
     newParam.name = self.name
@@ -83,33 +86,42 @@ class NodeParam ( QtCore.QObject ):
     newParam.default = copy.deepcopy ( self.default )
     newParam.value = copy.deepcopy ( self.value )
   #
+  # typeToStr
   #
-  def typeToStr ( self ):
+  def typeToStr ( self ) :
     str = self.detail + ' ' + self.type
-    return str.lstrip()
+    return str.lstrip ()
   #
+  # encodedTypeStr
   #
-  def encodedTypeStr ( self ): assert 0, 'encodedStr needs to be implemented!'
+  def encodedTypeStr ( self ) : assert 0, 'encodedStr needs to be implemented!'
   #
+  # setValueFromStr
   #
-  def setValueFromStr ( self, strValue ): self.value = self.valueFromStr( strValue )
+  def setValueFromStr ( self, strValue ) : self.value = self.valueFromStr ( strValue )
   #
+  # setDefaultFromStr
   #
-  def setDefaultFromStr ( self, strValue ): self.default = self.valueFromStr( strValue )
+  def setDefaultFromStr ( self, strValue ) : self.default = self.valueFromStr ( strValue )
   #
   # virtual function
   #
+  #
+  # valueFromStr
+  #
   def valueFromStr ( self, strValue ) : return strValue
+  # 
+  # getValueToStr
   #
-  #
-  def getValueToStr ( self ):
+  def getValueToStr ( self ) :
     if self.value != None :
       return self.valueToStr ( self.value )
     else :
       return None
   #
+  # getDefaultToStr
   #
-  def getDefaultToStr ( self ):
+  def getDefaultToStr ( self ) :
     if self.default != None :
       return self.valueToStr ( self.default )
     else :
@@ -117,13 +129,14 @@ class NodeParam ( QtCore.QObject ):
   #
   # virtual function
   #
-  def valueToStr ( self, value ) : return str( value )
+  def valueToStr ( self, value ) : return str ( value )
   #
   #
-  def paramChanged ( self ):
+  def paramChanged ( self ) :
     #print '>> NodeParam.paramChanged (name = %s)' % self.name
-    self.emit( QtCore.SIGNAL( 'paramChanged(QObject)' ), self )
+    self.emit ( QtCore.SIGNAL ( 'paramChanged(QObject)' ), self )
   #
+  # setupUI
   #
   def setupUI ( self, subtype, range ):
     #if subtype != '' :
@@ -131,6 +144,7 @@ class NodeParam ( QtCore.QObject ):
     self.subtype = subtype
     self.range = range
   #
+  # setValue
   #
   def setValue ( self, value ) :
     #
@@ -138,9 +152,8 @@ class NodeParam ( QtCore.QObject ):
       #print '>> NodeParam.setValue'
       self.value = value
       self.paramChanged ()
-
   #
-  #
+  # parseFromXML
   #
   def parseFromXML ( self, xml_param ) :
     #
@@ -170,10 +183,10 @@ class NodeParam ( QtCore.QObject ):
       if space != '' :
         self.space = space
 
-    self.setDefaultFromStr ( str ( xml_param.attributes().namedItem( 'default' ).nodeValue() ) )
+    self.setDefaultFromStr ( xml_param.attributes().namedItem( 'default' ).nodeValue() )
 
     if not xml_param.attributes().namedItem( 'value' ).isNull() :
-      self.setValueFromStr ( str ( xml_param.attributes().namedItem( 'value' ).nodeValue() ) )
+      self.setValueFromStr ( xml_param.attributes().namedItem( 'value' ).nodeValue() )
     else :
       self.value = self.default
 
@@ -184,44 +197,42 @@ class NodeParam ( QtCore.QObject ):
     if not help_tag.isNull() :
       help = help_tag.toElement().text()
       self.help = help
-      #print '--> help= %s' % self.help
   #
   #
   #
   def parseToXML ( self, dom ) :
     #
-    xmlnode = dom.createElement( "property" )
+    xmlnode = dom.createElement( 'property' )
 
-    if self.name != None :xmlnode.setAttribute ( "name", self.name )
-    if self.label != None : xmlnode.setAttribute ( "label", self.label )
-    if self.type != None : xmlnode.setAttribute ( "type", self.type )
-    if self.shaderParam : xmlnode.setAttribute ( "shaderParam", True )
+    if self.name != None :xmlnode.setAttribute ( 'name', self.name )
+    if self.label != None : xmlnode.setAttribute ( 'label', self.label )
+    if self.type != None : xmlnode.setAttribute ( 'type', self.type )
+    if self.shaderParam : xmlnode.setAttribute ( 'shaderParam', True )
 
-    if not self.display : xmlnode.setAttribute ( "display", 'hidden' )
+    if not self.display : xmlnode.setAttribute ( 'display', 'hidden' )
 
-    if self.detail != '' : xmlnode.setAttribute ( "detail", self.detail )
-    if self.provider != '' : xmlnode.setAttribute ( "provider", self.provider )
+    if self.detail != '' : xmlnode.setAttribute ( 'detail', self.detail )
+    if self.provider != '' : xmlnode.setAttribute ( 'provider', self.provider )
 
     # ui decorative parameters
-    if self.subtype != '' : xmlnode.setAttribute ( "subtype", self.subtype )
+    if self.subtype != '' : xmlnode.setAttribute ( 'subtype', self.subtype )
     if self.range != '' : xmlnode.setAttribute ( "range", self.range )
 
     if self.space != None :
-      if self.space != '' :
-        xmlnode.setAttribute ( "space", self.space )
+      if self.space != '' : xmlnode.setAttribute ( 'space', self.space )
 
     if self.default != None :
       value = self.getDefaultToStr()
-      if not self.type in ['rib', 'rib_code']  : value = value.strip('\"')
-      xmlnode.setAttribute ( "default", value )
+      if not self.type in ['rib', 'rib_code']  : value = value.strip ( '\"' )
+      xmlnode.setAttribute ( 'default', value )
     if self.value != None :
       value = self.getValueToStr()
-      if not self.type in ['rib', 'rib_code'] : value = value.strip('\"')
-      xmlnode.setAttribute ( "value", value )
+      if not self.type in ['rib', 'rib_code'] : value = value.strip ( '\"' )
+      xmlnode.setAttribute ( 'value', value )
 
     if self.help != None :
       # append node help (short description)
-      help_tag = dom.createElement ( "help" )
+      help_tag = dom.createElement ( 'help' )
       help_text = dom.createTextNode ( self.help )
       help_tag.appendChild ( help_text )
       xmlnode.appendChild ( help_tag )
@@ -232,32 +243,39 @@ class NodeParam ( QtCore.QObject ):
 #
 class FloatNodeParam ( NodeParam ):
   #
+  # __init__
   #
-  def __init__ ( self, xml_param = None, isRibParam = False ):
+  def __init__ ( self, xml_param = None, isRibParam = False ) :
     super( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
     self.type = 'float'
     #print "FloatNodeParam.__init__"
   #
+  # encodedTypeStr
   #
-  def encodedTypeStr( self ): return 'f'
+  def encodedTypeStr ( self ) : return 'f'
   #
+  # copy
   #
-  def copy ( self ):
-    newParam = FloatNodeParam()
+  def copy ( self ) :
+    newParam = FloatNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #
+  # valueFromStr
   #
-  def valueFromStr ( self, str ):
+  def valueFromStr ( self, str ) :
     value = 0.0
     #print "FloatNodeParam.setValueFromStr %s" % str
     if str != '':
-      try: value = float( str )
-      except: raise Exception( 'Cannot parse float value for parameter %s' % (self.name) )
+      try: value = float ( str )
+      except: raise Exception( 'Cannot parse float value for parameter %s' % ( self.name ) )
     return value
   #
+  # valueToStr
   #
   def valueToStr ( self, value ) : return '%.3f' % float( value )
+  #
+  # getRangeValues
   #
   # if subtype == selector then return list of (label,value) pairs
   # It's supposed, that range is defined as "value1:value2:value3"
@@ -266,7 +284,6 @@ class FloatNodeParam ( NodeParam ):
   # if subtype == slider then return list [min, max, step] from
   # space separated string range="min max step"
   #
-  #
   def getRangeValues ( self ):
     #
     rangeList = []
@@ -276,9 +293,9 @@ class FloatNodeParam ( NodeParam ):
       # get range for selector
       #
       if self.subtype == 'selector':
-        tmp_list = str( self.range ).split( ':' )
+        tmp_list = str ( self.range ).split ( ':' )
         for s in tmp_list :
-          pair = s.split( '=' )
+          pair = s.split ( '=' )
           if len( pair ) > 1 :
             label = pair[0]
             value = float( pair[1] )
@@ -286,33 +303,35 @@ class FloatNodeParam ( NodeParam ):
             label = s
             value = float( i )
           i += 1
-          rangeList.append( (label, value) )
+          rangeList.append ( (label, value) )
       #
       # get range for slider
       #
       elif self.subtype == 'slider' or self.subtype == 'slider':
-        tmp_list = str( self.range ).split()
-        for i in range( 0, 3 ) :
+        tmp_list = str ( self.range ).split ()
+        for i in range ( 0, 3 ) :
           value = 0.0
           if i < len( tmp_list ) :
-            value = float( tmp_list[ i ] )
-          rangeList.append( value )
+            value = float ( tmp_list[ i ] )
+          rangeList.append ( value )
           #print '-> range[%d] = %f' % ( i, value )
 
     return rangeList
 #
 # Integer
 #
-class IntNodeParam ( NodeParam ):
+class IntNodeParam ( NodeParam ) :
   #
+  # __init__
   #
   def __init__ ( self, xml_param = None, isRibParam = False  ):
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'int'
     #print "FloatNodeParam.__init__"
   #
+  # encodedTypeStr
   #
-  def encodedTypeStr( self ): return 'i'
+  def encodedTypeStr ( self ) : return 'i'
   #
   #
   def copy ( self ):
@@ -320,24 +339,27 @@ class IntNodeParam ( NodeParam ):
     self.copySetup ( newParam )
     return newParam
   #
+  # valueFromStr
   #
-  def valueFromStr ( self, str ):
+  def valueFromStr ( self, str ) :
     value = 0
     #print "FloatNodeParam.setValueFromStr %s" % str
     if str != '' :
       try: value = int( str )
-      except: raise Exception( 'Cannot parse integer value for parameter %s' % (self.name) )
+      except: raise Exception( 'Cannot parse integer value for parameter %s' % ( self.name ) )
     return value
   #
+  # valueToStr
   #
   def valueToStr ( self, value ) : return '%d'% value
-
+  #
+  # getRangeValues
   #
   # if subtype == selector then return list of (label,value) pairs
   # It's supposed, that range is defined as "value1:value2:value3"
   # or "label1=value1:label2=value2:label3=value3:"
   #
-  def getRangeValues ( self ):
+  def getRangeValues ( self ) :
     #
     rangeList = []
     i = 0
@@ -346,49 +368,52 @@ class IntNodeParam ( NodeParam ):
       # get range for selector
       #
       if self.subtype == 'selector':
-        tmp_list = str( self.range ).split( ':' )
+        tmp_list = str ( self.range ).split ( ':' )
         for s in tmp_list :
-          pair = s.split( '=' )
-          if len( pair ) > 1 :
+          pair = s.split ( '=' )
+          if len ( pair ) > 1 :
             label = pair[0]
-            value = int( pair[1] )
+            value = int ( pair[1] )
           else :
             label = s
-            value = int( i )
+            value = int ( i )
           i += 1
-          rangeList.append( (label, value) )
+          rangeList.append ( (label, value) )
       #
       # get range for slider
       #
       elif self.subtype == 'slider' or self.subtype == 'slider':
-        tmp_list = str( self.range ).split()
-        for i in range( 0, 3 ) :
+        tmp_list = str ( self.range ).split ()
+        for i in range ( 0, 3 ) :
           value = 0
-          if i < len( tmp_list ) :
-            value = int( tmp_list[ i ] )
-          rangeList.append( value )
+          if i < len ( tmp_list ) :
+            value = int ( tmp_list[ i ] )
+          rangeList.append ( value )
           #print '-> range[%d] = %f' % ( i, value )
     return rangeList
 #
 # Color
 #
-class ColorNodeParam ( NodeParam ):
+class ColorNodeParam ( NodeParam ) :
   #
+  # __init__
   #
-  def __init__ ( self, xml_param = None, isRibParam = False  ):
+  def __init__ ( self, xml_param = None, isRibParam = False  ) :
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'color'
-    #print "ColorNodeParam.__init__"
   #
+  # encodedTypeStr
   #
-  def encodedTypeStr( self ): return 'c'
+  def encodedTypeStr ( self ) : return 'c'
   #
+  # copy
   #
-  def copy ( self ):
-    newParam = ColorNodeParam()
+  def copy ( self ) :
+    newParam = ColorNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #
+  # valueFromStr
   #
   def valueFromStr ( self, strValue ) :
     if self.isRibParam :
@@ -396,12 +421,13 @@ class ColorNodeParam ( NodeParam ):
     else :
       return self.valueFromRSL ( strValue )
   #
+  # valueFromRSL
   #
   def valueFromRSL ( self, strValue ) :
     value = [ 0.0, 0.0, 0.0 ]
     #print "ColorNodeParam.setValueFromStr %s" % str
     if strValue != '' :
-      strValue = strValue.replace( ' ', '' )
+      strValue = strValue.replace ( ' ', '' )
       color3_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
       color1_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+\))'
       color3_space_pattern_str = 'color"[A-z]*"\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
@@ -409,50 +435,51 @@ class ColorNodeParam ( NodeParam ):
       float_pattern_str = '[+]?[0-9]*\.?[0-9]+'
       space_pattern_str = '"[A-z]*"'
 
-      p = re.compile( color3_pattern_str )
-      match = p.match( strValue )
+      p = re.compile ( color3_pattern_str )
+      match = p.match ( strValue )
       if match :
-        p = re.compile( float_pattern_str )
-        f = p.findall( strValue )
-        f = map( float, f )
+        p = re.compile ( float_pattern_str )
+        f = p.findall ( strValue )
+        f = map ( float, f )
         value = [ f[0], f[1], f[2] ]
       else :
-        p = re.compile( color1_pattern_str )
+        p = re.compile ( color1_pattern_str )
         match = p.match( strValue )
         if match :
-          p = re.compile( float_pattern_str )
+          p = re.compile ( float_pattern_str )
           f = p.findall( strValue )
-          f = map( float, f )
+          f = map ( float, f )
           value = [ f[0], f[0], f[0] ]
         else :
-          p = re.compile( color3_space_pattern_str )
+          p = re.compile ( color3_space_pattern_str )
           match = p.match( strValue )
           if match :
-            p = re.compile( float_pattern_str )
-            f = p.findall( strValue )
-            f = map( float, f )
+            p = re.compile ( float_pattern_str )
+            f = p.findall ( strValue )
+            f = map ( float, f )
             value = [ f[0], f[1], f[2] ]
 
-            p = re.compile( space_pattern_str )
-            s = p.findall( strValue )
-            self.space = s[0].strip('"')
+            p = re.compile ( space_pattern_str )
+            s = p.findall ( strValue )
+            self.space = s[0].strip ( '"' )
           else :
-            p = re.compile( color1_space_pattern_str )
+            p = re.compile ( color1_space_pattern_str )
             match = p.match( strValue )
             if match :
-              p = re.compile( float_pattern_str )
-              f = p.findall( strValue )
-              f = map( float, f )
+              p = re.compile ( float_pattern_str )
+              f = p.findall ( strValue )
+              f = map ( float, f )
               value = [ f[0], f[0], f[0] ]
 
-              p = re.compile( space_pattern_str )
-              s = p.findall( strValue )
-              self.space = s[0].strip('"')
+              p = re.compile ( space_pattern_str )
+              s = p.findall ( strValue )
+              self.space = s[0].strip ( '"' )
             else :
               err = 'Cannot parse color %s values' % self.name
               raise Exception ( err )
     return value
   #
+  # valueFromRIB
   #
   def valueFromRIB ( self, strValue ) :
     value = [ 0.0, 0.0, 0.0 ]
@@ -460,90 +487,99 @@ class ColorNodeParam ( NodeParam ):
     if strValue != '' :
       #str = str.replace( ' ', '' )
       color_values = strValue.split( ' ')
-      f = map( float, color_values )
+      f = map ( float, color_values )
       value = [ f[0], f[1], f[2] ]
     return value
   #
+  # valueToStr
   #
-  def valueToStr ( self, value ):
+  def valueToStr ( self, value ) :
     if self.isRibParam :
       return self.getValueToRIB ( value )
     else :
       return self.getValueToRSL ( value )
   #
+  # getValueToRSL
   #
-  def getValueToRSL ( self, value ):
+  def getValueToRSL ( self, value ) :
     ret_str = 'color'
     if self.space != None :
       if self.space != '' :
         ret_str += ' "' + self.space + '" '
-    return ret_str + '(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'
+    return ret_str + '(' + ''.join ( '%.3f' % f + ',' for f in value[: - 1] ) + '%.3f' % value[ - 1] + ')'
   #
+  # getValueToRIB
   #
-  def getValueToRIB ( self, value ):
-    return ''.join('%.3f' % f + ' ' for f in value[: - 1]) + '%.3f' % value[ - 1]
+  def getValueToRIB ( self, value ) :
+    return ''.join ( '%.3f' % f + ' ' for f in value[: - 1] ) + '%.3f' % value[ - 1]
 #
 # String
 #
-class StringNodeParam ( NodeParam ):
+class StringNodeParam ( NodeParam ) :
   #
+  # __init__
   #
-  def __init__ ( self, xml_param = None, isRibParam = False ):
+  def __init__ ( self, xml_param = None, isRibParam = False ) :
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'string'
     #print "FloatNodeParam.__init__"
   #
+  # encodedTypeStr
   #
-  def encodedTypeStr ( self ): return 's'
+  def encodedTypeStr ( self ) : return 's'
   #
+  # copy
   #
-  def copy ( self ):
-    newParam = StringNodeParam()
+  def copy ( self ) :
+    newParam = StringNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #
+  # valueFromStr
   #
-  def valueFromStr ( self, str ): return str
-    #print "StringNodeParam.setValueFromStr %s" % str
+  def valueFromStr ( self, str ) : return str
   #
+  # valueToStr
   #
-  def valueToStr ( self, value ):
+  def valueToStr ( self, value ) :
     if self.isRibParam :
-      return str( value )
+      return str ( value )
     else :
-      return str( "\"" + value + "\"" )
+      return str ( "\"" + value + "\"" )
+  #
+  # getRangeValues
   #
   # if subtype == selector then return list of (label,value) pairs
   # It's supposed, that range is defined as "value1:value2:value3"
   # or "label1=value1:label2=value2:label3=value3:"
   #
-  def getRangeValues ( self ):
-
+  def getRangeValues ( self ) :
+    #
     rangeList = []
 
     if self.range != '' : # and self.subtype == 'selector':
-      tmp_list = str( self.range ).split( ':' )
+      tmp_list = str ( self.range ).split ( ':' )
       for s in tmp_list :
-        pair = s.split( '=' )
-        if len( pair ) > 1 :
+        pair = s.split ( '=' )
+        if len ( pair ) > 1 :
           label = pair[0]
           value = pair[1]
         else :
           label = s
           value = s
-        rangeList.append( (label, value) )
+        rangeList.append ( (label, value) )
 
     return rangeList
 #
 # Normal
 #
-class NormalNodeParam ( NodeParam ):
+class NormalNodeParam ( NodeParam ) :
   #
+  # __init__
   #
-  def __init__ ( self, xml_param = None, isRibParam = False ):
+  def __init__ ( self, xml_param = None, isRibParam = False ) :
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'normal'
-    #print "NormalNodeParam.__init__"
   #
   #
   def encodedTypeStr ( self ): return 'n'
@@ -989,7 +1025,7 @@ class RibNodeParam ( NodeParam ):
 
   #
   #
-  def encodedTypeStr ( self ): return 'R'
+  def encodedTypeStr ( self ) : return 'R'
   #
   #
   def copy ( self ):
@@ -1000,23 +1036,32 @@ class RibNodeParam ( NodeParam ):
 #
 # Text
 #
-class TextNodeParam ( NodeParam ):
+class TextNodeParam ( NodeParam ) :
   #
+  # __init__
   #
-  def __init__ ( self, xml_param = None, isRibParam = False ):
+  def __init__ ( self, xml_param = None, isRibParam = False ) :
     #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'text'
   #
   #
-  def encodedTypeStr ( self ): return 'X'
+  def encodedTypeStr ( self ) : return 'X'
   #
   #
-  def copy ( self ):
+  def copy ( self ) :
     #
     newParam = TextNodeParam ()
     self.copySetup ( newParam )
     return newParam
+  #
+  # valueToStr
+  # 
+  # Skip here conversation to str because text
+  # can contain unicode characters
+  #
+  def valueToStr ( self, value ) : 
+    return unicode ( value )
 #
 # Transform parameter that used in RIB
 #

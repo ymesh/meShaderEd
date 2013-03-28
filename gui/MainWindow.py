@@ -12,6 +12,7 @@ from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import *
 
 from gfx.gfxNode import GfxNode
+from gfx.gfxNote import GfxNote
 from core.nodeNetwork import *
 
 from meRendererSetup import meRendererSetup
@@ -528,18 +529,23 @@ class MainWindow ( QtGui.QMainWindow ):
   # onNodeParamChanged
   #
   def onNodeParamChanged ( self, node, param ) :
-    if DEBUG_MODE : print ">> MainWindow: onNodeParamChanged"
+    #if DEBUG_MODE : print ">> MainWindow: onNodeParamChanged"
     #param.shaderParam = not gfxNode.node.isInputParamLinked ( param )
 
     # from WorkArea we have GfxNode in signal nodeConnectionChanged
     # hence need to update nodeParam_ctl
-    if isinstance ( node, GfxNode ) :
-      if DEBUG_MODE : print "* update nodeView"
+    if isinstance ( node, GfxNode )  :
+      #if DEBUG_MODE : print "* update nodeView"
       node.updateInputParams ()
       self.ui.nodeParam_ctl.updateGui ()
-
+    elif isinstance ( node, GfxNote ) :
+      #if DEBUG_MODE : print "* update GfxNote"
+      node.updateNode ()
+      #node.update ()
+      self.workArea.scene ().update ()
+        
     if self.ui.imageView_ctl.autoUpdate () :
-      if DEBUG_MODE : print "* auto update"
+      #if DEBUG_MODE : print "* auto update"
       self.ui.imageView_ctl.updateViewer()
   #
   # onFitAll
@@ -677,7 +683,6 @@ class MainWindow ( QtGui.QMainWindow ):
         if not self.openNetwork ( network ) :
           # TODO!!! remove network from rescentNetworks
           pass
-          
   #
   # onOpenRecentProject
   #

@@ -7,17 +7,17 @@
 import os, sys
 from PyQt4 import QtCore
 
-
 from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
-
 #from core.nodeParam import NodeParam
+
 #
 # Node
 #
 class Node ( QtCore.QObject ):
   id = 0
   #
+  # __init__
   #
   def __init__ ( self, xml_node = None ):
     #
@@ -63,6 +63,7 @@ class Node ( QtCore.QObject ):
     if xml_node != None :
       self.parseFromXML ( xml_node )
   #
+  # build
   #
   @classmethod
   def build ( cls ):
@@ -75,6 +76,7 @@ class Node ( QtCore.QObject ):
   #
   def copy ( self ) : assert 0, 'copy needs to be implemented!'
   #
+  # addInputParam
   #
   def addInputParam ( self, param ) :
     param.isInput = True
@@ -83,6 +85,7 @@ class Node ( QtCore.QObject ):
     if param.label in self.getParamsLabels () : self.renameParamLabel ( param, param.label )
     self.inputParams.append ( param )
   #
+  # addOutputParam
   #
   def addOutputParam ( self, param ) :
     param.isInput = False
@@ -91,6 +94,7 @@ class Node ( QtCore.QObject ):
     if param.label in self.getParamsLabels () : self.renameParamLabel ( param, param.label )
     self.outputParams.append ( param )
   #
+  # addInternal
   #
   def addInternal ( self, newName ) :
     #print '--> add internal: %s' % internal
@@ -101,6 +105,7 @@ class Node ( QtCore.QObject ):
       self.internals.append ( internal )
     return internal
   #
+  # addInclude
   #
   def addInclude ( self, newName ) :
     #print '--> add include: %s' % include
@@ -111,34 +116,40 @@ class Node ( QtCore.QObject ):
       self.includes.append ( include )
     return include
   #
+  # attachOutputParamToLink
   #
-  def attachOutputParamToLink ( self, param, link ):
-    if not param in self.outputLinks.keys():
+  def attachOutputParamToLink ( self, param, link ) :
+    if not param in self.outputLinks.keys() :
       self.outputLinks[ param ] = []
     self.outputLinks[ param ].append ( link )
   #
+  # detachOutputParamFromLink
   #
-  def detachOutputParamFromLink ( self, param, link ):
+  def detachOutputParamFromLink ( self, param, link ) :
     if param in self.outputLinks.keys() :
       outputLinks = self.outputLinks[ param ]
       if link in outputLinks :
         outputLinks.remove ( link )
   #
+  # attachInputParamToLink
   #
-  def attachInputParamToLink ( self, param, link ):
+  def attachInputParamToLink ( self, param, link ) :
     self.inputLinks[ param ] = link
   #
+  # detachInputParamFromLink
   #
-  def detachInputParamFromLink ( self, param ):
+  def detachInputParamFromLink ( self, param ) :
     if param in self.inputLinks.keys() :
       self.inputLinks.pop ( param )
   #
+  # isInputParamLinked
   #
-  def isInputParamLinked ( self, param ):
+  def isInputParamLinked ( self, param ) :
     return param in self.inputLinks.keys()
   #
+  # isOutputParamLinked
   #
-  def isOutputParamLinked ( self, param ):
+  def isOutputParamLinked ( self, param ) :
     return param in self.outputLinks.keys()
   #
   # getLinkedSrcNode
@@ -146,7 +157,7 @@ class Node ( QtCore.QObject ):
   # returns node linked to input parameter param,
   # skipping all ConnectorNode
   #
-  def getLinkedSrcNode ( self, param ):
+  def getLinkedSrcNode ( self, param ) :
     if DEBUG_MODE : print '* getLinkedSrcNode node = %s param = %s' % ( self.label, param.label )
     srcNode = None
     srcParam = None
@@ -164,8 +175,9 @@ class Node ( QtCore.QObject ):
         srcParam = link.srcParam
     return ( srcNode, srcParam )
   #
+  # removeParam
   #
-  def removeParam ( self, param ):
+  def removeParam ( self, param ) :
     if param.isInput :
       if self.isInputParamLinked ( param ) :
         self.detachInputParamFromLink ( param )
@@ -176,8 +188,9 @@ class Node ( QtCore.QObject ):
           self.outputLinks.pop ( param )
       self.outputParams.remove ( param )
   #
+  # getInputParamByName
   #
-  def getInputParamByName ( self, name ):
+  def getInputParamByName ( self, name ) :
     result = None
     for param in self.inputParams :
       if param.name == name :
@@ -187,7 +200,7 @@ class Node ( QtCore.QObject ):
   #
   # getOutputParamByName
   #
-  def getOutputParamByName ( self, name ):
+  def getOutputParamByName ( self, name ) :
     result = None
     for param in self.outputParams :
       if param.name == name :
@@ -197,7 +210,7 @@ class Node ( QtCore.QObject ):
   #
   # getInputParamValueByName
   #
-  def getInputParamValueByName ( self, name ):
+  def getInputParamValueByName ( self, name ) :
     #
     result = None
     srcNode = srcParam = None
@@ -235,7 +248,7 @@ class Node ( QtCore.QObject ):
   #
   # renameParamName
   #
-  def renameParamName ( self, param, newName ):
+  def renameParamName ( self, param, newName ) :
     # assign new unique name to param
     from meCommon import getUniqueName
     param.name = getUniqueName ( newName, self.getParamsNames() )
@@ -243,7 +256,7 @@ class Node ( QtCore.QObject ):
   #
   # renameParamLabel
   #
-  def renameParamLabel ( self, param, newName ):
+  def renameParamLabel ( self, param, newName ) :
     # assign new unique label to param
     from meCommon import getUniqueName
     param.label = getUniqueName ( newName, self.getParamsLabels() )
@@ -251,7 +264,7 @@ class Node ( QtCore.QObject ):
   #
   # onParamChanged
   #
-  def onParamChanged ( self, param ):
+  def onParamChanged ( self, param ) :
     if DEBUG_MODE : print ">> Node: onParamChanged node = %s param = %s" % ( self.label, param.name )
     pass
     #self.emit( QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self, param )
@@ -270,7 +283,7 @@ class Node ( QtCore.QObject ):
   #
   # getParamName
   #
-  def getParamName ( self, param ):
+  def getParamName ( self, param ) :
     result = param.name
     if not ( param.provider == 'primitive' or param.isRibParam ) :
       result = self.getInstanceName () + '_' + param.name
@@ -570,6 +583,7 @@ class Node ( QtCore.QObject ):
       newNode.outputParams.append ( param.copy () )
     return newNode
 #
+# createParamFromXml
 # name and type must be specified in xml
 #
 def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
@@ -608,9 +622,9 @@ def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
                           ,'transform':TransformNodeParam
                           ,'image':ImageNodeParam
                        }
-  param_type = str( xml_param.attributes().namedItem( 'type' ).nodeValue() )
-  if param_type in createParamTable.keys() :
-    param = createParamTable[ param_type ]( xml_param, isRibParam )
+  param_type = str( xml_param.attributes ().namedItem ( 'type' ).nodeValue () )
+  if param_type in createParamTable.keys () :
+    param = createParamTable [ param_type ]( xml_param, isRibParam )
     param.isInput = isInput
   else :
     print '* Error: unknown param type !'

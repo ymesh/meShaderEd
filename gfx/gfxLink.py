@@ -13,12 +13,14 @@ from meShaderEd import app_settings
 # GfxLink
 #
 class GfxLink ( QtGui.QGraphicsItem ):
+  #
   Type = QtGui.QGraphicsItem.UserType + 2
   isStraight = True
   #
+  # createFromPoints
   #
   @staticmethod
-  def createFromPoints ( srcP, dstP ):
+  def createFromPoints ( srcP, dstP ) :
     gfxLink = GfxLink ()
     gfxLink.srcPoint = gfxLink.mapToItem ( gfxLink, srcP )
     gfxLink.dstPoint = gfxLink.mapToItem ( gfxLink, dstP )
@@ -26,6 +28,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
 
     return gfxLink
   #
+  # createFromLink
   #
   @staticmethod
   def createFromLink ( link ):
@@ -36,9 +39,10 @@ class GfxLink ( QtGui.QGraphicsItem ):
 
     return gfxLink
   #
-  #
+  # __init__
   #
   def __init__ ( self, link = None, srcConnector = None, dstConnector = None ):
+    #
     QtGui.QGraphicsItem.__init__ ( self )
 
     from meShaderEd import getDefaultValue
@@ -65,11 +69,6 @@ class GfxLink ( QtGui.QGraphicsItem ):
     if srcConnector != None :
       if srcConnector.isConnectedToInput () : 
         self.swapConnectors ()
-  #
-  #
-  #
-  def __delete__ ( self, instance ) :
-    if DEBUG_MODE : print ">> delete gfxLink"
   #
   # remove
   #

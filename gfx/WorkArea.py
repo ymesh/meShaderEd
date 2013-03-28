@@ -15,6 +15,7 @@ from core.connectorNode import ConnectorNode
 from gfx.gfxNode import GfxNode
 from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
+from gfx.gfxNote import GfxNote
 
 from meShaderEd import app_settings
 from global_vars import DEBUG_MODE
@@ -218,6 +219,8 @@ class WorkArea ( QtGui.QGraphicsView ):
     #print ( ">> WorkArea: addGfxNode %s" % node.label )
     if node.type == 'connector' :
       gfxNode = GfxNodeConnector ( node.inputParams [ 0 ], node = node )
+    elif node.type == 'note' :
+      gfxNode = GfxNote ( node )  
     else :
       gfxNode = GfxNode ( node )
     scene = self.scene ()
@@ -240,12 +243,13 @@ class WorkArea ( QtGui.QGraphicsView ):
     #print ">> WorkArea: onSelectionChanged "
     self.selectedNodes = []
     self.selectedLinks = []
-    selected = self.scene().selectedItems()
+    selected = self.scene ().selectedItems ()
 
     for item in selected:
-      if isinstance ( item, GfxNode ): self.selectedNodes.append ( item )
-      if isinstance ( item, GfxNodeConnector ): self.selectedNodes.append ( item )
-      if isinstance ( item, GfxLink ): self.selectedLinks.append ( item )
+      if   isinstance ( item, GfxNode ): self.selectedNodes.append ( item )
+      elif isinstance ( item, GfxNote ): self.selectedNodes.append ( item )
+      elif isinstance ( item, GfxNodeConnector ): self.selectedNodes.append ( item )
+      elif isinstance ( item, GfxLink ): self.selectedLinks.append ( item )
 
     self.emit ( QtCore.SIGNAL ( 'selectNodes' ), self.selectedNodes, self.selectedLinks )
   #
@@ -507,7 +511,8 @@ class WorkArea ( QtGui.QGraphicsView ):
     for item in selected:
       if ( isinstance ( item, GfxLink ) or
            isinstance ( item, GfxNode ) or
-           ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) : item.remove ()
+           isinstance ( item, GfxNote ) or
+         ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) : item.remove ()
 
     if DEBUG_MODE : print '>> WorkArea::removeSelected (after) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values ()) )
   #
