@@ -1,0 +1,52 @@
+<!DOCTYPE notes>
+<nodenet author="meShaderEd" name="notes">
+ <help>Short NodeNetwork description</help>
+ <nodes>
+  <node icon="" type="note" author="mesh" id="1" name="note" label="note">
+   <help>Text note</help>
+   <input>
+    <property provider="attribute" default="color(0.700,0.000,0.000)" type="color" value="color(0.700,0.000,0.000)" name="text_color" label="Text Color"/>
+    <property provider="attribute" default="color(1.000,1.000,0.000)" type="color" value="color(1.000,1.000,0.000)" name="bg_color" label="Background"/>
+    <property provider="attribute" default="0.500" range="0 1 0.1" subtype="slider" type="float" value="0.500" name="opacity" label="Opacity"/>
+    <property provider="attribute" default="1" subtype="switch" type="int" value="1" name="border" label="Show Border"/>
+    <property provider="attribute" default="0" range="left:center:right" subtype="selector" type="int" value="0" name="justify" label="justify"/>
+    <property provider="attribute" default="Write here some notes &#xa;or  network description ..." type="text" value="Write here some notes &#xa;or  network description ..." name="text" label="text"/>
+   </input>
+   <output/>
+   <internal/>
+   <include/>
+   <offset x="-155" y="-210"/>
+  </node>
+  <node icon="" type="note" author="mesh" id="2" name="note" label="note0">
+   <help>Text note</help>
+   <input>
+    <property provider="attribute" default="color(0.700,0.000,0.000)" type="color" value="color(0.963,1.000,0.041)" name="text_color" label="Text Color"/>
+    <property provider="attribute" default="color(1.000,1.000,0.000)" type="color" value="color(0.986,0.000,0.029)" name="bg_color" label="Background"/>
+    <property provider="attribute" default="0.500" range="0 1 0.1" subtype="slider" type="float" value="0.500" name="opacity" label="Opacity"/>
+    <property provider="attribute" default="1" subtype="switch" type="int" value="0" name="border" label="Show Border"/>
+    <property provider="attribute" default="0" range="left:center:right" subtype="selector" type="int" value="0" name="justify" label="justify"/>
+    <property provider="attribute" default="Write here some notes &#xa;or  network description ..." type="text" value="Пояснения на русском" name="text" label="text"/>
+   </input>
+   <output/>
+   <internal/>
+   <include/>
+   <offset x="-81" y="-119"/>
+  </node>
+  <node icon="" type="note" author="mesh" id="3" name="note" label="note1">
+   <help>Text note</help>
+   <input>
+    <property provider="attribute" default="color(0.700,0.000,0.000)" type="color" value="color(0.999,0.936,0.040)" name="text_color" label="Text Color"/>
+    <property provider="attribute" default="color(1.000,1.000,0.000)" type="color" value="color(0.088,0.672,0.045)" name="bg_color" label="Background"/>
+    <property provider="attribute" default="0.500" range="0 1 0.1" subtype="slider" type="float" value="0.500" name="opacity" label="Opacity"/>
+    <property provider="attribute" default="1" subtype="switch" type="int" value="0" name="border" label="Show Border"/>
+    <property provider="attribute" default="0" range="left:center:right" subtype="selector" type="int" value="0" name="justify" label="justify"/>
+    <property provider="attribute" default="Write here some notes &#xa;or  network description ..." type="text" value="こんにちわ！&#xa;いくつかのメモを書く&#xa;" name="text" label="text"/>
+   </input>
+   <output/>
+   <internal/>
+   <include/>
+   <offset x="1" y="-65"/>
+  </node>
+ </nodes>
+ <links/>
+</nodenet>
