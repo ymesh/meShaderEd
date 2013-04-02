@@ -34,6 +34,7 @@ from ui_MainWindow import Ui_MainWindow
 #
 class MainWindow ( QtGui.QMainWindow ):
   #
+  # __init__
   #
   def __init__ ( self ) :
     #
@@ -248,7 +249,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onProjectSetup
   #
-  def onProjectSetup ( self ):
+  def onProjectSetup ( self ) :
     #
     if DEBUG_MODE : print ">> MainWindow: onProjectSetup"
     projectSetupDlg = ProjectSetup ( app_settings )
@@ -261,7 +262,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onSettingsSetup
   #
-  def onSettingsSetup ( self ):
+  def onSettingsSetup ( self ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onSettingsSetup'
     settingsSetupDlg = SettingsSetup ( app_settings )
@@ -271,7 +272,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onRenderSettings
   #
-  def onRenderSettings ( self ):
+  def onRenderSettings ( self ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onRenderSettings'
     renderSettingsDlg = meRendererSetup ( app_renderer )
@@ -281,7 +282,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onRenderPresetChanged
   #
-  def onRenderPresetChanged ( self ):
+  def onRenderPresetChanged ( self ) :
     #
     presetName = app_renderer.getCurrentPresetName()
     if DEBUG_MODE : print '>> MainWindow: onRenderPresetChanged preset = %s' % presetName
@@ -298,14 +299,14 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onRenderSavePreset
   #
-  def onRenderSavePreset ( self ):
+  def onRenderSavePreset ( self ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onRenderSavePreset  preset = %s' % app_renderer.getCurrentPresetName()
     app_renderer.saveSettings ()
   #
   # onShowGrid
   #
-  def onShowGrid ( self, check ):
+  def onShowGrid ( self, check ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onShowGrid = %d' % check
     self.workArea.drawGrid = bool ( check )
@@ -318,7 +319,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onSnapGrid
   #
-  def onSnapGrid ( self, check ):
+  def onSnapGrid ( self, check ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onSnapGrid = %d' % check
     self.workArea.gridSnap = bool ( check )
@@ -330,7 +331,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onReverseFlow
   #
-  def onReverseFlow ( self, check ):
+  def onReverseFlow ( self, check ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onReverseFlow = %d' % check
     self.workArea.reverseFlow = bool ( check )
@@ -342,7 +343,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onStraightLinks
   #
-  def onStraightLinks ( self, check ):
+  def onStraightLinks ( self, check ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onStraightLinks = %d' % check
     self.workArea.straightLinks = bool ( check )
@@ -372,7 +373,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onAddGfxNode
   #
-  def onAddGfxNode ( self, gfxNode ):
+  def onAddGfxNode ( self, gfxNode ) :
     #
     #print ">> MainWindow: onAddGfxNode = %s" % gfxNode.node.label
     if gfxNode.node.type == 'image' : self.ui.imageView_ctl.addViewer ( gfxNode )
@@ -384,7 +385,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onRemoveGfxNode
   #
-  def onRemoveGfxNode ( self, gfxNode ):
+  def onRemoveGfxNode ( self, gfxNode ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onRemoveGfxNode = %s' % gfxNode.node.label
     if gfxNode.node.type == 'image' :
@@ -393,7 +394,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onEditGfxNode
   #
-  def onEditGfxNode ( self, gfxNode ):
+  def onEditGfxNode ( self, gfxNode ) :
     if DEBUG_MODE : print ">> MainWindow: onEditGfxNode"
     #import copy
 
@@ -437,7 +438,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onDelete
   #
-  def onDelete ( self ):
+  def onDelete ( self ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onDelete'
 
@@ -450,7 +451,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onSelectAll
   #
-  def onSelectAll ( self ):
+  def onSelectAll ( self ) :
     if DEBUG_MODE : print '>> MainWindow: onSelectAll'
     self.workArea.selectAllNodes ()
   #
@@ -595,7 +596,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onNew
   #
-  def onNew ( self, tabName = 'untitled' ):
+  def onNew ( self, tabName = 'untitled' ) :
     #
     def tabNameExists ( self, name ):
       ret = False
@@ -637,7 +638,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onOpen
   #
-  def onOpen ( self ):
+  def onOpen ( self ) :
     if DEBUG_MODE : print ">> MainWindow: onOpen"
     #
     curDir = app_global_vars [ 'ProjectNetworks' ]
@@ -711,7 +712,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onImport
   #
-  def onImport ( self ):
+  def onImport ( self ) :
     if DEBUG_MODE : print ">> MainWindow: onImport"
     #
     curDir = app_global_vars [ 'ProjectNetworks' ]
@@ -724,7 +725,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onSave
   #
-  def onSave ( self ):
+  def onSave ( self ) :
     if DEBUG_MODE : print ">> MainWindow: onSave"
     # if file is new -- use onSaveAs function
     #
@@ -737,7 +738,7 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   # onSaveAs
   #
-  def onSaveAs ( self ):
+  def onSaveAs ( self ) :
     if DEBUG_MODE : print ">> MainWindow: onSaveAs"
     #
     curDir = app_global_vars [ 'ProjectNetworks' ]

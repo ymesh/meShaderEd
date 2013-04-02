@@ -41,7 +41,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
   #
   # __init__
   #
-  def __init__ ( self, link = None, srcConnector = None, dstConnector = None ):
+  def __init__ ( self, link = None, srcConnector = None, dstConnector = None ) :
     #
     QtGui.QGraphicsItem.__init__ ( self )
 
@@ -67,7 +67,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
     self.setDstConnector ( dstConnector)
 
     if srcConnector != None :
-      if srcConnector.isConnectedToInput () : 
+      if srcConnector.isConnectedToInput () and not srcConnector.isConnectedToOutput (): 
         self.swapConnectors ()
   #
   # remove
@@ -89,15 +89,15 @@ class GfxLink ( QtGui.QGraphicsItem ):
   #
   # type
   #
-  def type ( self ): return GfxLink.Type
+  def type ( self ) : return GfxLink.Type
   #
   # boundingRect
   #
-  def boundingRect ( self ): return self.rect
+  def boundingRect ( self ) : return self.rect
   #
   # shape
   #
-  def shape ( self ): return self.path
+  def shape ( self ) : return self.path
   #
   # swapConnectors
   #
@@ -109,7 +109,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
   #
   # isDstConnectedTo
   #
-  def isDstConnectedTo ( self, connector ):
+  def isDstConnectedTo ( self, connector ) :
     connected = False
     if connector == self.dstConnector :
       connected = True
@@ -117,7 +117,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
   #
   # isEqual
   #
-  def isEqual ( self, link ):
+  def isEqual ( self, link ) :
     equal = False
     if self.srcConnector == link.srcConnector and self.dstConnector == link.dstConnector :
       equal = True
@@ -143,33 +143,33 @@ class GfxLink ( QtGui.QGraphicsItem ):
   #
   # itemChange
   #
-  def itemChange ( self, change, value ):
-    if change == QtGui.QGraphicsItem.ItemSelectedChange:
+  def itemChange ( self, change, value ) :
+    if change == QtGui.QGraphicsItem.ItemSelectedChange :
       self.isLinkSelected = value.toBool ()
     return QtGui.QGraphicsItem.itemChange ( self, change, value )
   #
   # setPoints
   #
-  def setPoints ( self, srcP, dstP ):
+  def setPoints ( self, srcP, dstP ) :
     self.srcPoint = self.mapToItem ( self, srcP )
     self.dstPoint = self.mapToItem ( self, dstP )
     self.adjust ()
   #
   # setSrcPoint
   #
-  def setSrcPoint ( self, p ):
+  def setSrcPoint ( self, p ) :
     self.srcPoint = self.mapToItem ( self, p )
     self.adjust ()
   #
   # setDstPoint
   #
-  def setDstPoint ( self, p ):
+  def setDstPoint ( self, p ) :
     self.dstPoint = self.mapToItem ( self, p )
     self.adjust ()
   #
   # adjust
   #
-  def adjust ( self ):
+  def adjust ( self ) :
     from meShaderEd import getDefaultValue
     self.isStraight = getDefaultValue ( app_settings, 'WorkArea', 'straight_links' )
 
@@ -193,7 +193,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
         centerX = hull.center ().x ()
         centerY = hull.center ().y ()
         # second point
-        offsetVX = min( abs ( hull.topRight ().x () - hull.topLeft ().x () ) * 0.1, 40 )
+        offsetVX = min ( abs ( hull.topRight ().x () - hull.topLeft ().x () ) * 0.1, 40 )
         offsetVY = 0.0
 
         p1 = self.srcPoint + QtCore.QPointF ( offsetVX, offsetVY )
@@ -224,16 +224,17 @@ class GfxLink ( QtGui.QGraphicsItem ):
         #self.path.cubicTo ( self.points[5], self.points[6], self.points[7] )
         self.path.cubicTo ( p1, p1, p3 )
         self.path.cubicTo ( p6, p6, self.dstPoint )
-      self.rect = self.path.boundingRect()
+      self.rect = self.path.boundingRect ()
   #
   # paint
   #
-  def paint ( self, painter, option, widget ):
+  def paint ( self, painter, option, widget ) :
+    #
     if self.path is not None :
       painter.setRenderHint ( QtGui.QPainter.Antialiasing )
       brush = self.brushNormal
       if self.isLinkSelected : brush = self.brushSelected
-      painter.setPen( QtGui.QPen( brush,
+      painter.setPen( QtGui.QPen ( brush,
                                   1.25,
                                   QtCore.Qt.SolidLine,
                                   QtCore.Qt.RoundCap,

@@ -12,11 +12,12 @@ from nodeParam import NodeParam
 #
 # NodeLink
 #
-class NodeLink ():
+class NodeLink () :
   id = 0
   #
+  # __init__
   #
-  def __init__ ( self, nodenet = None, xml_link = None  ):
+  def __init__ ( self, nodenet = None, xml_link = None  ) :
     self.id = None
     self.srcNode = None
     self.dstNode = None
@@ -31,7 +32,8 @@ class NodeLink ():
   # build
   #
   @classmethod
-  def build ( cls, srcNode, dstNode, srcParam, dstParam ):
+  def build ( cls, srcNode, dstNode, srcParam, dstParam ) :
+    #
     link = cls()
 
     NodeLink.id += 1
@@ -47,7 +49,7 @@ class NodeLink ():
   #
   # swapNodes
   #
-  def swapNodes ( self ):      
+  def swapNodes ( self ) :      
     # swap source and destination
     node = self.srcNode
     param = self.srcParam

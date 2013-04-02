@@ -24,7 +24,7 @@ from global_vars import DEBUG_MODE
 #
 # WorkArea
 #
-class WorkArea ( QtGui.QGraphicsView ):
+class WorkArea ( QtGui.QGraphicsView ) :
   #
   #
   #
@@ -103,7 +103,7 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   # drawBackground
   #
-  def drawBackground ( self, painter, rect ):
+  def drawBackground ( self, painter, rect ) :
     sc_rect = self.sceneRect ()
     bbrush = QtGui.QBrush( QtGui.QColor ( 148, 148, 148 ) ) ## painter.background()
     painter.fillRect ( rect, bbrush )
@@ -152,8 +152,11 @@ class WorkArea ( QtGui.QGraphicsView ):
   # selectAbove
   #
   def selectAbove ( self, upperGfxNode ) :
+    #
+    if DEBUG_MODE : print '>> WorkArea::selectAbove upperGfxNode.node (%s) links:' % upperGfxNode.node.label
     for link_list in upperGfxNode.node.outputLinks.values () :
       for link in link_list :
+        link.printInfo ()
         gfxNode = self.getGfxNodesByNode ( link.dstNode )
         gfxNode.setSelected ( True )
         self.selectAbove ( gfxNode )
@@ -161,8 +164,10 @@ class WorkArea ( QtGui.QGraphicsView ):
   # selectBelow
   #
   def selectBelow ( self, upperGfxNode ) :
-
+    #
+    if DEBUG_MODE : print '>> WorkArea::selectBelow upperGfxNode.node (%s) children:' % upperGfxNode.node.label
     for node in upperGfxNode.node.childs :
+      if DEBUG_MODE : print '* %s' % node.label
       gfxNode = self.getGfxNodesByNode ( node )
       gfxNode.setSelected ( True )
       self.selectBelow ( gfxNode )
@@ -214,13 +219,13 @@ class WorkArea ( QtGui.QGraphicsView ):
   #
   # Node already in NodeNet, so add new GfxNode to scene
   #
-  def addGfxNode ( self, node, pos = None ):
+  def addGfxNode ( self, node, pos = None ) :
     #
     #print ( ">> WorkArea: addGfxNode %s" % node.label )
     if node.type == 'connector' :
       gfxNode = GfxNodeConnector ( node.inputParams [ 0 ], node = node )
     elif node.type == 'note' :
-      gfxNode = GfxNote ( node )  
+      gfxNode = GfxNote ( node )
     else :
       gfxNode = GfxNode ( node )
     scene = self.scene ()
@@ -410,7 +415,7 @@ class WorkArea ( QtGui.QGraphicsView ):
     #
     if DEBUG_MODE : print '>> WorkArea::onStartNodeConnector'
     self.state = 'traceNodeConnector'
-    
+
     newNode = ConnectorNode ()
     self.nodeNet.addNode ( newNode )
 
@@ -435,11 +440,14 @@ class WorkArea ( QtGui.QGraphicsView ):
     srcParam = connector.getOutputParam ()
     dstNode = newConnector.getNode ()
     dstParam = newConnector.getInputParam ()
-    
-    
+
+    #
+    # swap link direction only for connectors
+    # in open chain connected to input node parameter
+    #
     swappedLink = False
-    if connector.isConnectedToInput () :
-      if DEBUG_MODE : print '* connector.isConnectedToInput'
+    if connector.isConnectedToInput () and not connector.isConnectedToOutput () :
+      if DEBUG_MODE : print '*** swap link direction ***'
       swappedLink = True
       srcNode = newConnector.getNode ()
       srcParam = newConnector.getOutputParam ()
@@ -449,16 +457,54 @@ class WorkArea ( QtGui.QGraphicsView ):
     link = NodeLink.build ( srcNode, dstNode, srcParam, dstParam )
     # if swappedLink : link.swapNodes ()
     self.nodeNet.addLink ( link )
-    
-    if connector.isLinked () :
-      # preserve existing links
-      if connector.isConnectedToInput () :
-        pass
+
+    #if DEBUG_MODE : self.nodeNet.printInfo ()
+
+    # preserve existing links for parameter connectors
+    if connector.isLinked () and not connector.isNode () :
+      if connector.isInput () :
+        #print '*** preserve input ***'
+        # TODO!!!
+        # This is very rough code -- needs to be wrapped in functions
+        gfxLinks = connector.getInputGfxLinks ()
+        for gfxLink in gfxLinks :
+          gfxLink.setDstConnector ( newConnector )
+
+          # remove gfxLink from previouse connector
+          connector.removeLink ( gfxLink )
+
+          # adjust destination for node link
+          newConnector.getNode ().attachInputParamToLink ( newConnector.getInputParam (), gfxLink.link )
+          newConnector.getNode ().childs.add ( gfxLink.link.srcNode )
+          connector.getNode ().childs.remove ( gfxLink.link.srcNode )
+
+          gfxLink.link.dstNode = newConnector.getNode ()
+          gfxLink.link.dstParam = newConnector.getInputParam ()
       else :
-        pass
-      
+        #print '*** preserve output ***'
+        gfxLinks = connector.getOutputGfxLinks ()
+        for gfxLink in gfxLinks :
+          gfxLink.setSrcConnector ( newConnector )
+
+          # remove gfxLink from previouse connector
+          connector.removeLink ( gfxLink )
+
+          # adjust source for node link
+          connector.getNode ().detachOutputParamFromLink ( gfxLink.link.srcParam, gfxLink.link )
+          newConnector.getNode ().attachOutputParamToLink ( newConnector.getOutputParam (), gfxLink.link )
+          #newConnector.getNode ().childs.add ( connector.getNode () )
+          gfxLink.link.dstNode.childs.add ( newConnector.getNode () )
+          gfxLink.link.dstNode.childs.remove ( connector.getNode () )
+
+          gfxLink.link.srcNode = newConnector.getNode ()
+          gfxLink.link.srcParam = newConnector.getOutputParam ()
+
+      #if DEBUG_MODE : self.nodeNet.printInfo ()
+
     gfxLink = GfxLink ( link, connector, newConnector  )
     self.scene ().addItem ( gfxLink )
+
+
   #
   # onTraceNodeConnector
   #

@@ -14,12 +14,12 @@ from core.node_global_vars import node_global_vars
 #
 # Node
 #
-class Node ( QtCore.QObject ):
+class Node ( QtCore.QObject ) :
   id = 0
   #
   # __init__
   #
-  def __init__ ( self, xml_node = None ):
+  def __init__ ( self, xml_node = None ) :
     #
     QtCore.QObject.__init__( self )
 
@@ -66,15 +66,34 @@ class Node ( QtCore.QObject ):
   # build
   #
   @classmethod
-  def build ( cls ):
+  def build ( cls ) :
     node = cls ()
     # set unique id while building
     Node.id += 1
     node.id = Node.id
     return node
   #
+  # copy
   #
   def copy ( self ) : assert 0, 'copy needs to be implemented!'
+  #
+  # printInfo
+  #
+  def printInfo ( self ) :
+    print ':: Node (id = %d) label = %s' % ( self.id, self.label )
+    print ':: Node inputLinks:'
+    for param in self.inputLinks.keys () :
+      print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
+      self.inputLinks [ param ].printInfo ()  
+    print ':: Node outputLinks:'
+    for param in self.outputLinks.keys () :
+      print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
+      linklist = self.outputLinks [ param ]
+      for link in linklist :
+        link.printInfo ()  
+    print ':: Node children:'
+    for child in self.childs :
+      print '\t* %s' % child.label
   #
   # addInputParam
   #
@@ -119,38 +138,42 @@ class Node ( QtCore.QObject ):
   # attachOutputParamToLink
   #
   def attachOutputParamToLink ( self, param, link ) :
-    if not param in self.outputLinks.keys() :
-      self.outputLinks[ param ] = []
-    self.outputLinks[ param ].append ( link )
+    if not param in self.outputLinks.keys () :
+      self.outputLinks [ param ] = []
+    self.outputLinks [ param ].append ( link )
   #
   # detachOutputParamFromLink
   #
   def detachOutputParamFromLink ( self, param, link ) :
-    if param in self.outputLinks.keys() :
-      outputLinks = self.outputLinks[ param ]
+    if param in self.outputLinks.keys () :
+      outputLinks = self.outputLinks [ param ]
       if link in outputLinks :
         outputLinks.remove ( link )
   #
   # attachInputParamToLink
   #
   def attachInputParamToLink ( self, param, link ) :
-    self.inputLinks[ param ] = link
+    self.inputLinks [ param ] = link
   #
   # detachInputParamFromLink
   #
   def detachInputParamFromLink ( self, param ) :
-    if param in self.inputLinks.keys() :
+    if DEBUG_MODE : print ">> Node::detachInputParamFromLink param = %s" % param.name
+    if param in self.inputLinks.keys () :
+      if DEBUG_MODE : 
+        for k in self.inputLinks.keys () : print k.name
+      if DEBUG_MODE : print "... done"
       self.inputLinks.pop ( param )
   #
   # isInputParamLinked
   #
   def isInputParamLinked ( self, param ) :
-    return param in self.inputLinks.keys()
+    return param in self.inputLinks.keys ()
   #
   # isOutputParamLinked
   #
   def isOutputParamLinked ( self, param ) :
-    return param in self.outputLinks.keys()
+    return param in self.outputLinks.keys ()
   #
   # getLinkedSrcNode
   #
@@ -166,7 +189,7 @@ class Node ( QtCore.QObject ):
       link = self.inputLinks [ param ]
       if link.srcNode.type == 'connector' :
         if len ( link.srcNode.inputParams ) :
-          firstParam = link.srcNode.inputParams [ 0 ]
+          firstParam = link.srcNode.inputParams [0]
           ( srcNode, srcParam ) = link.srcNode.getLinkedSrcNode ( firstParam )
         else :
           if DEBUG_MODE : print '* no inputParams at connector %s' % ( link.srcNode.label )  
@@ -184,7 +207,7 @@ class Node ( QtCore.QObject ):
       self.inputParams.remove ( param )
     else :
       if self.isOutputParamLinked ( param ) :
-        while param in self.outputLinks.keys() :
+        while param in self.outputLinks.keys () :
           self.outputLinks.pop ( param )
       self.outputParams.remove ( param )
   #
