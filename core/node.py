@@ -55,7 +55,7 @@ class Node ( QtCore.QObject ) :
     self.inputLinks = {}
     self.outputLinks = {}
 
-    self.childs = set()
+    self.childs = set ()
 
     # position from GfxNode
     self.offset = ( 0, 0 )
@@ -77,27 +77,42 @@ class Node ( QtCore.QObject ) :
   #
   def copy ( self ) : assert 0, 'copy needs to be implemented!'
   #
+  # addChild
+  #
+  def addChild ( self, node ) : self.childs.add ( node ) 
+  #
+  # removeChild
+  #
+  def removeChild ( self, node ) :
+    #
+    if node in self.childs :
+      self.childs.remove ( node ) 
+    else :
+      if DEBUG_MODE : print '!! Node::removeChild child %s is not in the list' % node.label    
+  #
   # printInfo
   #
   def printInfo ( self ) :
+    #
     print ':: Node (id = %d) label = %s' % ( self.id, self.label )
-    print ':: Node inputLinks:'
+    print '** Node inputLinks:'
     for param in self.inputLinks.keys () :
       print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
       self.inputLinks [ param ].printInfo ()  
-    print ':: Node outputLinks:'
+    print '** Node outputLinks:'
     for param in self.outputLinks.keys () :
       print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
       linklist = self.outputLinks [ param ]
       for link in linklist :
         link.printInfo ()  
-    print ':: Node children:'
+    print '** Node children:'
     for child in self.childs :
       print '\t* %s' % child.label
   #
   # addInputParam
   #
   def addInputParam ( self, param ) :
+    #
     param.isInput = True
     # to be sure that name and label is unique
     if param.name in self.getParamsNames () : self.renameParamName ( param, param.name )
@@ -107,6 +122,7 @@ class Node ( QtCore.QObject ) :
   # addOutputParam
   #
   def addOutputParam ( self, param ) :
+    #
     param.isInput = False
     # to be sure that name and label is unique
     if param.name in self.getParamsNames () : self.renameParamName ( param, param.name )

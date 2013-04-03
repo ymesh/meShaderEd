@@ -32,7 +32,7 @@ from ui_MainWindow import Ui_MainWindow
 #
 # Create a class for our main window
 #
-class MainWindow ( QtGui.QMainWindow ):
+class MainWindow ( QtGui.QMainWindow ) :
   #
   # __init__
   #
@@ -453,19 +453,23 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onSelectAll ( self ) :
     if DEBUG_MODE : print '>> MainWindow: onSelectAll'
+      
     self.workArea.selectAllNodes ()
   #
   # onSelectAbove
   #
   def onSelectAbove ( self ) :
-    selectedGfxNode = self.workArea.selectedNodes [ 0 ]
     if DEBUG_MODE : print '>> MainWindow: onSelectAbove'
+    if DEBUG_MODE : self.workArea.nodeNet.printInfo ()
+      
+    selectedGfxNode = self.workArea.selectedNodes [ 0 ]
     self.workArea.selectAbove ( selectedGfxNode )
   #
   # onSelectBelow
   #
   def onSelectBelow ( self ) :
     if DEBUG_MODE : print '>> MainWindow: onSelectBelow'
+      
     selectedGfxNode = self.workArea.selectedNodes [ 0 ]
     self.workArea.selectBelow ( selectedGfxNode )
   #
@@ -499,17 +503,17 @@ class MainWindow ( QtGui.QMainWindow ):
   #
   def onDuplicate ( self ):
     if DEBUG_MODE : print '>> MainWindow: onDuplicate '
-    self.onDuplicateNode ( False )
+    self.onDuplicateNode ( preserveLinks = False )
   #
   # onDuplicateWithLinks
   #
   def onDuplicateWithLinks ( self ):
     if DEBUG_MODE : print '>> MainWindow: onDuplicateWithLinks'
-    self.onDuplicateNode ( True )
+    self.onDuplicateNode ( preserveLinks = True )
   #
   # onSelectGfxNodes
   #
-  def onSelectGfxNodes ( self, gfxNodes = [], gfxLinks = [] ):
+  def onSelectGfxNodes ( self, gfxNodes = [], gfxLinks = [] ) :
     #
     #print ">> MainWindow: onSelectGfxNodes"
     self.setupActions ()

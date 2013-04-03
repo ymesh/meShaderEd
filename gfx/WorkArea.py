@@ -153,13 +153,16 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   def selectAbove ( self, upperGfxNode ) :
     #
-    if DEBUG_MODE : print '>> WorkArea::selectAbove upperGfxNode.node (%s) links:' % upperGfxNode.node.label
+    if DEBUG_MODE : print '>> WorkArea::selectAbove node (%s) links:' % upperGfxNode.node.label
     for link_list in upperGfxNode.node.outputLinks.values () :
       for link in link_list :
         link.printInfo ()
-        gfxNode = self.getGfxNodesByNode ( link.dstNode )
-        gfxNode.setSelected ( True )
-        self.selectAbove ( gfxNode )
+        if self.nodeNet.hasThisLink ( link ) :
+          gfxNode = self.getGfxNodesByNode ( link.dstNode )
+          gfxNode.setSelected ( True )
+          self.selectAbove ( gfxNode )
+        else :
+          if DEBUG_MODE : print '!! invalid link ...'  
   #
   # selectBelow
   #
@@ -471,12 +474,12 @@ class WorkArea ( QtGui.QGraphicsView ) :
           gfxLink.setDstConnector ( newConnector )
 
           # remove gfxLink from previouse connector
-          connector.removeLink ( gfxLink )
+          connector.removeGfxLink ( gfxLink )
 
           # adjust destination for node link
           newConnector.getNode ().attachInputParamToLink ( newConnector.getInputParam (), gfxLink.link )
-          newConnector.getNode ().childs.add ( gfxLink.link.srcNode )
-          connector.getNode ().childs.remove ( gfxLink.link.srcNode )
+          newConnector.getNode ().addChild ( gfxLink.link.srcNode )
+          connector.getNode ().removeChild ( gfxLink.link.srcNode )
 
           gfxLink.link.dstNode = newConnector.getNode ()
           gfxLink.link.dstParam = newConnector.getInputParam ()
@@ -487,14 +490,14 @@ class WorkArea ( QtGui.QGraphicsView ) :
           gfxLink.setSrcConnector ( newConnector )
 
           # remove gfxLink from previouse connector
-          connector.removeLink ( gfxLink )
+          connector.removeGfxLink ( gfxLink )
 
           # adjust source for node link
           connector.getNode ().detachOutputParamFromLink ( gfxLink.link.srcParam, gfxLink.link )
           newConnector.getNode ().attachOutputParamToLink ( newConnector.getOutputParam (), gfxLink.link )
           #newConnector.getNode ().childs.add ( connector.getNode () )
-          gfxLink.link.dstNode.childs.add ( newConnector.getNode () )
-          gfxLink.link.dstNode.childs.remove ( connector.getNode () )
+          gfxLink.link.dstNode.addChild ( newConnector.getNode () )
+          gfxLink.link.dstNode.removeChild ( connector.getNode () )
 
           gfxLink.link.srcNode = newConnector.getNode ()
           gfxLink.link.srcParam = newConnector.getOutputParam ()
@@ -531,11 +534,13 @@ class WorkArea ( QtGui.QGraphicsView ) :
     self.emit ( QtCore.SIGNAL ( 'gfxNodeRemoved' ), gfxNode )
     self.scene ().removeItem ( gfxNode )
     self.nodeNet.removeNode ( gfxNode.node )
+    
+    #if DEBUG_MODE : self.nodeNet.printInfo ()
   #
   # onRemoveLink
   #
   def onRemoveLink ( self, gfxLink ) :
-    #print ">> WorkArea: onRemoveLink"
+    print ">> WorkArea: onRemoveLink"
     self.scene ().removeItem ( gfxLink )
     if gfxLink.link is not None :
       srcConnector = gfxLink.srcConnector

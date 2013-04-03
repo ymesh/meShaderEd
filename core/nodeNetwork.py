@@ -128,31 +128,37 @@ class NodeNetwork ( QtCore.QObject ) :
     
     # add child (since it is a set no duplicates allowed)
     if DEBUG_MODE : print '* add child % s to %s ' % ( link.srcNode.label, link.dstNode.label )
-    link.dstNode.childs.add ( link.srcNode )
+    link.dstNode.addChild ( link.srcNode )
   #
   # removeNode
   #                       
   def removeNode ( self, node ) :
-    if DEBUG_MODE : print '>> NodeNetwork: removing node %s (%d)' % ( node.name, node.id )
-    # remove from NodeNetwork
+    if DEBUG_MODE : print '>> NodeNetwork: removing node %s (id = %d) ...' % ( node.name, node.id )
+    #
+    # remove node from NodeNetwork
+    #
     if node.id in self.nodes.keys () :
-      if DEBUG_MODE :print '...found in keys'
-      nodePopped = self.nodes.pop ( node.id )        
+      nodePopped = self.nodes.pop ( node.id )
+      if DEBUG_MODE : print '** node removed ...'         
   #
   # removeLink
   #
   def removeLink ( self, link ) :
-    if DEBUG_MODE : print '>> NodeNetwork: removing link (%d)' % link.id
-    # remove from model links
-    if link.id in self.links.keys () :
-      if DEBUG_MODE : print '...found in keys'
+    if DEBUG_MODE : print '>> NodeNetwork: removing link (id = %d) ...' % link.id
+    #
+    # remove link from NodeNetwork
+    #
+    if self.hasThisLink ( link ) :
+      if DEBUG_MODE : print '** link removed ...'
       linkPopped = self.links.pop ( link.id )
-      
+      #
       # detach node from links
+      #
       linkPopped.srcNode.detachOutputParamFromLink ( linkPopped.srcParam, linkPopped )
       linkPopped.dstNode.detachInputParamFromLink ( linkPopped.dstParam )
-      
+      #
       # check if we can remove a child from destination node
+      #
       dstNode = linkPopped.dstNode
       srcNode = linkPopped.srcNode
       
@@ -162,15 +168,25 @@ class NodeNetwork ( QtCore.QObject ) :
           sourceNodeReferenceCount += 1
       if sourceNodeReferenceCount == 0 :
         if srcNode in dstNode.childs :
-          dstNode.childs.remove ( srcNode )                
+          dstNode.removeChild ( srcNode ) 
+  #
+  # hasThisLink
+  #
+  def hasThisLink ( self, link ) : return link.id in self.links.keys ()            
+  
   #
   # clear
   #
   def clear ( self ) :
-    if DEBUG_MODE :print ':: NodeNetwork: clearing nodes ...'
+    #
+    if DEBUG_MODE :print '>> NodeNetwork:: clearing nodes ...'
+    #
     # remove links
+    #
     for link in self.links.values() : self.removeLink ( link )
+    #
     # remove nodes    
+    #
     for node in self.nodes.values() : self.removeNode ( node )
         
     self.nodes = {}
@@ -182,6 +198,7 @@ class NodeNetwork ( QtCore.QObject ) :
   # getNodeFromName
   #
   def getNodeFromName ( self, nodeName ) :
+    #
     for node in self.nodes.values () :
       if node.name == nodeName:
         return node
@@ -194,9 +211,9 @@ class NodeNetwork ( QtCore.QObject ) :
     root = dom.createElement ( 'nodenet' )
     root.setAttribute ( 'name', self.name )
     root.setAttribute ( 'author', 'meShaderEd' )
-    
+    #
     # append network help (short description)      
-    
+    #
     help_tag = dom.createElement ( 'help' )
     help_text = dom.createTextNode ( self.help ) 
     help_tag.appendChild ( help_text ) 

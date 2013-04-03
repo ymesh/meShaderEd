@@ -12,7 +12,7 @@ from global_vars import DEBUG_MODE
 #
 # GfxNodeConnector
 #
-class GfxNodeConnector ( QtGui.QGraphicsItem ):
+class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   Type = QtGui.QGraphicsItem.UserType + 5
   isRound = True
   #
@@ -84,7 +84,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
   #
   # addLink (GfxLink)
   #
-  def addLink ( self, link ) : self.links.append ( link )
+  def addGfxLink ( self, link ) : self.links.append ( link )
   #
   # getFirstGfxLink
   #
@@ -114,16 +114,16 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
       param = self.node.outputParams [ 0 ]
     return param
   #
-  # removeLink
+  # removeGfxLink
   #
-  def removeLink ( self, gfxLink ) :
-    print '>> GfxNodeConnector removeLink'
+  def removeGfxLink ( self, gfxLink ) :
+    if DEBUG_MODE : print '>> GfxNodeConnector removeLink'
     if gfxLink in self.links : self.links.remove ( gfxLink )
   #
   # removeAllLinks
   #
   def removeAllLinks ( self ) :
-    print '>> GfxNodeConnector removeAllLinks (%d)' % len ( self.links )
+    if DEBUG_MODE : print '>> GfxNodeConnector removeAllLinks (%d)' % len ( self.links )
     for gfxLink in list ( self.links ) :
       gfxLink.remove () # link will be removed from list
   #
@@ -137,19 +137,46 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ):
   def remove ( self ) :
     if DEBUG_MODE : print '>> GfxNodeConnector remove gfxNode (temp)'
     if self.isNode () :
-      # !!! temporary solution
-      # TODO! check if node is connected
-      # and replace existing links
-      self.removeAllLinks ()
+      inputGfxLinks = self.getInputGfxLinks ()
+      outputGfxLinks = self.getOutputGfxLinks ()
+      #
+      # check if node is connected
+      #
+      if len ( inputGfxLinks ) > 0 and len ( outputGfxLinks ) > 0 :
+        #
+        # and try to preserve existing links
+        #
+        inputLink = inputGfxLinks [0] # it's supposed that only 1 input connecion allowed
+        srcConnector = inputLink.srcConnector 
+        srcNode = inputLink.link.srcNode
+        srcParam = inputLink.link.srcParam
+        #
+        # inputLink and corresponding node link will be removed from nodeNet 
+        #
+        self.scene().emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), inputLink )
+        
+        for gfxLink in outputGfxLinks :
+          gfxLink.setSrcConnector ( srcConnector )
+          srcNode.attachOutputParamToLink ( srcParam, gfxLink.link )
+          gfxLink.link.srcNode = srcNode
+          gfxLink.link.srcParam = srcParam
+          
+          gfxLink.link.dstNode.addChild ( srcNode )
+          gfxLink.link.dstNode.removeChild ( self.getNode () )
+          
+        srcConnector.adjustLinks ()
+      else :
+        self.removeAllLinks ()
     self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+    
   #
   # isInput
   #
-  def isInput ( self ): return self.param.isInput
+  def isInput ( self ) : return self.param.isInput
   #
   # isOutput
   #
-  def isOutput ( self ): return not self.isInput () 
+  def isOutput ( self ) : return not self.isInput () 
   #
   # isConnectedToInput
   #

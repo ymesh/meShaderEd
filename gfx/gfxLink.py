@@ -76,10 +76,10 @@ class GfxLink ( QtGui.QGraphicsItem ):
     if DEBUG_MODE : print ">> GfxLink::remove"
 
     if self.srcConnector is not None :
-      self.srcConnector.removeLink ( self )
+      self.srcConnector.removeGfxLink ( self )
       #self.srcConnector = None
     if self.dstConnector is not None :
-      self.dstConnector.removeLink ( self )
+      self.dstConnector.removeGfxLink ( self )
       #self.dstConnector = None
     #if self.link is not None :
     scene = self.scene ()
@@ -131,7 +131,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
     if srcConnector is not None :
       self.srcPoint = srcConnector.getCenterPoint ()
       self.srcConnector = srcConnector
-      self.srcConnector.addLink ( self )
+      self.srcConnector.addGfxLink ( self )
   #
   # setDstConnector
   #
@@ -139,7 +139,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
     if dstConnector is not None :
       self.dstPoint = dstConnector.getCenterPoint ()
       self.dstConnector = dstConnector
-      self.dstConnector.addLink ( self )
+      self.dstConnector.addGfxLink ( self )
   #
   # itemChange
   #
