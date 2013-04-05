@@ -11,6 +11,7 @@ from core.meCommon import *
 
 from core.nodeLink import NodeLink
 from core.connectorNode import ConnectorNode
+from core.nodeNetwork import *
 
 from gfx.gfxNode import GfxNode
 from gfx.gfxNodeConnector import GfxNodeConnector
@@ -162,7 +163,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
           gfxNode.setSelected ( True )
           self.selectAbove ( gfxNode )
         else :
-          if DEBUG_MODE : print '!! invalid link ...'  
+          if DEBUG_MODE : print '!! invalid link ...'
   #
   # selectBelow
   #
@@ -332,12 +333,12 @@ class WorkArea ( QtGui.QGraphicsView ) :
         self.lastConnectCandidateReset ()
         connectCandidate.hilite ( True )
         self.lastConnectCandidate = connectCandidate
-        # link_node = connectCandidate.parentItem().node
+        # link_node = connectCandidate.parentItem ().node
         # print ">> WorkArea: onDrawNodeLink to %s" % link_node.label
       else :
         scenePos = self.lastConnectCandidate.getCenterPoint () # snap to last position
         pass
-        # self.lastConnectCandidateReset()
+        # self.lastConnectCandidateReset ()
     else :
       self.lastConnectCandidateReset ()
 
@@ -506,8 +507,6 @@ class WorkArea ( QtGui.QGraphicsView ) :
 
     gfxLink = GfxLink ( link, connector, newConnector  )
     self.scene ().addItem ( gfxLink )
-
-
   #
   # onTraceNodeConnector
   #
@@ -530,19 +529,20 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # onRemoveNode
   #
   def onRemoveNode ( self, gfxNode ) :
-    print ">> WorkArea: onRemoveNode"
+    print ">> WorkArea: onRemoveNode %s (id = %d)" % ( gfxNode.node.label, gfxNode.node.id )
     self.emit ( QtCore.SIGNAL ( 'gfxNodeRemoved' ), gfxNode )
     self.scene ().removeItem ( gfxNode )
     self.nodeNet.removeNode ( gfxNode.node )
-    
+
     #if DEBUG_MODE : self.nodeNet.printInfo ()
   #
   # onRemoveLink
   #
   def onRemoveLink ( self, gfxLink ) :
-    print ">> WorkArea: onRemoveLink"
+    print ">> WorkArea: onRemoveLink ..."
     self.scene ().removeItem ( gfxLink )
     if gfxLink.link is not None :
+      print ">> WorkArea: onRemoveLink (id = %d)" % ( gfxLink.link.id )
       srcConnector = gfxLink.srcConnector
       dstConnector = gfxLink.dstConnector
       self.nodeNet.removeLink ( gfxLink.link )
@@ -718,7 +718,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # resetZoom
   #
   def resetZoom ( self ) :
-    if DEBUG_MODE : print ">> WorkArea: resetZoom"
+    if DEBUG_MODE : print ">> WorkArea::resetZoom"
     self.setInteractive ( False )
     self.resetTransform()
     self.setInteractive ( True )
@@ -730,7 +730,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
     # case QEvent::TouchUpdate:
     # case QEvent::TouchEnd:
     if event.type() == QtCore.QEvent.TouchBegin :
-      if DEBUG_MODE : print ">> WorkArea: QEvent.TouchBegin"
+      if DEBUG_MODE : print ">> WorkArea::QEvent.TouchBegin"
     return QtGui.QGraphicsView.viewportEvent ( self, event )
   #
   # deselectAllNodes
@@ -751,7 +751,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   def insertNodeNet ( self, filename, pos = None ) :
     #
-    if DEBUG_MODE : print "::insertNodeNet (before insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )
+    if DEBUG_MODE : print ">> WorkArea::insertNodeNet (before insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )
 
     ( nodes, links ) = self.nodeNet.insert ( normPath ( filename ) )
 
@@ -767,4 +767,23 @@ class WorkArea ( QtGui.QGraphicsView ) :
     for node in nodes : self.addGfxNode ( node, pos )
     for link in links : self.addGfxLink ( link )
 
-    if DEBUG_MODE : print '::insertNodeNet (after insert) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values () ) )
+    if DEBUG_MODE : print '>> WorkArea::insertNodeNet (after insert) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values () ) )
+  #
+  # duplicateNode
+  #
+  def duplicateNode ( self, preserveLinks = False ):
+    if DEBUG_MODE : print '>> WorkArea: duplicateNode ( preserveLinks = %s )'  % str ( preserveLinks )
+    dupNodeNet = NodeNetwork ( 'duplicate' )
+    for gfxNode in self.selectedNodes :
+      newNode = gfxNode.node.copy ()
+      dupNodeNet.addNode ( newNode )
+
+    if DEBUG_MODE : dupNodeNet.printInfo ()
+    ( nodes, links ) = self.nodeNet.add ( dupNodeNet )
+
+    offsetPos = QtCore.QPointF ( self.minGap, self.minGap / 2 )
+
+    self.deselectAllNodes ()
+
+    for node in nodes : self.addGfxNode ( node, offsetPos )
+    for link in links : self.addGfxLink ( link )

@@ -14,7 +14,7 @@ from global_vars import app_global_vars, DEBUG_MODE
 #
 # Abstract Parameter Class
 #
-class NodeParam ( QtCore.QObject ):
+class NodeParam ( QtCore.QObject ) :
   isInput = True
   isRibParam = False
   id = 0
@@ -23,7 +23,7 @@ class NodeParam ( QtCore.QObject ):
   #
   def __init__ ( self, xml_param = None, isRibParam = False ) :
     #
-    super( NodeParam, self ).__init__ ()
+    super ( NodeParam, self ).__init__ ()
     #QtCore.QObject.__init__ ( self )
     self.id = None
     self.name = None
@@ -74,6 +74,7 @@ class NodeParam ( QtCore.QObject ):
     newParam.label = self.label
     newParam.type = self.type
     newParam.help = self.help
+    newParam.isInput = self.isInput
     newParam.shaderParam = self.shaderParam
     newParam.isRibParam = self.isRibParam
     newParam.display = self.display
@@ -110,7 +111,7 @@ class NodeParam ( QtCore.QObject ):
   # valueFromStr
   #
   def valueFromStr ( self, strValue ) : return strValue
-  # 
+  #
   # getValueToStr
   #
   def getValueToStr ( self ) :
@@ -581,17 +582,19 @@ class NormalNodeParam ( NodeParam ) :
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'normal'
   #
+  # encodedTypeStr
   #
   def encodedTypeStr ( self ): return 'n'
   #
+  # copy
   #
-  def copy ( self ):
-    newParam = NormalNodeParam()
+  def copy ( self ) :
+    newParam = NormalNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #
   #
-  def valueFromStr ( self, str ):
+  def valueFromStr ( self, str ) :
     value = [ 0.0, 0.0, 0.0 ]
     #print "NormalNodeParam.setValueFromStr %s" % str
     if str != '' :
@@ -1056,11 +1059,11 @@ class TextNodeParam ( NodeParam ) :
     return newParam
   #
   # valueToStr
-  # 
+  #
   # Skip here conversation to str because text
   # can contain unicode characters
   #
-  def valueToStr ( self, value ) : 
+  def valueToStr ( self, value ) :
     return unicode ( value )
 #
 # Transform parameter that used in RIB
@@ -1101,19 +1104,22 @@ class TransformNodeParam ( NodeParam ):
 #
 # Image
 #
-class ImageNodeParam ( NodeParam ):
+class ImageNodeParam ( NodeParam ) :
   #
+  # __init__
   #
-  def __init__ ( self, xml_param = None, isRibParam = False ):
+  def __init__ ( self, xml_param = None, isRibParam = False ) :
     #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'image'
   #
+  # encodedTypeStr
   #
-  def encodedTypeStr ( self ): return 'I'
+  def encodedTypeStr ( self ) : return 'I'
   #
+  # copy
   #
-  def copy ( self ):
+  def copy ( self ) :
     #
     newParam = ImageNodeParam ()
     self.copySetup ( newParam )
@@ -1123,7 +1129,7 @@ class ImageNodeParam ( NodeParam ):
   # It's supposed, that range is defined as "value1:value2:value3"
   # or "label1=value1:label2=value2:label3=value3:"
   #
-  def getRangeValues ( self ):
+  def getRangeValues ( self ) :
     #
     rangeList = []
 

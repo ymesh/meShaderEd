@@ -10,10 +10,10 @@ from PyQt4 import QtCore, QtGui, QtXml
 
 from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import *
+from core.nodeNetwork import *
 
 from gfx.gfxNode import GfxNode
 from gfx.gfxNote import GfxNote
-from core.nodeNetwork import *
 
 from meRendererSetup import meRendererSetup
 from ProjectSetup import ProjectSetup
@@ -44,12 +44,12 @@ class MainWindow ( QtGui.QMainWindow ) :
     self.ui = Ui_MainWindow ()
 
     self.ui.setupUi ( self )
-    
+
     self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
     self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
-    
+
     self.addRecentProject ( app_global_vars [ 'ProjectPath' ] )
-    
+
     self.setupMenuBar ()
     self.setupPanels ()
 
@@ -77,7 +77,7 @@ class MainWindow ( QtGui.QMainWindow ) :
 
     self.ui.nodeList_ctl.setLibrary ( app_global_vars [ 'NodesPath' ] )
     self.ui.project_ctl.setLibrary ( app_global_vars [ 'ProjectNetworks' ] )
-    
+
     #self.ui.dockNodes.setWindowTitle ( 'Library: %s' % app_global_vars [ 'NodesPath' ] )
     #self.ui.dockProject.setWindowTitle ( 'Project: %s' % app_global_vars [ 'ProjectNetworks' ] )
 
@@ -144,7 +144,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     self.ui.menuCommand.setFont ( font )
     self.ui.menuWindow.setFont ( font )
     self.ui.menuHelp.setFont ( font )
-    
+
     self.buildRecentProjectsMenu ()
     self.buildRecentNetworksMenu ()
   #
@@ -154,31 +154,31 @@ class MainWindow ( QtGui.QMainWindow ) :
     #self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
     #self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
     self.ui.menuRecent_Projects.clear ()
-    
+
     if len ( self.recentProjects ) :
       icon =  QtGui.QIcon.fromTheme ( 'folder', QtGui.QIcon ( ':/file_icons/resources/open.png' ) )
       # QtGui.QIcon ( ':/file_icons/resources/recentFile.png' ) 'folder'
       for i, fname in enumerate ( self.recentProjects ) :
         # QtCore.QFileInfo ( fname ).fileName ()
-        action = QtGui.QAction ( icon, '&%d %s' % ( i + 1, fname ), self ) 
+        action = QtGui.QAction ( icon, '&%d %s' % ( i + 1, fname ), self )
         action.setData ( QtCore.QVariant ( fname ) )
         self.connect ( action, QtCore.SIGNAL ( 'triggered()' ), self.onOpenRecentProject )
-        self.ui.menuRecent_Projects.addAction ( action )  
+        self.ui.menuRecent_Projects.addAction ( action )
   #
   # buildRecentNetworksMenu
   #
   def buildRecentNetworksMenu ( self ) :
     #
     self.ui.menuRecent_Networks.clear ()
-    
+
     if len ( self.recentNetworks ) :
       for i, fname in enumerate ( self.recentNetworks ) :
         icon =  QtGui.QIcon.fromTheme ( 'document-new', QtGui.QIcon ( ':/file_icons/resources/new.png' ) )
         # QtCore.QFileInfo ( fname ).fileName ()
-        action = QtGui.QAction ( icon, '&%d %s' % ( i + 1, fname ), self ) 
+        action = QtGui.QAction ( icon, '&%d %s' % ( i + 1, fname ), self )
         action.setData ( QtCore.QVariant ( fname ) )
         self.connect ( action, QtCore.SIGNAL ( 'triggered()' ), self.onOpenRecentNetwork )
-        self.ui.menuRecent_Networks.addAction ( action )  
+        self.ui.menuRecent_Networks.addAction ( action )
   #
   # setupPanels
   #
@@ -196,14 +196,14 @@ class MainWindow ( QtGui.QMainWindow ) :
   def addRecentProject ( self, project ) :
     if project is not None :
       recent_projects_max = getDefaultValue ( app_settings, '', 'recent_projects_max' )
-      
+
       if not self.recentProjects.contains ( project ) :
         self.recentProjects.prepend ( QtCore.QString ( project ) )
-      
+
       while self.recentProjects.count () > recent_projects_max :
         self.recentProjects.takeLast ()
-      
-      recentProjects = QtCore.QVariant ( self.recentProjects ) if self.recentProjects else QtCore.QVariant () 
+
+      recentProjects = QtCore.QVariant ( self.recentProjects ) if self.recentProjects else QtCore.QVariant ()
       app_settings.setValue ( 'RecentProjects', recentProjects )
   #
   # addRecentNetwork
@@ -211,14 +211,14 @@ class MainWindow ( QtGui.QMainWindow ) :
   def addRecentNetwork ( self, network ) :
     if network is not None :
       recent_networks_max = getDefaultValue ( app_settings, '', 'recent_networks_max' )
-      
+
       if not self.recentNetworks.contains ( network ) :
         self.recentNetworks.prepend ( QtCore.QString ( network ) )
-      
+
       while self.recentNetworks.count () > recent_networks_max :
         self.recentNetworks.takeLast ()
-      
-      recentNetworks = QtCore.QVariant ( self.recentNetworks ) if self.recentNetworks else QtCore.QVariant () 
+
+      recentNetworks = QtCore.QVariant ( self.recentNetworks ) if self.recentNetworks else QtCore.QVariant ()
       app_settings.setValue ( 'RecentNetworks', recentNetworks )
   #
   # setupActions
@@ -268,7 +268,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     settingsSetupDlg = SettingsSetup ( app_settings )
     settingsSetupDlg.exec_()
     self.ui.nodeList_ctl.setLibrary ( app_global_vars [ 'NodesPath' ] )
-    
+
   #
   # onRenderSettings
   #
@@ -365,7 +365,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # onGetNode
   #
   # Called by WorkArea after drag&drop event
-  # Here we choose selected nodeList panel (Libray or Project)
+  # Here we choose selected nodeList panel (Library or Project)
   # for processing node request
   def onGetNode ( self, itemFilename, pos ) :
     #
@@ -395,7 +395,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # onEditGfxNode
   #
   def onEditGfxNode ( self, gfxNode ) :
-    if DEBUG_MODE : print ">> MainWindow: onEditGfxNode"
+    if DEBUG_MODE : print ">> MainWindow::onEditGfxNode"
     #import copy
 
     # reindex input params
@@ -416,13 +416,15 @@ class MainWindow ( QtGui.QMainWindow ) :
     #createNodeFromXML ( xml_node )
 
     nodeEditDlg = NodeEditorPanel ( editNode )
-    if ( nodeEditDlg.exec_() == QtGui.QDialog.Accepted ) :
-      if DEBUG_MODE : print '>> MainWindow: onEditGfxNode Accepted'
+    if ( nodeEditDlg.exec_ () == QtGui.QDialog.Accepted ) :
+      if DEBUG_MODE : print '>> MainWindow::onEditGfxNode Accepted'
       #
       #
       return
 
-      if gfxNode.node.label != editNode.label : self.ui.imageView_ctl.onNodeLabelChanged ( gfxNode, editNode.label )
+      if gfxNode.node.label != editNode.label :
+        self.ui.imageView_ctl.onNodeLabelChanged ( gfxNode, editNode.label )
+
       editNode.copySetup ( gfxNode.node )
 
       for i in save_inputParams: print i.label
@@ -440,7 +442,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onDelete ( self ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onDelete'
+    if DEBUG_MODE : print '>> MainWindow::onDelete'
 
     selected = self.workArea.scene ().selectedItems ()
     if len ( selected ) :
@@ -452,64 +454,54 @@ class MainWindow ( QtGui.QMainWindow ) :
   # onSelectAll
   #
   def onSelectAll ( self ) :
-    if DEBUG_MODE : print '>> MainWindow: onSelectAll'
-      
+    if DEBUG_MODE : print '>> MainWindow::onSelectAll'
+
     self.workArea.selectAllNodes ()
   #
   # onSelectAbove
   #
   def onSelectAbove ( self ) :
-    if DEBUG_MODE : print '>> MainWindow: onSelectAbove'
+    if DEBUG_MODE : print '>> MainWindow::onSelectAbove'
     if DEBUG_MODE : self.workArea.nodeNet.printInfo ()
-      
+
     selectedGfxNode = self.workArea.selectedNodes [ 0 ]
     self.workArea.selectAbove ( selectedGfxNode )
   #
   # onSelectBelow
   #
   def onSelectBelow ( self ) :
-    if DEBUG_MODE : print '>> MainWindow: onSelectBelow'
-      
+    if DEBUG_MODE : print '>> MainWindow::onSelectBelow'
+
     selectedGfxNode = self.workArea.selectedNodes [ 0 ]
     self.workArea.selectBelow ( selectedGfxNode )
   #
   # onCopy
   #
   def onCopy ( self ):
-    if DEBUG_MODE : print '>> MainWindow: onCopy'
+    if DEBUG_MODE : print '>> MainWindow::onCopy'
   #
   # onCut
   #
   def onCut ( self ):
-    if DEBUG_MODE : print '>> MainWindow: onCut'
+    if DEBUG_MODE : print '>> MainWindow::onCut'
   #
   # onPaste
   #
   def onPaste ( self ):
-    if DEBUG_MODE : print '>> MainWindow: onPaste'
-
-  #
-  # onDuplicateNode
-  #
-  def onDuplicateNode ( self, preserveLinks = False ):
-    if DEBUG_MODE : print '>> MainWindow: onDuplicateNode ( preserveLinks = %s )'  % str ( preserveLinks )
-
-    for gfxNode in self.workArea.selectedNodes :
-      newNode = gfxNode.node.copy ()
-
-
+    if DEBUG_MODE : print '>> MainWindow::onPaste'
   #
   # onDuplicate
   #
   def onDuplicate ( self ):
-    if DEBUG_MODE : print '>> MainWindow: onDuplicate '
-    self.onDuplicateNode ( preserveLinks = False )
+    if DEBUG_MODE : print '>> MainWindow::onDuplicate '
+    self.workArea.duplicateNode ( preserveLinks = False )
   #
   # onDuplicateWithLinks
   #
   def onDuplicateWithLinks ( self ):
     if DEBUG_MODE : print '>> MainWindow: onDuplicateWithLinks'
-    self.onDuplicateNode ( preserveLinks = True )
+    print '!! MainWindow::onDuplicateWithLinks is not implemented yet ...'
+    # self.workArea.dDuplicateNode ( preserveLinks = True )
   #
   # onSelectGfxNodes
   #
@@ -548,7 +540,7 @@ class MainWindow ( QtGui.QMainWindow ) :
       node.updateNode ()
       #node.update ()
       self.workArea.scene ().update ()
-        
+
     if self.ui.imageView_ctl.autoUpdate () :
       #if DEBUG_MODE : print "* auto update"
       self.ui.imageView_ctl.updateViewer()
@@ -662,14 +654,14 @@ class MainWindow ( QtGui.QMainWindow ) :
     if DEBUG_MODE : print "-> open file %s" %  filename
     if QtCore.QFile.exists ( filename ) :
       ( name, ext ) = os.path.splitext( os.path.basename ( filename ) )
-  
+
       self.ui.imageView_ctl.removeAllViewers ()
-  
+
       self.workArea.clear ()
       self.workArea.nodeNet.name = name
       self.workArea.nodeNet.fileName = ''
       self.ui.tabs.setTabText ( self.ui.tabs.indexOf ( self.workArea ), name )
-  
+
       self.workArea.openNodeNet ( normPath ( filename ) )
     else :
       print "ERROR! filename %s doesn't exist" %  filename
@@ -684,7 +676,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     if isinstance ( action, QtGui.QAction ):
       network = unicode ( action.data ().toString () )
       if network is not None :
-        if DEBUG_MODE : print '>> onOpenRecentNetwork : %s' % network  
+        if DEBUG_MODE : print '>> onOpenRecentNetwork : %s' % network
         if not self.openNetwork ( network ) :
           # TODO!!! remove network from rescentNetworks
           pass
@@ -697,7 +689,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     if isinstance ( action, QtGui.QAction ):
       project = unicode ( action.data ().toString () )
       if project is not None :
-        print '>> onOpenRecentProject : %s' % project 
+        print '>> onOpenRecentProject : %s' % project
         if openDefaultProject ( app_settings, app_global_vars, project ) :
           # very strange... app_settings doesn't update inside meCommon.openDefaultProject...
           # though app_global_vars does
@@ -711,7 +703,7 @@ class MainWindow ( QtGui.QMainWindow ) :
           self.ui.project_ctl.setLibrary ( app_global_vars [ 'ProjectNetworks' ] )
           self.setupWindowTitle ()
         else :
-          print "ERROR! project %s doesn't exist" %  project 
+          print "ERROR! project %s doesn't exist" %  project
           # TODO!!! remove project from rescentProjects
   #
   # onImport

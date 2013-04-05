@@ -16,9 +16,10 @@ from meShaderEd import app_settings
 #
 # GfxNode
 #
-class GfxNode ( QtGui.QGraphicsItem ):
+class GfxNode ( QtGui.QGraphicsItem ) :
   Type = QtGui.QGraphicsItem.UserType + 1
   #
+  # __init__
   #
   def __init__ ( self, node ):
     QtGui.QGraphicsItem.__init__ ( self )
@@ -64,16 +65,6 @@ class GfxNode ( QtGui.QGraphicsItem ):
     self.BrushShadow = QtGui.QBrush ( shadowColor )
     self.PenShadow = QtGui.QPen ( shadowColor )
 
-    self.paramsBrushes = {   'c' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkRed))
-                            ,'f' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.lightGray))
-                            ,'m' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkYellow))
-                            ,'p' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkCyan))
-                            ,'s' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkGreen))
-                            ,'v' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkMagenta))
-                            ,'n' : QtGui.QBrush(QtGui.QColor(QtCore.Qt.darkBlue))
-                            ,'R' : QtGui.QBrush(QtGui.QColor('orange'))
-                         }
-
     # flag (new from QT 4.6...)
     self.setFlag ( QtGui.QGraphicsItem.ItemSendsScenePositionChanges )
     self.setFlag ( QtGui.QGraphicsItem.ItemSendsGeometryChanges )
@@ -84,7 +75,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     self.setZValue ( 1 )
 
     self.node = node
-    
+
     if self.node is not None :
       self.updateNode ()
       ( x, y ) = self.node.offset
@@ -92,7 +83,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
   #
   # type
   #
-  def type ( self ): return GfxNode.Type
+  def type ( self ) : return GfxNode.Type
   #
   # updateNode
   #
@@ -135,7 +126,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
   # remove
   #
   def remove ( self ) :
-    if DEBUG_MODE : print '>> GfxNode remove gfxNode (temp)'
+    if DEBUG_MODE : print '>> GfxNode::remove'
     for connect in self.inputConnectors : connect.removeAllLinks ()
     for connect in self.outputConnectors : connect.removeAllLinks ()
     self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
@@ -173,7 +164,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     wi_max = max ( wi_header, wi_output, wi_input ) + 2 * self.x_offset
     hi_max = hi_header + hi_output + hi_input + 3 * self.y_offset
 
-    self.rect = QtCore.QRectF ( 0, 0, wi_max, hi_max )  
+    self.rect = QtCore.QRectF ( 0, 0, wi_max, hi_max )
     self.setupHeaderGeometry ( self.x_offset, self.y_offset )
     self.setupOutputParamsGeometry ( wi_max - self.x_offset, hi_header + 2 * self.y_offset )
     self.setupInputParamsGeometry ( self.x_offset, hi_header + 2 * self.y_offset + hi_output )
@@ -232,17 +223,17 @@ class GfxNode ( QtGui.QGraphicsItem ):
     #
     wi = 80 # minimal node width
     hi = 0
-    
+
     if self.node.type != 'variable' :
       ( wi_label, hi_label ) = self.header [ 'label' ].getLabelSize ()
       ( wi_name, hi_name ) = self.header [ 'name' ].getLabelSize()
       hi = ( hi_label + hi_name )
       wi = max ( wi, ( self.x_offset + max ( wi_label, wi_name ) ) )
-      
+
       if self.hasSwatch :
         hi = max ( self.swatchSize, hi )
         wi += self.swatchSize
-    
+
     return ( wi, hi )
   #
   # setupHeaderGeometry
@@ -251,7 +242,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     #
     if self.node.type != 'variable' :
       wi_header = self.rect.width ()
-      
+
       if self.hasSwatch :
         self.header [ 'swatch' ].rect.moveTo ( x, y )
         #self.header['input'].rect.moveTo( x - self.x_offset - self.header['input'].radius,
@@ -275,7 +266,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     #
     y = ys
     hi = 0
-    
+
     for label in self.outputParamLabels :
       ( wi, hi ) = label.getLabelSize ()
       label.rect = QtCore.QRectF ( xs - wi, y, wi, hi )
@@ -290,7 +281,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
       y += hi
       connector.setParentItem ( self )
   #
-  # setupInputParamsGeometry 
+  # setupInputParamsGeometry
   #
   def setupInputParamsGeometry ( self, xs, ys ) :
     y = ys
@@ -334,8 +325,8 @@ class GfxNode ( QtGui.QGraphicsItem ):
         connector = GfxNodeConnector ( param, 5, node = None )
         if not param.isInput:
           connector.singleLinkOnly = False
-        if param.encodedTypeStr () in self.paramsBrushes.keys () :
-          connector.brush = self.paramsBrushes [ param.encodedTypeStr () ]
+        #if param.encodedTypeStr () in self.paramsBrushes.keys () :
+        #  connector.brush = self.paramsBrushes [ param.encodedTypeStr () ]
         connectors.append ( connector )
   #
   # adjustLinks
@@ -407,7 +398,7 @@ class GfxNode ( QtGui.QGraphicsItem ):
     painter.setBrush ( brush )
 
     # painter.drawRect ( self.rect )
-    painter.drawRoundedRect ( self.rect, self.radius, self.radius, QtCore.Qt.AbsoluteSize ) 
+    painter.drawRoundedRect ( self.rect, self.radius, self.radius, QtCore.Qt.AbsoluteSize )
     # Qt::SizeMode mode = Qt::AbsoluteSize Qt.RelativeSize
 
 #

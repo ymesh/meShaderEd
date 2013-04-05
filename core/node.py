@@ -79,16 +79,16 @@ class Node ( QtCore.QObject ) :
   #
   # addChild
   #
-  def addChild ( self, node ) : self.childs.add ( node ) 
+  def addChild ( self, node ) : self.childs.add ( node )
   #
   # removeChild
   #
   def removeChild ( self, node ) :
     #
     if node in self.childs :
-      self.childs.remove ( node ) 
+      self.childs.remove ( node )
     else :
-      if DEBUG_MODE : print '!! Node::removeChild child %s is not in the list' % node.label    
+      if DEBUG_MODE : print '!! Node::removeChild child %s is not in the list' % node.label
   #
   # printInfo
   #
@@ -98,13 +98,13 @@ class Node ( QtCore.QObject ) :
     print '** Node inputLinks:'
     for param in self.inputLinks.keys () :
       print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
-      self.inputLinks [ param ].printInfo ()  
+      self.inputLinks [ param ].printInfo ()
     print '** Node outputLinks:'
     for param in self.outputLinks.keys () :
       print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
       linklist = self.outputLinks [ param ]
       for link in linklist :
-        link.printInfo ()  
+        link.printInfo ()
     print '** Node children:'
     for child in self.childs :
       print '\t* %s' % child.label
@@ -176,7 +176,7 @@ class Node ( QtCore.QObject ) :
   def detachInputParamFromLink ( self, param ) :
     if DEBUG_MODE : print ">> Node::detachInputParamFromLink param = %s" % param.name
     if param in self.inputLinks.keys () :
-      if DEBUG_MODE : 
+      if DEBUG_MODE :
         for k in self.inputLinks.keys () : print k.name
       if DEBUG_MODE : print "... done"
       self.inputLinks.pop ( param )
@@ -208,9 +208,9 @@ class Node ( QtCore.QObject ) :
           firstParam = link.srcNode.inputParams [0]
           ( srcNode, srcParam ) = link.srcNode.getLinkedSrcNode ( firstParam )
         else :
-          if DEBUG_MODE : print '* no inputParams at connector %s' % ( link.srcNode.label )  
+          if DEBUG_MODE : print '* no inputParams at connector %s' % ( link.srcNode.label )
       else :
-        srcNode = link.srcNode  
+        srcNode = link.srcNode
         srcParam = link.srcParam
     return ( srcNode, srcParam )
   #
@@ -588,18 +588,18 @@ class Node ( QtCore.QObject ) :
     if DEBUG_MODE : print '>> Node::copySetup (%s)' % self.label
     newNode.id = self.id
     name = self.name
-    if name is None :
-      name = str( self.type )
+    if name is None : name = str( self.type )
     newNode.name = name
     label = self.label
-    if label is None :
-      label = name
+    if label is None : label = name
     newNode.label = label
     newNode.type = self.type
     newNode.author = self.author
     newNode.help = self.help
     newNode.icon = self.icon
     newNode.master = self.master
+
+    newNode.offset = self.offset
 
     import copy
     newNode.code = copy.copy ( self.code )
@@ -608,6 +608,7 @@ class Node ( QtCore.QObject ) :
 
     newNode.internals = copy.copy ( self.internals )
     newNode.includes = copy.copy ( self.includes )
+    #newNode.childs = copy.copy ( self.childs )
 
     if len ( newNode.inputParams ) :
       if DEBUG_MODE : print '>> Node::copySetup %s inputParams cleared ' % newNode.label

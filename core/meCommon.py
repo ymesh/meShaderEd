@@ -114,19 +114,19 @@ def launchProcess ( cmdList ) :
   import subprocess, errno
   
   try:
-    if ( sys.platform.startswith( 'linux' ) ):
-      (sysname, nodename, release, version, machine) = os.uname()
+    if sys.platform.startswith ( 'linux' ) :
+      ( sysname, nodename, release, version, machine ) = os.uname()
       #print 'sysname = %s' % sysname
       #print 'release = %s' % release
       #print 'version = %s' % version
-      if version.find( 'Ubuntu' ) != -1 :
+      if version.find ( 'Ubuntu' ) != -1 :
         print 'Ubuntu'
-        retval = os.popen( ' '.join( cmdList ) )
+        retval = os.popen ( ' '.join ( cmdList ) )
       else :
-        retval = subprocess.call( cmdList )  
+        retval = subprocess.call ( cmdList )  
     else:        
-      retval = subprocess.call( cmdList )
-  except OSError, e:
+      retval = subprocess.call ( cmdList )
+  except OSError, e :
     if e.errno != errno.EINTR : raise 
 #
 # getUniqueName

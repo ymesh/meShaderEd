@@ -1,7 +1,7 @@
 #===============================================================================
 # nodeNetwork.py
 #
-# 
+#
 #
 #===============================================================================
 import os, sys
@@ -23,7 +23,7 @@ from nodeLink import NodeLink
 from global_vars import DEBUG_MODE
 #
 # NodeNetwork
-# 
+#
 class NodeNetwork ( QtCore.QObject ) :
   #
   #  __init__
@@ -32,21 +32,26 @@ class NodeNetwork ( QtCore.QObject ) :
     #
     if DEBUG_MODE : print '>> NodeNetwork: __init__ ' + name
     QtCore.QObject.__init__( self )
-    
-    self.node_id = 0       
+
+    self.node_id = 0
     self.link_id = 0
-    
+
     self.name = name
     self.fileName = ''
-    
+
     self.help = 'Short NodeNetwork description'
-    
+
     self.isDirty = False
-    
+
     self.nodes = {}
     self.links = {}
-    
+
     if xml_nodenet != None : self.parseFromXML ( xml_nodenet )
+  #
+  # __del__
+  #
+  def __del__ ( self ) :
+    if DEBUG_MODE : print '>> NodeNetwork: __del__ ' + self.name
   #
   # renameNodeLabel
   #
@@ -74,30 +79,30 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   # get list of links
   #
-  def getLinksList ( self ) : return self.links.values ()  
+  def getLinksList ( self ) : return self.links.values ()
   #
   # addNode
-  #   
+  #
   def addNode ( self, node ) :
     #print '>> NodeNetwork: adding node ' + node.label
     if node.id == None :
-      # if node comes from library -- it should have id = None 
+      # if node comes from library -- it should have id = None
       self.node_id = self.node_id + 1
       node.id = self.node_id
     else :
       # while importing from other NodeNet
-      node.id = self.node_id + node.id   
-      
+      node.id = self.node_id + node.id
+
     # check if node with this label already exists and assign new label
     self.renameNodeLabel ( node, node.label )
-    
+
     if node.id in self.nodes :
-      # print '!!! node.id %d already exists !!!' % node.id 
+      # print '!!! node.id %d already exists !!!' % node.id
       while node.id in self.nodes : node.id += 1
-      # print '!!! node.id changed to %d !!!' % node.id 
+      # print '!!! node.id changed to %d !!!' % node.id
 
     # add node to NodeNetwork
-    self.nodes[ node.id ] = node
+    self.nodes [ node.id ] = node
   #
   # addLink
   #
@@ -110,28 +115,28 @@ class NodeNetwork ( QtCore.QObject ) :
     else :
       # while importing from other NodeNet
       link.nodenet = self
-      link.id = self.link_id + link.id  
-      
+      link.id = self.link_id + link.id
+
     print '>> NodeNetwork: linkid changed to -> %d' % link.id
-    
+
     if link.id in self.links :
       # print '!!! link.id %d already exists !!!' % link.id
       while link.id in self.links : link.id += 1
-      # print '!!! link.id changed to %d !!!' % link.id 
-    
+      # print '!!! link.id changed to %d !!!' % link.id
+
     # add link to NodeNetwork
     self.links [ link.id ] = link
-    
+
     # attach link to nodes
     link.srcNode.attachOutputParamToLink ( link.srcParam, link )
     link.dstNode.attachInputParamToLink ( link.dstParam, link )
-    
+
     # add child (since it is a set no duplicates allowed)
     if DEBUG_MODE : print '* add child % s to %s ' % ( link.srcNode.label, link.dstNode.label )
     link.dstNode.addChild ( link.srcNode )
   #
   # removeNode
-  #                       
+  #
   def removeNode ( self, node ) :
     if DEBUG_MODE : print '>> NodeNetwork: removing node %s (id = %d) ...' % ( node.name, node.id )
     #
@@ -139,7 +144,7 @@ class NodeNetwork ( QtCore.QObject ) :
     #
     if node.id in self.nodes.keys () :
       nodePopped = self.nodes.pop ( node.id )
-      if DEBUG_MODE : print '** node removed ...'         
+      if DEBUG_MODE : print '** node removed ...'
   #
   # removeLink
   #
@@ -161,19 +166,19 @@ class NodeNetwork ( QtCore.QObject ) :
       #
       dstNode = linkPopped.dstNode
       srcNode = linkPopped.srcNode
-      
+
       sourceNodeReferenceCount = 0
       for inputLink in dstNode.inputLinks.values () :
         if inputLink.srcNode == srcNode :
           sourceNodeReferenceCount += 1
       if sourceNodeReferenceCount == 0 :
         if srcNode in dstNode.childs :
-          dstNode.removeChild ( srcNode ) 
+          dstNode.removeChild ( srcNode )
   #
   # hasThisLink
   #
-  def hasThisLink ( self, link ) : return link.id in self.links.keys ()            
-  
+  def hasThisLink ( self, link ) : return link.id in self.links.keys ()
+
   #
   # clear
   #
@@ -185,14 +190,14 @@ class NodeNetwork ( QtCore.QObject ) :
     #
     for link in self.links.values() : self.removeLink ( link )
     #
-    # remove nodes    
+    # remove nodes
     #
     for node in self.nodes.values() : self.removeNode ( node )
-        
+
     self.nodes = {}
     self.links = {}
 
-    self.node_id = 0       
+    self.node_id = 0
     self.link_id = 0
   #
   # getNodeFromName
@@ -205,53 +210,53 @@ class NodeNetwork ( QtCore.QObject ) :
     return None
   #
   # parseToXML
-  #  
+  #
   def parseToXML ( self, dom ) :
     #
     root = dom.createElement ( 'nodenet' )
     root.setAttribute ( 'name', self.name )
     root.setAttribute ( 'author', 'meShaderEd' )
     #
-    # append network help (short description)      
+    # append network help (short description)
     #
     help_tag = dom.createElement ( 'help' )
-    help_text = dom.createTextNode ( self.help ) 
-    help_tag.appendChild ( help_text ) 
+    help_text = dom.createTextNode ( self.help )
+    help_tag.appendChild ( help_text )
     root.appendChild ( help_tag )
-    
+
     nodes_tag = dom.createElement ( 'nodes' )
-    
-    #print ':: parsing nodes to XML ...' 
+
+    #print ':: parsing nodes to XML ...'
     for id in self.nodes.keys () :
       node = self.nodes [ id ]
       #if DEBUG_MODE :print '=> parsing node to XML: %s ...' % node.label
       xml_node = node.parseToXML ( dom )
       nodes_tag.appendChild ( xml_node )
-    
+
     root.appendChild ( nodes_tag )
-    
+
     links_tag = dom.createElement ( 'links' )
-    
+
     #print ':: parsing links to XML ...'
     for id in self.links.keys() :
       link = self.links [ id ]
-      # print '=> parsing link to XML: ...' 
+      # print '=> parsing link to XML: ...'
       #link.printInfo ()
       xml_link = link.parseToXML ( dom )
       links_tag.appendChild ( xml_link )
-    
+
     root.appendChild ( links_tag )
-      
+
     dom.appendChild ( root )
     #print ':: %s NodeNet have parsed to XML ...' % self.name
   #
   # parseFromXML
-  #  
+  #
   def parseFromXML ( self, root ) :
     #
     self.name = str ( root.attributes ().namedItem ( 'name' ).nodeValue () )
-    self.author = str ( root.attributes ().namedItem ( 'author' ).nodeValue () ) 
-                              
+    self.author = str ( root.attributes ().namedItem ( 'author' ).nodeValue () )
+
     xml_nodeList = root.elementsByTagName ( 'node' )
     for i in range ( 0, xml_nodeList.length () ) :
       xml_node = xml_nodeList.item ( i )
@@ -261,153 +266,145 @@ class NodeNetwork ( QtCore.QObject ) :
     for i in range( 0, xml_linkList.length () ) :
       xml_link = xml_linkList.item ( i )
       link = NodeLink ( self, xml_link )
-      #link.printInfo () 
+      #link.printInfo ()
       self.addLink ( link )
   #
   # addNodeFromXML
-  #  
+  #
   def addNodeFromXML ( self, xml_node ) :
     #
-    node = createNodeFromXML ( xml_node ) 
+    node = createNodeFromXML ( xml_node )
     self.addNode ( node )
-    return node          
+    return node
   #
-  # save NodeNetwork to .xml document      
+  # save NodeNetwork to .xml document
   #
   def save ( self ) :
     #
     result = False
-      
-    dom = QtXml.QDomDocument ( self.name ) 
+
+    dom = QtXml.QDomDocument ( self.name )
     self.parseToXML ( dom )
-    
-    file = QFile ( self.fileName ) 
+
+    file = QFile ( self.fileName )
     if file.open ( QtCore.QIODevice.WriteOnly ) :
       if file.write ( dom.toByteArray () ) != -1 :
-        result = True      
+        result = True
     file.close()
     return result
   #
-  # open NodeNetwork from .xml document      
+  # open NodeNetwork from .xml document
   #
   def open ( self, fileName ) :
     #
     nodes = []
     links = []
-      
-    dom = QtXml.QDomDocument ( self.name ) 
-    
-    file = QFile ( fileName ) 
+
+    dom = QtXml.QDomDocument ( self.name )
+
+    file = QFile ( fileName )
     if file.open ( QtCore.QIODevice.ReadOnly ) :
-      if dom.setContent ( file )  : 
+      if dom.setContent ( file )  :
         self.fileName = fileName
-        
-        root = dom.documentElement() 
-        if root.nodeName() == 'node' :
-          #print ':: parsing node from XML ...'
-          nodes.append ( self.addNodeFromXML ( root ) )
-        elif root.nodeName() == 'nodenet' :
-          #print ':: parsing nodenet from XML ...'
-          self.parseFromXML ( root ) 
-          nodes = self.getNodesList ()
-          links = self.getLinksList () 
-        else :
-          print ':: unknown XML document format'  
-    file.close()
-    #
-    # correct currnet NodeNetwork node_id and link_id 
-    # according to max id values from opened network
-    #
-    max_node_id = 0
-    for node in nodes : max_node_id = max ( max_node_id, node.id )
-      
-    max_link_id = 0
-    for link in links : max_link_id = max ( max_link_id, link.id )  
-    
-    self.node_id =  max_node_id
-    self.link_id =  max_link_id
-    
-    if DEBUG_MODE : print '>> NodeNetwork::open node_id = %d link_id = %d' % ( self.node_id, self.link_id )
-          
-    return ( nodes, links )   
-  #
-  # insert NodeNetwork from .xml document      
-  #
-  def insert ( self, fileName ) :
-    #
-    nodes = []
-    links = [] 
-    
-    dom = QtXml.QDomDocument ( self.name ) 
-    
-    file = QFile ( fileName ) 
-    if file.open ( QtCore.QIODevice.ReadOnly ) :
-      if dom.setContent ( file )  : 
-        #self.fileName = fileName
-        root = dom.documentElement () 
+        root = dom.documentElement ()
         if root.nodeName () == 'node' :
           #print ':: parsing node from XML ...'
           nodes.append ( self.addNodeFromXML ( root ) )
         elif root.nodeName () == 'nodenet' :
           #print ':: parsing nodenet from XML ...'
+          self.parseFromXML ( root )
+          nodes = self.getNodesList ()
+          links = self.getLinksList ()
+        else :
+          print '!! unknown XML document format'
+        self.correct_id ( nodes, links )
+    file.close()
+    if DEBUG_MODE : print '>> NodeNetwork::open node_id = %d link_id = %d' % ( self.node_id, self.link_id )
+    return ( nodes, links )
+  #
+  # insert NodeNetwork from .xml document
+  #
+  def insert ( self, fileName ) :
+    #
+    nodes = []
+    links = []
+
+    dom = QtXml.QDomDocument ( self.name )
+
+    file = QFile ( fileName )
+    if file.open ( QtCore.QIODevice.ReadOnly ) :
+      if dom.setContent ( file )  :
+        root = dom.documentElement ()
+        if root.nodeName () == 'node' :
+          #print ':: parsing node from XML ...'
+          nodes.append ( self.addNodeFromXML ( root ) )
+          self.correct_id ( nodes, links )
+        elif root.nodeName () == 'nodenet' :
+          #print ':: parsing nodenet from XML ...'
           nodeNet = NodeNetwork ( 'tmp', root )
           nodeNet.fileName = fileName
-           
-          nodes = nodeNet.getNodesList ()
-          links = nodeNet.getLinksList () 
-          
-          for node in nodes : self.addNode ( node )        
-          for link in links : self.addLink ( link )
+          ( nodes, links ) = self.add ( nodeNet )
         else :
-          print ':: unknown XML document format'  
+          print '!! unknown XML document format'
     file.close()
-    
+    if DEBUG_MODE : print '>> NodeNetwork::insert node_id = %d link_id = %d' % ( self.node_id, self.link_id )
+    return ( nodes, links )
+  #
+  # correct currnet NodeNetwork node_id and link_id
+  # according to max id values from opened network
+  #
+  def correct_id ( self, nodes, links ) :
+    #
     max_node_id = 0
     for node in nodes : max_node_id = max ( max_node_id, node.id )
-      
+
     max_link_id = 0
-    for link in links : max_link_id = max ( max_link_id, link.id )  
-    
+    for link in links : max_link_id = max ( max_link_id, link.id )
+
     self.node_id =  max_node_id
     self.link_id =  max_link_id
-    
-    if DEBUG_MODE : print '>> NodeNetwork::insert node_id = %d link_id = %d' % ( self.node_id, self.link_id )
-    
+  #
+  # add NodeNetwork
+  #
+  def add ( self, nodeNet ) :
+    #
+    nodes = nodeNet.getNodesList ()
+    links = nodeNet.getLinksList ()
+    for node in nodes : self.addNode ( node )
+    for link in links : self.addLink ( link )
+    self.correct_id ( nodes, links )
     return ( nodes, links )
   #
   # printInfo
-  #  
-  def printInfo ( self ) : 
+  #
+  def printInfo ( self ) :
     #
     print '>> NodeNetwork::printInfo'
     print '*** links ***'
     for id in self.links.keys () : self.links [ id ].printInfo ()
     print '*** nodes ****'
     for id in self.nodes.keys () : self.nodes [ id ].printInfo ()
-                
-
 #
 # createNodeFromXML
-#  
+#
 def createNodeFromXML ( xml_node ) :
   #
-  createNodeTable = { 'rib'         : RIBNode 
-                     ,'rib_code'    : RIBCodeNode 
-                     ,'image'       : ImageNode 
-                     ,'surface'     : RSLNode 
+  createNodeTable = { 'rib'         : RIBNode
+                     ,'rib_code'    : RIBCodeNode
+                     ,'image'       : ImageNode
+                     ,'surface'     : RSLNode
                      ,'displacement': RSLNode
-                     ,'light'       : RSLNode 
-                     ,'volume'      : RSLNode 
-                     ,'connector'   : ConnectorNode 
-                     ,'note'        : NoteNode 
-                    }  
-  
+                     ,'light'       : RSLNode
+                     ,'volume'      : RSLNode
+                     ,'connector'   : ConnectorNode
+                     ,'note'        : NoteNode
+                    }
+
   node_type = str ( xml_node.attributes ().namedItem ( 'type' ).nodeValue () )
   createNode = RSLNode # Node
-  if node_type in createNodeTable.keys () : createNode = createNodeTable [ node_type ] 
-  
-  #print '-> creating node type = %s (%s)' % ( node_type, str( createNode ) ) 
+  if node_type in createNodeTable.keys () : createNode = createNodeTable [ node_type ]
+
+  #print '-> creating node type = %s (%s)' % ( node_type, str( createNode ) )
   node = createNode ( xml_node )
 
-  return node 
-  
+  return node

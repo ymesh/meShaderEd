@@ -21,9 +21,19 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   def __init__ ( self, param = None, radius=5, isRound=True, node=None ) :
     #
     QtGui.QGraphicsItem.__init__ ( self )
+    self.paramsBrushes = {   'c' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkRed ) )
+                            ,'f' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.lightGray ) )
+                            ,'m' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkYellow ) )
+                            ,'p' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkCyan ) )
+                            ,'s' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkGreen ) )
+                            ,'v' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkMagenta ) )
+                            ,'n' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkBlue ) )
+                            ,'R' : QtGui.QBrush(QtGui.QColor ( 'orange' ) )
+                         }
     self.brush = QtGui.QBrush ( QtGui.QColor ( 140, 140, 140 ) ) # ( 128, 128, 128 ) ( 132, 132, 132 )
     self.PenBorderNormal = QtGui.QPen ( QtGui.QColor ( 0, 0, 0 ) )
     self.PenBorderSelected = QtGui.QPen ( QtGui.QColor ( 240, 240, 240 ), 2.0 )
+
     self.isNodeSelected = False
     self.isRound = isRound
     self.radius = radius
@@ -46,6 +56,12 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
       self.setZValue ( 1 )
       ( x, y ) = self.node.offset
       self.setPos ( x, y )
+    #
+    # setup connector color
+    #
+    paramTypeStr = self.getInputParam ().encodedTypeStr ()
+    if paramTypeStr in self.paramsBrushes.keys () :
+      self.brush = self.paramsBrushes [ paramTypeStr ]
 
     #self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable )
   #
@@ -96,7 +112,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   #
   # getInputParam
   #
-  def getInputParam ( self ) : 
+  def getInputParam ( self ) :
     param = self.param
     if self.isNode () :
       param = self.node.inputParams [ 0 ]
@@ -108,7 +124,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   #
   # getOutputParam
   #
-  def getOutputParam ( self ) : 
+  def getOutputParam ( self ) :
     param = self.param
     if self.isNode () :
       param = self.node.outputParams [ 0 ]
@@ -147,28 +163,28 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
         # and try to preserve existing links
         #
         inputLink = inputGfxLinks [0] # it's supposed that only 1 input connecion allowed
-        srcConnector = inputLink.srcConnector 
+        srcConnector = inputLink.srcConnector
         srcNode = inputLink.link.srcNode
         srcParam = inputLink.link.srcParam
         #
-        # inputLink and corresponding node link will be removed from nodeNet 
+        # inputLink and corresponding node link will be removed from nodeNet
         #
         self.scene().emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), inputLink )
-        
+
         for gfxLink in outputGfxLinks :
           gfxLink.setSrcConnector ( srcConnector )
           srcNode.attachOutputParamToLink ( srcParam, gfxLink.link )
           gfxLink.link.srcNode = srcNode
           gfxLink.link.srcParam = srcParam
-          
+
           gfxLink.link.dstNode.addChild ( srcNode )
           gfxLink.link.dstNode.removeChild ( self.getNode () )
-          
+
         srcConnector.adjustLinks ()
       else :
         self.removeAllLinks ()
     self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
-    
+
   #
   # isInput
   #
@@ -176,11 +192,11 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   #
   # isOutput
   #
-  def isOutput ( self ) : return not self.isInput () 
+  def isOutput ( self ) : return not self.isInput ()
   #
   # isConnectedToInput
   #
-  def isConnectedToInput ( self ) : 
+  def isConnectedToInput ( self ) :
     result = False
     if self.isNode () :
       #if DEBUG_MODE : print '* isConnectedToInput isNode'
@@ -192,12 +208,12 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
         if result is True :
           break
     else :
-      result = self.isInput ()  
+      result = self.isInput ()
     return result
   #
   # isConnectedToOutput
   #
-  def isConnectedToOutput ( self ) : 
+  def isConnectedToOutput ( self ) :
     result = False
     if self.isNode () :
       #if DEBUG_MODE : print '* isConnectedToOutput isNode'
@@ -209,7 +225,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
         if result is True :
           break
     else :
-      result = self.isOutput ()  
+      result = self.isOutput ()
     return result
   #
   # isNode
@@ -218,7 +234,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   #
   # getNode
   #
-  def getNode ( self ) : 
+  def getNode ( self ) :
     return self.getGfxNode ().node
   #
   # getGfxNode

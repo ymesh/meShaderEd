@@ -1,9 +1,21 @@
 
-meShaderEd.py
+meShaderEd changes log
 
-version 0.2.9 (27 Jan 2013)
-  TextParam widget 
-  NoteNode -- UI node for scene description
+version 0.2.9 (5 Apr 2013)
+  TextParam widget
+  NoteNode -- UI node for shading network description
+  ConnectorNode -- UI node for links organisation
+    Ctrl-drag (Mac: Cmd-drag) node parameter connector to create ConnectorNode
+  Actions:
+    - select all nodes (Cmd+A)
+    - select nodes below in hierarchy (Cmd+Dn)
+    - select nodes above in hierarchy (Cmd+Up)
+    - duplicate nodes (Cmd+D) (without connections yet)
+  Store Recent Networks in File menu
+  Store Recent Projects in File menu
+  Saving project description file 'meshadered.prj' in project root
+  Added new nodes to Library from DRL
+  Library folders rearranged a little bit
 
 version 0.2.8 (20 Jan 2013)
   Few texture nodes were added to Library (analogs of some useful Slim nodes),
@@ -11,24 +23,24 @@ version 0.2.8 (20 Jan 2013)
   Added shadow to GfxNode (9 Nov 2012)
   Added curved links support (8 Nov 2012)
   Added "Snap to grid" support (8 Nov 2012)
-  Added general functions for renaming nodes and parameters (2 Nov 2012) 
+  Added general functions for renaming nodes and parameters (2 Nov 2012)
   Added space option support for parameters: (30 Oct 2012)
    ["rgb", "hsv", "hsl", "xyz", "XYZ", "YIQ"] for color
-   ["current", "shader", "object", "camera", "world", "raster", "NDC", "screen"] 
-   for point, vector, normal, matrix 
+   ["current", "shader", "object", "camera", "world", "raster", "NDC", "screen"]
+   for point, vector, normal, matrix
   And very annoying bug with lost links after saving was fixed. (I hope)
-  
+
 version 0.2.7 (29 Oct 2012)
    ProjectSetup: Using relative pathes for resource directories (20 Sep 2012)
    ImageView: Auto update checkbox (9 Oct 2012)
    ImageView: Reset zoom button (9 Oct 2012)
    NodeEditorWindow: replaced by NodeEditorPanel
-   Format of root RSL nodes was changed (previose shader networks needs to replace those nodes) 
+   Format of root RSL nodes was changed (previose shader networks needs to replace those nodes)
    Added support for LightSource rib node in BascicPrimitive2
-   
+
 version 0.2.6 (29 Aug 2012)
    Added nodeEditorWindow feature
- 
+
 version 0.2.5 (19 Jul 2012)
   added icons in node description window
   added ReadArchive node
@@ -36,30 +48,30 @@ version 0.2.5 (19 Jul 2012)
   some preview nodes removed. BasicPrimitive node has selector for
   choosing primitive.
 
-version 0.2.0 (27 May 2012)  
+version 0.2.0 (27 May 2012)
      BUG: some links doesn't save in XML
      create missing directories (tmp)       (16 May 2012)
      compile shaders to target directories (16 May 2012)
      enlarge checkbox width for OSX       (14 May 2012)
-     enlarge combobox height for OSX      (24 May 2012)  
-     Import NodeNetwork from XML (27 May 2012)  
-     Drag and drop NodeNetwork from XML (27 May 2012)  
-     Drag and drop Node from XML (27 May 2012)  
-     Open NodeNetwork from XML (27 May 2012)  
-          NodeNetwork.normalizeNodeID (27 May 2012)  
-          manage Node and NodeLink id inside NodeNetwork (27 May 2012)  
-          NodeNetwork.open (26 May 2012)  
-          NodeNetwork.parseFromXML (26 May 2012)  
-          Node.parseFromXML (26 May 2012)  
-          NodeParam.parseFromXML (26 May 2012)  
-          NodeLink.parseFromXML (26 May 2012)  
+     enlarge combobox height for OSX      (24 May 2012)
+     Import NodeNetwork from XML (27 May 2012)
+     Drag and drop NodeNetwork from XML (27 May 2012)
+     Drag and drop Node from XML (27 May 2012)
+     Open NodeNetwork from XML (27 May 2012)
+          NodeNetwork.normalizeNodeID (27 May 2012)
+          manage Node and NodeLink id inside NodeNetwork (27 May 2012)
+          NodeNetwork.open (26 May 2012)
+          NodeNetwork.parseFromXML (26 May 2012)
+          Node.parseFromXML (26 May 2012)
+          NodeParam.parseFromXML (26 May 2012)
+          NodeLink.parseFromXML (26 May 2012)
 
-     Save NodeNetwork to XML (25 May 2012)  
-          NodeNetwork.save  (23 May 2012)   
-          NodeNetwork.parseToXML (25 May 2012)  
-          Node.parseToXML (25 May 2012)  
-          NodeParam.parseToXML (25 May 2012)  
-          NodeLink.parseToXML (25 May 2012)  
+     Save NodeNetwork to XML (25 May 2012)
+          NodeNetwork.save  (23 May 2012)
+          NodeNetwork.parseToXML (25 May 2012)
+          Node.parseToXML (25 May 2012)
+          NodeParam.parseToXML (25 May 2012)
+          NodeLink.parseToXML (25 May 2012)
      New scene in new tab     (23 May 2012)
      Switch between tabs and keep correct state for Viewer panels (23 May 2012)
           WorkArea: getImageNodes (23 May 2012
@@ -79,7 +91,7 @@ version 0.2.0 (27 May 2012)
           include support     (14 May 2012)
           comma separated list for includes                          (20 May 2012)
           preserve include and output variable redefinition   (20 May 2012)
-          Displacement node (24 May 2012)   
+          Displacement node (24 May 2012)
           AOV support      (20 May 2012)
           Textures.Shapes: Circle (23 May 2012)
      RIBNode
@@ -128,5 +140,5 @@ version 0.2.0 (27 May 2012)
            GfxNodeConnector
            GfxLink
            Navigation
- 
+
  version 0.0.1 (5 Mar 2011)
