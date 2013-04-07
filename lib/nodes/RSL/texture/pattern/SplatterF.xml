@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<node name="SplatterF" author="ShadeTree" icon="SplatterF.png">
+  <help>This function generates a splattered pattern.</help>
+  <input>
+    <property name="DIA" label="Diameter" type="float" default="0.01" subtype="slider" range=".0001 .1 .0001">
+      <help>This is the diameter of the smallest splatters.</help>
+    </property>
+    <property name="FQ" label="Frequency" type="float" default="8.0" subtype="slider" range="1 100 1">
+      <help>This controls the frequency or the density of the pits.</help>
+    </property> 
+     <property name="NUM" label="SizesNum" type="float" default="5.0" subtype="slider" range="1 10 .1">
+      <help>This is the number of different sizes of splatters, each double the previous size.</help>
+    </property> 
+    <property name="THR" label="Threshold" type="float" default="0.75" subtype="slider" range=".0 1 .01">
+      <help>This is the threshold of the function</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="freq"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(i), $(freq) = 1.0 / $(DIA);
+  $(result) = 0;
+  
+  for ( $(i) = 0; $(i) < $(NUM) ; $(i) += 1 )
+  {
+    if ( float noise ( $(Q) * $(freq) ) > $(THR) ) 
+    { 
+      $(result) = 1; 
+      break; 
+    }
+    $(freq) /= 2;
+  }
+   
+  ]]>
+  </code>
+</node>

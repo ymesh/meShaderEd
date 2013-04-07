@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<node name="GraniteF" author="ShadeTree" icon="GraniteF.png">
+  <help>This function returns a granite pattern.</help>
+  <input>
+    <property name="FQ" label="Frequency" type="float" default="20.0" subtype="slider" range=".1 50 .1">
+      <help>This controls the frequency or the density of the pits.</help>
+    </property> 
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+    <file name="patterns.h"/>
+  </include>
+  <internal>
+    <variable name="freq"/> 
+    <variable name="foo"/> 
+    <variable name="sum"/> 
+    <variable name="pix"/>
+    <variable name="oct"/>
+  </internal>
+  <code>
+  <![CDATA[
+  float $(freq) = $(FQ);
+  float $(sum) = 0;
+  point $(foo) = $(Q) * $(freq);
+  float $(pix) = sqrt ( area ( $(foo) ) );
+  float $(oct);
+  
+  for ( $(oct) = 1; $(oct) > 2 * $(pix) ; $(oct) /= 2 ) 
+    $(sum) += $(oct) * noise ( $(foo) / $(oct) );
+
+  if ( $(oct) > $(pix) )
+    $(sum) += clamp ( ( $(oct) / $(pix) ) - 1, 0, 1 ) * $(oct) * noise ( $(foo) / $(oct) );
+
+  $(result) = $(sum);
+   
+  ]]>
+  </code>
+</node>

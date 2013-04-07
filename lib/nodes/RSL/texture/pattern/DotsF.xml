@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<node name="DotsF" author="ShadeTree" icon="DotsF.png">
+  <help>This function generates a dotted  pattern.</help>
+  <input>
+    <property name="FQs" type="float" default="3.0" subtype="slider" range="1 20 1"/>
+    <property name="FQt" type="float" default="3.0" subtype="slider" range="1 20 1"/>
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name = "patterns.h"/>
+  </include>
+  <internal>
+    <variable name="S"/>
+    <variable name="T"/>
+  </internal>
+  <code>
+  <![CDATA[
+    float $(S) = xcomp ( $(Q) );
+    float $(T) = ycomp ( $(Q) );
+    $(result) = sqr ( cos ( PI * $(FQs) * ( $(T) - $(S) ) ) * sin ( PI * $(FQt) * ( $(S) + $(T) ) ) ); 
+  ]]>
+  </code>
+</node>

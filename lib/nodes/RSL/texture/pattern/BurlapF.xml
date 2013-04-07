@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<node name="BurlapF" author="ShadeTree" icon="BurlapF.png">
+	<help>This function generates a screening pattern.</help>
+	<input>
+		<property name="FQs" type="float" default="20.0" subtype="slider" range="10 500 1"/>
+		<property name="FQt" type="float" default="20.0" subtype="slider" range="10 500 1"/>
+		<property name="Q" type="point"/>
+	</input>
+	<output>
+		<property name="result" type="float" default="0"/>
+	</output>
+	<include>
+	</include>
+	<internal>
+	  <variable name="S"/>
+	  <variable name="T"/>
+	</internal>
+	<code>
+  <![CDATA[
+    float $(S) = xcomp ( $(Q) );
+		float $(T) = ycomp ( $(Q) );
+		$(result) = sqrt ( smoothstep ( 0, 1, noise ( $(FQs) * $(S) ) + noise ( $(FQt) * $(T) ) - 0.5 ) );
+  ]]>
+	</code>
+</node>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<node name="RoughF" author="ShadeTree" icon="RoughF.png">
+  <help>This function generates a roughed up pattern.</help>
+  <input>
+    <property name="DIR" label="Axis" type="float" default="0" subtype="selector" range="X:Y:Z">
+      <help>The direction of the pits</help>
+    </property>  
+    <property name="FQ" label="Frequency" type="float" default="20.0" subtype="slider" range="1 100 1">
+      <help>This controls the frequency or the density of the pits.</help>
+    </property> 
+     <property name="PIT" label="Size" type="float" default="5.0" subtype="slider" range="1 20 .1">
+      <help>This controls the size of the pits.</help>
+    </property> 
+     <property name="DEP" label="Depth" type="float" default="0.1" subtype="slider" range="0 1 .01">
+      <help>This controls the depth of the pits.</help>
+     </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+  </include>
+  <internal>
+  </internal>
+  <code>
+  <![CDATA[
+    
+    if ( $(DIR) == 2 ) 
+      setzcomp ( $(Q), zcomp ( $(Q) ) / $(PIT) );
+    else if ( $(DIR) == 1 ) 
+      setycomp ( $(Q), ycomp ( $(Q) ) / $(PIT) );
+    else 
+      setxcomp ( $(Q), xcomp ( $(Q) ) / $(PIT) );
+
+    $(result) = $(DEP) * snoise ( $(Q) * $(FQ) );
+  ]]>
+  </code>
+</node>

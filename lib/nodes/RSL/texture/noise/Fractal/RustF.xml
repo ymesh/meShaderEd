@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<node name="RustF" author="ShadeTree" icon="RustF.png">
+  <help>This function generates a fractal pattern which looks like rust.&#xA;
+        The return values run between -1, 1.&#xA; 
+        In order, the get values between 0, 1, try using modulus, abs, shift or contrast on the output.</help>
+  <input>
+    <property name="FQ" label="Frequency" type="float" default="0.8" subtype="slider" range=".01 10 .01">
+      <help>This controls the frequency of the patten.</help>
+    </property>
+    <property name="OCT" label="Octaves" type="float" default="8.0" subtype="slider" range="0 10 1">
+      <help>This controls the amount of turbulence in the pattern.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="rusty"/>
+    <variable name="scale"/>
+    <variable name="freq"/>
+  </internal>
+  <code>
+  <![CDATA[
+  float $(i), $(scale) = 1, $(rusty) = 0;
+  float $(freq) = 1;
+    
+  for ( $(i) = 0 ; $(i) < $(OCT) ; $(i) += 1 )
+  {
+    $(rusty) += snoise ( $(freq) * $(Q) ) * $(scale);
+    $(scale) *= $(FQ);
+    $(freq) *= 2;
+  }
+  
+  $(result) = $(rusty); 
+  ]]>
+  </code>
+</node>

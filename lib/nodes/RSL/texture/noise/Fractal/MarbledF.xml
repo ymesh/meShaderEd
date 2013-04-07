@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<node name="MarbledF" author="ShadeTree" icon="MarbledF.png">
+  <help>This function returned a marbled pattern.</help>
+  <input>
+    <property name="FQ" label="Frequency" type="float" default="4.0" subtype="slider" range=".1 50 .1">
+      <help>This controls the frequency of the marbling.</help>
+    </property>
+    <property name="SHF" label="Shift" type="float" default="4.0" subtype="slider" range="0 10 1">
+      <help>This shifts the contrast in the turbulence function.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+  </include>
+  <internal>
+    <variable name="scale"/> 
+    <variable name="chaos"/> 
+    <variable name="QQ"/>
+    <variable name="pixel"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(scale);
+  float $(chaos) = 0;
+  point $(QQ) = $(Q) * $(FQ);
+  float $(pixel) = sqrt ( area ( $(QQ) ) );
+  
+  for ( $(scale) = 1; $(scale) > 2 * $(pixel) ; $(scale) /= 2 )
+    $(chaos) += $(scale) * noise ( $(QQ) / $(scale) );
+  
+  if ( $(scale) > $(pixel) )
+    $(chaos) += clamp ( ( $(scale) / $(pixel) ) - 1, 0, 1 ) * $(scale) * noise ( $(QQ) / $(scale) );
+  
+   $(result) = clamp ( $(SHF) * $(chaos) - ( $(SHF) - 1 ), 0, 1 );
+   
+  ]]>
+  </code>
+</node>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<node name="RopeF" author="ShadeTree" icon="RopeF.png">
+	<help>This function generates a rope pattern</help>
+	<input>
+		<property name="twist" type="float" default="3.0" subtype="slider" range="1 108 1"/>
+		<property name="scale" type="float" default="1.0" subtype="slider" range="-2 2 .01"/>
+		<property name="Q" type="point"/>
+	</input>
+	<output>
+		<property name="result" type="float" default="0"/>
+	</output>
+	<include>
+	</include>
+	<internal>
+	  <variable name="S"/>
+	  <variable name="T"/>
+	</internal>
+	<code>
+  <![CDATA[
+		float $(S) = xcomp ( $(Q) );
+		float $(T) = ycomp ( $(Q) );
+		$(result) = abs ( cos ( radians ( ( ( $(S) + $(T) ) / 2) * ( 360 * $(twist) ) ) ) ) * $(scale);
+  ]]>
+	</code>
+</node>

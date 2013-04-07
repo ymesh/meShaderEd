@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<node name="FeatheryF" author="ShadeTree" icon="FeatheryF.png">
+  <help>This function returned a feathery pattern which range over \[-1,1\].</help>
+  <input>
+    <property name="FQ" label="Frequency" type="float" default="4.0" subtype="slider" range=".01 20 .01">
+      <help>This controls the frequency of the feathers.&#xA;Larger number generate a rippling pattern.</help>
+    </property>
+    <property name="OCT" label="Octaves" type="float" default="4.0" subtype="slider" range="1 10 1">
+      <help>This controls the amount of turbulence in the feathers.&#xA;Larger number generate a rippling pattern.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="sum"/> 
+    <variable name="size"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(i);
+  float $(sum) = 0;
+  float $(size) = 1;
+  
+  for ( $(i) = 0 ; $(i) < $(OCT) ; $(i) += 1 )
+  {
+    $(sum) += snoise ( $(size) * $(Q) + vsnoise ( $(size) * $(Q) ) * $(FQ) ) / $(size);
+    $(size) *= 2;
+  }
+  
+  $(result) = $(sum) * 1.4;
+   
+  ]]>
+  </code>
+</node>

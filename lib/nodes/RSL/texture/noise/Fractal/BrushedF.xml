@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<node name="BrushedF" author="ShadeTree" icon="BrushedF.png">
+  <help>This function returns a pattern which resembles the brushstokes in paint.</help>
+  <input>
+    <property name="DIR" label="Axis" type="float" default="0" subtype="selector" range="X:Y:Z">
+    <help>The axis the brushstrokes occurs along.</help>
+    </property>
+    <property name="FQ" label="Frequency" type="float" default="40.0" subtype="slider" range="1 100 1">
+      <help>This controls the density of the brushstokes.&#xA;Larger numbers generate a finer pattern.</help>
+    </property> 
+    <property name="LEN" label="Density" type="float" default="30.0" subtype="slider" range="1 100 1">
+      <help>This controls the density of the brushstokes.&#xA;Larger numbers generate a finer pattern.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+  </include>
+  <internal>
+    <variable name="stroke"/> 
+    <variable name="scale"/> 
+    <variable name="pixel"/> 
+    <variable name="QQ"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(scale);
+  float $(stroke) = 0;
+  point $(QQ) = $(Q) * $(FQ);
+  float $(pixel) = sqrt ( area ( $(Q) ) );
+  
+  if ( $(DIR) == 2 ) 
+   setzcomp ( $(QQ), zcomp ( $(QQ) ) / $(LEN) );
+  else if ( $(DIR) == 1 )
+   setycomp ( $(QQ), ycomp ( $(QQ) ) / $(LEN) );
+  else
+   setxcomp ( $(QQ), xcomp ( $(QQ) ) / $(LEN) );
+  
+  for ( $(scale) = 1 ; $(scale) > 2 * $(pixel) ; $(scale) /= 2 )
+    $(stroke) += $(scale) * noise ( $(QQ) / $(scale) );
+  
+  if ( $(stroke) < 1 )
+    $(stroke) = ( 1 - smoothstep ( 0, 1, $(LEN) / $(pixel) ) ) * ( 1 - $(stroke) ) + $(stroke);
+  
+  $(result) = clamp ( $(stroke) - .2, 0, 1 );
+   
+  ]]>
+  </code>
+</node>

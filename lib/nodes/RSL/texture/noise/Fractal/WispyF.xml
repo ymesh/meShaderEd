@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<node name="WispyF" author="ShadeTree" icon="WispyF.png">
+  <help>This function returned a wispy pattern</help>
+  <input>
+    <property name="ANG" label="Angle" type="float" default="30" subtype="slider" range="-180 180 1">
+      <help>This the rotation angle used to increment the turbulence.</help>
+    </property>
+    <property name="OCT" label="Octaves" type="float" default="5.0" subtype="slider" range="0 10 1">
+      <help>This controls the amount of turbulence in the pattern.</help>
+    </property>
+    <property name="DEN" label="Dencity" type="float" default="1.0" subtype="slider" range=".5 5 .1">
+      <help>This controls the magnitude of the streaks.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+  </include>
+  <internal>
+    <variable name="wispy"/> 
+    <variable name="S"/> 
+    <variable name="T"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(wispy) ( float x, y, angle, octaves )
+  {
+    float i;
+    float X = x;
+    float Y = y;
+    float phase = 0;
+    float scale = 1;
+    float chaos = 0;
+    float incre = 1;
+    
+    for ( i = 1; i < octaves; i += 1 )
+    {
+      phase  =  ( PI / 2 ) * sin ( PI * Y * scale );
+      chaos += incre * sin ( phase + 2 * PI * X * scale );
+      incre *= cos ( radians ( angle ) );
+      scale *= 2;
+    }
+    
+    return chaos;
+  }
+  
+  float $(S) = xcomp ( $(Q) );
+  float $(T) = ycomp ( $(Q) );
+  
+  $(result) = ( $(wispy) ( $(S), $(T), $(ANG), $(OCT)) + $(wispy) ( $(T), $(S), $(ANG), $(OCT) ) ) / $(DEN); 
+  ]]>
+  </code>
+</node>

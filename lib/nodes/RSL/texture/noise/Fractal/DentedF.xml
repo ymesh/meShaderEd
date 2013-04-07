@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<node name="DentedF" author="ShadeTree" icon="DentedF.png">
+  <help>This function returned a dentend pattern.</help>
+  <input>
+    <property name="HGT" label="Height" type="float" default="4.0" subtype="slider" range=".01 10 .01">
+      <help>his controls the height of the dents.</help>
+    </property>
+    <property name="FQ" label="Frequency" type="float" default="4.0" subtype="slider" range=".1 10 .1">
+      <help>This controls the frequency of the denting.</help>
+    </property>
+    <property name="OCT" label="Octaves" type="float" default="6.0" subtype="slider" range="1 10 1">
+      <help>This controls the amount of turbulence in the dents.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="sum"/> 
+    <variable name="freq"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(i);
+  float $(sum) = 0;
+  float $(freq) = $(FQ);
+
+  for ( $(i) = 0 ; $(i) < $(OCT) ; $(i) += 1 )
+  {
+    $(sum) += $(HGT) * abs ( .5 - float noise ( $(Q) * $(freq) ) ) / $(freq);
+    $(freq) *= 2;
+  }
+  $(result) = $(sum);
+   
+  ]]>
+  </code>
+</node>

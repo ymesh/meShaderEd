@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<node name="WoodgrainF" author="ShadeTree" icon="WoodgrainF.png">
+  <help>This function returned a woodgrain pattern</help>
+  <input>
+    <property name="A" label="A" type="point" default="point(0,0,0)">
+      <help>This is the first point of the axis for the rings.</help>
+    </property>
+    <property name="B" label="B" type="point" default="point(0,0,1)">
+      <help>This is the second point of the axis for the rings.</help>
+    </property>
+    <property name="NUM" label="Rings" type="float" default="4.0" subtype="slider" range="1 20 .1">
+      <help>This controls the number of the rings.</help>
+    </property>
+    <property name="FQ" label="Frequency" type="float" default="1.0" subtype="slider" range="1 10 .1">
+      <help>This controls the frequency of the turbulence in the rings.</help>
+    </property>
+    
+    <property name="OCT" label="Octaves" type="float" default="4.0" subtype="slider" range="0 10 1">
+      <help>This controls the amount of turbulence in the pattern.</help>
+    </property>
+    <property name="SWL" label="Swirl" type="float" default="0.3" subtype="slider" range=".1 10 .1">
+      <help>This controls the amount of swirl in the rings..</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="patterns.h"/>
+  </include>
+  <internal>
+    <variable name="cloudy"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(cloudy) ( point p; float base, freq, octaves )
+  {
+    float i, sum, size, lacun;
+
+    sum = 0;
+    lacun = 1;
+    size = base;
+    for ( i = 0 ; i < octaves; i += 1 )
+    {
+      sum  += size * noise ( p * freq * lacun );
+      size /= 2;
+      lacun *= 2;
+    }
+    return ( min ( sum / ( base + 1 ), 1 ) );
+  }
+        
+  $(result) = $(NUM) * ( ptlined ( $(A), $(B), $(Q) ) + $(cloudy) ( $(Q), $(SWL), $(FQ), $(OCT) ) );
+  $(result) = ( 1 - sqr ( mod ( $(result), 1 ) ) ) / 5.0 + ( 0.8 - 0.3 * noise ( 10 * $(result) ) );
+  ]]>
+  </code>
+</node>

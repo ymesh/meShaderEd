@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<node name="PuddliesF" author="ShadeTree" icon="PuddliesF.png">
+  <help>This function returned a puddling pattern.</help>
+  <input>
+    <property name="FQ" label="Frequency" type="float" default="4.0" subtype="slider" range=".1 50 .1">
+      <help>This controls the frequency of the patten.</help>
+    </property>
+    <property name="OCT" label="Octaves" type="float" default="4.0" subtype="slider" range="0 10 1">
+      <help>This controls the amount of turbulence in the pattern.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+  </include>
+  <internal>
+    <variable name="quad"/> 
+    <variable name="sum"/>  
+  </internal>
+  <code>
+  <![CDATA[
+  #define $(quad)(x) (x*x*x*x)  
+  
+  float $(sum) = noise ( $(Q) * $(FQ) );
+     
+  $(result) = snoise ( $(quad)( sin ( $(OCT) * PI * $(sum) ) ) ); 
+   
+  ]]>
+  </code>
+</node>

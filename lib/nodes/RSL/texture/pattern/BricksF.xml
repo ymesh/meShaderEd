@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<node name="BricksF" author="ShadeTree" icon="BricksF.png">
+	<help>This function generates a brick pattern.</help>
+	<input>
+		<property name="BW" label="Width" type="float" default="0.5" subtype="slider" range="0.001 1 0.001"/>
+		<property name="BH" label="Height" type="float" default="0.2" subtype="slider" range="0 1 .01"/>
+		<property name="MW" label="Mortar" type="float" default="0.08" subtype="slider" range=".001 .5 .001"/>
+		<property name="Q" type="point"/>
+	</input>
+	<output>
+		<property name="result" type="float" default="0"/>
+	</output>
+	<include>
+	  <file name="filterwidth.h"/>
+	</include>
+	<internal>
+	  <variable name="blendwidth"/>
+	  <variable name="W"/>
+	  <variable name="H"/>
+	  <variable name="SS"/>
+	  <variable name="TT"/>
+	  <variable name="sfuzz"/>
+	  <variable name="tfuzz"/>
+	  <variable name="width"/>
+	  <variable name="height"/>
+	</internal>
+	<code>
+  <![CDATA[
+#define $(blendwidth)( x, y ) ( floor( x ) * ( 1 - 2 * y ) + max( 0, mod ( x, 1 ) - y ) )
+
+    float $(W) = $(BW) + $(MW);
+		float $(H) = $(BH) + $(MW);
+		float $(SS) = xcomp ( $(Q) ) / $(W);
+		float $(TT) = ycomp ( $(Q) ) / $(H);
+
+    if ( mod ( $(TT) * 0.5, 1 ) > 0.5 ) $(SS) += 0.5;
+
+		float $(sfuzz) = filterwidth ( $(SS) );
+		float $(tfuzz) = filterwidth ( $(TT) );
+		float $(width) =  ( $(blendwidth)( $(SS) + $(sfuzz), $(MW) * 0.5 / $(W) ) - $(blendwidth)( $(SS), $(MW) * 0.5 / $(W) ) ) / $(sfuzz);
+		float $(height) = ( $(blendwidth)( $(TT) + $(tfuzz), $(MW) * 0.5 / $(H) ) - $(blendwidth)( $(TT), $(MW) * 0.5 / $(H) ) ) / $(tfuzz);
+
+ 	  $(result) = smoothstep ( 0, 1, $(width) * $(height) );
+  ]]>
+	</code>
+</node>

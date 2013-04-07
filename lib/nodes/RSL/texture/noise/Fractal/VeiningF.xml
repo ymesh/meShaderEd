@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<node name="VeiningF" author="ShadeTree" icon="VeiningF.png">
+  <help>This function returns a veining pattern.</help>
+  <input>
+    <property name="FQ" label="Frequency" type="float" default="8.0" subtype="slider" range="1 100 1">
+      <help>This controls the frequency or the density of the pits.</help>
+    </property> 
+     <property name="IT" label="Iterations" type="float" default="4.0" subtype="slider" range="1 10 1">
+      <help>This controls the number of fingers in the veins.</help>
+    </property> 
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+    <file name="patterns.h"/>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="freq"/> 
+    <variable name="size"/> 
+    <variable name="sum"/> 
+    <variable name="turb"/>
+    <variable name="next"/>
+  </internal>
+  <code>
+  <![CDATA[
+
+  float $(turb), $(next);
+  
+  float $(i), $(sum)  = 0;
+  float $(size) = 1;
+  float $(freq) = $(FQ);
+  
+  for ( $(i) = 0; $(i) < $(IT); $(i) += 1 ) 
+  {
+     $(turb) = 1 - abs ( snoise ( $(Q) * $(freq) + point ( 0, 0, 20 * $(freq) ) ) );
+     $(next) = pow ( smoothstep ( 0.85, 1, $(turb) ), 10 );
+     $(sum) += ( 1 - $(sum) ) * $(next) * smoothstep ( 0.1, 0.85, sqr ( $(size) ) );
+     $(size) *= $(turb);
+     $(freq) *= 2;
+  }
+  $(result) = $(sum);
+   
+  ]]>
+  </code>
+</node>

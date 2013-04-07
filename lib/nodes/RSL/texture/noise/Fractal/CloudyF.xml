@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<node name="CloudyF" author="ShadeTree" icon="CloudyF.png">
+  <help>This function returned a cloudy pattern.</help>
+  <input>
+    <property name="HGT" label="Height" type="float" default="4.0" subtype="slider" range=".1 10 .1">
+      <help>This controls the density of the brushstokes.&#xA;Larger numbers generate a finer pattern.</help>
+    </property>
+    <property name="DEN" label="Density" type="float" default="4.0" subtype="slider" range=".1 10 .1">
+      <help>This controls the density of the clouds.</help>
+    </property>
+    <property name="OCT" label="Octaves" type="float" default="6.0" subtype="slider" range="1 10 1">
+      <help>This controls the number of octaves of noise or turbulence in the clouds.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="sum"/> 
+    <variable name="lacun"/> 
+    <variable name="size"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(i);
+  float $(sum) = 0;
+  float $(lacun) = 1;
+  float $(size) = $(HGT);
+  for ( $(i) = 0; $(i) < $(OCT) ; $(i) += 1 )
+  {
+    $(sum) += $(size) * noise ( $(Q) * $(DEN) * $(lacun) );
+    $(size) /= 2;
+    $(lacun) *= 2;
+  }
+  $(result) = min ( $(sum) / ( $(HGT) + 1 ), 1 );
+   
+  ]]>
+  </code>
+</node>

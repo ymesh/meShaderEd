@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<node name="MottleF" author="ShadeTree" icon="MottleF.png">
+  <help>This function returned a mottled pattern.</help>
+  <input>
+    <property name="FQ" label="Frequency" type="float" default="2.0" subtype="slider" range=".1 20 .1">
+      <help>This controls the amount of mottling.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="sum"/> 
+    <variable name="QQ"/>
+    <variable name="pix"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(i);
+  float $(sum) = 0;
+  point $(QQ) = $(Q) * $(FQ);
+  float $(pix) = sqrt ( area ( $(QQ) ) );
+  
+  for ( $(i) = 1 ; $(i) > 2 * $(pix) ; $(i) /= 2 )
+  {
+    $(sum) += $(i) * abs ( noise ( $(QQ) / $(i) ) - 0.5 );
+  }
+  if ( $(i) > $(pix) )
+  {
+    $(sum) += clamp ( ( $(i) / $(pix) ) - 1, 0, 1 ) * $(i) * abs ( noise ( $(QQ) / $(i) ) - 0.5 );
+  }
+   
+  $(result) = $(sum);
+   
+  ]]>
+  </code>
+</node>

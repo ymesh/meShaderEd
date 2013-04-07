@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<node name="SpeckleF" author="ShadeTree" icon="SpeckleF.png">
+  <help>This function generates a speckled up pattern.</help>
+  <input>
+    <property name="FQ" label="Frequency" type="float" default="8.0" subtype="slider" range="1 100 1">
+      <help>This controls the frequency or the density of the pits.</help>
+    </property> 
+     <property name="NUM" label="ShadesNum" type="float" default="5.0" subtype="slider" range="1 10 .1">
+      <help>This is the number of different shades of speckles.</help>
+    </property> 
+     <property name="ATT" label="Attenuation" type="float" default="2.0" subtype="slider" range="1 5 .01">
+      <help>This controls the sharpness(attenuation) at the edge of the speckles.</help>
+     </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+  </include>
+  <internal>
+  </internal>
+  <code>
+  <![CDATA[
+  $(result) = round ( $(NUM) * pow ( noise ( $(Q) * $(FQ) ), $(ATT) ) ) / $(NUM);
+  ]]>
+  </code>
+</node>

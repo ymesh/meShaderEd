@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<node name="FlamesF" author="ShadeTree" icon="FlamesF.png">
+  <help>This function returned a feathery pattern which range over \[-1,1\].</help>
+  <input>
+    <property name="FRM" label="Frame" type="float" default="0" subtype="slider" range="0 100 1">
+      <help>Usually the current frame is passed in for the animation.</help>
+    </property>
+    <property name="SPD" label="Speed" type="float" default="0" subtype="slider" range="0 1.0 .01">
+      <help>This is the speed of the animation.</help>
+    </property>
+    <property name="SCL" label="Scale" type="float" default="1" subtype="slider" range="0 10.0 .01">
+      <help>This controls the scaling on the flames.</help>
+    </property>
+    <property name="OFF" label="Offset" type="float" default="0" subtype="slider" range="0 10.0 .01">
+      <help>This controls the offset on the flames.</help>
+    </property>
+    <property name="FQ" label="Frequency" type="float" default="0.7" subtype="slider" range=".01 3 .01">
+      <help>This controls the frequency of the feathers.&#xA;Larger number generate a rippling pattern.</help>
+    </property>
+    <property name="OCT" label="Octaves" type="float" default="6.0" subtype="slider" range="1 10 1">
+      <help>This controls the amount of turbulence in the feathers.&#xA;Larger number generate a rippling pattern.</help>
+    </property>
+    <property name="HGT" label="Height" type="float" default="2.0" subtype="slider" range="1.0 10 .1">
+      <help>This controls the height of the flames.</help>
+    </property>
+    <property name="AMP" label="Amplitude" type="float" default="0.2" subtype="slider" range=".01 2 .01">
+      <help>This controls the amplitude of the turbulence.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="sum"/> 
+    <variable name="size"/> 
+    <variable name="Y"/>
+    <variable name="QQ"/>  
+    <variable name="feathery"/>
+    <variable name="F"/>
+  </internal>
+  <code>
+  <![CDATA[
+  float $(i);
+  float $(sum) = 0;
+  float $(size) = 1;
+
+  float $(Y) = ycomp ( $(Q) ) + $(FRM) * $(SPD);
+  point $(QQ) = point ( xcomp ( $(Q) ), $(Y), exp ( $(Y) ) );
+  
+  for ( $(i) = 0; $(i) < $(OCT) ; $(i) += 1 )
+  {
+    $(sum) += snoise ( $(size) * $(QQ) + vsnoise ( $(size) * $(QQ) ) * $(FQ) ) / $(size);
+    $(size) *= 2;
+  }
+  float $(feathery) = $(sum) * 1.4;
+  
+  float $(F) = abs ( $(SCL) * $(feathery) + $(OFF) ) + $(AMP) - ycomp ( $(Q) ) / $(HGT);
+  $(result) = $(F);
+   
+  ]]>
+  </code>
+</node>

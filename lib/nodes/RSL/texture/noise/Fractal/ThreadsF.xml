@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<node name="ThreadsF" author="ShadeTree" icon="ThreadsF.png">
+  <help>This function returned a very fine wispy pattern.</help>
+  <input>
+    <property name="ANG" label="Angle" type="float" default="30" subtype="slider" range="-180 180 1">
+      <help>This the rotation angle used to increment the turbulence.</help>
+    </property>
+    <property name="OCT" label="Octaves" type="float" default="5.0" subtype="slider" range="0 10 1">
+      <help>This controls the amount of turbulence in the pattern.</help>
+    </property>
+    <property name="DEN" label="Dencity" type="float" default="1.0" subtype="slider" range=".5 5 .1">
+      <help>This controls the magnitude of the streaks.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="X"/> 
+    <variable name="Y"/> 
+    <variable name="phase"/> 
+    <variable name="scale"/> 
+    <variable name="chaos"/>
+    <variable name="incre"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(i);
+  float $(X) = ycomp ( $(Q) );
+  float $(Y) = xcomp ( $(Q) );
+  float $(phase) = 0;
+  float $(scale) = 1;
+  float $(chaos) = 0;
+  float $(incre) = 1;
+  
+  for ( $(i) = 1 ; $(i) < $(OCT); $(i) += 1 )
+  {
+    $(phase)  = ( PI / 2 ) * sin ( PI * $(Y) * $(scale) );
+    $(chaos) += $(incre) * sin ( $(phase) + 2 * PI * $(X) * $(scale) );
+    $(incre) *= cos ( radians ( $(ANG) ) );
+    $(scale) *= 2;
+  }
+  
+  $(result) = clamp ( $(chaos) / $(DEN), 0, 1 ); 
+  ]]>
+  </code>
+</node>

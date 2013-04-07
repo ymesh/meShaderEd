@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<node name="StreakedF" author="ShadeTree" icon="StreakedF.png">
+  <help>This function returns a streaked pattern.</help>
+  <input>
+    <property name="DIR" label="Axis" type="float" default="1" subtype="selector" range="X:Y:Z">
+      <help>The direction of the streaks</help>
+    </property>
+    <property name="FQ" label="Frequency" type="float" default="20" subtype="slider" range="1 100 .1">
+      <help>This controls the frequency of the streaks.</help>
+    </property>
+    <property name="LEN" label="Length" type="float" default="10.0" subtype="slider" range="1 100 .1">
+      <help>This controls the length of the streaks.</help>
+    </property>
+    <property name="MAG" label="Magnitude" type="float" default="1.0" subtype="slider" range="1 100 .1">
+      <help>This controls the magnitude of the streaks.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+  </include>
+  <internal>
+    <variable name="QQ"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  point $(QQ) = $(Q);
+
+  if ( $(DIR) == 0 ) 
+    setxcomp ( $(QQ), xcomp ( $(Q) ) / $(LEN) );
+  else if ( $(DIR) == 2 ) 
+    setzcomp ( $(QQ), zcomp ( $(Q) ) / $(LEN) );
+  else 
+    setycomp ( $(QQ), ycomp ( $(Q) ) / $(LEN) );
+  
+  $(result) = clamp ( $(MAG) * snoise ( $(FQ) * $(QQ) ), 0, 1 );
+  ]]>
+  </code>
+</node>

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<node name="BeatenF" author="ShadeTree" icon="BeatenF.png">
+  <help>This function returns a beaten pattern.</help>
+  <input>
+    <property name="INC" label="Variance" type="float" default="3.0" subtype="slider" range="0 6 1">
+      <help>This controls the variance in the turbulence function.</help>
+    </property> 
+    <property name="FQ" label="Frequency" type="float" default="3.0" subtype="slider" range=".1 20 .1">
+      <help>This controls the frequency or density of the pattern.</help>
+    </property> 
+    <property name="OCT" label="Octaves" type="float" default="6.0" subtype="slider" range="1 10 1">
+      <help>This controls the number of octaves in the turbulence.&#xA;Large numbers tend to dampen the pattern.</help>
+    </property>
+  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+    <file name="noises.h"/>
+  </include>
+  <internal>
+    <variable name="i"/> 
+    <variable name="scale"/> 
+    <variable name="chaos"/> 
+  </internal>
+  <code>
+  <![CDATA[
+  float $(i);
+  float $(scale) = 1.0;
+  float $(chaos) = 0.5;
+  
+  if ( $(INC) != 0 )
+    for ( $(i) = 0 ; $(i) < $(OCT) ; $(i) += 1 )
+    {
+      $(chaos) += snoise ( $(Q) * $(FQ) * $(scale) ) / $(scale);
+      $(scale) *= $(INC);
+    }
+
+  $(result) = clamp ( $(chaos), 0, 1 );
+   
+  ]]>
+  </code>
+</node>

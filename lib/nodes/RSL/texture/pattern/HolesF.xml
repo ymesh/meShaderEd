@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<node name="HolesF" author="ShadeTree" icon="HolesF.png">
+  <help>This function generates a holey pattern.</help>
+  <input>
+    <property name="RAD" label="Radius" type="float" default="0.3" subtype="slider" range="0 .5 .01">
+      <help>The radius of the holes</help>
+    </property>  
+    <property name="FX" label="NumberX" type="float" default="20.0" subtype="slider" range="1 50 1">
+      <help>This controls the number of holes up and down the surface.</help>
+    </property> 
+     <property name="FY" label="NumberY" type="float" default="20.0" subtype="slider" range="1 50 1">
+      <help>This controls the number of holes across the surface.</help>
+    </property> 
+     <property name="ATT" label="Attenuation" type="float" default="2.0" subtype="slider" range="1 10 .1">
+      <help>It is the ramp exponent for the sides of the holes.&#xA;The higher the exponent, the shallower the sides and the flatter the bottom.</help>
+    </property>
+    <property name="CTR" label="Center" type="point" default="point(0.5,0.5,0)">
+      <help>The center for the pattern for the s and t coordinates.</help>
+    </property>
+    <property name="XMV" label="OffsetX" type="float" default="0" subtype="slider" range="0 .5 .01">
+      <help>This is the amount to offset the holes in the X direction from the center.&#xA;For best results, the offset should be less than 0.5.</help>
+    </property> 
+   <property name="YMV" label="OffsetY" type="float" default="0" subtype="slider" range="0 .5 .01">
+      <help>This is the amount to offset the holes in the Y direction from the center.&#xA;For best results, the offset should be less than 0.5.</help>
+    </property>  
+    <property name="Q" type="point"/>
+  </input>
+  <output>
+    <property name="result" type="float" default="0"/>
+  </output>
+  <include>
+  </include>
+  <internal>
+    <variable name="S"/>
+    <variable name="T"/>
+    <variable name="sfuzz"/>
+    <variable name="tfuzz"/>
+  </internal>
+  <code>
+  <![CDATA[
+    
+    float $(S) = xcomp ( $(Q) );
+    float $(T) = ycomp ( $(Q) );
+
+    $(result) = pow ( smoothstep ( 0, $(RAD), 
+                                   distance ( $(CTR), 
+                                   point ( mod ( $(FX) * $(S), 1 ) + $(XMV), mod ( $(FY) * $(T), 1 ) + $(YMV), 0 ) ) ),
+                                   $(ATT) ); 
+  ]]>
+  </code>
+</node>
