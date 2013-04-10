@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1113</width>
-    <height>756</height>
+    <width>874</width>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,7 +70,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1113</width>
+     <width>874</width>
      <height>19</height>
     </rect>
    </property>
@@ -146,7 +146,7 @@
    </widget>
    <widget class="QMenu" name="menuCommand">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="font">
      <font>
@@ -157,7 +157,18 @@
     <property name="title">
      <string>Command</string>
     </property>
-    <addaction name="actionBuild"/>
+    <widget class="QMenu" name="menuCreateNode">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Create Node</string>
+     </property>
+     <addaction name="separator"/>
+    </widget>
+    <addaction name="menuCreateNode"/>
+    <addaction name="actionEditNode"/>
+    <addaction name="actionExportShader"/>
     <addaction name="actionRender"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
@@ -495,12 +506,12 @@
     <string>Redo</string>
    </property>
   </action>
-  <action name="actionBuild">
+  <action name="actionEditNode">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
-    <string>Build</string>
+    <string>Edit Node ...</string>
    </property>
   </action>
   <action name="actionRender">
@@ -756,6 +767,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Up</string>
+   </property>
+  </action>
+  <action name="actionExportShader">
+   <property name="text">
+    <string>Export Shader ...</string>
    </property>
   </action>
   <zorder>dockNodes</zorder>
@@ -1215,6 +1231,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionEditNode</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onEditNode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionExportShader</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onExportShader()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onProjectSetup()</slot>
@@ -1243,5 +1291,7 @@
   <slot>onPaste()</slot>
   <slot>onSelectAbove()</slot>
   <slot>onSelectBelow()</slot>
+  <slot>onEditNode()</slot>
+  <slot>onExportShader()</slot>
  </slots>
 </ui>

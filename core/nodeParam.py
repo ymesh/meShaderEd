@@ -68,7 +68,7 @@ class NodeParam ( QtCore.QObject ) :
   #
   def copySetup ( self, newParam ) :
     #
-    if DEBUG_MODE : print '>> NodeParam:: copySetup (%s)' % self.label
+    if DEBUG_MODE : print '>> NodeParam::copySetup (%s)' % self.label
     newParam.id = self.id
     newParam.name = self.name
     newParam.label = self.label
@@ -139,7 +139,7 @@ class NodeParam ( QtCore.QObject ) :
   #
   # setupUI
   #
-  def setupUI ( self, subtype, range ):
+  def setupUI ( self, subtype, range ) :
     #if subtype != '' :
     #  print ">> NodeParam.setUI: %s subtype = %s range = %s" % ( self.name, subtype, range ) )
     self.subtype = subtype
@@ -158,36 +158,29 @@ class NodeParam ( QtCore.QObject ) :
   #
   def parseFromXML ( self, xml_param ) :
     #
-    self.name = str ( xml_param.attributes().namedItem( 'name' ).nodeValue() )
-    self.label = str ( xml_param.attributes().namedItem( 'label' ).nodeValue() )
-    self.type = str ( xml_param.attributes().namedItem( 'type' ).nodeValue() )
-    self.shaderParam = xml_param.attributes().namedItem( 'shaderParam' ).nodeValue() == '1'
-
+    self.name        = str ( xml_param.attributes ().namedItem ( 'name' ).nodeValue () )
+    self.label       = str ( xml_param.attributes ().namedItem ( 'label' ).nodeValue () )
     if self.label == '' : self.label = self.name
-    #print '--> parsing param name= %s label= %s type= %s' % ( self.name, self.label, self.type )
-    #if self.shaderParam :
-    #  print '--> is shaderParam'
-
+    self.type        = str ( xml_param.attributes ().namedItem ( 'type' ).nodeValue () )
+    self.shaderParam = xml_param.attributes ().namedItem ( 'shaderParam' ).nodeValue () == '1'
+    
+    self.detail      = str ( xml_param.attributes ().namedItem ( 'detail' ).nodeValue () )
+    self.provider    = str ( xml_param.attributes ().namedItem ( 'provider' ).nodeValue () )
+    self.subtype     = str ( xml_param.attributes ().namedItem ( 'subtype' ).nodeValue () )
+    self.range       = str ( xml_param.attributes ().namedItem ( 'range' ).nodeValue () )
+    
     self.display = True
-    display_value = str ( xml_param.attributes().namedItem( 'display' ).nodeValue() )
-    if display_value == 'hidden' : self.display = False
-    if display_value == 'visible' : self.display = True
+    if not xml_param.attributes ().namedItem ( 'display' ).isNull () :
+      self.display = xml_param.attributes ().namedItem ( 'display' ).nodeValue () == '1'
+      
+    if not xml_param.attributes ().namedItem ( 'space' ).isNull () :
+      space = str ( xml_param.attributes ().namedItem ( 'space' ).nodeValue () )
+      if space != '' : self.space = space
 
-    self.detail = str ( xml_param.attributes().namedItem( 'detail' ).nodeValue() )
-    self.provider = str ( xml_param.attributes().namedItem( 'provider' ).nodeValue() )
+    self.setDefaultFromStr ( xml_param.attributes ().namedItem ( 'default' ).nodeValue () )
 
-    self.subtype = str ( xml_param.attributes().namedItem( 'subtype' ).nodeValue() )
-    self.range = str ( xml_param.attributes().namedItem( 'range' ).nodeValue() )
-
-    if not xml_param.attributes().namedItem( 'space' ).isNull() :
-      space = str ( xml_param.attributes().namedItem( 'space' ).nodeValue() )
-      if space != '' :
-        self.space = space
-
-    self.setDefaultFromStr ( xml_param.attributes().namedItem( 'default' ).nodeValue() )
-
-    if not xml_param.attributes().namedItem( 'value' ).isNull() :
-      self.setValueFromStr ( xml_param.attributes().namedItem( 'value' ).nodeValue() )
+    if not xml_param.attributes ().namedItem ( 'value' ).isNull () :
+      self.setValueFromStr ( xml_param.attributes ().namedItem ( 'value' ).nodeValue () )
     else :
       self.value = self.default
 
@@ -195,40 +188,37 @@ class NodeParam ( QtCore.QObject ) :
 
     help_tag = xml_param.namedItem ( 'help' )
 
-    if not help_tag.isNull() :
-      help = help_tag.toElement().text()
+    if not help_tag.isNull () :
+      help = help_tag.toElement ().text ()
       self.help = help
   #
-  #
+  # parseToXML
   #
   def parseToXML ( self, dom ) :
     #
     xmlnode = dom.createElement( 'property' )
 
-    if self.name != None :xmlnode.setAttribute ( 'name', self.name )
-    if self.label != None : xmlnode.setAttribute ( 'label', self.label )
-    if self.type != None : xmlnode.setAttribute ( 'type', self.type )
-    if self.shaderParam : xmlnode.setAttribute ( 'shaderParam', True )
-
-    if not self.display : xmlnode.setAttribute ( 'display', 'hidden' )
-
-    if self.detail != '' : xmlnode.setAttribute ( 'detail', self.detail )
+    if self.name != None   : xmlnode.setAttribute ( 'name', self.name )
+    if self.label != None  : xmlnode.setAttribute ( 'label', self.label )
+    if self.type != None   : xmlnode.setAttribute ( 'type', self.type )
+    if self.shaderParam    : xmlnode.setAttribute ( 'shaderParam', True )
+    if not self.display    : xmlnode.setAttribute ( 'display', False )
+    if self.detail != ''   : xmlnode.setAttribute ( 'detail', self.detail )
     if self.provider != '' : xmlnode.setAttribute ( 'provider', self.provider )
-
     # ui decorative parameters
-    if self.subtype != '' : xmlnode.setAttribute ( 'subtype', self.subtype )
-    if self.range != '' : xmlnode.setAttribute ( "range", self.range )
-
-    if self.space != None :
-      if self.space != '' : xmlnode.setAttribute ( 'space', self.space )
-
+    if self.subtype != ''  : xmlnode.setAttribute ( 'subtype', self.subtype )
+    if self.range != ''    : xmlnode.setAttribute ( "range", self.range )
+    if self.space != None  :
+      if self.space != ''  : xmlnode.setAttribute ( 'space', self.space )
+    
     if self.default != None :
-      value = self.getDefaultToStr()
-      if not self.type in ['rib', 'rib_code']  : value = value.strip ( '\"' )
+      value = self.getDefaultToStr ()
+      if not self.type in [ 'rib', 'rib_code' ] : value = value.strip ( '\"' )
       xmlnode.setAttribute ( 'default', value )
+    
     if self.value != None :
-      value = self.getValueToStr()
-      if not self.type in ['rib', 'rib_code'] : value = value.strip ( '\"' )
+      value = self.getValueToStr ()
+      if not self.type in [ 'rib', 'rib_code' ] : value = value.strip ( '\"' )
       xmlnode.setAttribute ( 'value', value )
 
     if self.help != None :
@@ -242,12 +232,12 @@ class NodeParam ( QtCore.QObject ) :
 #
 # Float
 #
-class FloatNodeParam ( NodeParam ):
+class FloatNodeParam ( NodeParam ) :
   #
   # __init__
   #
   def __init__ ( self, xml_param = None, isRibParam = False ) :
-    super( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
+    super ( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
     self.type = 'float'
     #print "FloatNodeParam.__init__"
   #
@@ -285,7 +275,7 @@ class FloatNodeParam ( NodeParam ):
   # if subtype == slider then return list [min, max, step] from
   # space separated string range="min max step"
   #
-  def getRangeValues ( self ):
+  def getRangeValues ( self ) :
     #
     rangeList = []
     i = 0
@@ -293,26 +283,26 @@ class FloatNodeParam ( NodeParam ):
       #
       # get range for selector
       #
-      if self.subtype == 'selector':
+      if self.subtype == 'selector' :
         tmp_list = str ( self.range ).split ( ':' )
         for s in tmp_list :
           pair = s.split ( '=' )
           if len( pair ) > 1 :
-            label = pair[0]
-            value = float( pair[1] )
+            label = pair [0]
+            value = float ( pair [1] )
           else :
             label = s
-            value = float( i )
+            value = float ( i )
           i += 1
-          rangeList.append ( (label, value) )
+          rangeList.append ( ( label, value ) )
       #
       # get range for slider
       #
-      elif self.subtype == 'slider' or self.subtype == 'slider':
+      elif self.subtype == 'slider' or self.subtype == 'slider' :
         tmp_list = str ( self.range ).split ()
         for i in range ( 0, 3 ) :
           value = 0.0
-          if i < len( tmp_list ) :
+          if i < len ( tmp_list ) :
             value = float ( tmp_list[ i ] )
           rangeList.append ( value )
           #print '-> range[%d] = %f' % ( i, value )
@@ -326,6 +316,7 @@ class IntNodeParam ( NodeParam ) :
   # __init__
   #
   def __init__ ( self, xml_param = None, isRibParam = False  ):
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'int'
     #print "FloatNodeParam.__init__"
@@ -335,8 +326,8 @@ class IntNodeParam ( NodeParam ) :
   def encodedTypeStr ( self ) : return 'i'
   #
   #
-  def copy ( self ):
-    newParam = IntNodeParam()
+  def copy ( self ) :
+    newParam = IntNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #
@@ -368,13 +359,13 @@ class IntNodeParam ( NodeParam ) :
       #
       # get range for selector
       #
-      if self.subtype == 'selector':
+      if self.subtype == 'selector' :
         tmp_list = str ( self.range ).split ( ':' )
         for s in tmp_list :
           pair = s.split ( '=' )
           if len ( pair ) > 1 :
-            label = pair[0]
-            value = int ( pair[1] )
+            label = pair [0]
+            value = int ( pair [1] )
           else :
             label = s
             value = int ( i )
@@ -383,12 +374,12 @@ class IntNodeParam ( NodeParam ) :
       #
       # get range for slider
       #
-      elif self.subtype == 'slider' or self.subtype == 'slider':
+      elif self.subtype == 'slider' or self.subtype == 'slider' :
         tmp_list = str ( self.range ).split ()
         for i in range ( 0, 3 ) :
           value = 0
           if i < len ( tmp_list ) :
-            value = int ( tmp_list[ i ] )
+            value = int ( tmp_list [ i ] )
           rangeList.append ( value )
           #print '-> range[%d] = %f' % ( i, value )
     return rangeList
@@ -400,6 +391,7 @@ class ColorNodeParam ( NodeParam ) :
   # __init__
   #
   def __init__ ( self, xml_param = None, isRibParam = False  ) :
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'color'
   #
@@ -442,7 +434,7 @@ class ColorNodeParam ( NodeParam ) :
         p = re.compile ( float_pattern_str )
         f = p.findall ( strValue )
         f = map ( float, f )
-        value = [ f[0], f[1], f[2] ]
+        value = [ f [0], f [1], f [2] ]
       else :
         p = re.compile ( color1_pattern_str )
         match = p.match( strValue )
@@ -450,7 +442,7 @@ class ColorNodeParam ( NodeParam ) :
           p = re.compile ( float_pattern_str )
           f = p.findall( strValue )
           f = map ( float, f )
-          value = [ f[0], f[0], f[0] ]
+          value = [ f [0], f [0], f [0] ]
         else :
           p = re.compile ( color3_space_pattern_str )
           match = p.match( strValue )
@@ -458,11 +450,11 @@ class ColorNodeParam ( NodeParam ) :
             p = re.compile ( float_pattern_str )
             f = p.findall ( strValue )
             f = map ( float, f )
-            value = [ f[0], f[1], f[2] ]
+            value = [ f [0], f [1], f [2] ]
 
             p = re.compile ( space_pattern_str )
             s = p.findall ( strValue )
-            self.space = s[0].strip ( '"' )
+            self.space = s [0].strip ( '"' )
           else :
             p = re.compile ( color1_space_pattern_str )
             match = p.match( strValue )
@@ -470,11 +462,11 @@ class ColorNodeParam ( NodeParam ) :
               p = re.compile ( float_pattern_str )
               f = p.findall ( strValue )
               f = map ( float, f )
-              value = [ f[0], f[0], f[0] ]
+              value = [ f [0], f [0], f [0] ]
 
               p = re.compile ( space_pattern_str )
               s = p.findall ( strValue )
-              self.space = s[0].strip ( '"' )
+              self.space = s [0].strip ( '"' )
             else :
               err = 'Cannot parse color %s values' % self.name
               raise Exception ( err )
@@ -487,9 +479,9 @@ class ColorNodeParam ( NodeParam ) :
     #print "ColorNodeParam.setValueFromStr %s" % str
     if strValue != '' :
       #str = str.replace( ' ', '' )
-      color_values = strValue.split( ' ')
+      color_values = strValue.split ( ' ' )
       f = map ( float, color_values )
-      value = [ f[0], f[1], f[2] ]
+      value = [ f [0], f [1], f [2] ]
     return value
   #
   # valueToStr
@@ -507,12 +499,12 @@ class ColorNodeParam ( NodeParam ) :
     if self.space != None :
       if self.space != '' :
         ret_str += ' "' + self.space + '" '
-    return ret_str + '(' + ''.join ( '%.3f' % f + ',' for f in value[: - 1] ) + '%.3f' % value[ - 1] + ')'
+    return ret_str + '(' + ''.join ( '%.3f' % f + ',' for f in value [: - 1] ) + '%.3f' % value [ - 1] + ')'
   #
   # getValueToRIB
   #
   def getValueToRIB ( self, value ) :
-    return ''.join ( '%.3f' % f + ' ' for f in value[: - 1] ) + '%.3f' % value[ - 1]
+    return ''.join ( '%.3f' % f + ' ' for f in value [: - 1] ) + '%.3f' % value [ - 1]
 #
 # String
 #
@@ -563,13 +555,12 @@ class StringNodeParam ( NodeParam ) :
       for s in tmp_list :
         pair = s.split ( '=' )
         if len ( pair ) > 1 :
-          label = pair[0]
-          value = pair[1]
+          label = pair [0]
+          value = pair [1]
         else :
           label = s
           value = s
         rangeList.append ( (label, value) )
-
     return rangeList
 #
 # Normal
@@ -598,177 +589,189 @@ class NormalNodeParam ( NodeParam ) :
     value = [ 0.0, 0.0, 0.0 ]
     #print "NormalNodeParam.setValueFromStr %s" % str
     if str != '' :
-      str = str.replace( ' ', '' )
+      str = str.replace ( ' ', '' )
       normal3_pattern_str = 'normal\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
       normal1_pattern_str = 'normal\(([-+]?([0-9]*\.)?[0-9]+\))'
       normal3_space_pattern_str = 'normal"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
       normal1_space_pattern_str = 'normal"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+\))'
       float_pattern_str = '[-+]?[0-9]*\.?[0-9]+'
       space_pattern_str = '"[a-z]*"'
-      p = re.compile( normal3_pattern_str )
-      match = p.match( str )
+      p = re.compile ( normal3_pattern_str )
+      match = p.match ( str )
       if match :
         # normal(0,0,0)
-        p = re.compile( float_pattern_str )
-        f = p.findall( str )
-        f = map( float, f )
-        value = [ f[0], f[1], f[2] ]
+        p = re.compile ( float_pattern_str )
+        f = p.findall ( str )
+        f = map ( float, f )
+        value = [ f [0], f [1], f [2] ]
       else :
         # normal(0)
-        p = re.compile( normal1_pattern_str )
-        match = p.match( str )
+        p = re.compile ( normal1_pattern_str )
+        match = p.match ( str )
         if match :
-          p = re.compile( float_pattern_str )
-          f = p.findall( str )
-          f = map( float, f )
-          value = [ f[0], f[0], f[0] ]
+          p = re.compile ( float_pattern_str )
+          f = p.findall ( str )
+          f = map ( float, f )
+          value = [ f [0], f [0], f [0] ]
         else :
           # normal "space" (0,0,0)
-          p = re.compile( normal3_space_pattern_str )
-          match = p.match( str )
+          p = re.compile ( normal3_space_pattern_str )
+          match = p.match ( str )
           if match :
-            p = re.compile( float_pattern_str )
-            f = p.findall( str )
-            f = map( float, f )
-            value = [ f[0], f[1], f[2] ]
+            p = re.compile ( float_pattern_str )
+            f = p.findall ( str )
+            f = map ( float, f )
+            value = [ f [0], f [1], f [2] ]
 
-            p = re.compile( space_pattern_str )
-            s = p.findall( str )
-            self.space = s[0].strip('"')
+            p = re.compile ( space_pattern_str )
+            s = p.findall ( str )
+            self.space = s [0].strip ( '"' )
           else :
             # normal "space" (0)
-            p = re.compile( normal1_space_pattern_str )
-            match = p.match( str )
+            p = re.compile ( normal1_space_pattern_str )
+            match = p.match ( str )
             if match :
-              p = re.compile( float_pattern_str )
-              f = p.findall( str )
-              f = map( float, f )
-              value = [ f[0], f[0], f[0] ]
+              p = re.compile ( float_pattern_str )
+              f = p.findall ( str )
+              f = map ( float, f )
+              value = [ f [0], f [0], f [0] ]
 
-              p = re.compile( space_pattern_str )
-              s = p.findall( str )
-              self.space = s[0].strip('"')
+              p = re.compile ( space_pattern_str )
+              s = p.findall ( str )
+              self.space = s [0].strip ( '"' )
             else :
               err = 'Cannot parse normal %s values' % self.name
               raise Exception ( err )
     return value
   #
+  # valueToStr
   #
-  def valueToStr ( self, value ):
+  def valueToStr ( self, value ) :
     ret_str = 'normal'
     if self.space != None :
       if self.space != '' :
         ret_str += ' "' + self.space + '" '
-    return ret_str + '(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'
+    return ret_str + '(' + ''.join ('%.3f' % f + ',' for f in value [: - 1]) + '%.3f' % value [ - 1] + ')'
 #
 # Point
 #
-class PointNodeParam ( NodeParam ):
+class PointNodeParam ( NodeParam ) :
   #
+  # __init__
   #
-  def __init__ ( self, xml_param = None, isRibParam = False ):
+  def __init__ ( self, xml_param = None, isRibParam = False ) :
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'point'
     #print "PointNodeParam.__init__"
   #
+  # encodedTypeStr
   #
   def encodedTypeStr ( self ): return 'p'
   #
+  # copy
   #
-  def copy ( self ):
-    newParam = PointNodeParam()
+  def copy ( self ) :
+    newParam = PointNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #
+  # valueFromStr
   #
-  def valueFromStr ( self, str ):
+  def valueFromStr ( self, str ) :
     value = [ 0.0, 0.0, 0.0 ]
     #print "PointNodeParam(%s).valueFromStr %s" % (self.name, str )
     if str != '' :
-      str = str.replace( ' ', '' )
+      str = str.replace ( ' ', '' )
       point3_pattern_str = 'point\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
       point1_pattern_str = 'point\(([-+]?([0-9]*\.)?[0-9]+\))'
       point3_space_pattern_str = 'point"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
       point1_space_pattern_str = 'point"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+\))'
       float_pattern_str = '[-+]?[0-9]*\.?[0-9]+'
       space_pattern_str = '"[a-z]*"'
-      p = re.compile( point3_pattern_str )
-      match = p.match( str )
+      p = re.compile ( point3_pattern_str )
+      match = p.match ( str )
       if match :
         # point(0,0,0)
-        p = re.compile( float_pattern_str )
-        f = p.findall( str )
-        f = map( float, f )
-        value = [ f[0], f[1], f[2] ]
+        p = re.compile ( float_pattern_str )
+        f = p.findall ( str )
+        f = map ( float, f )
+        value = [ f [0], f [1], f [2] ]
       else :
         # point(0)
-        p = re.compile( point1_pattern_str )
-        match = p.match( str )
+        p = re.compile ( point1_pattern_str )
+        match = p.match ( str )
         if match :
-          p = re.compile( float_pattern_str )
-          f = p.findall( str )
-          f = map( float, f )
-          value = [ f[0], f[0], f[0] ]
+          p = re.compile ( float_pattern_str )
+          f = p.findall ( str )
+          f = map ( float, f )
+          value = [ f [0], f [0], f [0] ]
         else :
           # point "space" (0,0,0)
-          p = re.compile( point3_space_pattern_str )
-          match = p.match( str )
+          p = re.compile ( point3_space_pattern_str )
+          match = p.match ( str )
           if match :
-            p = re.compile( float_pattern_str )
-            f = p.findall( str )
-            f = map( float, f )
-            value = [ f[0], f[1], f[2] ]
+            p = re.compile ( float_pattern_str )
+            f = p.findall ( str )
+            f = map ( float, f )
+            value = [ f [0], f [1], f [2] ]
 
-            p = re.compile( space_pattern_str )
-            s = p.findall( str )
-            self.space = s[0].strip('"')
+            p = re.compile ( space_pattern_str )
+            s = p.findall ( str )
+            self.space = s [0].strip ( '"' )
           else :
             # point "space" (0)
-            p = re.compile( point1_space_pattern_str )
-            match = p.match( str )
+            p = re.compile ( point1_space_pattern_str )
+            match = p.match ( str )
             if match :
-              p = re.compile( float_pattern_str )
-              f = p.findall( str )
-              f = map( float, f )
-              value = [ f[0], f[0], f[0] ]
+              p = re.compile ( float_pattern_str )
+              f = p.findall ( str )
+              f = map ( float, f )
+              value = [ f [0], f [0], f [0] ]
 
-              p = re.compile( space_pattern_str )
-              s = p.findall( str )
-              self.space = s[0].strip('"')
+              p = re.compile ( space_pattern_str )
+              s = p.findall ( str )
+              self.space = s [0].strip ( '"' )
             else :
               err = 'Cannot parse point %s values' % self.name
               raise Exception ( err )
     return value
   #
+  # valueToStr
   #
-  def valueToStr ( self, value ):
+  def valueToStr ( self, value ) :
     ret_str = 'point'
     if self.space != None :
       if self.space != '' :
         ret_str += ' "' + self.space + '" '
-    return ret_str + '(' + ''.join('%.3f' % f + ',' for f in value[: - 1]) + '%.3f' % value[ - 1] + ')'
+    return ret_str + '(' + ''.join ('%.3f' % f + ',' for f in value [: - 1]) + '%.3f' % value [ - 1] + ')'
 #
 # Vector
 #
-class VectorNodeParam( NodeParam ):
+class VectorNodeParam( NodeParam ) :
   #
+  # __init__
   #
-  def __init__ ( self, xml_param = None, isRibParam = False ):
+  def __init__ ( self, xml_param = None, isRibParam = False ) :
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'vector'
     #print "VectorNodeParam.__init__"
   #
+  # encodedTypeStr
   #
-  def encodedTypeStr ( self ): return 'v'
+  def encodedTypeStr ( self ) : return 'v'
   #
+  # copy
   #
-  def copy ( self ):
-    newParam = VectorNodeParam()
+  def copy ( self ) :
+    newParam = VectorNodeParam ()
     self.copySetup ( newParam )
     return newParam
   #
+  # valueFromStr
   #
-  def valueFromStr ( self, str ):
+  def valueFromStr ( self, str ) :
     value = [ 0.0, 0.0, 0.0 ]
     #print "VectorNodeParam.setValueFromStr %s" % str
     if str != '' :

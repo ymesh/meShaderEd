@@ -19,7 +19,7 @@ class Node ( QtCore.QObject ) :
   #
   # __init__
   #
-  def __init__ ( self, xml_node = None ) :
+  def __init__ ( self, xml_node = None, nodenet = None ) :
     #
     QtCore.QObject.__init__( self )
 
@@ -37,6 +37,8 @@ class Node ( QtCore.QObject ) :
     self.code = None
     self.param_code = None
     self.computed_code = None
+    
+    self.display = True
 
     self.computedInputParams = None
     self.computedOutputParams = None
@@ -56,12 +58,19 @@ class Node ( QtCore.QObject ) :
     self.outputLinks = {}
 
     self.childs = set ()
+    
+    self.nodenet = nodenet
 
     # position from GfxNode
     self.offset = ( 0, 0 )
 
     if xml_node != None :
       self.parseFromXML ( xml_node )
+  #
+  # __del__
+  #
+  def __del__ ( self ) :
+    if DEBUG_MODE : print '>> Node::__del__ ' + self.label
   #
   # build
   #
@@ -151,45 +160,62 @@ class Node ( QtCore.QObject ) :
       self.includes.append ( include )
     return include
   #
+  # attachInputParamToLink
+  #
+  def attachInputParamToLink ( self, param, link ) :
+    #
+    self.inputLinks [ param ] = link
+  #
   # attachOutputParamToLink
   #
   def attachOutputParamToLink ( self, param, link ) :
+    #
     if not param in self.outputLinks.keys () :
       self.outputLinks [ param ] = []
     self.outputLinks [ param ].append ( link )
   #
+  # detachInputParam
+  #
+  def detachInputParam ( self, param ) :
+    #
+    removedLink = None
+    if DEBUG_MODE : print ">> Node::detachInputParam param = %s" % param.name
+    if param in self.inputLinks.keys () :
+      removedLink = self.inputLinks.pop ( param )
+    return removedLink
+  #
+  # detachOutputParam
+  #
+  def detachOutputParam ( self, param ) :
+    #
+    removedLinks = []
+    if param in self.outputLinks.keys () :
+      outputLinks = self.outputLinks [ param ]
+      for link in outputLinks :
+        removedLinks.append ( link )
+      self.outputLinks.pop ( param )
+    return removedLinks
+  #
   # detachOutputParamFromLink
   #
   def detachOutputParamFromLink ( self, param, link ) :
+    #
+    removedLink = None
     if param in self.outputLinks.keys () :
       outputLinks = self.outputLinks [ param ]
       if link in outputLinks :
+        removedLink = link
         outputLinks.remove ( link )
-  #
-  # attachInputParamToLink
-  #
-  def attachInputParamToLink ( self, param, link ) :
-    self.inputLinks [ param ] = link
-  #
-  # detachInputParamFromLink
-  #
-  def detachInputParamFromLink ( self, param ) :
-    if DEBUG_MODE : print ">> Node::detachInputParamFromLink param = %s" % param.name
-    if param in self.inputLinks.keys () :
-      if DEBUG_MODE :
-        for k in self.inputLinks.keys () : print k.name
-      if DEBUG_MODE : print "... done"
-      self.inputLinks.pop ( param )
+    return removedLink
+  
   #
   # isInputParamLinked
   #
-  def isInputParamLinked ( self, param ) :
-    return param in self.inputLinks.keys ()
+  def isInputParamLinked ( self, param ) : return param in self.inputLinks.keys ()
   #
   # isOutputParamLinked
   #
-  def isOutputParamLinked ( self, param ) :
-    return param in self.outputLinks.keys ()
+  def isOutputParamLinked ( self, param ) : return param in self.outputLinks.keys ()
   #
   # getLinkedSrcNode
   #
@@ -197,6 +223,7 @@ class Node ( QtCore.QObject ) :
   # skipping all ConnectorNode
   #
   def getLinkedSrcNode ( self, param ) :
+    #
     if DEBUG_MODE : print '* getLinkedSrcNode node = %s param = %s' % ( self.label, param.label )
     srcNode = None
     srcParam = None
@@ -217,15 +244,16 @@ class Node ( QtCore.QObject ) :
   # removeParam
   #
   def removeParam ( self, param ) :
+    #
+    removedLinks = []
     if param.isInput :
-      if self.isInputParamLinked ( param ) :
-        self.detachInputParamFromLink ( param )
+      link = self.detachInputParam ( param )
+      if link is not None : removedLinks.append ( link )
       self.inputParams.remove ( param )
     else :
-      if self.isOutputParamLinked ( param ) :
-        while param in self.outputLinks.keys () :
-          self.outputLinks.pop ( param )
+      removedLinks = self.detachOutputParam ( param )
       self.outputParams.remove ( param )
+    return removedLinks
   #
   # getInputParamByName
   #
@@ -268,22 +296,66 @@ class Node ( QtCore.QObject ) :
   # return common list for input and output parameters
   #
   def getParamsList ( self ) :
+    #
     params = self.inputParams + self.outputParams
     return params
   #
   # getParamsNames
   #
   def getParamsNames ( self ) :
+    #
     names = []
+    
     for pm in self.getParamsList () : names.append ( pm.name )
     return names
   #
   # getParamsLabels
   #
   def getParamsLabels ( self ) :
+    #
     labels = []
+    
     for pm in self.getParamsList () : labels.append ( pm.label )
     return labels
+  #
+  # getInputLinks
+  #
+  def getInputLinks ( self ) :
+    #
+    inputLinks = []
+
+    for link in self.inputLinks.values () :
+      inputLinks.append ( link )
+    return inputLinks
+  #
+  # getOutputLinks
+  #
+  def getOutputLinks ( self ) :
+    outputLinks = []
+    for link_list in self.outputLinks.values () :
+      for link in link_list :
+        outputLinks.append ( link )
+    return outputLinks
+  #
+  # getInputLinkByID
+  #
+  def getInputLinkByID ( self, id ) :
+    result = None
+    for link in self.getInputLinks () :
+      if link.id == id :
+        result = link
+        break
+    return result
+  #
+  # getOutputLinkByID
+  #
+  def getOutputLinkByID ( self, id ) :
+    result = None
+    for link in self.getOutputLinks () :
+      if link.id == id :
+        result = link
+        break
+    return result  
   #
   # renameParamName
   #
@@ -449,7 +521,7 @@ class Node ( QtCore.QObject ) :
   def parseToXML ( self, dom ) :
     #
     xml_node = dom.createElement ( 'node' )
-    if DEBUG_MODE : print '>> Node::parseToXML (id=%d)' % ( self.id )
+    if DEBUG_MODE : print '>> Node::parseToXML (id = %d)' % ( self.id )
     if self.id is None :
       if DEBUG_MODE : print '>> Node::parseToXML id is None'
     xml_node.setAttribute ( 'id', str( self.id ) )
@@ -585,42 +657,49 @@ class Node ( QtCore.QObject ) :
   # copySetup
   #
   def copySetup ( self, newNode ) :
+    #
     if DEBUG_MODE : print '>> Node::copySetup (%s)' % self.label
+    
     newNode.id = self.id
+    
     name = self.name
-    if name is None : name = str( self.type )
+    if name is None : name = str ( self.type )
+    
     newNode.name = name
+    
     label = self.label
     if label is None : label = name
-    newNode.label = label
-    newNode.type = self.type
+    
+    newNode.label  = label
+    newNode.type   = self.type
     newNode.author = self.author
-    newNode.help = self.help
-    newNode.icon = self.icon
+    newNode.help   = self.help
+    newNode.icon   = self.icon
     newNode.master = self.master
+    newNode.display = self.display
 
     newNode.offset = self.offset
 
     import copy
-    newNode.code = copy.copy ( self.code )
+    newNode.code       = copy.copy ( self.code )
     newNode.param_code = copy.copy ( self.param_code )
     #self.computed_code = None
 
     newNode.internals = copy.copy ( self.internals )
-    newNode.includes = copy.copy ( self.includes )
+    newNode.includes  = copy.copy ( self.includes )
+    
+    newNode.inputLinks = {}
+    newNode.outputLinks = {}
+
+    newNode.childs = set ()
     #newNode.childs = copy.copy ( self.childs )
 
-    if len ( newNode.inputParams ) :
-      if DEBUG_MODE : print '>> Node::copySetup %s inputParams cleared ' % newNode.label
-      newNode.inputParams = []
-    for param in self.inputParams :
-      newNode.inputParams.append ( param.copy () )
+    newNode.inputParams = []
+    for param in self.inputParams : newNode.inputParams.append ( param.copy () )
 
-    if len ( newNode.outputParams ) :
-      if DEBUG_MODE : print '>> Node::copySetup %s outputParams cleared ' % newNode.label
-      newNode.outputParams = []
-    for param in self.outputParams :
-      newNode.outputParams.append ( param.copy () )
+    newNode.outputParams = []
+    for param in self.outputParams : newNode.outputParams.append ( param.copy () )
+    
     return newNode
 #
 # createParamFromXml

@@ -30,8 +30,8 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   def __init__ ( self, name = '', xml_nodenet = None ) :
     #
-    if DEBUG_MODE : print '>> NodeNetwork: __init__ ' + name
-    QtCore.QObject.__init__( self )
+    if DEBUG_MODE : print '>> NodeNetwork( %s )::__init__ ' % name
+    QtCore.QObject.__init__ ( self )
 
     self.node_id = 0
     self.link_id = 0
@@ -51,7 +51,7 @@ class NodeNetwork ( QtCore.QObject ) :
   # __del__
   #
   def __del__ ( self ) :
-    if DEBUG_MODE : print '>> NodeNetwork: __del__ ' + self.name
+    if DEBUG_MODE : print '>> NodeNetwork( %s )::__del__ ' % self.name
   #
   # renameNodeLabel
   #
@@ -84,7 +84,8 @@ class NodeNetwork ( QtCore.QObject ) :
   # addNode
   #
   def addNode ( self, node ) :
-    #print '>> NodeNetwork: adding node ' + node.label
+    #
+    if DEBUG_MODE : print '>> NodeNetwork( %s )::addNode (%s)' % ( self.name, node.label )
     if node.id == None :
       # if node comes from library -- it should have id = None
       self.node_id = self.node_id + 1
@@ -92,6 +93,8 @@ class NodeNetwork ( QtCore.QObject ) :
     else :
       # while importing from other NodeNet
       node.id = self.node_id + node.id
+    
+    if DEBUG_MODE : print '** node.id -> %d' % node.id
 
     # check if node with this label already exists and assign new label
     self.renameNodeLabel ( node, node.label )
@@ -99,74 +102,70 @@ class NodeNetwork ( QtCore.QObject ) :
     if node.id in self.nodes :
       # print '!!! node.id %d already exists !!!' % node.id
       while node.id in self.nodes : node.id += 1
-      # print '!!! node.id changed to %d !!!' % node.id
+      if DEBUG_MODE : print '!! node.id changed to %d' % node.id
 
     # add node to NodeNetwork
     self.nodes [ node.id ] = node
+    node.nodenet = self
   #
   # addLink
   #
   def addLink ( self, link ) :
     #
-    if DEBUG_MODE : print '>> NodeNetwork::addLink link.id = %s' % str ( link.id )
+    if DEBUG_MODE : print '>> NodeNetwork( %s )::addLink (id = %d)' % ( self.name, link.id )
     if link.id == None :
       self.link_id = self.link_id + 1
       link.id = self.link_id
     else :
       # while importing from other NodeNet
-      link.nodenet = self
       link.id = self.link_id + link.id
-
-    print '>> NodeNetwork: linkid changed to -> %d' % link.id
+    
+    if DEBUG_MODE : print '** link.id -> %d' % link.id
 
     if link.id in self.links :
       # print '!!! link.id %d already exists !!!' % link.id
       while link.id in self.links : link.id += 1
-      # print '!!! link.id changed to %d !!!' % link.id
+      if DEBUG_MODE : print '!! link.id changed to %d' % link.id
 
     # add link to NodeNetwork
     self.links [ link.id ] = link
+    link.nodenet = self
 
     # attach link to nodes
-    link.srcNode.attachOutputParamToLink ( link.srcParam, link )
-    link.dstNode.attachInputParamToLink ( link.dstParam, link )
+    link.connect ()
+    #if connectSrcNode :
+    #  link.srcNode.attachOutputParamToLink ( link.srcParam, link )
+    #if connectDstNode :
+    #  link.dstNode.attachInputParamToLink ( link.dstParam, link )
 
     # add child (since it is a set no duplicates allowed)
-    if DEBUG_MODE : print '* add child % s to %s ' % ( link.srcNode.label, link.dstNode.label )
+    if DEBUG_MODE : print '** add child %s to %s ' % ( link.srcNode.label, link.dstNode.label )
     link.dstNode.addChild ( link.srcNode )
   #
   # removeNode
   #
   def removeNode ( self, node ) :
-    if DEBUG_MODE : print '>> NodeNetwork: removing node %s (id = %d) ...' % ( node.name, node.id )
     #
-    # remove node from NodeNetwork
-    #
-    if node.id in self.nodes.keys () :
+    if DEBUG_MODE : print '>> NodeNetwork( %s )::removeNode %s (id = %d) ...' % ( self.name, node.name, node.id )
+    inputLinksToRemove = []
+    outputLinksToRemove = []
+    if self.hasThisNode ( node ) :
       nodePopped = self.nodes.pop ( node.id )
-      if DEBUG_MODE : print '** node removed ...'
+      node.nodenet = None
+      inputLinksToRemove = nodePopped.getInputLinks ()
+      outputLinksToRemove = nodePopped.getOutputLinks ()
+    return ( inputLinksToRemove, outputLinksToRemove )   
   #
   # removeLink
   #
-  def removeLink ( self, link ) :
-    if DEBUG_MODE : print '>> NodeNetwork: removing link (id = %d) ...' % link.id
+  def removeLink ( self, link, disconnectSrcNode = True, disconnectDstNode = True ) :
     #
-    # remove link from NodeNetwork
-    #
+    if DEBUG_MODE : print '>> NodeNetwork( %s )::removeLink (id = %d) ...' % ( self.name, link.id )
     if self.hasThisLink ( link ) :
-      if DEBUG_MODE : print '** link removed ...'
       linkPopped = self.links.pop ( link.id )
-      #
-      # detach node from links
-      #
-      linkPopped.srcNode.detachOutputParamFromLink ( linkPopped.srcParam, linkPopped )
-      linkPopped.dstNode.detachInputParamFromLink ( linkPopped.dstParam )
-      #
-      # check if we can remove a child from destination node
-      #
       dstNode = linkPopped.dstNode
       srcNode = linkPopped.srcNode
-
+      # check if we can remove a child from destination node
       sourceNodeReferenceCount = 0
       for inputLink in dstNode.inputLinks.values () :
         if inputLink.srcNode == srcNode :
@@ -174,25 +173,25 @@ class NodeNetwork ( QtCore.QObject ) :
       if sourceNodeReferenceCount == 0 :
         if srcNode in dstNode.childs :
           dstNode.removeChild ( srcNode )
+      # detach nodes from link
+      linkPopped.remove ()
   #
   # hasThisLink
   #
-  def hasThisLink ( self, link ) : return link.id in self.links.keys ()
-
+  def hasThisLink ( self, link ) : return ( link.id in self.links.keys () ) and ( link.nodenet == self )
+  #
+  # hasThisNode
+  #
+  def hasThisNode ( self, node ) : return ( node.id in self.nodes.keys () ) and ( node.nodenet == self )
   #
   # clear
   #
   def clear ( self ) :
     #
-    if DEBUG_MODE :print '>> NodeNetwork:: clearing nodes ...'
-    #
-    # remove links
-    #
-    for link in self.links.values() : self.removeLink ( link )
-    #
-    # remove nodes
+    if DEBUG_MODE :print '>> NodeNetwork( %s )::clear' % ( self.name )
     #
     for node in self.nodes.values() : self.removeNode ( node )
+    for link in self.links.values() : self.removeLink ( link )
 
     self.nodes = {}
     self.links = {}
@@ -319,7 +318,7 @@ class NodeNetwork ( QtCore.QObject ) :
           print '!! unknown XML document format'
         self.correct_id ( nodes, links )
     file.close()
-    if DEBUG_MODE : print '>> NodeNetwork::open node_id = %d link_id = %d' % ( self.node_id, self.link_id )
+    if DEBUG_MODE : print '>> NodeNetwork( %s )::open node_id = %d link_id = %d' % ( self.name, self.node_id, self.link_id )
     return ( nodes, links )
   #
   # insert NodeNetwork from .xml document
@@ -347,7 +346,7 @@ class NodeNetwork ( QtCore.QObject ) :
         else :
           print '!! unknown XML document format'
     file.close()
-    if DEBUG_MODE : print '>> NodeNetwork::insert node_id = %d link_id = %d' % ( self.node_id, self.link_id )
+    if DEBUG_MODE : print '>> NodeNetwork( %s )::insert node_id = %d link_id = %d' % ( self.name, self.node_id, self.link_id )
     return ( nodes, links )
   #
   # correct currnet NodeNetwork node_id and link_id
@@ -379,7 +378,7 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   def printInfo ( self ) :
     #
-    print '>> NodeNetwork::printInfo'
+    print '>> NodeNetwork( %s )::printInfo' % ( self.name )
     print '*** links ***'
     for id in self.links.keys () : self.links [ id ].printInfo ()
     print '*** nodes ****'

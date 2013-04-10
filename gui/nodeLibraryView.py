@@ -20,37 +20,32 @@ from ui_nodeLibraryView import Ui_nodeLibraryView
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 #
+# NodeLibraryView
 #
-#
-class NodeLibraryView ( QtGui.QWidget ):
+class NodeLibraryView ( QtGui.QWidget ) :
   #
+  # __init__
   #
-  def __init__ ( self ):
+  def __init__ ( self ) :
+    #
     QtGui.QWidget.__init__ ( self )
 
     # This is always the same
     self.ui=Ui_nodeLibraryView () 
     self.ui.setupUi ( self )
-    
-  
-    #QtCore.QObject.connect( self.ui.treeView, QtCore.SIGNAL("clicked(QModelIndex)"), self.clicked )
-    #QtCore.QObject.connect( self.ui.treeView, QtCore.SIGNAL("doubleClicked(QModelIndex)"), self.doubleClicked )
-    
-    
-    self.updateGui()
+    self.updateGui ()
   #
+  # setLibrary
   #
-  def setLibrary ( self, dirName ):
-    self.ui.nodeList.setLibrary ( dirName )
-    
+  def setLibrary ( self, dirName ) : self.ui.nodeList.setLibrary ( dirName )
+  #  
+  # onReload
   #
+  def onReload ( self ) : self.ui.nodeList.reloadLibrary ()  
+  #   
+  # updateGui
   #
-  def onReload ( self ):
-    self.ui.nodeList.reloadLibrary ()  
-     
-  #
-  #
-  def updateGui ( self ):
+  def updateGui ( self ) :
     #
     pass    
     #if ( self.nodesLib != '' ) :

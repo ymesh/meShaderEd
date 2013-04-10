@@ -11,17 +11,18 @@ from gfx.gfxNodeLabel import GfxNodeLabel
 from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
 
-from global_vars import DEBUG_MODE
+from global_vars import DEBUG_MODE, GFX_NODE_TYPE, GFX_NODE_SWATCH_TYPE 
 from meShaderEd import app_settings
 #
 # GfxNode
 #
 class GfxNode ( QtGui.QGraphicsItem ) :
-  Type = QtGui.QGraphicsItem.UserType + 1
+  Type = GFX_NODE_TYPE
   #
   # __init__
   #
-  def __init__ ( self, node ):
+  def __init__ ( self, node ) :
+    #
     QtGui.QGraphicsItem.__init__ ( self )
 
     self.header = {}
@@ -75,7 +76,9 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     self.setZValue ( 1 )
 
     self.node = node
-
+    
+    self.collapse = None # 'input' 'output' 'all'
+    
     if self.node is not None :
       self.updateNode ()
       ( x, y ) = self.node.offset
@@ -89,7 +92,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   def updateNode ( self ) :
     # remove all GfxLinks
-    for connect in self.inputConnectors : connect.removeAllLinks ()
+    for connect in self.inputConnectors  : connect.removeAllLinks ()
     for connect in self.outputConnectors : connect.removeAllLinks ()
     # remove all children
     for item in self.childItems () : self.scene().removeItem ( item )
@@ -406,7 +409,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
 #
 class GfxNodeSwatch ( QtGui.QGraphicsItem ):
   #
-  Type = QtGui.QGraphicsItem.UserType + 4
+  Type = GFX_NODE_SWATCH_TYPE
   #
   # __init__
   #

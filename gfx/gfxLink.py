@@ -7,14 +7,14 @@
 import os, sys
 from PyQt4 import QtCore, QtGui
 
-from global_vars import DEBUG_MODE
+from global_vars import DEBUG_MODE, GFX_LINK_TYPE
 from meShaderEd import app_settings
 #
 # GfxLink
 #
-class GfxLink ( QtGui.QGraphicsItem ):
+class GfxLink ( QtGui.QGraphicsItem ) :
   #
-  Type = QtGui.QGraphicsItem.UserType + 2
+  Type = GFX_LINK_TYPE
   isStraight = True
   #
   # createFromPoints
@@ -56,7 +56,7 @@ class GfxLink ( QtGui.QGraphicsItem ):
 
     self.link = link
 
-    self.rect = QtCore.QRectF()
+    self.rect = QtCore.QRectF ()
     self.points = []
     self.path = None
     self.isLinkSelected = False

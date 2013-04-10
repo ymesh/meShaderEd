@@ -8,12 +8,12 @@ import os, sys, copy
 from PyQt4 import QtCore, QtGui
 
 from meShaderEd import app_settings
-from global_vars import DEBUG_MODE
+from global_vars import DEBUG_MODE, GFX_NODE_CONNECTOR_TYPE
 #
 # GfxNodeConnector
 #
 class GfxNodeConnector ( QtGui.QGraphicsItem ) :
-  Type = QtGui.QGraphicsItem.UserType + 5
+  Type = GFX_NODE_CONNECTOR_TYPE
   isRound = True
   #
   # __init__
@@ -45,7 +45,6 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
 
     self.node = node  # is not None if this "ConnectorNode"
     if node is not None :
-      if DEBUG_MODE : print ">> GfxNodeConnector is movable ..."
       # flag (new from QT 4.6...)
       self.setFlag ( QtGui.QGraphicsItem.ItemSendsScenePositionChanges )
       self.setFlag ( QtGui.QGraphicsItem.ItemSendsGeometryChanges )
@@ -133,25 +132,25 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # removeGfxLink
   #
   def removeGfxLink ( self, gfxLink ) :
-    if DEBUG_MODE : print '>> GfxNodeConnector removeLink'
+    if DEBUG_MODE : print '>> GfxNodeConnector::removeGfxLink'
     if gfxLink in self.links : self.links.remove ( gfxLink )
   #
   # removeAllLinks
   #
   def removeAllLinks ( self ) :
-    if DEBUG_MODE : print '>> GfxNodeConnector removeAllLinks (%d)' % len ( self.links )
-    for gfxLink in list ( self.links ) :
-      gfxLink.remove () # link will be removed from list
+    if DEBUG_MODE : print '>> GfxNodeConnector::removeAllLinks (count = %d)' % len ( self.links )
+    for gfxLink in list ( self.links ) : gfxLink.remove () 
   #
   # removeInputGfxLinks
   #
-  def removeInputGfxLinks ( self ) :
-    for gfxLink in self.getInputGfxLinks () :
-      gfxLink.remove ()
+  def removeInputGfxLinks ( self ) : 
+    #
+    for gfxLink in self.getInputGfxLinks () : gfxLink.remove ()
   #
   #
   def remove ( self ) :
-    if DEBUG_MODE : print '>> GfxNodeConnector remove gfxNode (temp)'
+    #
+    if DEBUG_MODE : print '>> GfxNodeConnector::remove'
     if self.isNode () :
       inputGfxLinks = self.getInputGfxLinks ()
       outputGfxLinks = self.getOutputGfxLinks ()
@@ -164,8 +163,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
         #
         inputLink = inputGfxLinks [0] # it's supposed that only 1 input connecion allowed
         srcConnector = inputLink.srcConnector
-        srcNode = inputLink.link.srcNode
-        srcParam = inputLink.link.srcParam
+        ( srcNode, srcParam ) = inputLink.link.getSrc ()
         #
         # inputLink and corresponding node link will be removed from nodeNet
         #
@@ -174,8 +172,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
         for gfxLink in outputGfxLinks :
           gfxLink.setSrcConnector ( srcConnector )
           srcNode.attachOutputParamToLink ( srcParam, gfxLink.link )
-          gfxLink.link.srcNode = srcNode
-          gfxLink.link.srcParam = srcParam
+          gfxLink.link.setSrc ( srcNode, srcParam )
 
           gfxLink.link.dstNode.addChild ( srcNode )
           gfxLink.link.dstNode.removeChild ( self.getNode () )
@@ -197,6 +194,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # isConnectedToInput
   #
   def isConnectedToInput ( self ) :
+    #
     result = False
     if self.isNode () :
       #if DEBUG_MODE : print '* isConnectedToInput isNode'
@@ -214,6 +212,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # isConnectedToOutput
   #
   def isConnectedToOutput ( self ) :
+    #
     result = False
     if self.isNode () :
       #if DEBUG_MODE : print '* isConnectedToOutput isNode'
@@ -234,12 +233,12 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   #
   # getNode
   #
-  def getNode ( self ) :
-    return self.getGfxNode ().node
+  def getNode ( self ) : return self.getGfxNode ().node
   #
   # getGfxNode
   #
   def getGfxNode ( self ) :
+    #
     node = self
     if not self.isNode () :
       node = self.parentItem ()
@@ -248,6 +247,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # isLinked
   #
   def isLinked ( self ) :
+    #
     isLinked = False
     if len ( self.links ) > 0 : isLinked = True
     return isLinked
@@ -255,8 +255,9 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # hasThisLink
   #
   def hasThisLink ( self, tstLink ) :
+    #
     hasLink = False
-    cpyLink = copy.copy( tstLink )
+    cpyLink = copy.copy ( tstLink )
     cpyLink.dstConnector = self
 
     for link in self.links :
@@ -267,26 +268,16 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   #
   # getInputLinks
   #
-  def getInputLinks ( self ) :
-    inputLinks = []
-    nodeInputLinks = self.getNode ().inputLinks
-    for link in nodeInputLinks.values () :
-      inputLinks.append ( link )
-    return inputLinks
+  def getInputLinks ( self ) : return self.getNode ().getInputLinks ()
   #
   # getOutputLinks
   #
-  def getOutputLinks ( self ) :
-    outputLinks = []
-    nodeOutputLinks = self.getNode ().outputLinks
-    for link_list in nodeOutputLinks.values () :
-      for link in link_list :
-        outputLinks.append ( link )
-    return outputLinks
+  def getOutputLinks ( self ) : return self.getNode ().getOutputLinks ()
   #
   # getInputGfxLinks
   #
   def getInputGfxLinks ( self ) :
+    #
     inputGfxLinks = []
     for gfxLink in self.links :
       if gfxLink.dstConnector == self :
@@ -296,6 +287,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # getOutputGfxLinks
   #
   def getOutputGfxLinks ( self ) :
+    #
     outputGfxLinks = []
     for gfxLink in self.links :
       if gfxLink.srcConnector == self :
@@ -305,12 +297,13 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # adjustLinks
   #
   def adjustLinks ( self ) :
-    # print ">> Connected links = %d" % len ( self.links )
+    #
     for link in self.links : link.adjust ()
   #
   # getScene
   #
   def getScene ( self ) :
+    #
     scene = self.scene ()
     if not self.isNode () :
       scene = self.parentItem ().scene ()
@@ -319,6 +312,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # itemChange
   #
   def itemChange ( self, change, value ) :
+    #
     if change == QtGui.QGraphicsItem.ItemSelectedHasChanged :
       self.isNodeSelected = value.toBool ()
       #if self.isNodeSelected :
@@ -349,6 +343,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # hilite
   #
   def hilite ( self, state ) :
+    #
     self.isNodeSelected = state
     self.update()
   #
@@ -385,7 +380,6 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
       event.accept()
     else :
       QtGui.QGraphicsItem.mouseMoveEvent ( self, event )
-
   #
   # mouseReleaseEvent
   #

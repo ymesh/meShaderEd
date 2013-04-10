@@ -19,6 +19,7 @@ from meRendererSetup import meRendererSetup
 from ProjectSetup import ProjectSetup
 from SettingsSetup import SettingsSetup
 from NodeEditorPanel import NodeEditorPanel
+from ExportShaderPanel import ExportShaderPanel
 
 from nodeList import NodeList
 
@@ -92,7 +93,6 @@ class MainWindow ( QtGui.QMainWindow ) :
 
     self.setupActions ()
     self.setupWindowTitle ()
-
   #
   # connectWorkAreaSignals
   #
@@ -104,7 +104,7 @@ class MainWindow ( QtGui.QMainWindow ) :
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeParamChanged  )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
-      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.onEditGfxNode )
+      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
   #
   # disconnectWorkAreaSignals
   #
@@ -116,7 +116,7 @@ class MainWindow ( QtGui.QMainWindow ) :
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeParamChanged  )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
-      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.onEditGfxNode )
+      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
   #
   #
   #
@@ -209,6 +209,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # addRecentNetwork
   #
   def addRecentNetwork ( self, network ) :
+    #
     if network is not None :
       recent_networks_max = getDefaultValue ( app_settings, '', 'recent_networks_max' )
 
@@ -224,6 +225,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # setupActions
   #
   def setupActions ( self ) :
+    #
     enableForNodes = False
     enableForLinks = False
     enableForPaste = False
@@ -245,7 +247,6 @@ class MainWindow ( QtGui.QMainWindow ) :
     self.ui.actionCut.setEnabled ( enableForNodes )
     self.ui.actionCopy.setEnabled ( enableForNodes )
     self.ui.actionPaste.setEnabled ( enableForPaste )
-
   #
   # onProjectSetup
   #
@@ -392,51 +393,109 @@ class MainWindow ( QtGui.QMainWindow ) :
       self.ui.imageView_ctl.removeViewer ( gfxNode )
       #QtCore.QObject.disconnect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'onNodeParamChanged(QObject,QObject)' ), self.ui.imageView_ctl.onNodeParamChanged )
   #
-  # onEditGfxNode
+  # getSelectedNode
   #
-  def onEditGfxNode ( self, gfxNode ) :
-    if DEBUG_MODE : print ">> MainWindow::onEditGfxNode"
-    #import copy
+  def getSelectedNode ( self ) : return self.workArea.selectedNodes [0]
+  #
+  # onCreateNode
+  #
+  def onCreateNode ( self ) : print ">> MainWindow::onCreateNode (not implemented yet...)"
+  #
+  # onEditNode
+  #
+  def onEditNode ( self ) : self.editGfxNode ( self.getSelectedNode () )
+  #
+  # onExportShader
+  #
+  def onExportShader ( self ) : self.exportShader ( self.getSelectedNode () )
+  #
+  # exportShader
+  #
+  def exportShader ( self, gfxNode ) :
+    #
+    if DEBUG_MODE : print ">> MainWindow::exportShader (not implemented yet...)"
+    gfxNode = self.getSelectedNode ()
+    
+    exportShaderDlg = ExportShaderPanel ()
+    if exportShaderDlg.exec_ () == QtGui.QDialog.Accepted :
+      if DEBUG_MODE : print '>> MainWindow::exportShaderDlg Accepted'
+      #
+      #
+      return  
+  #
+  # editGfxNode
+  #
+  def editGfxNode ( self, gfxNode ) :
+    #
+    if DEBUG_MODE : print ">> MainWindow::editGfxNode"
 
     # reindex input params
-    for i in range ( 0, len( gfxNode.node.inputParams ) ) : gfxNode.node.inputParams[ i ].id = i
+    #for i in range ( 0, len( gfxNode.node.inputParams ) ) : gfxNode.node.inputParams[ i ].id = i
 
     # reindex output params
-    for i in range ( 0, len( gfxNode.node.outputParams ) ) : gfxNode.node.outputParams[ i ].id = i
-
-    save_inputParams = gfxNode.node.inputParams
-    save_outputParams = gfxNode.node.outputParams
-    save_inputLinks = gfxNode.node.inputLinks
-    save_outputLinks = gfxNode.node.outputLinks
-
-    editNode = gfxNode.node.copy()
-
-    #dom = QtXml.QDomDocument ( gfxNode.node.name )
-    #xml_node = gfxNode.node.parseToXML ( dom )
-    #createNodeFromXML ( xml_node )
-
+    #for i in range ( 0, len( gfxNode.node.outputParams ) ) : gfxNode.node.outputParams[ i ].id = i
+    
+    editNode = gfxNode.node.copy ()
+    
+    dupNodeNet = NodeNetwork ( 'duplicate' )
+    dupNodeNet.addNode ( editNode )
+    #
+    # copy input links to new node
+    #
+    if DEBUG_MODE : print '** duplicate input links ...'
+    for link in gfxNode.node.getInputLinks () :
+      newLink = link.copy ()
+      newParam = editNode.getInputParamByName ( link.dstParam.name ) 
+      newLink.setDst ( editNode, newParam )
+      dupNodeNet.addLink ( newLink ) 
+      
+      newLink.printInfo ()
+    #
+    # copy output links to new node
+    #
+    if DEBUG_MODE : print '** duplicate output links ...'
+    for link in gfxNode.node.getOutputLinks () :
+      newLink = link.copy ()
+      newParam = editNode.getOutputParamByName ( link.srcParam.name ) 
+      newLink.setSrc ( editNode, newParam ) 
+      dupNodeNet.addLink ( newLink )
+      
+      newLink.printInfo ()
+      
     nodeEditDlg = NodeEditorPanel ( editNode )
-    if ( nodeEditDlg.exec_ () == QtGui.QDialog.Accepted ) :
-      if DEBUG_MODE : print '>> MainWindow::onEditGfxNode Accepted'
+    
+    if nodeEditDlg.exec_ () == QtGui.QDialog.Accepted :
       #
+      if DEBUG_MODE : print '>> MainWindow::nodeEditDlg Accepted'
       #
-      return
-
+      # remove original node with links
+      ( inputLinksToRemove, outputLinksToRemove ) = self.workArea.nodeNet.removeNode ( gfxNode.node )
+      
+      for link in inputLinksToRemove  : self.workArea.nodeNet.removeLink ( link  )  
+      for link in outputLinksToRemove : self.workArea.nodeNet.removeLink ( link  ) 
+      
+      # add duplicate network to current node net
+      self.workArea.nodeNet.add ( dupNodeNet )
+      
       if gfxNode.node.label != editNode.label :
         self.ui.imageView_ctl.onNodeLabelChanged ( gfxNode, editNode.label )
-
-      editNode.copySetup ( gfxNode.node )
-
-      for i in save_inputParams: print i.label
-
+      
+      # set new node to gfxNode.node
+      gfxNode.node = editNode
       gfxNode.updateNode ()
+      for link in editNode.getInputLinks ()  : self.workArea.addGfxLink ( link  )  
+      for link in editNode.getOutputLinks () : self.workArea.addGfxLink ( link  )  
       #self.ui.nodeParam_ctl.setNode ( gfxNode )
       #gfxNode.update ()
       #gfxNode.adjustLinks ()
       self.ui.nodeParam_ctl.updateGui ()
-      self.workArea.resetCachedContent ()
+      #self.workArea.resetCachedContent ()
       #self.workArea.adjustLinks ()
-      self.workArea.scene().update()
+      self.workArea.scene().update ()
+      
+    else :
+      # remove duplicate node network     
+      dupNodeNet.clear ()
   #
   # onDelete
   #
@@ -453,54 +512,35 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onSelectAll
   #
-  def onSelectAll ( self ) :
-    if DEBUG_MODE : print '>> MainWindow::onSelectAll'
-
-    self.workArea.selectAllNodes ()
+  def onSelectAll ( self ) : self.workArea.selectAllNodes ()
   #
   # onSelectAbove
   #
-  def onSelectAbove ( self ) :
-    if DEBUG_MODE : print '>> MainWindow::onSelectAbove'
-    if DEBUG_MODE : self.workArea.nodeNet.printInfo ()
-
-    selectedGfxNode = self.workArea.selectedNodes [ 0 ]
-    self.workArea.selectAbove ( selectedGfxNode )
+  def onSelectAbove ( self ) : self.workArea.selectAbove ( self.getSelectedNode () )
   #
   # onSelectBelow
   #
-  def onSelectBelow ( self ) :
-    if DEBUG_MODE : print '>> MainWindow::onSelectBelow'
-
-    selectedGfxNode = self.workArea.selectedNodes [ 0 ]
-    self.workArea.selectBelow ( selectedGfxNode )
+  def onSelectBelow ( self ) : self.workArea.selectBelow ( self.getSelectedNode () )
   #
   # onCopy
   #
-  def onCopy ( self ):
-    if DEBUG_MODE : print '>> MainWindow::onCopy'
+  def onCopy ( self ) : print '>> MainWindow::onCopy'
   #
   # onCut
   #
-  def onCut ( self ):
-    if DEBUG_MODE : print '>> MainWindow::onCut'
+  def onCut ( self ) : print '>> MainWindow::onCut'
   #
   # onPaste
   #
-  def onPaste ( self ):
-    if DEBUG_MODE : print '>> MainWindow::onPaste'
+  def onPaste ( self ): print '>> MainWindow::onPaste'
   #
   # onDuplicate
   #
-  def onDuplicate ( self ):
-    if DEBUG_MODE : print '>> MainWindow::onDuplicate '
-    self.workArea.duplicateNode ( preserveLinks = False )
+  def onDuplicate ( self ): self.workArea.duplicateNode ( preserveLinks = False )
   #
   # onDuplicateWithLinks
   #
-  def onDuplicateWithLinks ( self ):
-    if DEBUG_MODE : print '>> MainWindow: onDuplicateWithLinks'
-    print '!! MainWindow::onDuplicateWithLinks is not implemented yet ...'
+  def onDuplicateWithLinks ( self ): print '!! MainWindow::onDuplicateWithLinks is not implemented yet ...'
     # self.workArea.dDuplicateNode ( preserveLinks = True )
   #
   # onSelectGfxNodes
@@ -547,13 +587,11 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onFitAll
   #
-  def onFitAll ( self ) :
-    if DEBUG_MODE : print ">> MainWindow: onFitAll"
+  def onFitAll ( self ) : print ">> MainWindow: onFitAll"
   #
   # onFitSelected
   #
-  def onFitSelected ( self ) :
-    if DEBUG_MODE : print ">> MainWindow: onFitSelected"
+  def onFitSelected ( self ) : print ">> MainWindow: onFitSelected"
   #
   # onZoomReset
   #
@@ -561,8 +599,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onNewParamView
   #
-  def onNewParamView ( self ) :
-    if DEBUG_MODE : print ">> MainWindow: onNewParamView"
+  def onNewParamView ( self ) : print ">> MainWindow: onNewParamView"
   #
   # onTabSelected
   #
@@ -635,6 +672,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # onOpen
   #
   def onOpen ( self ) :
+    #
     if DEBUG_MODE : print ">> MainWindow: onOpen"
     #
     curDir = app_global_vars [ 'ProjectNetworks' ]
@@ -709,6 +747,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # onImport
   #
   def onImport ( self ) :
+    #
     if DEBUG_MODE : print ">> MainWindow: onImport"
     #
     curDir = app_global_vars [ 'ProjectNetworks' ]
@@ -722,6 +761,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # onSave
   #
   def onSave ( self ) :
+    #
     if DEBUG_MODE : print ">> MainWindow: onSave"
     # if file is new -- use onSaveAs function
     #

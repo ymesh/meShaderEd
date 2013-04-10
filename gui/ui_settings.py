@@ -32,4 +32,6 @@ TAB_SIZE = 10
 FONT_HEIGHT = 10
 if ( sys.platform == 'darwin' ) : 
   FONT_HEIGHT = 12
+  
+SWATCH_SIZE = 64
 

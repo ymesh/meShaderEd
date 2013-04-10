@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui/ui_nodeEditor.ui'
+# Form implementation generated from reading ui file 'gui\ui_nodeEditor.ui'
 #
-# Created: Mon Oct  1 08:28:02 2012
+# Created: Fri Apr 05 17:28:06 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!

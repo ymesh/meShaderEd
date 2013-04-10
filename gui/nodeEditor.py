@@ -20,13 +20,15 @@ from core.node import Node
 
 from ui_nodeEditor import Ui_NodeEditor
 #
+# NodeEditor
 #
-#
-class NodeEditor ( QtGui.QWidget ):
+class NodeEditor ( QtGui.QWidget ) :
   #
+  # __init__
   #
-  def __init__ ( self, parent, editNode = None ):
-    QtGui.QDialog.__init__(self)
+  def __init__ ( self, parent, editNode = None ) :
+    #
+    QtGui.QDialog.__init__ ( self )
 
     self.editNode = editNode
           
@@ -34,19 +36,22 @@ class NodeEditor ( QtGui.QWidget ):
     self.buildGui ()
     self.setNode ( editNode )
   #
+  # buildGui
   #
   def buildGui ( self ) :
     # build the gui created with QtDesigner
-    self.ui = Ui_NodeEditor ( )
+    self.ui = Ui_NodeEditor ()
     self.ui.setupUi ( self )
-    
-  #
+  #  
+  # setNode
   #  
   def setNode ( self, editNode ) :
     # 
     self.disconnectSignals ()
     self.editNode = editNode
+    
     if self.editNode is not None :
+      #
       name = self.editNode.name
       if self.editNode.name is None : name = ''
       self.ui.name_lineEdit.setText ( name ) 
@@ -79,7 +84,7 @@ class NodeEditor ( QtGui.QWidget ):
         
       self.ui.help_plainTextEdit.setDocument ( doc )  
       
-      self.ui.id_lineEdit.setText ( str( self.editNode.id ) ) 
+      self.ui.id_lineEdit.setText ( str ( self.editNode.id ) ) 
       
       self.ui.type_comboBox.setEditable ( False )
       self.ui.type_comboBox.setMinimumSize ( QtCore.QSize ( UI.COMBO_WIDTH, UI.COMBO_HEIGHT ) )
@@ -92,34 +97,37 @@ class NodeEditor ( QtGui.QWidget ):
         if label == self.editNode.type : 
           currentIdx = i
         i += 1
-      self.ui.type_comboBox.setCurrentIndex( currentIdx )
+      self.ui.type_comboBox.setCurrentIndex ( currentIdx )
       
       # temporary disabled, until "how to do it gracefully" will be clear ... 
       self.ui.type_comboBox.setEnabled ( False )
       
       self.connectSignals ()
   #
+  # connectSignals
   #
   def connectSignals ( self ) :
     # QtCore.QObject.
-    self.connect ( self.ui.name_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrName )
-    self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
-    self.connect ( self.ui.master_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrMaster )
-    self.connect ( self.ui.author_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrAuthor )
-    self.connect ( self.ui.icon_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrIcon )
-    self.connect ( self.ui.type_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditNodeType )
-    self.connect ( self.ui.help_plainTextEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditNodeTxtAttr )
+    self.connect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrName )
+    self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
+    self.connect ( self.ui.master_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrMaster )
+    self.connect ( self.ui.author_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrAuthor )
+    self.connect ( self.ui.icon_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrIcon )
+    self.connect ( self.ui.type_comboBox, QtCore.SIGNAL ( 'activated(int)' ), self.onEditNodeType )
+    self.connect ( self.ui.help_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditNodeTxtAttr )
   #
+  # disconnectSignals
   #
   def disconnectSignals ( self ) :
+    #
     if self.editNode is not None :
-      self.disconnect ( self.ui.name_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrName )
-      self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
-      self.disconnect ( self.ui.master_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrMaster )
-      self.disconnect ( self.ui.author_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrAuthor )
-      self.disconnect ( self.ui.icon_lineEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onEditNodeStrAttrIcon )
-      self.disconnect ( self.ui.type_comboBox, QtCore.SIGNAL( 'activated(int)' ), self.onEditNodeType )
-      self.disconnect ( self.ui.help_plainTextEdit, QtCore.SIGNAL( 'textChanged()' ), self.onEditNodeTxtAttr )
+      self.disconnect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrName )
+      self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
+      self.disconnect ( self.ui.master_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrMaster )
+      self.disconnect ( self.ui.author_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrAuthor )
+      self.disconnect ( self.ui.icon_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrIcon )
+      self.disconnect ( self.ui.type_comboBox, QtCore.SIGNAL ( 'activated(int)' ), self.onEditNodeType )
+      self.disconnect ( self.ui.help_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditNodeTxtAttr )
   #
   # doesn't work ...
   #
@@ -137,15 +145,18 @@ class NodeEditor ( QtGui.QWidget ):
         self.editNode.icon = str ( self.ui.icon_lineEdit.text () )
   #
   #
+  #
   def onEditNodeStrAttrName ( self ) : self.editNode.name = str ( self.ui.name_lineEdit.text () )
   def onEditNodeStrAttrLabel ( self ) : self.editNode.label = str ( self.ui.label_lineEdit.text () )
   def onEditNodeStrAttrMaster ( self ) : self.editNode.master = str ( self.ui.master_lineEdit.text () )
   def onEditNodeStrAttrAuthor ( self ) : self.editNode.author = str ( self.ui.author_lineEdit.text () ) 
   def onEditNodeStrAttrIcon ( self ) : self.editNode.icon = str ( self.ui.icon_lineEdit.text () )      
   #
+  # onEditNodeTxtAttr
   #
   def onEditNodeTxtAttr ( self ) : self.editNode.help = str ( self.ui.help_plainTextEdit.toPlainText () )
   #
+  # onEditNodeType
   #
   def onEditNodeType ( self, idx ) : self.editNode.type = str ( self.ui.type_comboBox.itemText ( idx ) )
 

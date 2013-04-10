@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Tue Mar 19 21:47:17 2013
+# Created: Fri Apr 05 17:21:15 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(1113, 756)
+        MainWindow.resize(874, 611)
         MainWindow.setDockOptions(QtGui.QMainWindow.AllowTabbedDocks|QtGui.QMainWindow.AnimatedDocks)
         MainWindow.setUnifiedTitleAndToolBarOnMac(False)
         self.centralwidget = QtGui.QWidget(MainWindow)
@@ -42,7 +42,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.tabs, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1113, 19))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 874, 19))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Lucida Sans"))
         font.setPointSize(9)
@@ -65,12 +65,15 @@ class Ui_MainWindow(object):
         self.menuEdit.setFont(font)
         self.menuEdit.setObjectName(_fromUtf8("menuEdit"))
         self.menuCommand = QtGui.QMenu(self.menubar)
-        self.menuCommand.setEnabled(False)
+        self.menuCommand.setEnabled(True)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("MS Shell Dlg 2"))
         font.setPointSize(8)
         self.menuCommand.setFont(font)
         self.menuCommand.setObjectName(_fromUtf8("menuCommand"))
+        self.menuCreateNode = QtGui.QMenu(self.menuCommand)
+        self.menuCreateNode.setEnabled(True)
+        self.menuCreateNode.setObjectName(_fromUtf8("menuCreateNode"))
         self.menuWindow = QtGui.QMenu(self.menubar)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("MS Shell Dlg 2"))
@@ -197,9 +200,9 @@ class Ui_MainWindow(object):
         icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/edit_icons/resources/redo.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionRedo.setIcon(icon7)
         self.actionRedo.setObjectName(_fromUtf8("actionRedo"))
-        self.actionBuild = QtGui.QAction(MainWindow)
-        self.actionBuild.setEnabled(False)
-        self.actionBuild.setObjectName(_fromUtf8("actionBuild"))
+        self.actionEditNode = QtGui.QAction(MainWindow)
+        self.actionEditNode.setEnabled(True)
+        self.actionEditNode.setObjectName(_fromUtf8("actionEditNode"))
         self.actionRender = QtGui.QAction(MainWindow)
         self.actionRender.setEnabled(False)
         self.actionRender.setObjectName(_fromUtf8("actionRender"))
@@ -291,6 +294,8 @@ class Ui_MainWindow(object):
         self.actionSelectBelow.setObjectName(_fromUtf8("actionSelectBelow"))
         self.actionSelectAbove = QtGui.QAction(MainWindow)
         self.actionSelectAbove.setObjectName(_fromUtf8("actionSelectAbove"))
+        self.actionExportShader = QtGui.QAction(MainWindow)
+        self.actionExportShader.setObjectName(_fromUtf8("actionExportShader"))
         self.menuRecent_Projects.addSeparator()
         self.menuRecent_Networks.addSeparator()
         self.menuFile.addAction(self.actionNew)
@@ -323,7 +328,10 @@ class Ui_MainWindow(object):
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionRendererOptions)
         self.menuEdit.addAction(self.actionSettings)
-        self.menuCommand.addAction(self.actionBuild)
+        self.menuCreateNode.addSeparator()
+        self.menuCommand.addAction(self.menuCreateNode.menuAction())
+        self.menuCommand.addAction(self.actionEditNode)
+        self.menuCommand.addAction(self.actionExportShader)
         self.menuCommand.addAction(self.actionRender)
         self.menuWindow.addAction(self.actionShowToolbar)
         self.menuWindow.addAction(self.actionShowNodes)
@@ -394,6 +402,8 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.actionPaste, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onPaste)
         QtCore.QObject.connect(self.actionSelectAbove, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onSelectAbove)
         QtCore.QObject.connect(self.actionSelectBelow, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onSelectBelow)
+        QtCore.QObject.connect(self.actionEditNode, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onEditNode)
+        QtCore.QObject.connect(self.actionExportShader, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onExportShader)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -404,6 +414,7 @@ class Ui_MainWindow(object):
         self.menuRecent_Networks.setTitle(QtGui.QApplication.translate("MainWindow", "Recent Networks", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.menuCommand.setTitle(QtGui.QApplication.translate("MainWindow", "Command", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuCreateNode.setTitle(QtGui.QApplication.translate("MainWindow", "Create Node", None, QtGui.QApplication.UnicodeUTF8))
         self.menuWindow.setTitle(QtGui.QApplication.translate("MainWindow", "Window", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "View", None, QtGui.QApplication.UnicodeUTF8))
@@ -434,7 +445,7 @@ class Ui_MainWindow(object):
         self.actionPaste.setText(QtGui.QApplication.translate("MainWindow", "Paste", None, QtGui.QApplication.UnicodeUTF8))
         self.actionUndo.setText(QtGui.QApplication.translate("MainWindow", "Undo", None, QtGui.QApplication.UnicodeUTF8))
         self.actionRedo.setText(QtGui.QApplication.translate("MainWindow", "Redo", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionBuild.setText(QtGui.QApplication.translate("MainWindow", "Build", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionEditNode.setText(QtGui.QApplication.translate("MainWindow", "Edit Node ...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionRender.setText(QtGui.QApplication.translate("MainWindow", "Render", None, QtGui.QApplication.UnicodeUTF8))
         self.actionShowNodes.setText(QtGui.QApplication.translate("MainWindow", "Nodes Library", None, QtGui.QApplication.UnicodeUTF8))
         self.actionShowNodes.setToolTip(QtGui.QApplication.translate("MainWindow", "Show Nodes", None, QtGui.QApplication.UnicodeUTF8))
@@ -475,6 +486,7 @@ class Ui_MainWindow(object):
         self.actionSelectAbove.setText(QtGui.QApplication.translate("MainWindow", "Select above", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSelectAbove.setToolTip(QtGui.QApplication.translate("MainWindow", "Select hierarchy above", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSelectAbove.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Up", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionExportShader.setText(QtGui.QApplication.translate("MainWindow", "Export Shader ...", None, QtGui.QApplication.UnicodeUTF8))
 
 from nodeLibraryView import NodeLibraryView
 from geomViewWidget import GeomViewWidget

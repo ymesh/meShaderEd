@@ -7,7 +7,7 @@
 #===============================================================================
 from PyQt4 import QtCore, QtGui
 
-from global_vars import DEBUG_MODE
+from global_vars import DEBUG_MODE, GFX_NODE_LABEL_TYPE
 from meShaderEd import app_settings
 
 #
@@ -15,7 +15,7 @@ from meShaderEd import app_settings
 #
 class GfxNodeLabel ( QtGui.QGraphicsItem ) :
   #
-  Type = QtGui.QGraphicsItem.UserType + 3
+  Type = GFX_NODE_LABEL_TYPE
   #
   # __init__
   #

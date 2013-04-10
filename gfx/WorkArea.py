@@ -27,9 +27,10 @@ from global_vars import DEBUG_MODE
 #
 class WorkArea ( QtGui.QGraphicsView ) :
   #
+  # __init__
   #
-  #
-  def __init__ ( self ):
+  def __init__ ( self ) :
+    #
     QtGui.QGraphicsView.__init__ ( self )
 
     self.drawGrid = True
@@ -118,7 +119,6 @@ class WorkArea ( QtGui.QGraphicsView ) :
         painter.drawLine ( x, sc_rect.y (), x, sc_rect.bottom () )
       for y in range ( int ( sc_rect.y () ), int ( sc_rect.bottom () ), self.gridSize ):
         painter.drawLine ( sc_rect.x (), y, sc_rect.right (), y )
-
   #
   # Returns a list of GfxNodes in the scene for given type
   # or all nodes if type == None
@@ -197,10 +197,8 @@ class WorkArea ( QtGui.QGraphicsView ) :
     #
     if DEBUG_MODE : print '>> WorkArea::addGfxLink (id=%d)' % link.id
     gfxLink = GfxLink ( link )
-    srcNode = link.srcNode
-    dstNode = link.dstNode
-    srcParam = link.srcParam
-    dstParam = link.dstParam
+    ( srcNode, srcParam ) = link.getSrc ()
+    ( dstNode, dstParam ) = link.getDst ()
     srcConnector = None
     dstConnector = None
     for item in self.scene ().items ():
