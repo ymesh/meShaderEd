@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<node name="SurfaceShader" author="mesh" type="rib_code">
+  <help>Preset of surface shaders used for background in a preview RIB</help>
+  <input>
+    <property name="Color" type="color" default="0 0 1" provider="attribute"/>  
+    <property name="Opacity" type="color" default="1 1 1" provider="attribute"/> 
+    <property name="Shader" type="string" provider="attribute" default="defaultsurface" subtype="selector" 
+      range = "null:defaultsurface:matte:plastic"/>
+
+    <property name="FG_surf_name" type="string" default="" provider="attribute" display="hidden"/>
+    
+  </input>
+  <output>
+    <property name="FG_surf" type="rib" default=""/>
+  </output>
+  <param_code>
+<![CDATA[
+print ":: Hello from %s XML code !!!" % self.label
+if self.getInputParamByName ( 'Shader' ).value == 'null': self.getInputParamByName ( 'FG_surf_name' ).value = '"null"'  
+if self.getInputParamByName ( 'Shader' ).value == 'defaultsurface': self.getInputParamByName ( 'FG_surf_name' ).value = '"defaultsurface"'
+if self.getInputParamByName ( 'Shader' ).value == 'matte': self.getInputParamByName ( 'FG_surf_name' ).value = '"matte"'
+if self.getInputParamByName ( 'Shader' ).value == 'plastic': self.getInputParamByName ( 'FG_surf_name' ).value = '"plastic"'
+
+
+
+]]>
+  </param_code>
+  <code>
+  <![CDATA[
+      Color [$(Color)]
+      Opacity [$(Opacity)]
+      Surface $(FG_surf_name)
+  ]]>
+  </code>   
+</node>
