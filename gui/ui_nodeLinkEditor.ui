@@ -36,7 +36,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="src_node_lineEdit"/>
+         <widget class="QLineEdit" name="src_node_lineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -56,7 +60,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="src_param_lineEdit"/>
+         <widget class="QLineEdit" name="src_param_lineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -77,6 +85,9 @@
         </item>
         <item>
          <widget class="QLineEdit" name="src_id_lineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="maximumSize">
            <size>
             <width>50</width>
@@ -125,7 +136,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="dst_node_lineEdit"/>
+         <widget class="QLineEdit" name="dst_node_lineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -145,7 +160,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="dst_param_lineEdit"/>
+         <widget class="QLineEdit" name="dst_param_lineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -169,6 +188,9 @@
         </item>
         <item>
          <widget class="QLineEdit" name="dst_id_lineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="maximumSize">
            <size>
             <width>50</width>

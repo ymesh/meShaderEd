@@ -35,6 +35,7 @@ DEBUG_MODE = True
 GFX_NODE_TYPE           = QtGui.QGraphicsItem.UserType + 1
 GFX_LINK_TYPE           = QtGui.QGraphicsItem.UserType + 2
 GFX_NODE_LABEL_TYPE     = QtGui.QGraphicsItem.UserType + 3
-GFX_NODE_SWATCH_TYPE    = QtGui.QGraphicsItem.UserType + 4
-GFX_NODE_CONNECTOR_TYPE = QtGui.QGraphicsItem.UserType + 5
+GFX_NODE_CONNECTOR_TYPE = QtGui.QGraphicsItem.UserType + 4
+GFX_SWATCH_NODE_TYPE    = QtGui.QGraphicsItem.UserType + 5
+
 

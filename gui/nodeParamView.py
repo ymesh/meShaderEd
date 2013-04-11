@@ -29,7 +29,7 @@ from gui.params.VectorWidget import VectorWidget
 from gui.params.MatrixWidget import MatrixWidget
 from gui.params.TextWidget import TextWidget
 #
-#
+# NodeParamView
 #
 class NodeParamView ( QtGui.QWidget ) :
   #
@@ -90,6 +90,7 @@ class NodeParamView ( QtGui.QWidget ) :
   # setNode
   #
   def setNode ( self, gfxNode ) :
+    #
     self.disconnectParamSignals ()
     self.gfxNode = gfxNode
     self.nameEdit.setEnabled ( self.gfxNode is not None )
@@ -99,12 +100,14 @@ class NodeParamView ( QtGui.QWidget ) :
   # onParamChanged
   #
   def onParamChanged ( self, param ) :
-    print ">> NodeParamView: onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )  
+    #
+    print ">> NodeParamView.onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )  
     self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node  
   #
   # nodeLabelChanged
   #
   def nodeLabelChanged ( self ) :
+    #
     if self.gfxNode is not None : 
       newLabel = self.nameEdit.text ().simplified ()
       newLabel = newLabel.replace ( ' ', "_" )
@@ -118,7 +121,7 @@ class NodeParamView ( QtGui.QWidget ) :
   #
   # buildGui
   #
-  def buildGui ( self ):
+  def buildGui ( self ) :
     #currentWidget = self.stackedWidget.currentWidget()
     #self.stackedWidget.removeWidget(currentWidget)
         
@@ -154,11 +157,12 @@ class NodeParamView ( QtGui.QWidget ) :
   #
   # updateGui
   #
-  def updateGui ( self ):
+  def updateGui ( self ) :
+    #
     currentWidget = self.stackedWidget.currentWidget ()
     self.stackedWidget.removeWidget ( currentWidget )
     
-    frame = QtGui.QFrame()
+    frame = QtGui.QFrame ()
         
     frameLayout = QtGui.QVBoxLayout ()
     frameLayout.setSpacing ( UI.SPACING )
@@ -171,9 +175,9 @@ class NodeParamView ( QtGui.QWidget ) :
     
     if self.gfxNode is not None :
       self.nameEdit.setText ( self.gfxNode.node.label )
-      for inputParam in self.gfxNode.node.inputParams:
+      for inputParam in self.gfxNode.node.inputParams :
         if inputParam.display :
-          if not self.gfxNode.node.isInputParamLinked ( inputParam ):
+          if not self.gfxNode.node.isInputParamLinked ( inputParam ) :
             if inputParam.type in self.paramWidgets.keys () :
               #print '%s type = %s' % ( inputParam.label, inputParam.type )  
               paramWidget = apply ( self.paramWidgets [ inputParam.type ], [ inputParam, self.gfxNode, self ] )

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Fri Apr 05 17:21:15 2013
+# Created: Thu Apr 11 15:04:53 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -140,6 +140,12 @@ class Ui_MainWindow(object):
         self.project_ctl.setObjectName(_fromUtf8("project_ctl"))
         self.dockProject.setWidget(self.project_ctl)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockProject)
+        self.dockSwatch = QtGui.QDockWidget(MainWindow)
+        self.dockSwatch.setObjectName(_fromUtf8("dockSwatch"))
+        self.swatchParam_ctl = NodeSwatchParam()
+        self.swatchParam_ctl.setObjectName(_fromUtf8("swatchParam_ctl"))
+        self.dockSwatch.setWidget(self.swatchParam_ctl)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dockSwatch)
         self.actionRendererOptions = QtGui.QAction(MainWindow)
         self.actionRendererOptions.setObjectName(_fromUtf8("actionRendererOptions"))
         self.actionPreviewOptions = QtGui.QAction(MainWindow)
@@ -203,9 +209,9 @@ class Ui_MainWindow(object):
         self.actionEditNode = QtGui.QAction(MainWindow)
         self.actionEditNode.setEnabled(True)
         self.actionEditNode.setObjectName(_fromUtf8("actionEditNode"))
-        self.actionRender = QtGui.QAction(MainWindow)
-        self.actionRender.setEnabled(False)
-        self.actionRender.setObjectName(_fromUtf8("actionRender"))
+        self.actionRenderPreview = QtGui.QAction(MainWindow)
+        self.actionRenderPreview.setEnabled(True)
+        self.actionRenderPreview.setObjectName(_fromUtf8("actionRenderPreview"))
         self.actionShowNodes = QtGui.QAction(MainWindow)
         self.actionShowNodes.setCheckable(True)
         self.actionShowNodes.setChecked(True)
@@ -296,6 +302,10 @@ class Ui_MainWindow(object):
         self.actionSelectAbove.setObjectName(_fromUtf8("actionSelectAbove"))
         self.actionExportShader = QtGui.QAction(MainWindow)
         self.actionExportShader.setObjectName(_fromUtf8("actionExportShader"))
+        self.actionShowSwatch = QtGui.QAction(MainWindow)
+        self.actionShowSwatch.setObjectName(_fromUtf8("actionShowSwatch"))
+        self.actionHideSwatch = QtGui.QAction(MainWindow)
+        self.actionHideSwatch.setObjectName(_fromUtf8("actionHideSwatch"))
         self.menuRecent_Projects.addSeparator()
         self.menuRecent_Networks.addSeparator()
         self.menuFile.addAction(self.actionNew)
@@ -332,7 +342,9 @@ class Ui_MainWindow(object):
         self.menuCommand.addAction(self.menuCreateNode.menuAction())
         self.menuCommand.addAction(self.actionEditNode)
         self.menuCommand.addAction(self.actionExportShader)
-        self.menuCommand.addAction(self.actionRender)
+        self.menuCommand.addAction(self.actionRenderPreview)
+        self.menuCommand.addAction(self.actionShowSwatch)
+        self.menuCommand.addAction(self.actionHideSwatch)
         self.menuWindow.addAction(self.actionShowToolbar)
         self.menuWindow.addAction(self.actionShowNodes)
         self.menuWindow.addAction(self.actionShowParameters)
@@ -404,6 +416,9 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.actionSelectBelow, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onSelectBelow)
         QtCore.QObject.connect(self.actionEditNode, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onEditNode)
         QtCore.QObject.connect(self.actionExportShader, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onExportShader)
+        QtCore.QObject.connect(self.actionRenderPreview, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onRenderPreview)
+        QtCore.QObject.connect(self.actionShowSwatch, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onShowSwatch)
+        QtCore.QObject.connect(self.actionHideSwatch, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onHideSwatch)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -424,6 +439,7 @@ class Ui_MainWindow(object):
         self.dockParam.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Node Parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.dockGeom.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Geometry View", None, QtGui.QApplication.UnicodeUTF8))
         self.dockProject.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Project", None, QtGui.QApplication.UnicodeUTF8))
+        self.dockSwatch.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Node Preview", None, QtGui.QApplication.UnicodeUTF8))
         self.actionRendererOptions.setText(QtGui.QApplication.translate("MainWindow", "Renderer ...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionRendererOptions.setToolTip(QtGui.QApplication.translate("MainWindow", "Renderer Options", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPreviewOptions.setText(QtGui.QApplication.translate("MainWindow", "Preview ...", None, QtGui.QApplication.UnicodeUTF8))
@@ -446,7 +462,9 @@ class Ui_MainWindow(object):
         self.actionUndo.setText(QtGui.QApplication.translate("MainWindow", "Undo", None, QtGui.QApplication.UnicodeUTF8))
         self.actionRedo.setText(QtGui.QApplication.translate("MainWindow", "Redo", None, QtGui.QApplication.UnicodeUTF8))
         self.actionEditNode.setText(QtGui.QApplication.translate("MainWindow", "Edit Node ...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionRender.setText(QtGui.QApplication.translate("MainWindow", "Render", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionEditNode.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+E", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRenderPreview.setText(QtGui.QApplication.translate("MainWindow", "Render Preview", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRenderPreview.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+R", None, QtGui.QApplication.UnicodeUTF8))
         self.actionShowNodes.setText(QtGui.QApplication.translate("MainWindow", "Nodes Library", None, QtGui.QApplication.UnicodeUTF8))
         self.actionShowNodes.setToolTip(QtGui.QApplication.translate("MainWindow", "Show Nodes", None, QtGui.QApplication.UnicodeUTF8))
         self.actionShowParameters.setText(QtGui.QApplication.translate("MainWindow", "Node Parameters", None, QtGui.QApplication.UnicodeUTF8))
@@ -487,10 +505,16 @@ class Ui_MainWindow(object):
         self.actionSelectAbove.setToolTip(QtGui.QApplication.translate("MainWindow", "Select hierarchy above", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSelectAbove.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Up", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExportShader.setText(QtGui.QApplication.translate("MainWindow", "Export Shader ...", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionExportShader.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+T", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionShowSwatch.setText(QtGui.QApplication.translate("MainWindow", "Show Swatch", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionShowSwatch.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+S", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHideSwatch.setText(QtGui.QApplication.translate("MainWindow", "Hide Swatch", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHideSwatch.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+H", None, QtGui.QApplication.UnicodeUTF8))
 
+from gfx.WorkArea import WorkArea
+from nodeSwatchParam import NodeSwatchParam
 from nodeLibraryView import NodeLibraryView
+from nodeParamView import NodeParamView
 from geomViewWidget import GeomViewWidget
 from imageViewWidget import ImageViewWidget
-from nodeParamView import NodeParamView
-from gfx.WorkArea import WorkArea
 import resources_rc

@@ -9,6 +9,7 @@ from PyQt4 import QtCore, QtGui
 
 from meShaderEd import app_settings
 from global_vars import DEBUG_MODE, GFX_NODE_CONNECTOR_TYPE
+import gui.ui_settings as UI
 #
 # GfxNodeConnector
 #
@@ -18,17 +19,18 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   #
   # __init__
   #
-  def __init__ ( self, param = None, radius=5, isRound=True, node=None ) :
+  def __init__ ( self, param = None, radius = UI.CONNECTOR_RADIUS, isRound = True, node = None ) :
     #
     QtGui.QGraphicsItem.__init__ ( self )
-    self.paramsBrushes = {   'c' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkRed ) )
-                            ,'f' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.lightGray ) )
-                            ,'m' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkYellow ) )
-                            ,'p' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkCyan ) )
-                            ,'s' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkGreen ) )
-                            ,'v' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkMagenta ) )
-                            ,'n' : QtGui.QBrush(QtGui.QColor ( QtCore.Qt.darkBlue ) )
-                            ,'R' : QtGui.QBrush(QtGui.QColor ( 'orange' ) )
+    self.paramsBrushes = {   'c' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkRed ) )
+                            ,'f' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.lightGray ) )
+                            ,'m' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkYellow ) )
+                            ,'p' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkCyan ) )
+                            ,'s' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkGreen ) )
+                            ,'v' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkMagenta ) )
+                            ,'n' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkBlue ) )
+                            ,'I' : QtGui.QBrush ( QtGui.QColor ( 'white' ) )
+                            ,'R' : QtGui.QBrush ( QtGui.QColor ( 'orange' ) )
                          }
     self.brush = QtGui.QBrush ( QtGui.QColor ( 140, 140, 140 ) ) # ( 128, 128, 128 ) ( 132, 132, 132 )
     self.PenBorderNormal = QtGui.QPen ( QtGui.QColor ( 0, 0, 0 ) )

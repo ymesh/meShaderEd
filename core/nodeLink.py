@@ -66,7 +66,7 @@ class NodeLink () :
   #
   def copy ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeLink::copy (id = %d)' % self.id
+    if DEBUG_MODE : print '>> NodeLink( id = %d ).copy' % self.id
     newLink = NodeLink ()
     self.copySetup ( newLink )
     return newLink   
@@ -75,7 +75,7 @@ class NodeLink () :
   #
   def connect ( self ) : 
     #
-    if DEBUG_MODE : print '>> NodeLink::connect (id = %d) ...' % self.id
+    if DEBUG_MODE : print '>> NodeLink( id = %d ).connect ...' % self.id
     ( srcNode, srcParam ) = self.getSrc ()
     ( dstNode, dstParam ) = self.getDst ()
     
@@ -90,7 +90,7 @@ class NodeLink () :
   #
   def remove ( self ) : 
     #
-    if DEBUG_MODE : print '>> NodeLink::remove (id = %d) ...' % self.id
+    if DEBUG_MODE : print '>> NodeLink( id = %d ).remove ...' % self.id
     ( srcNode, srcParam ) = self.getSrc ()
     ( dstNode, dstParam ) = self.getDst ()
     
@@ -138,26 +138,22 @@ class NodeLink () :
   #
   # setDstByParamName
   #
-  def setDstByParamName ( self, node, name ) :      
-    # 
-    self.setDst ( node,  node.getInputParamByName ( name ) )
+  def setDstByParamName ( self, node, name ) : self.setDst ( node, node.getInputParamByName ( name ) )
   #
   # setSrcByParamName
   #
-  def setSrcByParamName ( self, node, name ) :      
-    # 
-    self.setSrc ( node, node.getOutputParamByName ( name ) )
+  def setSrcByParamName ( self, node, name ) : self.setSrc ( node, node.getOutputParamByName ( name ) )
   #
   # printInfo
   #
   def printInfo ( self ) :
-    print ':: NodeLink (id = %d) %s.%s -> %s.%s' % ( self.id, self.srcNode.label, self.srcParam.label, self.dstNode.label, self.dstParam.label  )
+    print ':: NodeLink( id = %d ) %s.%s -> %s.%s' % ( self.id, self.srcNode.label, self.srcParam.label, self.dstNode.label, self.dstParam.label  )
   #
   # parseToXML
   #  
   def parseToXML ( self, dom ) :
     #
-    xml_link = dom.createElement( 'link' )
+    xml_link = dom.createElement ( 'link' )
     xml_link.setAttribute ( 'id', str ( self.id ) )
     xml_link.setAttribute ( 'srcNode_id', self.srcNode.id )
     xml_link.setAttribute ( 'dstNode_id', self.dstNode.id )
@@ -170,11 +166,11 @@ class NodeLink () :
   #
   def parseFromXML ( self, xml_link ) :
     #
-    self.id = int ( xml_link.attributes ().namedItem ( 'id' ).nodeValue () )
+    self.id    = int ( xml_link.attributes ().namedItem ( 'id' ).nodeValue () )
     srcNode_id = int ( xml_link.attributes ().namedItem ( 'srcNode_id' ).nodeValue () )
     dstNode_id = int ( xml_link.attributes ().namedItem ( 'dstNode_id' ).nodeValue () )  
-    self.srcNode = self.nodenet.nodes [ srcNode_id ]
-    self.dstNode = self.nodenet.nodes [ dstNode_id ]
+    self.srcNode  = self.nodenet.nodes [ srcNode_id ]
+    self.dstNode  = self.nodenet.nodes [ dstNode_id ]
     srcParam_name = str ( xml_link.attributes ().namedItem ( 'srcParam' ).nodeValue () )
     dstParam_name = str ( xml_link.attributes ().namedItem ( 'dstParam' ).nodeValue () )
     self.srcParam = self.srcNode.getOutputParamByName ( srcParam_name )

@@ -169,7 +169,9 @@
     <addaction name="menuCreateNode"/>
     <addaction name="actionEditNode"/>
     <addaction name="actionExportShader"/>
-    <addaction name="actionRender"/>
+    <addaction name="actionRenderPreview"/>
+    <addaction name="actionShowSwatch"/>
+    <addaction name="actionHideSwatch"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="font">
@@ -359,6 +361,15 @@
    </attribute>
    <widget class="NodeLibraryView" name="project_ctl"/>
   </widget>
+  <widget class="QDockWidget" name="dockSwatch">
+   <property name="windowTitle">
+    <string>Node Preview</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="NodeSwatchParam" name="swatchParam_ctl"/>
+  </widget>
   <action name="actionRendererOptions">
    <property name="text">
     <string>Renderer ...</string>
@@ -513,13 +524,19 @@
    <property name="text">
     <string>Edit Node ...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
   </action>
-  <action name="actionRender">
+  <action name="actionRenderPreview">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
-    <string>Render</string>
+    <string>Render Preview</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionShowNodes">
@@ -773,12 +790,32 @@
    <property name="text">
     <string>Export Shader ...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionShowSwatch">
+   <property name="text">
+    <string>Show Swatch</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionHideSwatch">
+   <property name="text">
+    <string>Hide Swatch</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+H</string>
+   </property>
   </action>
   <zorder>dockNodes</zorder>
   <zorder>dockPreview</zorder>
   <zorder>dockParam</zorder>
   <zorder>dockGeom</zorder>
   <zorder>dockProject</zorder>
+  <zorder>dockSwatch</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -808,6 +845,12 @@
    <class>GeomViewWidget</class>
    <extends>QWidget</extends>
    <header>geomViewWidget</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>NodeSwatchParam</class>
+   <extends>QWidget</extends>
+   <header>nodeSwatchParam</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -1263,6 +1306,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionRenderPreview</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onRenderPreview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionShowSwatch</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onShowSwatch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionHideSwatch</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onHideSwatch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onProjectSetup()</slot>
@@ -1293,5 +1384,8 @@
   <slot>onSelectBelow()</slot>
   <slot>onEditNode()</slot>
   <slot>onExportShader()</slot>
+  <slot>onRenderPreview()</slot>
+  <slot>onShowSwatch()</slot>
+  <slot>onHideSwatch()</slot>
  </slots>
 </ui>

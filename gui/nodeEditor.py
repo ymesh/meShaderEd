@@ -92,7 +92,7 @@ class NodeEditor ( QtGui.QWidget ) :
       
       currentIdx = -1
       i = 0
-      for label in ['rib', 'rib_code', 'rsl_code', 'image', 'surface', 'displacement', 'light', 'volume', 'variable' ]  :
+      for label in [ 'rib', 'rib_code', 'rsl_code', 'image', 'surface', 'displacement', 'light', 'volume', 'variable', 'connector', 'swatch' ]  :
         self.ui.type_comboBox.addItem ( label )
         if label == self.editNode.type : 
           currentIdx = i

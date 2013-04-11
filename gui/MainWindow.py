@@ -97,6 +97,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # connectWorkAreaSignals
   #
   def connectWorkAreaSignals ( self ) :
+    #
     if self.workArea != None :
       if self.activeNodeList != None :
         QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
@@ -104,11 +105,12 @@ class MainWindow ( QtGui.QMainWindow ) :
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeParamChanged  )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
-      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
+      #QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
   #
   # disconnectWorkAreaSignals
   #
   def disconnectWorkAreaSignals ( self ) :
+    #
     if self.workArea != None :
       if self.activeNodeList != None :
         QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
@@ -116,11 +118,12 @@ class MainWindow ( QtGui.QMainWindow ) :
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeParamChanged  )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
-      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
+      #QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
   #
   #
   #
   def setupWindowTitle ( self ) :
+    #
     self.setWindowTitle ( 'meShaderEd %s (%s) %s' % ( app_global_vars [ 'version' ], app_renderer.getCurrentPresetName(), app_global_vars [ 'ProjectPath' ]  ) )
     self.ui.dockNodes.setToolTip ( app_global_vars [ 'NodesPath' ] )
     self.ui.dockNodes.setStatusTip ( app_global_vars [ 'NodesPath' ] )
@@ -184,12 +187,17 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def setupPanels ( self ) :
     #
-    self.tabifyDockWidget ( self.ui.dockGeom, self.ui.dockPreview )
-    self.tabifyDockWidget ( self.ui.dockProject, self.ui.dockNodes )
+    self.tabifyDockWidget ( self.ui.dockPreview, self.ui.dockGeom  )
+    self.tabifyDockWidget ( self.ui.dockNodes, self.ui.dockProject )
+    self.tabifyDockWidget ( self.ui.dockParam, self.ui.dockSwatch )
 
-    self.removeDockWidget ( self.ui.dockParam )
-    self.addDockWidget ( QtCore.Qt.DockWidgetArea ( 2 ), self.ui.dockParam )
-    self.ui.dockParam.show ()
+    self.ui.dockPreview.raise_ ()
+    self.ui.dockParam.raise_ ()
+    self.ui.dockNodes.raise_ ()
+    
+    #self.removeDockWidget ( self.ui.dockParam )
+    #self.addDockWidget ( QtCore.Qt.DockWidgetArea ( 2 ), self.ui.dockParam )
+    #self.ui.dockParam.show ()
   #
   # addRecentProject
   #
@@ -252,7 +260,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onProjectSetup ( self ) :
     #
-    if DEBUG_MODE : print ">> MainWindow: onProjectSetup"
+    if DEBUG_MODE : print ">> MainWindow.onProjectSetup"
     projectSetupDlg = ProjectSetup ( app_settings )
     projectSetupDlg.exec_()
     self.ui.project_ctl.setLibrary ( app_global_vars [ 'ProjectNetworks' ] )
@@ -265,7 +273,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onSettingsSetup ( self ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onSettingsSetup'
+    if DEBUG_MODE : print '>> MainWindow.onSettingsSetup'
     settingsSetupDlg = SettingsSetup ( app_settings )
     settingsSetupDlg.exec_()
     self.ui.nodeList_ctl.setLibrary ( app_global_vars [ 'NodesPath' ] )
@@ -275,7 +283,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onRenderSettings ( self ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onRenderSettings'
+    if DEBUG_MODE : print '>> MainWindow.onRenderSettings'
     renderSettingsDlg = meRendererSetup ( app_renderer )
     QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'presetChanged' ), self.onRenderPresetChanged )
     QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'savePreset' ), self.onRenderSavePreset )
@@ -286,7 +294,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   def onRenderPresetChanged ( self ) :
     #
     presetName = app_renderer.getCurrentPresetName()
-    if DEBUG_MODE : print '>> MainWindow: onRenderPresetChanged preset = %s' % presetName
+    if DEBUG_MODE : print '>> MainWindow.onRenderPresetChanged preset = %s' % presetName
     #self.setWindowTitle ( 'meShaderEd %s (%s) %s' % ( app_global_vars [ 'version' ], presetName, app_global_vars [ 'ProjectNetworks' ] ) )
     app_settings.setValue ( 'defRenderer', presetName )
 
@@ -302,14 +310,14 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onRenderSavePreset ( self ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onRenderSavePreset  preset = %s' % app_renderer.getCurrentPresetName()
+    if DEBUG_MODE : print '>> MainWindow.onRenderSavePreset  preset = %s' % app_renderer.getCurrentPresetName()
     app_renderer.saveSettings ()
   #
   # onShowGrid
   #
   def onShowGrid ( self, check ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onShowGrid = %d' % check
+    if DEBUG_MODE : print '>> MainWindow.onShowGrid = %d' % check
     self.workArea.drawGrid = bool ( check )
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'grid_enabled', bool ( check ) )
@@ -322,7 +330,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onSnapGrid ( self, check ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onSnapGrid = %d' % check
+    if DEBUG_MODE : print '>> MainWindow.onSnapGrid = %d' % check
     self.workArea.gridSnap = bool ( check )
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'grid_snap', bool ( check ) )
@@ -334,7 +342,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onReverseFlow ( self, check ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onReverseFlow = %d' % check
+    if DEBUG_MODE : print '>> MainWindow.onReverseFlow = %d' % check
     self.workArea.reverseFlow = bool ( check )
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'reverse_flow', bool ( check ) )
@@ -346,7 +354,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onStraightLinks ( self, check ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onStraightLinks = %d' % check
+    if DEBUG_MODE : print '>> MainWindow.onStraightLinks = %d' % check
     self.workArea.straightLinks = bool ( check )
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'straight_links', bool ( check ) )
@@ -357,7 +365,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # setActiveNodeList
   #
   def setActiveNodeList ( self, nodeList ) :
-    if DEBUG_MODE : print '>> MainWindow: setActiveNodeList'
+    if DEBUG_MODE : print '>> MainWindow.setActiveNodeList'
     if self.activeNodeList != None :
       QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
     self.activeNodeList = nodeList
@@ -368,6 +376,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # Called by WorkArea after drag&drop event
   # Here we choose selected nodeList panel (Library or Project)
   # for processing node request
+  #
   def onGetNode ( self, itemFilename, pos ) :
     #
     if self.activeNodeList != None : self.activeNodeList.onGetNode ( itemFilename, pos )
@@ -388,7 +397,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onRemoveGfxNode ( self, gfxNode ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onRemoveGfxNode = %s' % gfxNode.node.label
+    if DEBUG_MODE : print '>> MainWindow.onRemoveGfxNode = %s' % gfxNode.node.label
     if gfxNode.node.type == 'image' :
       self.ui.imageView_ctl.removeViewer ( gfxNode )
       #QtCore.QObject.disconnect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'onNodeParamChanged(QObject,QObject)' ), self.ui.imageView_ctl.onNodeParamChanged )
@@ -397,13 +406,21 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def getSelectedNode ( self ) : return self.workArea.selectedNodes [0]
   #
+  # onRenderPreview
+  #
+  def onRenderPreview ( self ) : print ">> MainWindow.onRenderPreview (not implemented yet...)"
+  #
+  # onShowSwatch
+  #
+  def onShowSwatch ( self ) : print ">> MainWindow.onShowSwatch (not implemented yet...)"
+  #
+  # onHideSwatch
+  #
+  def onHideSwatch ( self ) : print ">> MainWindow.onHideSwatch (not implemented yet...)"
+  #
   # onCreateNode
   #
-  def onCreateNode ( self ) : print ">> MainWindow::onCreateNode (not implemented yet...)"
-  #
-  # onEditNode
-  #
-  def onEditNode ( self ) : self.editGfxNode ( self.getSelectedNode () )
+  def onCreateNode ( self ) : print ">> MainWindow.onCreateNode (not implemented yet...)"
   #
   # onExportShader
   #
@@ -413,21 +430,25 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def exportShader ( self, gfxNode ) :
     #
-    if DEBUG_MODE : print ">> MainWindow::exportShader (not implemented yet...)"
+    if DEBUG_MODE : print ">> MainWindow.exportShader (not implemented yet...)"
     gfxNode = self.getSelectedNode ()
     
     exportShaderDlg = ExportShaderPanel ()
     if exportShaderDlg.exec_ () == QtGui.QDialog.Accepted :
-      if DEBUG_MODE : print '>> MainWindow::exportShaderDlg Accepted'
+      if DEBUG_MODE : print '>> MainWindow.exportShaderDlg Accepted'
       #
       #
       return  
+  #
+  # onEditNode
+  #
+  def onEditNode ( self ) : self.editGfxNode ( self.getSelectedNode () )
   #
   # editGfxNode
   #
   def editGfxNode ( self, gfxNode ) :
     #
-    if DEBUG_MODE : print ">> MainWindow::editGfxNode"
+    if DEBUG_MODE : print ">> MainWindow.editGfxNode"
 
     # reindex input params
     #for i in range ( 0, len( gfxNode.node.inputParams ) ) : gfxNode.node.inputParams[ i ].id = i
@@ -501,7 +522,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onDelete ( self ) :
     #
-    if DEBUG_MODE : print '>> MainWindow::onDelete'
+    if DEBUG_MODE : print '>> MainWindow.onDelete'
 
     selected = self.workArea.scene ().selectedItems ()
     if len ( selected ) :
@@ -524,15 +545,15 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onCopy
   #
-  def onCopy ( self ) : print '>> MainWindow::onCopy'
+  def onCopy ( self ) : print '>> MainWindow.onCopy'
   #
   # onCut
   #
-  def onCut ( self ) : print '>> MainWindow::onCut'
+  def onCut ( self ) : print '>> MainWindow.onCut'
   #
   # onPaste
   #
-  def onPaste ( self ): print '>> MainWindow::onPaste'
+  def onPaste ( self ): print '>> MainWindow.onPaste'
   #
   # onDuplicate
   #
@@ -540,14 +561,14 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onDuplicateWithLinks
   #
-  def onDuplicateWithLinks ( self ): print '!! MainWindow::onDuplicateWithLinks is not implemented yet ...'
+  def onDuplicateWithLinks ( self ): print '!! MainWindow.onDuplicateWithLinks is not implemented yet ...'
     # self.workArea.dDuplicateNode ( preserveLinks = True )
   #
   # onSelectGfxNodes
   #
   def onSelectGfxNodes ( self, gfxNodes = [], gfxLinks = [] ) :
     #
-    #print ">> MainWindow: onSelectGfxNodes"
+    #print ">> MainWindow.onSelectGfxNodes"
     self.setupActions ()
     self.workArea.inspectedNode = None
     if len ( gfxNodes ) == 1 : self.workArea.inspectedNode = gfxNodes[ 0 ]
@@ -566,7 +587,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # onNodeParamChanged
   #
   def onNodeParamChanged ( self, node, param ) :
-    #if DEBUG_MODE : print ">> MainWindow: onNodeParamChanged"
+    #if DEBUG_MODE : print ">> MainWindow.onNodeParamChanged"
     #param.shaderParam = not gfxNode.node.isInputParamLinked ( param )
 
     # from WorkArea we have GfxNode in signal nodeConnectionChanged
@@ -605,7 +626,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onTabSelected ( self, idx ) :
     #
-    if DEBUG_MODE : print '>> MainWindow: onTabSelected (%d)' % idx
+    if DEBUG_MODE : print '>> MainWindow.onTabSelected (%d)' % idx
     self.disconnectWorkAreaSignals ()
     self.ui.imageView_ctl.removeAllViewers ()
     self.workArea = self.ui.tabs.currentWidget ()
@@ -631,7 +652,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onNew ( self, tabName = 'untitled' ) :
     #
-    def tabNameExists ( self, name ):
+    def tabNameExists ( self, name ) :
       ret = False
       for i in range ( 0, self.ui.tabs.count () ) :
         if name == str ( self.ui.tabs.tabText ( i ) ):
@@ -673,7 +694,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onOpen ( self ) :
     #
-    if DEBUG_MODE : print ">> MainWindow: onOpen"
+    if DEBUG_MODE : print ">> MainWindow.onOpen"
     #
     curDir = app_global_vars [ 'ProjectNetworks' ]
     typeFilter = 'Shader networks *.xml;;All files *.*;;'
@@ -748,7 +769,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onImport ( self ) :
     #
-    if DEBUG_MODE : print ">> MainWindow: onImport"
+    if DEBUG_MODE : print ">> MainWindow.onImport"
     #
     curDir = app_global_vars [ 'ProjectNetworks' ]
     typeFilter = 'Shader networks *.xml;;All files *.*;;'
@@ -762,7 +783,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onSave ( self ) :
     #
-    if DEBUG_MODE : print ">> MainWindow: onSave"
+    if DEBUG_MODE : print ">> MainWindow.onSave"
     # if file is new -- use onSaveAs function
     #
     curDir = app_global_vars [ 'ProjectNetworks' ]
@@ -775,7 +796,8 @@ class MainWindow ( QtGui.QMainWindow ) :
   # onSaveAs
   #
   def onSaveAs ( self ) :
-    if DEBUG_MODE : print ">> MainWindow: onSaveAs"
+    #
+    if DEBUG_MODE : print ">> MainWindow.onSaveAs"
     #
     curDir = app_global_vars [ 'ProjectNetworks' ]
     saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )

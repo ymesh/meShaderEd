@@ -14,10 +14,11 @@ import gui.ui_settings as UI
 #
 class ParamWidget ( QtGui.QWidget ) :
   #
+  # __init__
   #
-  def __init__( self, param, gfxNode, parent = None, ignoreSubtype = False ):
+  def __init__ ( self, param, gfxNode, parent = None, ignoreSubtype = False ) :
     #print ">> ParamWidget  __init__"
-    super ( QtGui.QWidget, self ).__init__( None )        
+    super ( QtGui.QWidget, self ).__init__ ( None )        
     self.param = param
     self.gfxNode = gfxNode
     self.ignoreSubtype = ignoreSubtype # if widget is used in NodeEditor, then ignoreSubtype = True
@@ -27,20 +28,24 @@ class ParamWidget ( QtGui.QWidget ) :
     self.ui.updateGui ( self.param.value ) 
     #self.connect( self.param, QtCore.SIGNAL( 'paramChanged(QObject)' ), self.onParamChanged )
   #
+  #  __del__
   #
-  def __del__( self ) :
-    print '>> ParamWidget: __delete__ %s' % self.param.name
+  def __del__ ( self ) :
+    print '>> ParamWidget( %s ).__del__ ' % self.param.name
   #
+  # onParamChanged
   #
-  def onParamChanged ( self, param ):
+  def onParamChanged ( self, param ) :
+    #
     print ">> ParamWidget: onParamChanged %s" % param.name
     self.ui.disconnectSignals ( self )
     self.ui.updateGui ( self.param.value )
     self.ui.connectSignals ( self )
     #self.emit ( QtCore.SIGNAL( 'onParamChanged(QObject)' ), param )   
   #
-  #                 
-  def buildGeneralGui ( self ):
+  # buildGeneralGui
+  #
+  def buildGeneralGui ( self ) :
     #print ">> ParamWidget buildGeneralGui"
     self.vl = QtGui.QVBoxLayout ( self )
     self.vl.setSpacing ( UI.SPACING )
@@ -57,16 +62,16 @@ class ParamWidget ( QtGui.QWidget ) :
     # add 'isShaderParam' check box only for RSL nodes
     #
     if self.gfxNode is not None :
-      if not self.gfxNode.node.type in ['rib', 'rib_code', 'image']:
+      if not self.gfxNode.node.type in [ 'rib', 'rib_code', 'image', 'swatch' ]:
         if self.param.provider != 'attribute' :
         
-          self.check = QtGui.QCheckBox( self )
+          self.check = QtGui.QCheckBox ( self )
           self.check.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
           self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
           self.check.setToolTip ( 'Use as Shader parameter' )
           
           self.check.setChecked ( self.param.shaderParam ) 
-          self.connect( self.check, QtCore.SIGNAL('stateChanged(int)'), self.onShaderParamChanged ) 
+          self.connect ( self.check, QtCore.SIGNAL ('stateChanged(int)'), self.onShaderParamChanged ) 
           
           self.hl.addWidget ( self.check )
         else :
@@ -84,14 +89,15 @@ class ParamWidget ( QtGui.QWidget ) :
     self.hl.addWidget ( self.label )
     self.vl.addWidget ( self.gui )
   #
-  #                     
-  def onShaderParamChanged ( self, value ):
-    self.param.shaderParam = self.check.isChecked()
-    self.gfxNode.updateInputParams()
+  # onShaderParamChanged
   #
-  # virtual function 
+  def onShaderParamChanged ( self, value ) :
+    self.param.shaderParam = self.check.isChecked ()
+    self.gfxNode.updateInputParams ()
+  #
+  # buildGui
   #                
-  def buildGui ( self ): 
+  def buildGui ( self ) : 
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     self.hl.addItem ( spacer )
 

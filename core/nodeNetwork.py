@@ -16,6 +16,7 @@ from ribNode import RIBNode
 from imageNode import ImageNode
 from connectorNode import ConnectorNode
 from noteNode import NoteNode
+from swatchNode import SwatchNode
 
 from nodeParam import NodeParam
 from nodeLink import NodeLink
@@ -30,7 +31,7 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   def __init__ ( self, name = '', xml_nodenet = None ) :
     #
-    if DEBUG_MODE : print '>> NodeNetwork( %s )::__init__ ' % name
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).__init__ ' % name
     QtCore.QObject.__init__ ( self )
 
     self.node_id = 0
@@ -51,7 +52,7 @@ class NodeNetwork ( QtCore.QObject ) :
   # __del__
   #
   def __del__ ( self ) :
-    if DEBUG_MODE : print '>> NodeNetwork( %s )::__del__ ' % self.name
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).__del__ ' % self.name
   #
   # renameNodeLabel
   #
@@ -85,7 +86,7 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   def addNode ( self, node ) :
     #
-    if DEBUG_MODE : print '>> NodeNetwork( %s )::addNode (%s)' % ( self.name, node.label )
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).addNode (%s)' % ( self.name, node.label )
     if node.id == None :
       # if node comes from library -- it should have id = None
       self.node_id = self.node_id + 1
@@ -146,7 +147,7 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   def removeNode ( self, node ) :
     #
-    if DEBUG_MODE : print '>> NodeNetwork( %s )::removeNode %s (id = %d) ...' % ( self.name, node.name, node.id )
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).removeNode %s (id = %d) ...' % ( self.name, node.name, node.id )
     inputLinksToRemove = []
     outputLinksToRemove = []
     if self.hasThisNode ( node ) :
@@ -160,7 +161,7 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   def removeLink ( self, link, disconnectSrcNode = True, disconnectDstNode = True ) :
     #
-    if DEBUG_MODE : print '>> NodeNetwork( %s )::removeLink (id = %d) ...' % ( self.name, link.id )
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).removeLink (id = %d) ...' % ( self.name, link.id )
     if self.hasThisLink ( link ) :
       linkPopped = self.links.pop ( link.id )
       dstNode = linkPopped.dstNode
@@ -188,7 +189,7 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   def clear ( self ) :
     #
-    if DEBUG_MODE :print '>> NodeNetwork( %s )::clear' % ( self.name )
+    if DEBUG_MODE :print '>> NodeNetwork( %s ).clear' % ( self.name )
     #
     for node in self.nodes.values() : self.removeNode ( node )
     for link in self.links.values() : self.removeLink ( link )
@@ -318,7 +319,7 @@ class NodeNetwork ( QtCore.QObject ) :
           print '!! unknown XML document format'
         self.correct_id ( nodes, links )
     file.close()
-    if DEBUG_MODE : print '>> NodeNetwork( %s )::open node_id = %d link_id = %d' % ( self.name, self.node_id, self.link_id )
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).open node_id = %d link_id = %d' % ( self.name, self.node_id, self.link_id )
     return ( nodes, links )
   #
   # insert NodeNetwork from .xml document
@@ -346,7 +347,7 @@ class NodeNetwork ( QtCore.QObject ) :
         else :
           print '!! unknown XML document format'
     file.close()
-    if DEBUG_MODE : print '>> NodeNetwork( %s )::insert node_id = %d link_id = %d' % ( self.name, self.node_id, self.link_id )
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).insert node_id = %d link_id = %d' % ( self.name, self.node_id, self.link_id )
     return ( nodes, links )
   #
   # correct currnet NodeNetwork node_id and link_id
@@ -378,7 +379,7 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   def printInfo ( self ) :
     #
-    print '>> NodeNetwork( %s )::printInfo' % ( self.name )
+    print '>> NodeNetwork( %s ).printInfo' % ( self.name )
     print '*** links ***'
     for id in self.links.keys () : self.links [ id ].printInfo ()
     print '*** nodes ****'
@@ -397,13 +398,11 @@ def createNodeFromXML ( xml_node ) :
                      ,'volume'      : RSLNode
                      ,'connector'   : ConnectorNode
                      ,'note'        : NoteNode
+                     ,'swatch'      : SwatchNode
                     }
 
   node_type = str ( xml_node.attributes ().namedItem ( 'type' ).nodeValue () )
   createNode = RSLNode # Node
   if node_type in createNodeTable.keys () : createNode = createNodeTable [ node_type ]
-
-  #print '-> creating node type = %s (%s)' % ( node_type, str( createNode ) )
   node = createNode ( xml_node )
-
   return node

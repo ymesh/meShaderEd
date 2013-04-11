@@ -1,0 +1,100 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'gui\ui_nodeSwatchParam.ui'
+#
+# Created: Thu Apr 11 14:10:28 2013
+#      by: PyQt4 UI code generator 4.9.4
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    _fromUtf8 = lambda s: s
+
+class Ui_NodeSwatchParam(object):
+    def setupUi(self, NodeSwatchParam):
+        NodeSwatchParam.setObjectName(_fromUtf8("NodeSwatchParam"))
+        NodeSwatchParam.resize(408, 309)
+        self.verticalLayout = QtGui.QVBoxLayout(NodeSwatchParam)
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.hl_type = QtGui.QHBoxLayout()
+        self.hl_type.setObjectName(_fromUtf8("hl_type"))
+        self.label = QtGui.QLabel(NodeSwatchParam)
+        self.label.setMinimumSize(QtCore.QSize(80, 0))
+        self.label.setObjectName(_fromUtf8("label"))
+        self.hl_type.addWidget(self.label)
+        self.type_selector = QtGui.QComboBox(NodeSwatchParam)
+        self.type_selector.setEnabled(False)
+        self.type_selector.setObjectName(_fromUtf8("type_selector"))
+        self.hl_type.addWidget(self.type_selector)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.hl_type.addItem(spacerItem)
+        self.hl_type.setStretch(2, 1)
+        self.verticalLayout.addLayout(self.hl_type)
+        self.hl_param = QtGui.QHBoxLayout()
+        self.hl_param.setObjectName(_fromUtf8("hl_param"))
+        self.label_2 = QtGui.QLabel(NodeSwatchParam)
+        self.label_2.setMinimumSize(QtCore.QSize(80, 0))
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.hl_param.addWidget(self.label_2)
+        self.param_selector = QtGui.QComboBox(NodeSwatchParam)
+        self.param_selector.setObjectName(_fromUtf8("param_selector"))
+        self.hl_param.addWidget(self.param_selector)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.hl_param.addItem(spacerItem1)
+        self.verticalLayout.addLayout(self.hl_param)
+        self.hl_shape = QtGui.QHBoxLayout()
+        self.hl_shape.setObjectName(_fromUtf8("hl_shape"))
+        self.label_3 = QtGui.QLabel(NodeSwatchParam)
+        self.label_3.setMinimumSize(QtCore.QSize(80, 0))
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.hl_shape.addWidget(self.label_3)
+        self.shape_selector = QtGui.QComboBox(NodeSwatchParam)
+        self.shape_selector.setObjectName(_fromUtf8("shape_selector"))
+        self.hl_shape.addWidget(self.shape_selector)
+        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.hl_shape.addItem(spacerItem2)
+        self.verticalLayout.addLayout(self.hl_shape)
+        self.hl_size = QtGui.QHBoxLayout()
+        self.hl_size.setObjectName(_fromUtf8("hl_size"))
+        self.label_4 = QtGui.QLabel(NodeSwatchParam)
+        self.label_4.setMinimumSize(QtCore.QSize(80, 0))
+        self.label_4.setObjectName(_fromUtf8("label_4"))
+        self.hl_size.addWidget(self.label_4)
+        self.size_selector = QtGui.QComboBox(NodeSwatchParam)
+        self.size_selector.setObjectName(_fromUtf8("size_selector"))
+        self.hl_size.addWidget(self.size_selector)
+        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.hl_size.addItem(spacerItem3)
+        self.verticalLayout.addLayout(self.hl_size)
+        self.hl_rate = QtGui.QHBoxLayout()
+        self.hl_rate.setObjectName(_fromUtf8("hl_rate"))
+        self.label_5 = QtGui.QLabel(NodeSwatchParam)
+        self.label_5.setMinimumSize(QtCore.QSize(80, 0))
+        self.label_5.setObjectName(_fromUtf8("label_5"))
+        self.hl_rate.addWidget(self.label_5)
+        self.lineEdit = QtGui.QLineEdit(NodeSwatchParam)
+        self.lineEdit.setMinimumSize(QtCore.QSize(50, 0))
+        self.lineEdit.setMaximumSize(QtCore.QSize(50, 16777215))
+        self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
+        self.hl_rate.addWidget(self.lineEdit)
+        spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.hl_rate.addItem(spacerItem4)
+        self.verticalLayout.addLayout(self.hl_rate)
+        spacerItem5 = QtGui.QSpacerItem(20, 148, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem5)
+
+        self.retranslateUi(NodeSwatchParam)
+        QtCore.QMetaObject.connectSlotsByName(NodeSwatchParam)
+
+    def retranslateUi(self, NodeSwatchParam):
+        NodeSwatchParam.setWindowTitle(QtGui.QApplication.translate("NodeSwatchParam", "Form", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("NodeSwatchParam", "Type", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("NodeSwatchParam", "Parameter", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("NodeSwatchParam", "Shape", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtGui.QApplication.translate("NodeSwatchParam", "Size", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("NodeSwatchParam", "Shading Rate", None, QtGui.QApplication.UnicodeUTF8))
+

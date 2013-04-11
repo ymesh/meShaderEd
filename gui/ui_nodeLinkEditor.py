@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_nodeLinkEditor.ui'
 #
-# Created: Mon Apr 08 01:49:01 2013
+# Created: Thu Apr 11 02:03:08 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,6 +31,7 @@ class Ui_NodeLinkEditor(object):
         self.name_label.setObjectName(_fromUtf8("name_label"))
         self.horizontalLayout_2.addWidget(self.name_label)
         self.src_node_lineEdit = QtGui.QLineEdit(self.srcGroup)
+        self.src_node_lineEdit.setEnabled(False)
         self.src_node_lineEdit.setObjectName(_fromUtf8("src_node_lineEdit"))
         self.horizontalLayout_2.addWidget(self.src_node_lineEdit)
         self.horizontalLayout_2.setStretch(1, 1)
@@ -42,6 +43,7 @@ class Ui_NodeLinkEditor(object):
         self.label_label.setObjectName(_fromUtf8("label_label"))
         self.horizontalLayout_3.addWidget(self.label_label)
         self.src_param_lineEdit = QtGui.QLineEdit(self.srcGroup)
+        self.src_param_lineEdit.setEnabled(False)
         self.src_param_lineEdit.setObjectName(_fromUtf8("src_param_lineEdit"))
         self.horizontalLayout_3.addWidget(self.src_param_lineEdit)
         self.horizontalLayout_3.setStretch(1, 1)
@@ -53,6 +55,7 @@ class Ui_NodeLinkEditor(object):
         self.name_label_2.setObjectName(_fromUtf8("name_label_2"))
         self.horizontalLayout_4.addWidget(self.name_label_2)
         self.src_id_lineEdit = QtGui.QLineEdit(self.srcGroup)
+        self.src_id_lineEdit.setEnabled(False)
         self.src_id_lineEdit.setMaximumSize(QtCore.QSize(50, 16777215))
         self.src_id_lineEdit.setObjectName(_fromUtf8("src_id_lineEdit"))
         self.horizontalLayout_4.addWidget(self.src_id_lineEdit)
@@ -71,6 +74,7 @@ class Ui_NodeLinkEditor(object):
         self.name_label_3.setObjectName(_fromUtf8("name_label_3"))
         self.horizontalLayout_6.addWidget(self.name_label_3)
         self.dst_node_lineEdit = QtGui.QLineEdit(self.dstGroup)
+        self.dst_node_lineEdit.setEnabled(False)
         self.dst_node_lineEdit.setObjectName(_fromUtf8("dst_node_lineEdit"))
         self.horizontalLayout_6.addWidget(self.dst_node_lineEdit)
         self.horizontalLayout_6.setStretch(1, 1)
@@ -82,6 +86,7 @@ class Ui_NodeLinkEditor(object):
         self.label_label_2.setObjectName(_fromUtf8("label_label_2"))
         self.horizontalLayout_5.addWidget(self.label_label_2)
         self.dst_param_lineEdit = QtGui.QLineEdit(self.dstGroup)
+        self.dst_param_lineEdit.setEnabled(False)
         self.dst_param_lineEdit.setObjectName(_fromUtf8("dst_param_lineEdit"))
         self.horizontalLayout_5.addWidget(self.dst_param_lineEdit)
         self.horizontalLayout_5.setStretch(1, 1)
@@ -94,6 +99,7 @@ class Ui_NodeLinkEditor(object):
         self.name_label_4.setObjectName(_fromUtf8("name_label_4"))
         self.horizontalLayout_7.addWidget(self.name_label_4)
         self.dst_id_lineEdit = QtGui.QLineEdit(self.dstGroup)
+        self.dst_id_lineEdit.setEnabled(False)
         self.dst_id_lineEdit.setMaximumSize(QtCore.QSize(50, 16777215))
         self.dst_id_lineEdit.setObjectName(_fromUtf8("dst_id_lineEdit"))
         self.horizontalLayout_7.addWidget(self.dst_id_lineEdit)

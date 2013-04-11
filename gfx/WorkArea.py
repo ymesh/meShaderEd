@@ -17,6 +17,7 @@ from gfx.gfxNode import GfxNode
 from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
 from gfx.gfxNote import GfxNote
+from gfx.gfxSwatchNode import GfxSwatchNode
 
 from meShaderEd import app_settings
 from global_vars import DEBUG_MODE
@@ -101,11 +102,12 @@ class WorkArea ( QtGui.QGraphicsView ) :
     QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self.onRemoveNode )
     QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self.onRemoveLink )
 
-    if DEBUG_MODE : print ">> WorkArea:: __init__"
+    if DEBUG_MODE : print ">> WorkArea. __init__"
   #
   # drawBackground
   #
   def drawBackground ( self, painter, rect ) :
+    #
     sc_rect = self.sceneRect ()
     bbrush = QtGui.QBrush( QtGui.QColor ( 148, 148, 148 ) ) ## painter.background()
     painter.fillRect ( rect, bbrush )
@@ -124,6 +126,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # or all nodes if type == None
   #
   def getGfxNodesByType ( self, type = None ) :
+    #
     resultList = []
     for item in self.scene ().items () :
       if ( isinstance ( item, GfxNode ) or
@@ -136,6 +139,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # Returns GfxNodes for given Node
   #
   def getGfxNodesByNode ( self, node = None ) :
+    #
     gfxNode = None
     for item in self.scene ().items () :
       if ( isinstance ( item, GfxNode ) or ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
@@ -147,8 +151,8 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # selectAllNodes
   #
   def selectAllNodes ( self ) :
-    for item in self.getGfxNodesByType ( None ) :
-      item.setSelected ( True )
+    #
+    for item in self.getGfxNodesByType ( None ) : item.setSelected ( True )
   #
   # selectAbove
   #
@@ -157,7 +161,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
     if DEBUG_MODE : print '>> WorkArea::selectAbove node (%s) links:' % upperGfxNode.node.label
     for link_list in upperGfxNode.node.outputLinks.values () :
       for link in link_list :
-        link.printInfo ()
+        # link.printInfo ()
         if self.nodeNet.hasThisLink ( link ) :
           gfxNode = self.getGfxNodesByNode ( link.dstNode )
           gfxNode.setSelected ( True )
@@ -182,6 +186,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   #
   def clear ( self ):
+    #
     if DEBUG_MODE : print '>> WorkArea:: clearing nodes ...'
     for item in self.scene ().items () : self.scene ().removeItem ( item )
     self.nodeNet.clear ()
@@ -228,6 +233,8 @@ class WorkArea ( QtGui.QGraphicsView ) :
       gfxNode = GfxNodeConnector ( node.inputParams [ 0 ], node = node )
     elif node.type == 'note' :
       gfxNode = GfxNote ( node )
+    elif node.type == 'swatch' :
+      gfxNode = GfxSwatchNode ( node )
     else :
       gfxNode = GfxNode ( node )
     scene = self.scene ()
@@ -256,6 +263,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
       if   isinstance ( item, GfxNode ): self.selectedNodes.append ( item )
       elif isinstance ( item, GfxNote ): self.selectedNodes.append ( item )
       elif isinstance ( item, GfxNodeConnector ): self.selectedNodes.append ( item )
+      elif isinstance ( item, GfxSwatchNode ): self.selectedNodes.append ( item )
       elif isinstance ( item, GfxLink ): self.selectedLinks.append ( item )
 
     self.emit ( QtCore.SIGNAL ( 'selectNodes' ), self.selectedNodes, self.selectedLinks )
@@ -527,7 +535,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # onRemoveNode
   #
   def onRemoveNode ( self, gfxNode ) :
-    print ">> WorkArea: onRemoveNode %s (id = %d)" % ( gfxNode.node.label, gfxNode.node.id )
+    print ">> WorkArea.onRemoveNode %s (id = %d)" % ( gfxNode.node.label, gfxNode.node.id )
     self.emit ( QtCore.SIGNAL ( 'gfxNodeRemoved' ), gfxNode )
     self.scene ().removeItem ( gfxNode )
     self.nodeNet.removeNode ( gfxNode.node )
@@ -537,7 +545,8 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # onRemoveLink
   #
   def onRemoveLink ( self, gfxLink ) :
-    print ">> WorkArea: onRemoveLink ..."
+    #
+    print ">> WorkArea.onRemoveLink ..."
     self.scene ().removeItem ( gfxLink )
     if gfxLink.link is not None :
       print ">> WorkArea: onRemoveLink (id = %d)" % ( gfxLink.link.id )
@@ -553,22 +562,25 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   # removeSelected
   #
-  def removeSelected ( self ):
-    if DEBUG_MODE : print '>> WorkArea::removeSelected: (before) nodes = %d links = %d' % ( len (  self.nodeNet.nodes.values () ), len ( self.nodeNet.links.values () ) )
+  def removeSelected ( self ) :
+    #
+    if DEBUG_MODE : print '>> WorkArea.removeSelected: (before) nodes = %d links = %d' % ( len (  self.nodeNet.nodes.values () ), len ( self.nodeNet.links.values () ) )
     selected = self.scene().selectedItems()
 
     for item in selected:
       if ( isinstance ( item, GfxLink ) or
            isinstance ( item, GfxNode ) or
            isinstance ( item, GfxNote ) or
+           isinstance ( item, GfxSwatchNode ) or
          ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) : item.remove ()
 
-    if DEBUG_MODE : print '>> WorkArea::removeSelected (after) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values ()) )
+    if DEBUG_MODE : print '>> WorkArea.removeSelected (after) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values ()) )
   #
   # dragEnterEvent
   #
-  def dragEnterEvent ( self, event ):
-    print '>> WorkArea::onDragEnterEvent'
+  def dragEnterEvent ( self, event ) :
+    #
+    print '>> WorkArea.onDragEnterEvent'
     #for form_str in event.mimeData().formats():
     #  print str ( form_str )
     #  if form_str == 'text/uri-list' :
@@ -582,7 +594,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   # dragMoveEvent
   #
-  def dragMoveEvent ( self, event ):
+  def dragMoveEvent ( self, event ) :
     #print ">> WorkArea: onDragMoveEvent"
     mimedata = event.mimeData ()
     if mimedata.hasFormat ( 'application/x-text' ) or mimedata.hasFormat ( 'text/uri-list' ):
@@ -593,8 +605,9 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   # dropEvent
   #
-  def dropEvent ( self, event ):
-    if DEBUG_MODE : print ">> WorkArea: onDropEvent"
+  def dropEvent ( self, event ) :
+    #
+    if DEBUG_MODE : print ">> WorkArea.onDropEvent"
     file_list = []
     mimedata = event.mimeData ()
 
@@ -628,13 +641,13 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # keyPressEvent
   #
   def keyPressEvent ( self, event ) :
-    #print ">> WorkArea: keyPressEvent"
+    #print ">> WorkArea.keyPressEvent"
     QtGui.QGraphicsView.keyPressEvent ( self, event)
   #
   # wheelEvent
   #
-  def wheelEvent ( self, event ):
-    #print ">> WorkArea: wheelEvent"
+  def wheelEvent ( self, event ) :
+    #print ">> WorkArea.wheelEvent"
     # QtGui.QGraphicsView.wheelEvent( self, event)
     scale = -1.0
     if 'linux' in sys.platform: scale = 1.0
@@ -647,7 +660,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # mousePressEvent
   #
   def mousePressEvent ( self, event ):
-    #print ">> WorkArea: mousePressEvent"
+    #print ">> WorkArea.mousePressEvent"
     if ( event.button () == QtCore.Qt.MidButton or
       ( event.button () == QtCore.Qt.LeftButton and event.modifiers () == QtCore.Qt.ShiftModifier ) ) :
       if self.state == 'idle':
@@ -663,21 +676,21 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   # mouseDoubleClickEvent
   #
-  def mouseDoubleClickEvent ( self, event ):
-    #print ">> WorkArea: mouseDoubleClickEvent"
+  def mouseDoubleClickEvent ( self, event ) :
+    #
+    #print ">> WorkArea.mouseDoubleClickEvent"
     selected = self.scene ().selectedItems ()
 
-    for item in selected:
-      if isinstance ( item, GfxNode ):
-        print '>> Edit node %s' % item.node.label
-        self.emit ( QtCore.SIGNAL ( "editGfxNode" ), item )
-
+    #for item in selected:
+    #  if isinstance ( item, GfxNode ):
+    #    print '>> Edit node %s' % item.node.label
+    #    self.emit ( QtCore.SIGNAL ( "editGfxNode" ), item )
     QtGui.QGraphicsView.mouseDoubleClickEvent ( self, event )
   #
   # mouseMoveEvent
   #
-  def mouseMoveEvent ( self, event ):
-    #print ">> WorkArea: mouseMoveEvent"
+  def mouseMoveEvent ( self, event ) :
+    #print ">> WorkArea.mouseMoveEvent"
     if self.state == 'pan' :
       panCurrentPos = self.mapToScene( event.pos() )
       panDeltaPos = panCurrentPos - self.panStartPos
@@ -685,6 +698,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
       self.setInteractive ( False )
       self.translate ( panDeltaPos.x(), panDeltaPos.y() )
       self.setInteractive ( True )
+    
     elif self.state == 'zoom' :
       panCurrentPos = self.mapToScene( event.pos() )
       panDeltaPos = panCurrentPos - self.panStartPos
@@ -701,13 +715,14 @@ class WorkArea ( QtGui.QGraphicsView ) :
       self.scale ( scaleFactor, scaleFactor )
       self.translate ( -panDeltaPos.x() * scaleFactor, -panDeltaPos.y() * scaleFactor )
       self.setInteractive ( True )
+    
     else :
       QtGui.QGraphicsView.mouseMoveEvent ( self, event )
   #
   # mouseReleaseEvent
   #
-  def mouseReleaseEvent ( self, event ):
-    #print ">> WorkArea: mouseReleaseEvent"
+  def mouseReleaseEvent ( self, event ) :
+    #print ">> WorkArea.mouseReleaseEvent"
     if self.state == 'pan' or self.state == 'zoom':
       self.state = 'idle'
       self.panStartPos = None
@@ -716,19 +731,19 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # resetZoom
   #
   def resetZoom ( self ) :
-    if DEBUG_MODE : print ">> WorkArea::resetZoom"
+    if DEBUG_MODE : print ">> WorkArea.resetZoom"
     self.setInteractive ( False )
     self.resetTransform()
     self.setInteractive ( True )
   #
   # viewportEvent
   #
-  def viewportEvent ( self, event ):
+  def viewportEvent ( self, event ) :
     #case QEvent::TouchBegin:
     # case QEvent::TouchUpdate:
     # case QEvent::TouchEnd:
     if event.type() == QtCore.QEvent.TouchBegin :
-      if DEBUG_MODE : print ">> WorkArea::QEvent.TouchBegin"
+      if DEBUG_MODE : print ">> WorkArea.QEvent.TouchBegin"
     return QtGui.QGraphicsView.viewportEvent ( self, event )
   #
   # deselectAllNodes
@@ -749,7 +764,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   def insertNodeNet ( self, filename, pos = None ) :
     #
-    if DEBUG_MODE : print ">> WorkArea::insertNodeNet (before insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )
+    if DEBUG_MODE : print ">> WorkArea.insertNodeNet (before insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )
 
     ( nodes, links ) = self.nodeNet.insert ( normPath ( filename ) )
 
@@ -770,7 +785,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # duplicateNode
   #
   def duplicateNode ( self, preserveLinks = False ):
-    if DEBUG_MODE : print '>> WorkArea: duplicateNode ( preserveLinks = %s )'  % str ( preserveLinks )
+    if DEBUG_MODE : print '>> WorkArea.duplicateNode ( preserveLinks = %s )'  % str ( preserveLinks )
     dupNodeNet = NodeNetwork ( 'duplicate' )
     for gfxNode in self.selectedNodes :
       newNode = gfxNode.node.copy ()
