@@ -41,9 +41,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     #
     QtGui.QMainWindow.__init__ ( self )
 
-    # This is always the same
     self.ui = Ui_MainWindow ()
-
     self.ui.setupUi ( self )
 
     self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
@@ -317,7 +315,6 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onShowGrid ( self, check ) :
     #
-    if DEBUG_MODE : print '>> MainWindow.onShowGrid = %d' % check
     self.workArea.drawGrid = bool ( check )
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'grid_enabled', bool ( check ) )
@@ -330,19 +327,15 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onSnapGrid ( self, check ) :
     #
-    if DEBUG_MODE : print '>> MainWindow.onSnapGrid = %d' % check
     self.workArea.gridSnap = bool ( check )
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'grid_snap', bool ( check ) )
     app_settings.endGroup ()
-
-    #self.ui.workArea.resetCachedContent()
   #
   # onReverseFlow
   #
   def onReverseFlow ( self, check ) :
     #
-    if DEBUG_MODE : print '>> MainWindow.onReverseFlow = %d' % check
     self.workArea.reverseFlow = bool ( check )
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'reverse_flow', bool ( check ) )
@@ -354,7 +347,6 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onStraightLinks ( self, check ) :
     #
-    if DEBUG_MODE : print '>> MainWindow.onStraightLinks = %d' % check
     self.workArea.straightLinks = bool ( check )
     app_settings.beginGroup ( 'WorkArea' )
     app_settings.setValue ( 'straight_links', bool ( check ) )
@@ -487,7 +479,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     
     if nodeEditDlg.exec_ () == QtGui.QDialog.Accepted :
       #
-      if DEBUG_MODE : print '>> MainWindow::nodeEditDlg Accepted'
+      if DEBUG_MODE : print '>> MainWindow.nodeEditDlg Accepted'
       #
       # remove original node with links
       ( inputLinksToRemove, outputLinksToRemove ) = self.workArea.nodeNet.removeNode ( gfxNode.node )
@@ -522,8 +514,6 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onDelete ( self ) :
     #
-    if DEBUG_MODE : print '>> MainWindow.onDelete'
-
     selected = self.workArea.scene ().selectedItems ()
     if len ( selected ) :
       self.workArea.removeSelected ()
@@ -545,15 +535,15 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onCopy
   #
-  def onCopy ( self ) : print '>> MainWindow.onCopy'
+  def onCopy ( self ) : print '>> MainWindow.onCopy (not implemented yet...)'
   #
   # onCut
   #
-  def onCut ( self ) : print '>> MainWindow.onCut'
+  def onCut ( self ) : print '>> MainWindow.onCut (not implemented yet...)'
   #
   # onPaste
   #
-  def onPaste ( self ): print '>> MainWindow.onPaste'
+  def onPaste ( self ): print '>> MainWindow.onPaste (not implemented yet...)'
   #
   # onDuplicate
   #
@@ -561,14 +551,12 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onDuplicateWithLinks
   #
-  def onDuplicateWithLinks ( self ): print '!! MainWindow.onDuplicateWithLinks is not implemented yet ...'
-    # self.workArea.dDuplicateNode ( preserveLinks = True )
+  def onDuplicateWithLinks ( self ): self.workArea.duplicateNode ( preserveLinks = True )
   #
   # onSelectGfxNodes
   #
   def onSelectGfxNodes ( self, gfxNodes = [], gfxLinks = [] ) :
     #
-    #print ">> MainWindow.onSelectGfxNodes"
     self.setupActions ()
     self.workArea.inspectedNode = None
     if len ( gfxNodes ) == 1 : self.workArea.inspectedNode = gfxNodes[ 0 ]
@@ -608,11 +596,11 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onFitAll
   #
-  def onFitAll ( self ) : print ">> MainWindow: onFitAll"
+  def onFitAll ( self ) : print ">> MainWindow.onFitAll (not implemented yet...)"
   #
   # onFitSelected
   #
-  def onFitSelected ( self ) : print ">> MainWindow: onFitSelected"
+  def onFitSelected ( self ) : print ">> MainWindow.onFitSelected (not implemented yet...)"
   #
   # onZoomReset
   #
@@ -620,7 +608,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onNewParamView
   #
-  def onNewParamView ( self ) : print ">> MainWindow: onNewParamView"
+  def onNewParamView ( self ) : print ">> MainWindow.onNewParamView (not implemented yet...)"
   #
   # onTabSelected
   #

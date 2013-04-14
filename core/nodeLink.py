@@ -35,7 +35,7 @@ class NodeLink () :
   # __del__
   #
   def __del__ ( self ) :
-    if DEBUG_MODE : print '>> NodeLink::__del__ (id = %s)' % str ( self.id )  
+    if DEBUG_MODE : print '>> NodeLink( id = %s ).__del__ ' % str ( self.id )  
   #
   # build
   #
@@ -66,7 +66,7 @@ class NodeLink () :
   #
   def copy ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeLink( id = %d ).copy' % self.id
+    if DEBUG_MODE : print '>> NodeLink( id = %s ).copy' % str ( self.id )  
     newLink = NodeLink ()
     self.copySetup ( newLink )
     return newLink   
@@ -75,7 +75,7 @@ class NodeLink () :
   #
   def connect ( self ) : 
     #
-    if DEBUG_MODE : print '>> NodeLink( id = %d ).connect ...' % self.id
+    if DEBUG_MODE : print '>> NodeLink( id = %s ).connect ...' % str ( self.id )  
     ( srcNode, srcParam ) = self.getSrc ()
     ( dstNode, dstParam ) = self.getDst ()
     

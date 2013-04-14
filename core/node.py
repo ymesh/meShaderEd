@@ -70,7 +70,7 @@ class Node ( QtCore.QObject ) :
   # __del__
   #
   def __del__ ( self ) :
-    if DEBUG_MODE : print '>> Node::__del__ ' + self.label
+    if DEBUG_MODE : print '>> Node( %s ).__del__ ' % self.label
   #
   # build
   #
@@ -658,7 +658,7 @@ class Node ( QtCore.QObject ) :
   #
   def copySetup ( self, newNode ) :
     #
-    if DEBUG_MODE : print '>> Node::copySetup (%s)' % self.label
+    if DEBUG_MODE : print '>> Node( %s ).copySetup ' % self.label
     
     newNode.id = self.id
     

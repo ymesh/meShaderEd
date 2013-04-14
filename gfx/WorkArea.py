@@ -477,6 +477,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
         # TODO!!!
         # This is very rough code -- needs to be wrapped in functions
         gfxLinks = connector.getInputGfxLinks ()
+        
         for gfxLink in gfxLinks :
           gfxLink.setDstConnector ( newConnector )
 
@@ -493,6 +494,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
       else :
         #print '*** preserve output ***'
         gfxLinks = connector.getOutputGfxLinks ()
+        
         for gfxLink in gfxLinks :
           gfxLink.setSrcConnector ( newConnector )
 
@@ -548,6 +550,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
     #
     print ">> WorkArea.onRemoveLink ..."
     self.scene ().removeItem ( gfxLink )
+    
     if gfxLink.link is not None :
       print ">> WorkArea: onRemoveLink (id = %d)" % ( gfxLink.link.id )
       srcConnector = gfxLink.srcConnector
@@ -785,13 +788,42 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # duplicateNode
   #
   def duplicateNode ( self, preserveLinks = False ):
+    #
     if DEBUG_MODE : print '>> WorkArea.duplicateNode ( preserveLinks = %s )'  % str ( preserveLinks )
     dupNodeNet = NodeNetwork ( 'duplicate' )
+    
     for gfxNode in self.selectedNodes :
-      newNode = gfxNode.node.copy ()
-      dupNodeNet.addNode ( newNode )
+      dupNode = gfxNode.node.copy ()
+      dupNodeNet.addNode ( dupNode )
+      
+    
+    for gfxNode in self.selectedNodes :
+      for link in gfxNode.node.getInputLinks () :
+        #link.printInfo ()
+        dupLink = link.copy ()
+        dupDstNode = dupNodeNet.getNodeByID ( gfxNode.node.id )
 
-    if DEBUG_MODE : dupNodeNet.printInfo ()
+        if dupDstNode is not None :
+          dupDstParam = dupDstNode.getInputParamByName ( link.dstParam.name ) 
+          dupLink.setDst ( dupDstNode, dupDstParam )
+          
+          ( srcNode, srcParam ) = dupLink.getSrc ()
+          dupSrcNode = dupNodeNet.getNodeByID ( srcNode.id )
+          
+          if dupSrcNode is not None :
+            # if srcNode is inside dupNodeNet 
+            dupSrcParam = dupSrcNode.getOutputParamByName ( srcParam.name )
+            dupLink.setSrc ( dupSrcNode, dupSrcParam )
+            dupNodeNet.addLink ( dupLink ) 
+          else :
+            # if this is outside links
+            if preserveLinks :
+              dupNodeNet.addLink ( dupLink ) 
+            else :
+              dupLink.setSrc ( None, None )  
+              dupLink.setDst ( None, None )    
+
+    #if DEBUG_MODE : dupNodeNet.printInfo ()
     ( nodes, links ) = self.nodeNet.add ( dupNodeNet )
 
     offsetPos = QtCore.QPointF ( self.minGap, self.minGap / 2 )

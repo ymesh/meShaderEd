@@ -200,14 +200,22 @@ class NodeNetwork ( QtCore.QObject ) :
     self.node_id = 0
     self.link_id = 0
   #
-  # getNodeFromName
+  # getNodeByName
   #
-  def getNodeFromName ( self, nodeName ) :
+  #def getNodeByName ( self, nodeName ) :
+  #  for node in self.nodes.values () :
+  #    if node.name == nodeName:
+  #      return node
+  #  return None
+
+  #
+  # getNodeByID
+  #
+  def getNodeByID ( self, id ) :
     #
-    for node in self.nodes.values () :
-      if node.name == nodeName:
-        return node
-    return None
+    node = None
+    if id in self.nodes.keys () : node = self.nodes [ id ]
+    return node
   #
   # parseToXML
   #
