@@ -43,6 +43,8 @@ class MainWindow ( QtGui.QMainWindow ) :
 
     self.ui = Ui_MainWindow ()
     self.ui.setupUi ( self )
+    
+    self.clipboard = QtGui.QApplication.clipboard ()
 
     self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
     self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
@@ -52,7 +54,6 @@ class MainWindow ( QtGui.QMainWindow ) :
     self.setupMenuBar ()
     self.setupPanels ()
 
-    self.clipboard = None
     self.activeNodeList = None
     self.workArea = None # current work area
     self.onNew () # create new document
@@ -236,7 +237,12 @@ class MainWindow ( QtGui.QMainWindow ) :
     enableForLinks = False
     enableForPaste = False
     enableSelectAll = False
-    if self.clipboard is not None : enableForPaste = True
+    
+    if self.clipboard.ownsClipboard () : 
+      data = self.clipboard.mimeData ()
+      if data.hasText () :
+        enableForPaste = True
+    
     if self.workArea is not None :
       enableSelectAll = True
       if len ( self.workArea.selectedNodes ) > 0 : enableForNodes = True
@@ -535,23 +541,31 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onCopy
   #
-  def onCopy ( self ) : print '>> MainWindow.onCopy (not implemented yet...)'
+  def onCopy ( self ) : 
+    if DEBUG_MODE : print '>> MainWindow.onCopy'
+    self.workArea.copyNodes ( self.clipboard, cutNodes = False ) 
+    self.setupActions () 
   #
   # onCut
   #
-  def onCut ( self ) : print '>> MainWindow.onCut (not implemented yet...)'
+  def onCut ( self ) : 
+     if DEBUG_MODE : print '>> MainWindow.onCut'
+     self.workArea.copyNodes ( self.clipboard, cutNodes = True ) 
+     self.setupActions () 
   #
   # onPaste
   #
-  def onPaste ( self ): print '>> MainWindow.onPaste (not implemented yet...)'
+  def onPaste ( self ) : 
+    if DEBUG_MODE : print '>> MainWindow.onPaste'
+    self.workArea.pasteNodes ( self.clipboard )  
   #
   # onDuplicate
   #
-  def onDuplicate ( self ): self.workArea.duplicateNode ( preserveLinks = False )
+  def onDuplicate ( self ) : self.workArea.duplicateNodes ( preserveLinks = False )
   #
   # onDuplicateWithLinks
   #
-  def onDuplicateWithLinks ( self ): self.workArea.duplicateNode ( preserveLinks = True )
+  def onDuplicateWithLinks ( self ) : self.workArea.duplicateNodes ( preserveLinks = True )
   #
   # onSelectGfxNodes
   #

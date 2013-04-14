@@ -142,7 +142,9 @@ class WorkArea ( QtGui.QGraphicsView ) :
     #
     gfxNode = None
     for item in self.scene ().items () :
-      if ( isinstance ( item, GfxNode ) or ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
+      if ( isinstance ( item, GfxNode ) or
+           isinstance ( item, GfxSwatchNode ) or 
+          ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
         if item.node == node :
           gfxNode = item
           break
@@ -207,7 +209,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
     srcConnector = None
     dstConnector = None
     for item in self.scene ().items ():
-      if isinstance ( item, GfxNode ) :
+      if isinstance ( item, GfxNode ) or isinstance ( item, GfxSwatchNode ) :
         if item.node == srcNode :
           srcConnector = item.getOutputConnectorByParam ( srcParam )
         elif item.node == dstNode :
@@ -767,7 +769,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   def insertNodeNet ( self, filename, pos = None ) :
     #
-    if DEBUG_MODE : print ">> WorkArea.insertNodeNet (before insert) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )
+    if DEBUG_MODE : print ">> WorkArea.insertNodeNet (before) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )
 
     ( nodes, links ) = self.nodeNet.insert ( normPath ( filename ) )
 
@@ -783,13 +785,82 @@ class WorkArea ( QtGui.QGraphicsView ) :
     for node in nodes : self.addGfxNode ( node, pos )
     for link in links : self.addGfxLink ( link )
 
-    if DEBUG_MODE : print '>> WorkArea::insertNodeNet (after insert) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values () ) )
+    if DEBUG_MODE : print '>> WorkArea.insertNodeNet (after) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values () ) )
   #
-  # duplicateNode
+  # copyNodes
   #
-  def duplicateNode ( self, preserveLinks = False ):
+  def copyNodes ( self, clipboard, cutNodes = False ) :
+    #
+    if DEBUG_MODE : print '>> WorkArea.copyNodes ( cutNodes = %s )'  % str ( cutNodes )
+    
+    dupNodeNet = NodeNetwork ( 'clipboard' )
+    
+    for gfxNode in self.selectedNodes :
+      dupNode = gfxNode.node.copy ()
+      dupNodeNet.addNode ( dupNode )
+      
+    for gfxNode in self.selectedNodes :
+      for link in gfxNode.node.getInputLinks () :
+        #link.printInfo ()
+        dupLink = link.copy ()
+        dupDstNode = dupNodeNet.getNodeByID ( gfxNode.node.id )
+
+        if dupDstNode is not None :
+          dupDstParam = dupDstNode.getInputParamByName ( link.dstParam.name ) 
+          dupLink.setDst ( dupDstNode, dupDstParam )
+          
+          ( srcNode, srcParam ) = dupLink.getSrc ()
+          dupSrcNode = dupNodeNet.getNodeByID ( srcNode.id )
+          
+          if dupSrcNode is not None :
+            # if srcNode is inside dupNodeNet 
+            dupSrcParam = dupSrcNode.getOutputParamByName ( srcParam.name )
+            dupLink.setSrc ( dupSrcNode, dupSrcParam )
+            dupNodeNet.addLink ( dupLink ) 
+            
+      
+    dom = QtXml.QDomDocument ( dupNodeNet.name )
+    dupNodeNet.parseToXML ( dom )
+    
+    clipboard.clear ()
+    clipboard.setText ( dom.toString () ) # .	fromUtf16 () .fromUtf8 () encode( 'utf-8' ) unicode ( dom.toByteArray () ) toString ()
+    
+    if cutNodes : self.removeSelected ()
+  #
+  # pasteNodes
+  #
+  def pasteNodes ( self, clipboard ) :
+    #
+    if DEBUG_MODE : print '>> WorkArea.pasteNodes ...'
+    nodes = []
+    links = []
+    
+    dom = QtXml.QDomDocument ( 'clipboard' )
+    dom.setContent ( clipboard.text () ) 
+    root = dom.documentElement ()
+    if root.nodeName () == 'node' :
+      nodes.append ( self.nodeNet.addNodeFromXML ( root ) )
+      self.nodeNet.correct_id ( nodes, links )
+    elif root.nodeName () == 'nodenet' :
+      #print ':: parsing nodenet from XML ...'
+      nodeNet = NodeNetwork ( 'tmp', root )
+      ( nodes, links ) = self.nodeNet.add ( nodeNet )
+    else :
+      print '!! unknown XML document format'
+      return
+      
+    offsetPos = QtCore.QPointF ( self.minGap, self.minGap / 2 )
+    self.deselectAllNodes ()
+
+    for node in nodes : self.addGfxNode ( node, offsetPos )
+    for link in links : self.addGfxLink ( link )
+  #
+  # duplicateNodes
+  #
+  def duplicateNodes ( self, preserveLinks = False ) :
     #
     if DEBUG_MODE : print '>> WorkArea.duplicateNode ( preserveLinks = %s )'  % str ( preserveLinks )
+    
     dupNodeNet = NodeNetwork ( 'duplicate' )
     
     for gfxNode in self.selectedNodes :

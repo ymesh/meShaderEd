@@ -221,12 +221,12 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   def parseToXML ( self, dom ) :
     #
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).parseToXML ...' % self.name
     root = dom.createElement ( 'nodenet' )
     root.setAttribute ( 'name', self.name )
     root.setAttribute ( 'author', 'meShaderEd' )
-    #
+    
     # append network help (short description)
-    #
     help_tag = dom.createElement ( 'help' )
     help_text = dom.createTextNode ( self.help )
     help_tag.appendChild ( help_text )
@@ -237,7 +237,7 @@ class NodeNetwork ( QtCore.QObject ) :
     #print ':: parsing nodes to XML ...'
     for id in self.nodes.keys () :
       node = self.nodes [ id ]
-      #if DEBUG_MODE :print '=> parsing node to XML: %s ...' % node.label
+      if DEBUG_MODE : print '=> parsing node ( %s ) to XML ...' % node.label
       xml_node = node.parseToXML ( dom )
       nodes_tag.appendChild ( xml_node )
 
@@ -248,15 +248,13 @@ class NodeNetwork ( QtCore.QObject ) :
     #print ':: parsing links to XML ...'
     for id in self.links.keys() :
       link = self.links [ id ]
-      # print '=> parsing link to XML: ...'
-      #link.printInfo ()
+      # print '=> parsing link to XML ...'
+      # link.printInfo ()
       xml_link = link.parseToXML ( dom )
       links_tag.appendChild ( xml_link )
 
     root.appendChild ( links_tag )
-
     dom.appendChild ( root )
-    #print ':: %s NodeNet have parsed to XML ...' % self.name
   #
   # parseFromXML
   #

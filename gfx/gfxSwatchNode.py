@@ -59,6 +59,25 @@ class GfxSwatchNode ( QtGui.QGraphicsItem ) :
   #
   def type ( self ) : return GfxSwatchNode.Type
   #
+  # remove
+  #
+  def remove ( self ) :
+    #
+    if DEBUG_MODE : print '>> GfxSwatchNode.remove'
+    for connect in self.inputConnectors : connect.removeAllLinks ()
+    self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+  #
+  # getInputConnectorByParam
+  #
+  def getInputConnectorByParam ( self, param ) :
+    #
+    connector = None
+    for cnt in self.inputConnectors :
+      if cnt.param == param :
+        connector = cnt
+        break
+    return connector
+  #
   # updateNode
   #
   def updateNode ( self ) :
