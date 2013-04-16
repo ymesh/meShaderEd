@@ -1,6 +1,13 @@
 
 meShaderEd changes log
 
+version 0.3.0 (16 Apr 2013)
+  SwatchNode for image preview in shading network
+  Duplicate nodes with links
+  Clipboard (Copy/Cut/Paste) operations in XML format
+  NodeEditor saves changes to node.
+  Texture patterns and fractals from ShadeTree colection added to Library.
+
 version 0.2.9 (5 Apr 2013)
   TextParam widget
   NoteNode -- UI node for shading network description
