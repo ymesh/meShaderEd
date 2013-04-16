@@ -7,10 +7,11 @@
 import os, sys
 from PyQt4 import QtCore, QtGui, QtOpenGL
 #
-#
+# GeomView
 #
 class GeomView ( QtOpenGL.QGLWidget ):
   #
+  # __init__
   #
   def __init__ ( self, parent ):
     #
@@ -40,20 +41,22 @@ class GeomView ( QtOpenGL.QGLWidget ):
     
     #self.BgBrush = QtGui.QBrush ( QtGui.QColor ( 128, 128, 128 ) )  
     
-    print '>> GeomView init'
+    print '>> GeomView.__init__'
   #
+  # initializeGL
   #
   def initializeGL ( self ) :
     #
-    print ">> GeomeView: initializeGL"
+    print ">> GeomeView.initializeGL"
     
     #glClearColor(0.0, 0.0, 0.0, 0.0);
     #glEnable(GL_DEPTH_TEST);  
   #
+  # resizeGL
   #
-  def resizeGL ( self, w, h) :
+  def resizeGL ( self, w, h ) :
     #
-    print ">> GeomeView: resizeGL (%d, %d)" % ( w, h )     
+    print ">> GeomeView.resizeGL (%d, %d)" % ( w, h )     
     
     #setup viewport, projection etc.:
     
@@ -61,10 +64,11 @@ class GeomView ( QtOpenGL.QGLWidget ):
     #glFrustum(...);
 
   #
+  # paintGL
   #
   def paintGL ( self ) :
     #
-    print ">> GeomeView: paintGL"
+    print ">> GeomeView.paintGL"
     
     # draw the scene:
     
@@ -75,14 +79,16 @@ class GeomView ( QtOpenGL.QGLWidget ):
     #glVertex3f(...);
     #glEnd();
   #
+  # keyPressEvent
   #
   def keyPressEvent ( self, event ) : 
     #
     print ">> GeomeView: keyPressEvent"
     QtGui.QGraphicsView.keyPressEvent ( self, event)
   #
-  #  
-  def wheelEvent ( self, event ):
+  # wheelEvent
+  # 
+  def wheelEvent ( self, event ) :
     #
     #print ">> GeomeView: wheelEvent"
     # QtGui.QGraphicsView.wheelEvent( self, event)
@@ -94,8 +100,9 @@ class GeomView ( QtOpenGL.QGLWidget ):
     if factor < 0.07 or factor > 100: return
     self.scale ( scaleFactor, scaleFactor )      
   #
+  # mousePressEvent
   #
-  def mousePressEvent ( self, event ):
+  def mousePressEvent ( self, event ) :
     #
     #print ">> GeomeView: mousePressEvent"
     if ( event.button() == QtCore.Qt.MidButton or 
@@ -106,15 +113,17 @@ class GeomView ( QtOpenGL.QGLWidget ):
         return
     QtGui.QGraphicsView.mousePressEvent ( self, event )        
   #
+  # mouseDoubleClickEvent
   #
-  def mouseDoubleClickEvent ( self, event ):
+  def mouseDoubleClickEvent ( self, event ) :
     #
     #print ">> GeomeView: mouseDoubleClickEvent"
     self.emit ( QtCore.SIGNAL( 'mouseDoubleClickEvent' ) ) 
     QtGui.QGraphicsView.mouseDoubleClickEvent ( self, event )
   #
-  #  
-  def mouseMoveEvent ( self, event ):
+  # mouseMoveEvent
+  # 
+  def mouseMoveEvent ( self, event ) :
     #
     #print ">> GeomeView: mouseMoveEvent"
     if self.state == 'pan' :
@@ -127,8 +136,9 @@ class GeomView ( QtOpenGL.QGLWidget ):
     else :
       QtGui.QGraphicsView.mouseMoveEvent ( self, event )        
   #
-  #  
-  def mouseReleaseEvent ( self, event ):        
+  # mouseReleaseEvent
+  # 
+  def mouseReleaseEvent ( self, event ) :        
     #
     #print ">> GeomeView: mouseReleaseEvent"
     if self.state == 'pan' :
@@ -136,16 +146,18 @@ class GeomView ( QtOpenGL.QGLWidget ):
       self.panStartPos = None
     QtGui.QGraphicsView.mouseReleaseEvent ( self, event )   
   #
+  # viewportEvent
   #
-  def viewportEvent( self, event ):
+  def viewportEvent ( self, event ) :
     #case QEvent::TouchBegin:
     # case QEvent::TouchUpdate:
     # case QEvent::TouchEnd:
-    if event.type() == QtCore.QEvent.TouchBegin :
+    if event.type () == QtCore.QEvent.TouchBegin :
       print ">> ImageView: QEvent.TouchBegin"
     return QtGui.QGraphicsView.viewportEvent ( self, event )
     
   #
+  # setImage
   #
   def setImage ( self, imageName ) :
     #
@@ -189,11 +201,12 @@ class GeomView ( QtOpenGL.QGLWidget ):
     self.scene().setSceneRect ( 0, 0, wi, hi )
     self.scene().update()
   #
+  # drawBackground
   #
-  def drawBackground( self, painter, rect ):
+  def drawBackground ( self, painter, rect ) :
     #
     #print ">> GeomeView: drawBackground"
-    painter.fillRect( rect, self.BgBrush )
+    painter.fillRect ( rect, self.BgBrush )
     if self.pixmap is not None:
       #print ">> GeomeView: painter.drawPixmap"
       painter.drawPixmap ( 0, 0, self.pixmap )  

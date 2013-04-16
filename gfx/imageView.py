@@ -7,7 +7,7 @@
 import os, sys
 from PyQt4 import QtCore, QtGui
 #
-#
+# ImageView
 #
 class ImageView ( QtGui.QGraphicsView ) :
   #
@@ -52,7 +52,7 @@ class ImageView ( QtGui.QGraphicsView ) :
   #  
   def wheelEvent ( self, event ) :
     #
-    #print ">> ImageView: wheelEvent"
+    #print ">> ImageView.wheelEvent"
     # QtGui.QGraphicsView.wheelEvent( self, event)
     scale = -1.0
     if 'linux' in sys.platform: scale = 1.0     
@@ -66,7 +66,7 @@ class ImageView ( QtGui.QGraphicsView ) :
   #
   def mousePressEvent ( self, event ) :
     #
-    #print ">> ImageView: mousePressEvent"
+    #print ">> ImageView.mousePressEvent"
     if ( event.button () == QtCore.Qt.MidButton or 
        ( event.button () == QtCore.Qt.LeftButton and event.modifiers () == QtCore.Qt.ShiftModifier ) ) :  
       if self.state == 'idle':
@@ -79,7 +79,7 @@ class ImageView ( QtGui.QGraphicsView ) :
   #
   def mouseDoubleClickEvent ( self, event ) :
     #
-    #print ">> ImageView: mouseDoubleClickEvent"
+    #print ">> ImageView.mouseDoubleClickEvent"
     self.emit ( QtCore.SIGNAL ( 'mouseDoubleClickEvent' ) ) 
     QtGui.QGraphicsView.mouseDoubleClickEvent ( self, event )
   #
@@ -87,7 +87,7 @@ class ImageView ( QtGui.QGraphicsView ) :
   #
   def mouseMoveEvent ( self, event ) :
     #
-    #print ">> ImageView: mouseMoveEvent"
+    #print ">> ImageView.mouseMoveEvent"
     if self.state == 'pan' :
       panCurrentPos = self.mapToScene ( event.pos () )
       panDeltaPos = panCurrentPos - self.panStartPos
@@ -102,7 +102,7 @@ class ImageView ( QtGui.QGraphicsView ) :
   #
   def mouseReleaseEvent ( self, event ):        
     #
-    #print ">> ImageView: mouseReleaseEvent"
+    #print ">> ImageView.mouseReleaseEvent"
     if self.state == 'pan' :
       self.state = 'idle'  
       self.panStartPos = None
@@ -138,7 +138,7 @@ class ImageView ( QtGui.QGraphicsView ) :
       else:
         print "!! QImageReader can't read %s..." % imageName   
         # print imageReader.supportedImageFormats ()
-        print ">> Lets try PIL module..."
+        print "!! Lets try PIL module ..."
         import Image
         image = Image.open ( imageName )
         # image.verify()

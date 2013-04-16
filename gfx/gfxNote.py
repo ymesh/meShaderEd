@@ -182,7 +182,8 @@ class GfxNote ( QtGui.QGraphicsItem ):
   #
   # shape
   #
-  def shape ( self ):
+  def shape ( self ) :
+    #
     shape = QtGui.QPainterPath ()
     shape.addRect ( self.boundingRect () )
     #shape += self.header['input'].shape()
@@ -191,7 +192,7 @@ class GfxNote ( QtGui.QGraphicsItem ):
   #
   # itemChange
   #
-  def itemChange ( self, change, value ):
+  def itemChange ( self, change, value ) :
     #
     if change == QtGui.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
       self.label_widget.isNodeSelected = value.toBool ()
@@ -220,7 +221,7 @@ class GfxNote ( QtGui.QGraphicsItem ):
   #
   # paint
   #
-  def paint ( self, painter, option, widget ):
+  def paint ( self, painter, option, widget ) :
     # print ( ">> GfxNode.paint" )
     painter.setRenderHint ( QtGui.QPainter.Antialiasing )
     painter.setRenderHint ( QtGui.QPainter.SmoothPixmapTransform )
@@ -229,7 +230,7 @@ class GfxNote ( QtGui.QGraphicsItem ):
   #
   # paintFrame
   #
-  def paintFrame ( self, painter ):
+  def paintFrame ( self, painter ) :
     #print ( ">> GfxNode.paintWindowFrame" )
     pen = self.PenBorderNormal
     brush = self.BrushNodeNormal
@@ -237,9 +238,7 @@ class GfxNote ( QtGui.QGraphicsItem ):
     self.bgColor.setAlphaF ( self.opacity )
     brush.setColor ( self.bgColor )
     
-    if self.isSelected () :
-      pen =  self.PenBorderSelected
-      # brush = self.BrushNodeSelected
+    if self.isSelected () : pen = self.PenBorderSelected
 
     if not self.showBorder : 
       pen.setStyle ( QtCore.Qt.NoPen )
@@ -248,8 +247,4 @@ class GfxNote ( QtGui.QGraphicsItem ):
         
     painter.setPen ( pen )
     painter.setBrush ( brush )
-    #painter.setOpacity ( self.opacity )
-
-    # painter.drawRect ( self.rect )
     painter.drawRoundedRect ( self.rect, self.radius, self.radius, QtCore.Qt.AbsoluteSize ) 
-    # Qt::SizeMode mode = Qt::AbsoluteSize Qt.RelativeSize

@@ -14,6 +14,7 @@ from core.nodeNetwork import *
 
 from gfx.gfxNode import GfxNode
 from gfx.gfxNote import GfxNote
+from gfx.gfxSwatchNode import GfxSwatchNode
 
 from meRendererSetup import meRendererSetup
 from ProjectSetup import ProjectSetup
@@ -43,7 +44,7 @@ class MainWindow ( QtGui.QMainWindow ) :
 
     self.ui = Ui_MainWindow ()
     self.ui.setupUi ( self )
-    
+
     self.clipboard = QtGui.QApplication.clipboard ()
 
     self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
@@ -101,7 +102,7 @@ class MainWindow ( QtGui.QMainWindow ) :
       if self.activeNodeList != None :
         QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'selectNodes' ), self.onSelectGfxNodes  )
-      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeParamChanged  )
+      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeConnectionChanged  )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
       #QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
@@ -114,7 +115,7 @@ class MainWindow ( QtGui.QMainWindow ) :
       if self.activeNodeList != None :
         QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'selectNodes' ), self.onSelectGfxNodes  )
-      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeParamChanged  )
+      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeConnectionChanged  )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
       #QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
@@ -186,15 +187,21 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def setupPanels ( self ) :
     #
-    self.tabifyDockWidget ( self.ui.dockPreview, self.ui.dockGeom  )
     self.tabifyDockWidget ( self.ui.dockNodes, self.ui.dockProject )
+
+    self.tabifyDockWidget ( self.ui.dockPreview, self.ui.dockGeom  )
     self.tabifyDockWidget ( self.ui.dockParam, self.ui.dockSwatch )
 
+    # temporary hide unused panels
+    #self.removeDockWidget ( self.ui.dockGeom )
+    #self.removeDockWidget ( self.ui.dockSwatch )
+    self.ui.dockGeom.hide ()
+    self.ui.dockSwatch.hide ()
+
+    self.ui.dockNodes.raise_ ()
     self.ui.dockPreview.raise_ ()
     self.ui.dockParam.raise_ ()
-    self.ui.dockNodes.raise_ ()
-    
-    #self.removeDockWidget ( self.ui.dockParam )
+
     #self.addDockWidget ( QtCore.Qt.DockWidgetArea ( 2 ), self.ui.dockParam )
     #self.ui.dockParam.show ()
   #
@@ -233,16 +240,19 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def setupActions ( self ) :
     #
+    if DEBUG_MODE : print '>> MainWindow.setupActions'
     enableForNodes = False
     enableForLinks = False
     enableForPaste = False
     enableSelectAll = False
-    
-    if self.clipboard.ownsClipboard () : 
+
+    if self.clipboard.ownsClipboard () or (sys.platform == 'darwin'):
+      if DEBUG_MODE : print '** self.clipboard.ownsClipboard'
       data = self.clipboard.mimeData ()
-      if data.hasText () :
-        enableForPaste = True
-    
+      if data is not None :
+        if data.hasText () :
+          enableForPaste = True
+
     if self.workArea is not None :
       enableSelectAll = True
       if len ( self.workArea.selectedNodes ) > 0 : enableForNodes = True
@@ -430,13 +440,13 @@ class MainWindow ( QtGui.QMainWindow ) :
     #
     if DEBUG_MODE : print ">> MainWindow.exportShader (not implemented yet...)"
     gfxNode = self.getSelectedNode ()
-    
+
     exportShaderDlg = ExportShaderPanel ()
     if exportShaderDlg.exec_ () == QtGui.QDialog.Accepted :
       if DEBUG_MODE : print '>> MainWindow.exportShaderDlg Accepted'
       #
       #
-      return  
+      return
   #
   # onEditNode
   #
@@ -453,9 +463,9 @@ class MainWindow ( QtGui.QMainWindow ) :
 
     # reindex output params
     #for i in range ( 0, len( gfxNode.node.outputParams ) ) : gfxNode.node.outputParams[ i ].id = i
-    
+
     editNode = gfxNode.node.copy ()
-    
+
     dupNodeNet = NodeNetwork ( 'duplicate' )
     dupNodeNet.addNode ( editNode )
     #
@@ -464,10 +474,10 @@ class MainWindow ( QtGui.QMainWindow ) :
     if DEBUG_MODE : print '** duplicate input links ...'
     for link in gfxNode.node.getInputLinks () :
       newLink = link.copy ()
-      newParam = editNode.getInputParamByName ( link.dstParam.name ) 
+      newParam = editNode.getInputParamByName ( link.dstParam.name )
       newLink.setDst ( editNode, newParam )
-      dupNodeNet.addLink ( newLink ) 
-      
+      dupNodeNet.addLink ( newLink )
+
       newLink.printInfo ()
     #
     # copy output links to new node
@@ -475,45 +485,40 @@ class MainWindow ( QtGui.QMainWindow ) :
     if DEBUG_MODE : print '** duplicate output links ...'
     for link in gfxNode.node.getOutputLinks () :
       newLink = link.copy ()
-      newParam = editNode.getOutputParamByName ( link.srcParam.name ) 
-      newLink.setSrc ( editNode, newParam ) 
+      newParam = editNode.getOutputParamByName ( link.srcParam.name )
+      newLink.setSrc ( editNode, newParam )
       dupNodeNet.addLink ( newLink )
-      
+
       newLink.printInfo ()
-      
+
     nodeEditDlg = NodeEditorPanel ( editNode )
-    
+
     if nodeEditDlg.exec_ () == QtGui.QDialog.Accepted :
       #
       if DEBUG_MODE : print '>> MainWindow.nodeEditDlg Accepted'
       #
       # remove original node with links
       ( inputLinksToRemove, outputLinksToRemove ) = self.workArea.nodeNet.removeNode ( gfxNode.node )
-      
-      for link in inputLinksToRemove  : self.workArea.nodeNet.removeLink ( link  )  
-      for link in outputLinksToRemove : self.workArea.nodeNet.removeLink ( link  ) 
-      
+
+      for link in inputLinksToRemove  : self.workArea.nodeNet.removeLink ( link  )
+      for link in outputLinksToRemove : self.workArea.nodeNet.removeLink ( link  )
+
       # add duplicate network to current node net
       self.workArea.nodeNet.add ( dupNodeNet )
-      
+
       if gfxNode.node.label != editNode.label :
         self.ui.imageView_ctl.onNodeLabelChanged ( gfxNode, editNode.label )
-      
+
       # set new node to gfxNode.node
       gfxNode.node = editNode
       gfxNode.updateNode ()
-      for link in editNode.getInputLinks ()  : self.workArea.addGfxLink ( link  )  
-      for link in editNode.getOutputLinks () : self.workArea.addGfxLink ( link  )  
-      #self.ui.nodeParam_ctl.setNode ( gfxNode )
-      #gfxNode.update ()
-      #gfxNode.adjustLinks ()
+      for link in editNode.getInputLinks ()  : self.workArea.addGfxLink ( link  )
+      for link in editNode.getOutputLinks () : self.workArea.addGfxLink ( link  )
       self.ui.nodeParam_ctl.updateGui ()
-      #self.workArea.resetCachedContent ()
-      #self.workArea.adjustLinks ()
       self.workArea.scene().update ()
-      
+
     else :
-      # remove duplicate node network     
+      # remove duplicate node network
       dupNodeNet.clear ()
   #
   # onDelete
@@ -541,23 +546,23 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onCopy
   #
-  def onCopy ( self ) : 
+  def onCopy ( self ) :
     if DEBUG_MODE : print '>> MainWindow.onCopy'
-    self.workArea.copyNodes ( self.clipboard, cutNodes = False ) 
-    self.setupActions () 
+    self.workArea.copyNodes ( self.clipboard, cutNodes = False )
+    self.setupActions ()
   #
   # onCut
   #
-  def onCut ( self ) : 
+  def onCut ( self ) :
      if DEBUG_MODE : print '>> MainWindow.onCut'
-     self.workArea.copyNodes ( self.clipboard, cutNodes = True ) 
-     self.setupActions () 
+     self.workArea.copyNodes ( self.clipboard, cutNodes = True )
+     self.setupActions ()
   #
   # onPaste
   #
-  def onPaste ( self ) : 
+  def onPaste ( self ) :
     if DEBUG_MODE : print '>> MainWindow.onPaste'
-    self.workArea.pasteNodes ( self.clipboard )  
+    self.workArea.pasteNodes ( self.clipboard )
   #
   # onDuplicate
   #
@@ -588,25 +593,43 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onNodeParamChanged
   #
-  def onNodeParamChanged ( self, node, param ) :
-    #if DEBUG_MODE : print ">> MainWindow.onNodeParamChanged"
+  def onNodeParamChanged ( self, gfxNode, param ) :
+    #
+    if DEBUG_MODE : print ">> MainWindow.onNodeParamChanged"
     #param.shaderParam = not gfxNode.node.isInputParamLinked ( param )
 
     # from WorkArea we have GfxNode in signal nodeConnectionChanged
     # hence need to update nodeParam_ctl
-    if isinstance ( node, GfxNode )  :
-      #if DEBUG_MODE : print "* update nodeView"
-      node.updateInputParams ()
-      self.ui.nodeParam_ctl.updateGui ()
-    elif isinstance ( node, GfxNote ) :
+    if isinstance ( gfxNode, GfxNote ) :
       #if DEBUG_MODE : print "* update GfxNote"
-      node.updateNode ()
+      gfxNode.updateNode ()
       #node.update ()
       self.workArea.scene ().update ()
+    elif isinstance ( gfxNode, GfxSwatchNode ) :
+      if DEBUG_MODE : print "* update GfxSwatchNode"
+      gfxNode.setupParams ()
+      gfxNode.setupGeometry ()
+      gfxNode.adjustLinks ()
+      self.workArea.scene ().update ()
 
-    if self.ui.imageView_ctl.autoUpdate () :
-      #if DEBUG_MODE : print "* auto update"
-      self.ui.imageView_ctl.updateViewer()
+    if self.ui.imageView_ctl.autoUpdate () : self.ui.imageView_ctl.updateViewer()
+  #
+  # onNodeConnectionChanged
+  #
+  def onNodeConnectionChanged ( self, gfxNode, param ) :
+    #
+    if DEBUG_MODE : print ">> MainWindow.onNodeConnectionChanged" 
+    
+    # from WorkArea we have GfxNode in signal nodeConnectionChanged
+    # hence need to update nodeParam_ctl
+    if isinstance ( gfxNode, GfxNode )  :
+      #if DEBUG_MODE : print "* update nodeView"
+      gfxNode.updateInputParams ()
+      self.ui.nodeParam_ctl.updateGui ()
+      self.workArea.scene ().update ()
+
+    if self.ui.imageView_ctl.autoUpdate () : self.ui.imageView_ctl.updateViewer()
+        
   #
   # onFitAll
   #
@@ -646,7 +669,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   def onTabCloseRequested ( self, idx ) :
     #
     if DEBUG_MODE : print '>> MainWindow: onTabCloseRequested (%d)' % idx
-    if self.ui.tabs.count() > 1 :
+    if self.ui.tabs.count () > 1 :
       self.workArea.nodeNet.clear ()
       self.ui.tabs.removeTab ( idx )
   #
@@ -689,7 +712,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     nodeNet = NodeNetwork ( newName )
     workArea.setNodeNetwork ( nodeNet )
 
-    self.ui.tabs.setTabText ( self.ui.tabs.indexOf( workArea ), newName )
+    self.ui.tabs.setTabText ( self.ui.tabs.indexOf ( workArea ), newName )
     self.ui.tabs.setCurrentIndex ( self.ui.tabs.indexOf ( workArea ) )
   #
   # onOpen
@@ -714,7 +737,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     ret = True
     if DEBUG_MODE : print "-> open file %s" %  filename
     if QtCore.QFile.exists ( filename ) :
-      ( name, ext ) = os.path.splitext( os.path.basename ( filename ) )
+      ( name, ext ) = os.path.splitext ( os.path.basename ( filename ) )
 
       self.ui.imageView_ctl.removeAllViewers ()
 

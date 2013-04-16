@@ -202,8 +202,6 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     #
     shape = QtGui.QPainterPath ()
     shape.addRect ( self.boundingRect () )
-    #shape += self.header['input'].shape()
-    #shape += self.header['output'].shape()
     return shape
   #
   # setupHeader
