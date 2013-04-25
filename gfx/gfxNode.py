@@ -36,12 +36,12 @@ class GfxNode ( QtGui.QGraphicsItem ) :
 
     self.headerFont = QtGui.QFont ()
     self.paramsFont = QtGui.QFont ()
-    
+
     self.x_offset = 10
     self.y_offset = 10
     self.radius = UI.NODE_RADIUS
-    
-    self.swatchSize = UI.SWATCH_SIZE 
+
+    self.swatchSize = UI.SWATCH_SIZE
     self.hasSwatch = False
 
     self.shadow_offset = UI.SHADOW_OFFSET
@@ -70,14 +70,14 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     self.PenShadow = QtGui.QPen ( shadowColor )
 
     self.node = node
-    
+
     self.collapse = None # 'input' 'output' 'all'
-    
+
     if self.node is not None :
       self.updateNode ()
       ( x, y ) = self.node.offset
       self.setPos ( x, y )
-      
+
     # flag (new from QT 4.6...)
     self.setFlag ( QtGui.QGraphicsItem.ItemSendsScenePositionChanges )
     self.setFlag ( QtGui.QGraphicsItem.ItemSendsGeometryChanges )
@@ -155,15 +155,16 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     #
     i = 0
     for param in self.node.inputParams : # for i in range( len( self.node.inputParams )) :
-      if param.provider != 'attribute' :
-        label = self.inputParamLabels [ i ]
-        label.brush = self.BrushNodeNormal
-        label.PenNormal = self.PenBorderNormal
-        if param.shaderParam :
-          if not self.node.isInputParamLinked ( param ) :
-            label.PenNormal = self.PenNodeShaderParam
-        label.update()
-        i += 1
+      if param.type != 'control' :
+        if param.provider != 'attribute' :
+          label = self.inputParamLabels [ i ]
+          label.brush = self.BrushNodeNormal
+          label.PenNormal = self.PenBorderNormal
+          if param.shaderParam :
+            if not self.node.isInputParamLinked ( param ) :
+              label.PenNormal = self.PenNodeShaderParam
+          label.update()
+          i += 1
   #
   # setupGeometry
   #

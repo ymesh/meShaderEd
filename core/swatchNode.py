@@ -12,7 +12,7 @@ from global_vars import app_global_vars, DEBUG_MODE
 import gui.ui_settings as UI
 
 #
-# ImageNode
+# SwatchNode
 #
 class SwatchNode ( ImageNode ) :
   #
@@ -28,6 +28,7 @@ class SwatchNode ( ImageNode ) :
   # copy
   #
   def copy ( self ) :
+    #
     if DEBUG_MODE : print '>> SwatchNode( %s ).copy' % self.label
     newNode = SwatchNode ()
     self.copySetup ( newNode )
@@ -36,7 +37,8 @@ class SwatchNode ( ImageNode ) :
   # computeNode
   #
   def computeNode ( self ) :
-    print '>> SwatchNode( %s ).computeNode' % self.label
+    #
+    if DEBUG_MODE : print '>> SwatchNode( %s ).computeNode' % self.label
     # inside param_code, imageName value can be assigned from different
     # input parameters
     self.execParamCode ()

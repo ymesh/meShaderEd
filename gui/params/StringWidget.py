@@ -7,6 +7,7 @@
 
 from PyQt4 import QtGui, QtCore
 
+from global_vars import app_global_vars, DEBUG_MODE
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
 
@@ -15,8 +16,9 @@ from paramWidget import ParamWidget
 #
 class StringWidget ( ParamWidget ) :
   #
+  # buildGui
   #                 
-  def buildGui ( self ):
+  def buildGui ( self ) :
     #
     if not self.ignoreSubtype :
       if self.param.subtype == 'selector': 
@@ -31,14 +33,15 @@ class StringWidget ( ParamWidget ) :
 #
 # Ui_StringWidget_field
 #
-class Ui_StringWidget_field ( object ):
+class Ui_StringWidget_field ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, StringWidget ):
-
+  def setupUi ( self, StringWidget ) :
+    #
     self.widget = StringWidget
     
-    self.stringEdit = QtGui.QLineEdit( StringWidget )
+    self.stringEdit = QtGui.QLineEdit ( StringWidget )
     
     self.stringEdit.setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
     self.stringEdit.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
@@ -49,31 +52,38 @@ class Ui_StringWidget_field ( object ):
     QtCore.QMetaObject.connectSlotsByName ( StringWidget )
     self.connectSignals ( StringWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, StringWidget ):
-    StringWidget.connect ( self.stringEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onStringEditEditingFinished )
+  def connectSignals ( self, StringWidget ) :
+    #
+    StringWidget.connect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, StringWidget ):
-    StringWidget.disconnect ( self.stringEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onStringEditEditingFinished )
+  def disconnectSignals ( self, StringWidget ) :
+    #
+    StringWidget.disconnect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
   #
-  #                      
-  def onStringEditEditingFinished ( self ):
-    stringValue = self.stringEdit.text()
-    self.widget.param.setValue ( str( stringValue ) )
-
+  # onStringEditEditingFinished
   #
-  #      
-  def updateGui ( self, value ): 
-    self.stringEdit.setText( value )
+  def onStringEditEditingFinished ( self ) :
+    #
+    stringValue = self.stringEdit.text ()
+    self.widget.param.setValue ( str ( stringValue ) )
+  #
+  # updateGui
+  #
+  def updateGui ( self, value ) : 
+    self.stringEdit.setText ( value )
 #
 # Ui_StringWidget_selector
 #          
-class Ui_StringWidget_selector ( object ):
+class Ui_StringWidget_selector ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, StringWidget ):
-    
+  def setupUi ( self, StringWidget ) :
+    #
     self.widget = StringWidget
     
     self.selector = QtGui.QComboBox ( StringWidget )
@@ -82,6 +92,7 @@ class Ui_StringWidget_selector ( object ):
     self.selector.setMaximumSize ( QtCore.QSize( UI.MAX, UI.COMBO_HEIGHT ) )
     
     rangeList = self.widget.param.getRangeValues ()
+    
     for ( label, value ) in rangeList :
       #print "label = %s value = %s" % ( label, value )
       self.selector.addItem ( label, value )
@@ -94,24 +105,30 @@ class Ui_StringWidget_selector ( object ):
     QtCore.QMetaObject.connectSlotsByName ( StringWidget )
     self.connectSignals ( StringWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, StringWidget ):
-    StringWidget.connect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged ) # currentIndexChanged
+  def connectSignals ( self, StringWidget ) :
+    #
+    StringWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, StringWidget ):
-    StringWidget.disconnect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged )
+  def disconnectSignals ( self, StringWidget ) :
+    #
+    StringWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
   #
-  #                      
-  def onCurrentIndexChanged ( self, idx ):
+  # onCurrentIndexChanged
+  #
+  def onCurrentIndexChanged ( self, idx ) :
     pass
-    stringValue = self.selector.itemData ( idx ).toString()
+    stringValue = self.selector.itemData ( idx ).toString ()
     #print ">> Ui_StringWidget_selector idx = %d setValue = %s" % ( idx, stringValue )
-    self.widget.param.setValue ( str( stringValue ) )
-
+    self.widget.param.setValue ( str ( stringValue ) )
   #
-  #      
-  def updateGui ( self, setValue ): 
+  # updateGui
+  #
+  def updateGui ( self, setValue ) :
+    #
     currentIdx = -1
     i = 0
     rangeList = self.widget.param.getRangeValues ()
@@ -120,19 +137,19 @@ class Ui_StringWidget_selector ( object ):
         currentIdx = i
         break
       i += 1
-    self.selector.setCurrentIndex( currentIdx )
-    
+    self.selector.setCurrentIndex ( currentIdx )
 #
 # Ui_StringWidget_file
 #
-class Ui_StringWidget_file ( object ):
+class Ui_StringWidget_file ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, StringWidget ):
-
+  def setupUi ( self, StringWidget ) :
+    #
     self.widget = StringWidget
     
-    self.stringEdit = QtGui.QLineEdit( StringWidget )
+    self.stringEdit = QtGui.QLineEdit ( StringWidget )
     
     self.stringEdit.setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
     self.stringEdit.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
@@ -150,44 +167,52 @@ class Ui_StringWidget_file ( object ):
    
     self.connectSignals ( StringWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, StringWidget ):
-    StringWidget.connect ( self.stringEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onStringEditEditingFinished )
-    StringWidget.connect ( self.btnBrowseDir, QtCore.SIGNAL("clicked()"), self.onBrowseFile )
+  def connectSignals ( self, StringWidget ) :
+    #
+    StringWidget.connect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
+    StringWidget.connect ( self.btnBrowseDir, QtCore.SIGNAL ( 'clicked()' ), self.onBrowseFile )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, StringWidget ):
-    StringWidget.disconnect ( self.stringEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onStringEditEditingFinished )
-    StringWidget.disconnect ( self.btnBrowseDir, QtCore.SIGNAL("clicked()"), self.onBrowseFile )
+  def disconnectSignals ( self, StringWidget ) :
+    #
+    StringWidget.disconnect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
+    StringWidget.disconnect ( self.btnBrowseDir, QtCore.SIGNAL ( 'clicked()' ), self.onBrowseFile )
   #
-  #                      
-  def onStringEditEditingFinished ( self ):
-    stringValue = self.stringEdit.text()
-    self.widget.param.value = str( stringValue )
+  # onStringEditEditingFinished
+  #
+  def onStringEditEditingFinished ( self ) :
+    #
+    stringValue = self.stringEdit.text ()
+    self.widget.param.value = str ( stringValue )
     #self.widget.param.paramChanged ()
   #
-  #      
-  def onBrowseFile ( self ):
-    print '>> Ui_StringWidget_file onBrowseFile'
+  # onBrowseFile
+  #
+  def onBrowseFile ( self ) :
+    #
+    if DEBUG_MODE : print '>> Ui_StringWidget_file onBrowseFile'
     typeFilter = ''
     rangeList = self.widget.param.getRangeValues ()
     
     for ( label, value ) in rangeList :
-      print "label = %s value = %s" % ( label, value )
+      if DEBUG_MODE : print "label = %s value = %s" % ( label, value )
       typeFilter += ( label + ' ' + value + ';;' )
       #self.selector.addItem ( label, value )
     #print '>> Ui_StringWidget_file typeFilter = %s' % typeFilter   
     
-    #from meShaderEd import app_settings
-    from global_vars import app_global_vars
+    curDir = app_global_vars [ 'ProjectPath' ]
     
-    curDir = app_global_vars[ 'ProjectPath' ]
+    filename = QtGui.QFileDialog.getOpenFileName ( self.widget, 'Select file', curDir, typeFilter )
     
-    filename = QtGui.QFileDialog.getOpenFileName( self.widget, "Select file", curDir, typeFilter )
     if filename != '' : 
-      self.widget.param.setValue ( str( filename ) )
+      self.widget.param.setValue ( str ( filename ) )
       self.updateGui ( self.widget.param.value )
   #
-  #      
-  def updateGui ( self, value ): 
-    self.stringEdit.setText( value )    
+  # updateGui
+  #
+  def updateGui ( self, value ) :
+    # 
+    self.stringEdit.setText ( value )    

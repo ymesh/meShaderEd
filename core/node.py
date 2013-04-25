@@ -1,16 +1,11 @@
 #===============================================================================
 # node.py
-#
-#
-#
 #===============================================================================
 import os, sys
 from PyQt4 import QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
-#from core.nodeParam import NodeParam
-
 #
 # Node
 #
@@ -21,7 +16,7 @@ class Node ( QtCore.QObject ) :
   #
   def __init__ ( self, xml_node = None, nodenet = None ) :
     #
-    QtCore.QObject.__init__( self )
+    QtCore.QObject.__init__ ( self )
 
     self.id = None
     self.name = None
@@ -37,7 +32,7 @@ class Node ( QtCore.QObject ) :
     self.code = None
     self.param_code = None
     self.computed_code = None
-    
+
     self.display = True
 
     self.computedInputParams = None
@@ -58,7 +53,7 @@ class Node ( QtCore.QObject ) :
     self.outputLinks = {}
 
     self.childs = set ()
-    
+
     self.nodenet = nodenet
 
     # position from GfxNode
@@ -207,7 +202,7 @@ class Node ( QtCore.QObject ) :
         removedLink = link
         outputLinks.remove ( link )
     return removedLink
-  
+
   #
   # isInputParamLinked
   #
@@ -305,7 +300,7 @@ class Node ( QtCore.QObject ) :
   def getParamsNames ( self ) :
     #
     names = []
-    
+
     for pm in self.getParamsList () : names.append ( pm.name )
     return names
   #
@@ -314,7 +309,7 @@ class Node ( QtCore.QObject ) :
   def getParamsLabels ( self ) :
     #
     labels = []
-    
+
     for pm in self.getParamsList () : labels.append ( pm.label )
     return labels
   #
@@ -355,7 +350,7 @@ class Node ( QtCore.QObject ) :
       if link.id == id :
         result = link
         break
-    return result  
+    return result
   #
   # renameParamName
   #
@@ -588,6 +583,7 @@ class Node ( QtCore.QObject ) :
   # computeNode
   #
   def computeNode ( self ) :
+    #
     if DEBUG_MODE : print '>> Node (%s).computeNode' % self.label
     self.execParamCode ()
   #
@@ -635,10 +631,10 @@ class Node ( QtCore.QObject ) :
 
           #print '-> found global var %s' % global_var_name
 
-          if global_var_name in app_global_vars.keys() :
+          if global_var_name in app_global_vars.keys () :
             resultStr += app_global_vars [ global_var_name ]
-          elif global_var_name in node_global_vars.keys() :
-            if global_var_name == 'INSTANCENAME' : resultStr += self.getInstanceName ()
+          elif global_var_name in node_global_vars.keys () :
+            if   global_var_name == 'INSTANCENAME' : resultStr += self.getInstanceName ()
             elif global_var_name == 'NODELABEL' : resultStr += self.getLabel ()
             elif global_var_name == 'NODENAME' : resultStr += self.getName ()
             elif global_var_name == 'PARAMS' : resultStr += self.getComputedParamList ()
@@ -659,17 +655,17 @@ class Node ( QtCore.QObject ) :
   def copySetup ( self, newNode ) :
     #
     if DEBUG_MODE : print '>> Node( %s ).copySetup ' % self.label
-    
+
     newNode.id = self.id
-    
+
     name = self.name
     if name is None : name = str ( self.type )
-    
+
     newNode.name = name
-    
+
     label = self.label
     if label is None : label = name
-    
+
     newNode.label  = label
     newNode.type   = self.type
     newNode.author = self.author
@@ -687,7 +683,7 @@ class Node ( QtCore.QObject ) :
 
     newNode.internals = copy.copy ( self.internals )
     newNode.includes  = copy.copy ( self.includes )
-    
+
     newNode.inputLinks = {}
     newNode.outputLinks = {}
 
@@ -699,7 +695,7 @@ class Node ( QtCore.QObject ) :
 
     newNode.outputParams = []
     for param in self.outputParams : newNode.outputParams.append ( param.copy () )
-    
+
     return newNode
 #
 # createParamFromXml
@@ -722,6 +718,7 @@ def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
   from core.nodeParam import TextNodeParam
   from core.nodeParam import TransformNodeParam
   from core.nodeParam import ImageNodeParam
+  from core.controlParam import ControlParam
 
   param = None
   createParamTable = {   'float':FloatNodeParam
@@ -740,6 +737,7 @@ def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
                           ,'text':TextNodeParam
                           ,'transform':TransformNodeParam
                           ,'image':ImageNodeParam
+                          ,'control':ControlParam
                        }
   param_type = str( xml_param.attributes ().namedItem ( 'type' ).nodeValue () )
   if param_type in createParamTable.keys () :

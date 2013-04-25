@@ -1,8 +1,5 @@
 #===============================================================================
 # nodeParam.py
-#
-#
-#
 #===============================================================================
 import os, sys
 import re
@@ -11,6 +8,8 @@ from PyQt4 import QtCore
 
 from node import Node
 from global_vars import app_global_vars, DEBUG_MODE
+from core.meCommon import parseGlobalVars
+
 #
 # Abstract Parameter Class
 #
@@ -53,6 +52,7 @@ class NodeParam ( QtCore.QObject ) :
   # setup
   #
   def setup ( self, name, label, detail, provider ) :
+    #
     self.name = name
     if label == '' : self.label = name
     else: self.label = label
@@ -115,6 +115,7 @@ class NodeParam ( QtCore.QObject ) :
   # getValueToStr
   #
   def getValueToStr ( self ) :
+    #
     if self.value != None :
       return self.valueToStr ( self.value )
     else :
@@ -123,6 +124,7 @@ class NodeParam ( QtCore.QObject ) :
   # getDefaultToStr
   #
   def getDefaultToStr ( self ) :
+    #
     if self.default != None :
       return self.valueToStr ( self.default )
     else :
@@ -294,7 +296,7 @@ class FloatNodeParam ( NodeParam ) :
             label = s
             value = float ( i )
           i += 1
-          rangeList.append ( ( label, value ) )
+          rangeList.append ( ( parseGlobalVars ( label ), value ) )
       #
       # get range for slider
       #
@@ -319,7 +321,6 @@ class IntNodeParam ( NodeParam ) :
     #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'int'
-    #print "FloatNodeParam.__init__"
   #
   # encodedTypeStr
   #
@@ -327,6 +328,7 @@ class IntNodeParam ( NodeParam ) :
   #
   #
   def copy ( self ) :
+    #
     newParam = IntNodeParam ()
     self.copySetup ( newParam )
     return newParam
@@ -334,11 +336,11 @@ class IntNodeParam ( NodeParam ) :
   # valueFromStr
   #
   def valueFromStr ( self, str ) :
+    #
     value = 0
-    #print "FloatNodeParam.setValueFromStr %s" % str
     if str != '' :
-      try: value = int( str )
-      except: raise Exception( 'Cannot parse integer value for parameter %s' % ( self.name ) )
+      try: value = int ( str )
+      except: raise Exception ( 'Cannot parse integer value for parameter %s' % ( self.name ) )
     return value
   #
   # valueToStr
@@ -402,6 +404,7 @@ class ColorNodeParam ( NodeParam ) :
   # copy
   #
   def copy ( self ) :
+    #
     newParam = ColorNodeParam ()
     self.copySetup ( newParam )
     return newParam
@@ -409,6 +412,7 @@ class ColorNodeParam ( NodeParam ) :
   # valueFromStr
   #
   def valueFromStr ( self, strValue ) :
+    #
     if self.isRibParam :
       return self.valueFromRIB ( strValue )
     else :
@@ -417,8 +421,9 @@ class ColorNodeParam ( NodeParam ) :
   # valueFromRSL
   #
   def valueFromRSL ( self, strValue ) :
+    #
     value = [ 0.0, 0.0, 0.0 ]
-    #print "ColorNodeParam.setValueFromStr %s" % str
+
     if strValue != '' :
       strValue = strValue.replace ( ' ', '' )
       color3_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
@@ -475,8 +480,9 @@ class ColorNodeParam ( NodeParam ) :
   # valueFromRIB
   #
   def valueFromRIB ( self, strValue ) :
+    #
     value = [ 0.0, 0.0, 0.0 ]
-    #print "ColorNodeParam.setValueFromStr %s" % str
+
     if strValue != '' :
       #str = str.replace( ' ', '' )
       color_values = strValue.split ( ' ' )
@@ -487,6 +493,7 @@ class ColorNodeParam ( NodeParam ) :
   # valueToStr
   #
   def valueToStr ( self, value ) :
+    #
     if self.isRibParam :
       return self.getValueToRIB ( value )
     else :
@@ -495,6 +502,7 @@ class ColorNodeParam ( NodeParam ) :
   # getValueToRSL
   #
   def getValueToRSL ( self, value ) :
+    #
     ret_str = 'color'
     if self.space != None :
       if self.space != '' :
@@ -504,6 +512,7 @@ class ColorNodeParam ( NodeParam ) :
   # getValueToRIB
   #
   def getValueToRIB ( self, value ) :
+    #
     return ''.join ( '%.3f' % f + ' ' for f in value [: - 1] ) + '%.3f' % value [ - 1]
 #
 # String
@@ -513,9 +522,9 @@ class StringNodeParam ( NodeParam ) :
   # __init__
   #
   def __init__ ( self, xml_param = None, isRibParam = False ) :
+    #
     NodeParam.__init__ ( self, xml_param, isRibParam )
     self.type = 'string'
-    #print "FloatNodeParam.__init__"
   #
   # encodedTypeStr
   #
@@ -524,6 +533,7 @@ class StringNodeParam ( NodeParam ) :
   # copy
   #
   def copy ( self ) :
+    #
     newParam = StringNodeParam ()
     self.copySetup ( newParam )
     return newParam
@@ -535,10 +545,10 @@ class StringNodeParam ( NodeParam ) :
   # valueToStr
   #
   def valueToStr ( self, value ) :
-    if self.isRibParam :
-      return str ( value )
-    else :
-      return str ( "\"" + value + "\"" )
+    #
+    ret_str = str ( value ) 
+    if not self.isRibParam : ret_str = str ( "\"" + value + "\"" )
+    return ret_str
   #
   # getRangeValues
   #
@@ -560,7 +570,7 @@ class StringNodeParam ( NodeParam ) :
         else :
           label = s
           value = s
-        rangeList.append ( (label, value) )
+        rangeList.append ( ( parseGlobalVars ( label ), parseGlobalVars ( value ) ) )
     return rangeList
 #
 # Normal

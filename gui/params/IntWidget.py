@@ -1,8 +1,5 @@
 #===============================================================================
 # IntWidget.py
-#
-# 
-#
 #===============================================================================
 
 from PyQt4 import QtGui, QtCore
@@ -13,37 +10,39 @@ from paramWidget import ParamWidget
 #
 # IntWidget
 #
-class IntWidget ( ParamWidget ):
+class IntWidget ( ParamWidget ) :
   #
-  #                 
-  def buildGui ( self ):
+  # buildGui
+  #
+  def buildGui ( self ) :
     #
     if not self.ignoreSubtype :
-      if self.param.subtype == 'selector': 
-        self.ui = Ui_IntWidget_selector()
-      elif self.param.subtype == 'switch': 
-        self.ui = Ui_IntWidget_switch()
+      if self.param.subtype == 'selector' : 
+        self.ui = Ui_IntWidget_selector ()
+      elif self.param.subtype == 'switch' : 
+        self.ui = Ui_IntWidget_switch ()
       elif self.param.subtype == 'slider' or self.param.subtype == 'vslider' : 
-        self.ui = Ui_IntWidget_slider()
+        self.ui = Ui_IntWidget_slider ()
       else:
-        self.ui = Ui_IntWidget_field() 
+        self.ui = Ui_IntWidget_field () 
     else :
-      self.ui = Ui_IntWidget_field() 
+      self.ui = Ui_IntWidget_field () 
          
     self.ui.setupUi ( self )
 #
 # Ui_IntWidget_field
 #          
-class Ui_IntWidget_field ( object ):
+class Ui_IntWidget_field ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, IntWidget ):
-
+  def setupUi ( self, IntWidget ) :
+    #
     self.widget = IntWidget
     
-    self.intEdit = QtGui.QLineEdit( IntWidget )
+    self.intEdit = QtGui.QLineEdit ( IntWidget )
     
-    self.intEdit.setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
+    self.intEdit.setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     self.intEdit.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
@@ -54,80 +53,92 @@ class Ui_IntWidget_field ( object ):
     QtCore.QMetaObject.connectSlotsByName ( IntWidget )
     self.connectSignals ( IntWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, IntWidget ):
-    IntWidget.connect ( self.intEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onIntEditEditingFinished )
+  def connectSignals ( self, IntWidget ) :
+    #
+    IntWidget.connect ( self.intEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, IntWidget ):
-    IntWidget.disconnect ( self.intEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onIntEditEditingFinished )
+  def disconnectSignals ( self, IntWidget ) :
+    #
+    IntWidget.disconnect ( self.intEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
   #
-  #                      
+  #  onIntEditEditingFinished
+  #
   def onIntEditEditingFinished ( self ) :
-    intStr = self.intEdit.text()
-    intValue = intStr.toInt()[0] 
+    #
+    intStr = self.intEdit.text ()
+    intValue = intStr.toInt () [ 0 ] 
     self.widget.param.setValue (  intValue )      
   #
-  #      
-  def updateGui ( self, value ): self.intEdit.setText ( QtCore.QString.number( value ) )
+  # updateGui
+  def updateGui ( self, value ): self.intEdit.setText ( QtCore.QString.number ( value ) )
 #
 # Ui_IntWidget_switch
 #          
-class Ui_IntWidget_switch ( object ):
+class Ui_IntWidget_switch ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, IntWidget ):
-
+  def setupUi ( self, IntWidget ) :
+    #
     self.widget = IntWidget
     
-    self.checkBox = QtGui.QCheckBox( IntWidget )
+    self.checkBox = QtGui.QCheckBox ( IntWidget )
     
-    self.checkBox.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
+    self.checkBox.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) ) 
     self.checkBox.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
     self.widget.hl.addWidget ( self.checkBox )
     self.widget.hl.addItem ( spacer )
-    #self.widget.hl.setStretch ( 1, 1 )
     
     QtCore.QMetaObject.connectSlotsByName ( IntWidget )
     self.connectSignals ( IntWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, IntWidget ):
-    IntWidget.connect( self.checkBox, QtCore.SIGNAL('stateChanged(int)'), self.onStateChanged )
+  def connectSignals ( self, IntWidget ) :
+    #
+    IntWidget.connect ( self.checkBox, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onStateChanged )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, IntWidget ):
-    IntWidget.disconnect( self.checkBox, QtCore.SIGNAL('stateChanged(int)'), self.onStateChanged )  #
+  def disconnectSignals ( self, IntWidget ) :
+    #
+    IntWidget.disconnect ( self.checkBox, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onStateChanged )  
   # 
-  #                     
-  def onStateChanged ( self, value ):
-    intValue = self.checkBox.isChecked()    
-    # print "CALL: onStateChanged value = %d  floatValue = %d" % ( value, floatValue )
+  # onStateChanged 
+  #
+  def onStateChanged ( self, value ) :
+    #
+    intValue = self.checkBox.isChecked ()    
     self.widget.param.setValue ( intValue )
   #
-  #      
-  def updateGui ( self, value ): self.checkBox.setChecked( value != 0 )  
+  # updateGui
+  #
+  def updateGui ( self, value ) : self.checkBox.setChecked ( value != 0 )  
 #
 # Ui_IntWidget_selector
 #          
-class Ui_IntWidget_selector ( object ):
+class Ui_IntWidget_selector ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, IntWidget ):
-    
+  def setupUi ( self, IntWidget ) :
+    #
     self.widget = IntWidget
     
     self.selector = QtGui.QComboBox ( IntWidget )
     self.selector.setEditable ( False )
     self.selector.setMinimumSize ( QtCore.QSize ( UI.COMBO_WIDTH, UI.COMBO_HEIGHT ) )
-    self.selector.setMaximumSize ( QtCore.QSize( UI.MAX, UI.COMBO_HEIGHT ) )
+    self.selector.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.COMBO_HEIGHT ) )
     
     rangeList = self.widget.param.getRangeValues ()
-    for ( label, value ) in rangeList :
-      #print "label = %s value = %s" % ( label, value )
-      self.selector.addItem ( label, int( value ) )
+    
+    for ( label, value ) in rangeList : self.selector.addItem ( label, int( value ) )
     
     spacer = QtGui.QSpacerItem ( UI.HEIGHT, UI.HEIGHT, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
@@ -137,48 +148,52 @@ class Ui_IntWidget_selector ( object ):
     QtCore.QMetaObject.connectSlotsByName ( IntWidget )
     self.connectSignals ( IntWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, IntWidget ):
-    IntWidget.connect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged ) #currentIndexChanged
+  def connectSignals ( self, IntWidget ) :
+    #
+    IntWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged ) 
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, IntWidget ):
-    IntWidget.disconnect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged )
+  def disconnectSignals ( self, IntWidget ) :
+    #
+    IntWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
   #
-  #                      
-  def onCurrentIndexChanged ( self, idx ):
-    ( intValue, ok ) = self.selector.itemData ( idx ).toInt()
-    #print ">> Ui_IntWidget_selector setValue = " # %d" % intValue
-    #print intValue
-    self.widget.param.setValue ( int( intValue ) )
+  # onCurrentIndexChanged
   #
-  #      
-  def updateGui ( self, setValue ): 
+  def onCurrentIndexChanged ( self, idx ) :
+    #
+    ( intValue, ok ) = self.selector.itemData ( idx ).toInt ()
+    self.widget.param.setValue ( int ( intValue ) )
+  #
+  # updateGui
+  #
+  def updateGui ( self, setValue ) : 
+    #
     currentIdx = -1
     i = 0
-    print ">> Ui_IntWidget_selector setValue = %s" % setValue
     rangeList = self.widget.param.getRangeValues ()
     for ( label, value ) in rangeList :
-      #print ( "label = %s : value = %s" ) % ( label, value )
       if setValue == value : 
         currentIdx = i
         break
       i += 1
-    self.selector.setCurrentIndex( currentIdx )
-    
+    self.selector.setCurrentIndex ( currentIdx )
 #
 # Ui_IntWidget_slider
 #          
-class Ui_IntWidget_slider ( object ):
+class Ui_IntWidget_slider ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, IntWidget ):
-
+  def setupUi ( self, IntWidget ) :
+    #
     self.widget = IntWidget
     
-    self.intEdit = QtGui.QLineEdit( IntWidget )
+    self.intEdit = QtGui.QLineEdit ( IntWidget )
     
-    self.intEdit.setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
+    self.intEdit.setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) ) 
     self.intEdit.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     
     self.slider = QtGui.QSlider ( QtCore.Qt.Horizontal, IntWidget )
@@ -188,23 +203,19 @@ class Ui_IntWidget_slider ( object ):
     intStep = 1
     
     rangeList = self.widget.param.getRangeValues ()
+    
     if len ( rangeList ) :
-      intMinVal = rangeList[ 0 ]
-      intMaxVal = rangeList[ 1 ]
-      intStep = rangeList[ 2 ]
+      intMinVal = rangeList [ 0 ]
+      intMaxVal = rangeList [ 1 ]
+      intStep   = rangeList [ 2 ]
     
     if intStep == 0 : intStep = 1
-    
-    #print 'intMinVal = %d intMaxVal = %d' % ( intMinVal, intMaxVal )
     
     self.slider.setRange ( intMinVal, intMaxVal )
     self.slider.setSingleStep ( intStep )
     
-    self.slider.setValue ( int( self.widget.param.value ) )
+    self.slider.setValue ( int ( self.widget.param.value ) )
 
-    #setTickInterval
-    #setPageStep
-    
     self.widget.hl.addWidget ( self.intEdit )
     self.widget.hl.addWidget ( self.slider )
     self.widget.hl.setStretch ( 1, 1 )
@@ -212,28 +223,37 @@ class Ui_IntWidget_slider ( object ):
     QtCore.QMetaObject.connectSlotsByName ( IntWidget )
     self.connectSignals ( IntWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, IntWidget ):
-    IntWidget.connect ( self.intEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onIntEditEditingFinished )
-    IntWidget.connect ( self.slider, QtCore.SIGNAL( 'valueChanged(int)' ), self.onSliderValueChanged )
+  def connectSignals ( self, IntWidget ) :
+    #
+    IntWidget.connect ( self.intEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
+    IntWidget.connect ( self.slider, QtCore.SIGNAL ( 'valueChanged(int)' ), self.onSliderValueChanged )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, IntWidget ):
-    IntWidget.disconnect ( self.intEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onIntEditEditingFinished )
-    IntWidget.disconnect ( self.slider, QtCore.SIGNAL( 'valueChanged(int)' ), self.onSliderValueChanged )
+  def disconnectSignals ( self, IntWidget ) :
+    #
+    IntWidget.disconnect ( self.intEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
+    IntWidget.disconnect ( self.slider, QtCore.SIGNAL ( 'valueChanged(int)' ), self.onSliderValueChanged )
   #
-  #                      
-  def onIntEditEditingFinished ( self ):
-    intStr = self.intEdit.text()
-    intValue = intStr.toInt()[0] 
+  # onIntEditEditingFinished
+  #
+  def onIntEditEditingFinished ( self ) :
+    #
+    intStr = self.intEdit.text ()
+    intValue = intStr.toInt () [ 0 ] 
     self.widget.param.setValue ( intValue )    
     self.slider.setValue ( intValue )
   #
-  #                      
+  # onSliderValueChanged
+  #
   def onSliderValueChanged ( self, value ) :
+    #
     self.widget.param.setValue ( value )
     self.updateGui ( value) 
     #self.widget.param.paramChanged ()
   #
-  #      
-  def updateGui ( self, value ): self.intEdit.setText ( QtCore.QString.number( value ) ) 
+  # updateGui
+  #
+  def updateGui ( self, value ) : self.intEdit.setText ( QtCore.QString.number ( value ) ) 

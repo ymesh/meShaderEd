@@ -54,6 +54,34 @@ class NodeNetwork ( QtCore.QObject ) :
   def __del__ ( self ) :
     if DEBUG_MODE : print '>> NodeNetwork( %s ).__del__ ' % self.name
   #
+  # copy
+  #
+  def copy ( self ) :
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).copy ' % self.name
+    newNode = NodeNetwork ()
+    self.copySetup ( newNode )
+    return newNode
+  #
+  # copySetup
+  #
+  def copySetup ( self, newNode ) :
+    #
+    if DEBUG_MODE : print '>> NodeNetwork( %s ).copySetup ' % self.label
+
+    newNode.node_id = self.node_id
+    newNode.link_id = self.link_id
+
+    newNode.name = self.name
+    newNode.fileName = self.fileName
+
+    newNode.help = self.help
+
+    newNode.isDirty = self.isDirty
+
+    newNode.nodes = {}
+    newNode.links = {}
+
+  #
   # renameNodeLabel
   #
   def renameNodeLabel ( self, node, newLabel ) :
@@ -94,7 +122,7 @@ class NodeNetwork ( QtCore.QObject ) :
     else :
       # while importing from other NodeNet
       node.id = self.node_id + node.id
-    
+
     if DEBUG_MODE : print '** node.id -> %d' % node.id
 
     # check if node with this label already exists and assign new label
@@ -120,7 +148,7 @@ class NodeNetwork ( QtCore.QObject ) :
     else :
       # while importing from other NodeNet
       link.id = self.link_id + link.id
-    
+
     if DEBUG_MODE : print '** link.id -> %d' % link.id
 
     if link.id in self.links :
@@ -155,7 +183,7 @@ class NodeNetwork ( QtCore.QObject ) :
       node.nodenet = None
       inputLinksToRemove = nodePopped.getInputLinks ()
       outputLinksToRemove = nodePopped.getOutputLinks ()
-    return ( inputLinksToRemove, outputLinksToRemove )   
+    return ( inputLinksToRemove, outputLinksToRemove )
   #
   # removeLink
   #
@@ -225,7 +253,7 @@ class NodeNetwork ( QtCore.QObject ) :
     root = dom.createElement ( 'nodenet' )
     root.setAttribute ( 'name', self.name )
     root.setAttribute ( 'author', 'meShaderEd' )
-    
+
     # append network help (short description)
     help_tag = dom.createElement ( 'help' )
     help_text = dom.createTextNode ( self.help )

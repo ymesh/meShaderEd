@@ -23,11 +23,11 @@ class RIBNode ( Node ) :
     #
     Node.__init__ ( self, xml_node )
     self.ribName = ''
-    #print ">> RIBNode __init__"
   #
   # copy
   #
   def copy ( self ) :
+    #
     if DEBUG_MODE : print '>> RIBNode::copy (%s)' % self.label
     newNode = RIBNode()
     self.copySetup ( newNode )
@@ -35,7 +35,7 @@ class RIBNode ( Node ) :
   #
   # getInputParamValueByName
   #
-  def getInputParamValueByName ( self, name ):
+  def getInputParamValueByName ( self, name ) :
     #
     result = None
     srcNode = srcParam = None

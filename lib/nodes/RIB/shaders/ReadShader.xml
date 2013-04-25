@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<node name="ReadShader" author="mesh" type="rib_code">
+  <help>Read compiled shader</help>
+  <input>
+    <property name="Reload" label="Reload" type="control" default="" provider="attribute" subtype="button">
+<control_code>
+<![CDATA[
+print ":: Hello from (%s) XML control_code !!!" % self.label
+#print ":: Hello from XML control_code !!!"
+if node is not None :
+  print ":: Node = %s" % node.label
+
+
+
+]]>
+</control_code>
+    </property>
+    <property name="file_name" label="File Name" type="string" default="" subtype="file" range="${Renderer} ${SLO}=*.${SLO}:All files=*.*"/>
+    <property name="Color" type="color" default="0 0 1" provider="attribute"/>
+    <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>
+    <property name="shader_name" label="Shader Name" type="string" provider="attribute" default="null" display="0" />
+    <property name="shader_type" label="Shader Type" type="string" provider="attribute" default="Surface" subtype="selector"
+      range = "Surface:Displacement:Light:Volume"/>
+    <property name="shader_params" type="string" provider="attribute" default="" display="0"/>
+
+  </input>
+  <output>
+    <property name="shader" label="Surface" type="rib" default=""/>
+  </output>
+<param_code>
+<![CDATA[
+print ":: Hello from %s XML param_code !!!" % self.label
+
+
+
+]]>
+</param_code>
+
+<code>
+<![CDATA[
+    Color [$(Color)]
+    Opacity [$(Opacity)]
+    $(shader_type) "$(shader_name)" $(shader_params)
+]]>
+</code>
+</node>
