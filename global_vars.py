@@ -27,6 +27,7 @@ app_global_vars = {
   ,'RendererFlags':''
   ,'ShaderCompiler':''
   ,'ShaderDefines':''
+  ,'ShaderInfo':''  
   ,'TEX':''
   ,'SLO':''
 }

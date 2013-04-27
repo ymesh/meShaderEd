@@ -2,7 +2,7 @@
 #
 # meShaderEd.py
 #
-# version 0.3.0 (16 Apr 2013)
+# version 0.3.1b (26 Apr 2013)
 #
 # written by Yuri.Meshalkin (mesh@kpp.kiev.ua)
 #
@@ -15,7 +15,6 @@
 #   http://code.google.com/p/shaderman/
 #
 # The RenderMan Shader Editor
-#
 #
 #===============================================================================
 import sys
@@ -32,7 +31,7 @@ from global_vars import app_global_vars, DEBUG_MODE
 
 
 root = normPath ( sys.path[0] )
-version = '0.3.0'
+version = '0.3.1b'
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
                                   QtCore.QSettings.UserScope,
@@ -109,36 +108,37 @@ def main ():
   #
   # setup globals
   #
-  app_global_vars [ 'version' ] = app_settings.value( 'version' ).toString()
-  app_global_vars [ 'RootPath' ] = root
-  app_global_vars [ 'TempPath' ] = temp_dir
-  app_global_vars [ 'ProjectPath' ] = project_dir
-  app_global_vars [ 'ProjectShaders' ] = project_shaders
+  app_global_vars [ 'version' ]         = app_settings.value( 'version' ).toString()
+  app_global_vars [ 'RootPath' ]        = root
+  app_global_vars [ 'TempPath' ]        = temp_dir
+  app_global_vars [ 'ProjectPath' ]     = project_dir
+  app_global_vars [ 'ProjectShaders' ]  = project_shaders
   app_global_vars [ 'ProjectTextures' ] = project_textures
 
   app_global_vars [ 'ProjectNetworks' ] = shader_networks_dir
-  app_global_vars [ 'ProjectSources' ] = shader_sources_dir
+  app_global_vars [ 'ProjectSources' ]  = shader_sources_dir
 
-  app_global_vars [ 'LibPath' ] = lib_dir
-  app_global_vars [ 'NodesPath' ] = node_dir
+  app_global_vars [ 'LibPath' ]     = lib_dir
+  app_global_vars [ 'NodesPath' ]   = node_dir
   app_global_vars [ 'TexturePath' ] = texture_dir
-  app_global_vars [ 'ShaderPath' ] = shaders_dir
+  app_global_vars [ 'ShaderPath' ]  = shaders_dir
   app_global_vars [ 'IncludePath' ] = include_dir
 
   app_global_vars [ 'TextureSearchPath' ] = sanitizeSearchPath ( texture_dir )
-  app_global_vars [ 'ShaderSearchPath' ] = sanitizeSearchPath ( shaders_dir )
+  app_global_vars [ 'ShaderSearchPath' ]  = sanitizeSearchPath ( shaders_dir )
   app_global_vars [ 'ArchiveSearchPath' ] = sanitizeSearchPath ( archive_dir )
 
-  app_global_vars [ 'ProjectSearchPath' ] = sanitizeSearchPath ( project_dir )
-  app_global_vars [ 'ProjectSearchShaders' ] = sanitizeSearchPath ( project_shaders )
+  app_global_vars [ 'ProjectSearchPath' ]     = sanitizeSearchPath ( project_dir )
+  app_global_vars [ 'ProjectSearchShaders' ]  = sanitizeSearchPath ( project_shaders )
   app_global_vars [ 'ProjectSearchTextures' ] = sanitizeSearchPath ( project_textures )
 
-  app_global_vars [ 'Renderer' ] = app_renderer.getCurrentValue ( 'renderer', 'name' )
-  app_global_vars [ 'RendererFlags' ] = app_renderer.getCurrentValue ( 'renderer', 'flags' )
+  app_global_vars [ 'Renderer' ]       = app_renderer.getCurrentValue ( 'renderer', 'name' )
+  app_global_vars [ 'RendererFlags' ]  = app_renderer.getCurrentValue ( 'renderer', 'flags' )
   app_global_vars [ 'ShaderCompiler' ] = app_renderer.getCurrentValue ( 'shader', 'compiler' )
-  app_global_vars [ 'ShaderDefines' ] = app_renderer.getCurrentValue ( 'shader', 'defines' )
-  app_global_vars [ 'TEX' ] = app_renderer.getCurrentValue ( 'texture', 'extension' )
-  app_global_vars [ 'SLO' ] = app_renderer.getCurrentValue ( 'shader', 'extension' )
+  app_global_vars [ 'ShaderDefines' ]  = app_renderer.getCurrentValue ( 'shader', 'defines' )
+  app_global_vars [ 'ShaderInfo' ]     = app_renderer.getCurrentValue ( 'shader', 'sloinfo' )
+  app_global_vars [ 'TEX' ]            = app_renderer.getCurrentValue ( 'texture', 'extension' )
+  app_global_vars [ 'SLO' ]            = app_renderer.getCurrentValue ( 'shader', 'extension' )
 
   createDefaultProject ( app_settings, True ) # check_if_exist = True
 
@@ -154,10 +154,10 @@ def main ():
   app_settings.beginGroup ( 'WorkArea' )
 
   #grid_enabled = bool( setDefaultValue( 'grid_enabled', True ).toString() )
-  grid_enabled = setDefaultValue ( 'grid_enabled', True )
-  grid_size = int ( setDefaultValue ( 'grid_size', 10 ) )
-  grid_snap = setDefaultValue ( 'grid_snap', True )
-  reverse_flow = setDefaultValue ( 'reverse_flow', False )
+  grid_enabled   = setDefaultValue ( 'grid_enabled', True )
+  grid_size      = int ( setDefaultValue ( 'grid_size', 10 ) )
+  grid_snap      = setDefaultValue ( 'grid_snap', True )
+  reverse_flow   = setDefaultValue ( 'reverse_flow', False )
   straight_links = setDefaultValue ( 'straight_links', True )
 
   app_settings.endGroup ()

@@ -109,9 +109,16 @@ def fromRelativePath ( rootPath, pathName ) :
 #
 # launch process
 #
-def launchProcess ( cmdList ) :
+def launchProcess ( cmdList, stdoutLog = None, stderrLog = None ) :
+  #
+  # subprocess.Popen(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None,
   #
   import subprocess, errno
+  
+  stdout = None
+  stderr = None
+  if stdoutLog is not None : stdout = file ( stdoutLog, 'w' )
+  if stderrLog is not None : stderr = file ( stderrLog, 'w' )  
   
   try:
     if sys.platform.startswith ( 'linux' ) :
@@ -121,17 +128,24 @@ def launchProcess ( cmdList ) :
       #print 'version = %s' % version
       if version.find ( 'Ubuntu' ) != -1 :
         print 'Ubuntu'
-        retval = os.popen ( ' '.join ( cmdList ) )
+        #retval = os.popen ( ' '.join ( cmdList ), 0, None, None, stdout, stderr )
+        retval = subprocess.Popen ( ' '.join ( cmdList ), 0, None, None, stdout, stderr )
       else :
-        retval = subprocess.call ( cmdList )  
+        retval = subprocess.call ( cmdList, 0, None, None, stdout, stderr )  
     else:        
-      retval = subprocess.call ( cmdList )
+      retval = subprocess.call ( cmdList, 0, None, None, stdout, stderr )
   except OSError, e :
-    if e.errno != errno.EINTR : raise 
+    if e.errno != errno.EINTR : raise
+  
+  if stdout is not None : stdout.close ()
+  if stderr is not None : stderr.close ()
+
+  return retval
 #
 # getUniqueName
 #
 def getUniqueName  ( name, nameList ) :
+  #
   newName = name
   sfx = 0
   while newName in nameList :
@@ -168,6 +182,7 @@ def createDefaultProject ( settings, check_if_exist = False ) :
 # openDefaultProject 
 #  
 def openDefaultProject ( settings, global_vars, project ) : 
+  #
   ret = False
   if os.path.exists ( project ) : 
     project_filename = str ( settings.value ( 'project_filename' ).toString () )
