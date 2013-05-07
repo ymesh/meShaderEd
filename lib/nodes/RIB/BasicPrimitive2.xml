@@ -4,28 +4,28 @@
 	<help>Basic primitive preview RIB with custom lights and volume shaders</help>
 	<input>
     <property name="Globals" label="Render Options" type="rib" default=""/>
-    
+
     <property name="Primitive" label="Primitive" type="string" provider="attribute" default="Sphere" subtype="selector" range = "Sphere:Teapot:Cylinder:Torus:Plane"/>
-    
+
     <property name="DisplayDriver" label="Display Driver" type="string" default="tiff" provider="attribute"
       subtype="selector" range="tiff:framebuffer:it" />
-      
+
     <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
-    <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>	
-    
-    <property name="LightSource" label="LightSource" type="rib" 
-      default="LightSource &quot;distantlight&quot; 1 &quot;intensity&quot; 1.0 &quot;from&quot; [-2 2 -3] &quot;to&quot; [0 0 0]" />	
-    
-    
-    <property name="Color" type="color" default="0 0 1" provider="attribute"/>	
-    <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>	
-    	
+    <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>
+
+    <property name="LightSource" label="LightSource" type="rib"
+      default="LightSource &quot;distantlight&quot; 1 &quot;intensity&quot; 1.0 &quot;from&quot; [-2 2 -3] &quot;to&quot; [0 0 0]" />
+
+
+    <property name="Color" type="color" default="0 0 1" provider="attribute"/>
+    <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>
+
     <property name="DisplaceBound" label="Displacement Bound" type="float" default="0.5" provider="attribute"/>
     <property name="FG_disp" label="Displace Shader" type="rib" default="Displacement &quot;null&quot;" />
 
     <property name="FG_surf" label="Surface Shader" type="rib" default="Surface &quot;defaultsurface&quot;" />
 		    <property name="BG_surf" label="Background Shader" type="rib" default="Surface &quot;liquidchecker&quot;"/>
-		
+
 		<property name="PrimitiveCode" type="string" default="" provider="attribute" display="hidden"/>
 	</input>
 	<output>
@@ -35,10 +35,10 @@
 <![CDATA[
 print ":: Hello from %s XML code !!!" % self.label
 
-if self.getInputParamByName ( 'Primitive' ).value == 'Sphere': 
+if self.getInputParamByName ( 'Primitive' ).value == 'Sphere':
   self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Sphere 1.0 -1.0 1.0 360"
-  
-if self.getInputParamByName ( 'Primitive' ).value == 'Teapot': 
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Teapot':
   self.getInputParamByName ( 'PrimitiveCode' ).value = """
       Rotate 0 0 1 0
       AttributeBegin
@@ -49,17 +49,17 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Teapot':
         Geometry \"teapot\"
       AttributeEnd
       """
-      
-if self.getInputParamByName ( 'Primitive' ).value == 'Cylinder': 
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Cylinder':
   self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Cylinder 1 -0.5 0.5 360"
-  
-if self.getInputParamByName ( 'Primitive' ).value == 'Torus': 
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Torus':
   self.getInputParamByName ( 'PrimitiveCode' ).value = """
-  Rotate 45 1 0 0
+  Rotate 0 1 0 0
   Torus 0.7 0.4 0.0 360 360
   """
 
-if self.getInputParamByName ( 'Primitive' ).value == 'Plane': 
+if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
   self.getInputParamByName ( 'PrimitiveCode' ).value = 'Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]'
 
 
@@ -70,13 +70,13 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
   Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
   Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
   Option "searchpath" "archive" "&:@:.:~:${ArchiveSearchPath}:${ProjectSearchPath}"
-  
+
   $(Globals)
- 
+
 
   ### Output image
   Display "$(ImageFile)" "$(DisplayDriver)" "rgba"
-  
+
   Format $(Width) $(Height) 1.0
 
   Projection "perspective" "fov" 45
@@ -86,8 +86,8 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
 
   WorldBegin
 
-    ReverseOrientation 
-	
+    ReverseOrientation
+
     TransformBegin
       Rotate -90 1 0 0
       CoordinateSystem "_environment"
@@ -95,27 +95,27 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
 
     $(LightSource)
 
-    AttributeBegin 
-      
+    AttributeBegin
+
       Color [$(Color)]
       Opacity [$(Opacity)]
 
       $(FG_disp)
-      $(FG_surf) 
-      
+      $(FG_surf)
+
       $(PrimitiveCode)
-      
-    AttributeEnd 
-      
-    AttributeBegin 
+
+    AttributeEnd
+
+    AttributeBegin
       Scale 7 7 7
       Translate 0 0 2
-      $(BG_surf) 
-      
+      $(BG_surf)
+
       Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
-    AttributeEnd  
+    AttributeEnd
 
   WorldEnd
   ]]>
-	</code>		
+	</code>
 </node>

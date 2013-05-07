@@ -307,17 +307,18 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onRenderPresetChanged ( self ) :
     #
-    presetName = app_renderer.getCurrentPresetName()
+    presetName = app_renderer.getCurrentPresetName ()
     if DEBUG_MODE : print '>> MainWindow.onRenderPresetChanged preset = %s' % presetName
     #self.setWindowTitle ( 'meShaderEd %s (%s) %s' % ( app_global_vars [ 'version' ], presetName, app_global_vars [ 'ProjectNetworks' ] ) )
     app_settings.setValue ( 'defRenderer', presetName )
 
-    app_global_vars [ 'Renderer' ] = app_renderer.getCurrentValue ( 'renderer', 'name' )
-    app_global_vars [ 'RendererFlags' ] = app_renderer.getCurrentValue ( 'renderer', 'flags' )
+    app_global_vars [ 'Renderer' ]       = app_renderer.getCurrentValue ( 'renderer', 'name' )
+    app_global_vars [ 'RendererFlags' ]  = app_renderer.getCurrentValue ( 'renderer', 'flags' )
     app_global_vars [ 'ShaderCompiler' ] = app_renderer.getCurrentValue ( 'shader', 'compiler' )
-    app_global_vars [ 'ShaderDefines' ] = app_renderer.getCurrentValue ( 'shader', 'defines' )
-    app_global_vars [ 'TEX' ] = app_renderer.getCurrentValue ( 'texture', 'extension' )
-    app_global_vars [ 'SLO' ] = app_renderer.getCurrentValue ( 'shader', 'extension' )
+    app_global_vars [ 'ShaderDefines' ]  = app_renderer.getCurrentValue ( 'shader', 'defines' )
+    app_global_vars [ 'ShaderInfo' ]     = app_renderer.getCurrentValue ( 'shader', 'sloinfo' )
+    app_global_vars [ 'TEX' ]            = app_renderer.getCurrentValue ( 'texture', 'extension' )
+    app_global_vars [ 'SLO' ]            = app_renderer.getCurrentValue ( 'shader', 'extension' )
     self.setupWindowTitle ()
   #
   # onRenderSavePreset

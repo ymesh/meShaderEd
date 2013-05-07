@@ -1,8 +1,5 @@
 #===============================================================================
 # TextWidget.py
-#
-# 
-#
 #===============================================================================
 from PyQt4 import QtGui, QtCore
 
@@ -15,7 +12,7 @@ class TextWidget ( ParamWidget ) :
   #
   # buildGui
   #                
-  def buildGui ( self ):
+  def buildGui ( self ) :
     #
     self.ui = Ui_TextWidget_field ()    
     self.ui.setupUi ( self )
@@ -48,22 +45,26 @@ class Ui_TextWidget_field ( object ) :
   # connectSignals
   #
   def connectSignals ( self, TextWidget ) :
+    #
     TextWidget.connect ( self.text_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onTextEditEditingFinished )
   #
   # disconnectSignals
   #
   def disconnectSignals ( self, TextWidget ) :
+    #
     TextWidget.disconnect ( self.text_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onTextEditEditingFinished )
   #
   # onTextEditEditingFinished
   #                     
   def onTextEditEditingFinished ( self ) :
+    #
     stringValue = self.text_plainTextEdit.toPlainText ()
     self.widget.param.setValue ( stringValue )
   #
   # updateGui
   #     
-  def updateGui ( self, value ) : 
+  def updateGui ( self, value ) :
+    # 
     self.doc.setPlainText ( value )
     self.text_plainTextEdit.setDocument ( self.doc )  
 
