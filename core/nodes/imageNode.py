@@ -5,7 +5,7 @@ import os, sys
 from PyQt4 import QtCore
 
 from core.node import Node
-from core.nodeParam import NodeParam
+
 from global_vars import app_global_vars, DEBUG_MODE
 #
 # ImageNode
@@ -24,6 +24,7 @@ class ImageNode ( Node ) :
   # copy
   #
   def copy ( self ) :
+    #
     if DEBUG_MODE : print '>> ImageNode( %s ).copy' % self.label
     newNode = ImageNode ()
     self.copySetup ( newNode )
@@ -32,6 +33,7 @@ class ImageNode ( Node ) :
   # computeNode
   #
   def computeNode ( self ) :
+    #
     print '>> ImageNode( %s ).computeNode' % self.label
     # inside param_code, imageName value can be assigned from different
     # input parameters

@@ -11,7 +11,7 @@ import os, sys
 from PyQt4 import QtCore, QtGui
 
 from core.meCommon import *
-from global_vars import app_global_vars, DEBUG_MODE
+from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES
 from core.nodeParam import *
 
 import gui.ui_settings as UI
@@ -39,7 +39,7 @@ class NodeParamEditor ( QtGui.QWidget ) :
     QtGui.QDialog.__init__ ( self )
     self.param = None
     self.param_default = None
-    self.paramWidgets = { 'string'        : StringWidget
+    self.paramWidgets = {  'string'       : StringWidget
                           ,'image'        : StringWidget
                           ,'rib'          : StringWidget
                           ,'surface'      : StringWidget
@@ -56,6 +56,8 @@ class NodeParamEditor ( QtGui.QWidget ) :
                           ,'matrix'       : MatrixWidget
                           ,'text'         : TextWidget
                           ,'control'      : ControlWidget
+                          ,'shader'       : StringWidget
+                          ,'geom'         : StringWidget
                         }
 
     self.buildGui()
@@ -63,10 +65,10 @@ class NodeParamEditor ( QtGui.QWidget ) :
   #
   def __delete__ ( self, obj ) :
     print '* NodeParamEditor closed... %s' % str( obj )
-
   #
+  # buildGui
   #
-  def buildGui ( self ):
+  def buildGui ( self ) :
     # build the gui created with QtDesigner
     self.ui = Ui_NodeParamEditor ( )
     self.ui.setupUi ( self )
@@ -78,10 +80,8 @@ class NodeParamEditor ( QtGui.QWidget ) :
     self.ui.check_shader.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
     self.ui.check_shader.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
 
-    for label in [ 'float', 'int', 'color', 'string', 'normal', 'point', 'vector', 'matrix',
-                   'surface', 'displacement', 'volume', 'light',
-                   'rib', 'text', 'transform','image', 'control'  ]  :
-      self.ui.type_comboBox.addItem ( label )
+    for label in VALID_PARAM_TYPES : self.ui.type_comboBox.addItem ( label )
+    
     self.ui.type_comboBox.setCurrentIndex ( -1 )
     self.ui.type_comboBox.setMinimumSize ( QtCore.QSize ( UI.COMBO_WIDTH, UI.COMBO_HEIGHT ) )
     self.ui.type_comboBox.setMaximumSize ( QtCore.QSize( UI.MAX, UI.COMBO_HEIGHT ) )
@@ -195,6 +195,7 @@ class NodeParamEditor ( QtGui.QWidget ) :
     self.removeValueWidget()
     self.disconnectSignals()
     self.param = param
+    
     if self.param is not None :
       #import copy
       self.param_default = self.param.copy() # duplicate param for default value editing
@@ -213,8 +214,7 @@ class NodeParamEditor ( QtGui.QWidget ) :
 
       doc = QtGui.QTextDocument ()
       help_text = ''
-      if self.param.help != None :
-        help_text = self.param.help
+      if self.param.help != None : help_text = self.param.help
 
       doc.setPlainText ( help_text )
       layout = QtGui.QPlainTextDocumentLayout ( doc )

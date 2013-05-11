@@ -233,16 +233,17 @@ def openDefaultProject ( settings, global_vars, project ) :
 #
 # parseGlobalVars
 #
-def parseGlobalVars ( parsedStr ) :
+def parseGlobalVars ( inputStr ) :
   #
   from global_vars import app_global_vars, DEBUG_MODE
   #if DEBUG_MODE : print '-> parseGlobalVars in %s' % parsedStr
   resultStr = ''
   parserStart = 0
   parserPos = 0
+  parsedStr = str ( inputStr )
 
   while parserPos != -1 :
-    parserPos = str ( parsedStr ).find ( '$', parserStart )
+    parserPos = parsedStr.find ( '$', parserStart )
     if parserPos != -1 :
       #
       if parserPos != 0 :
@@ -251,7 +252,7 @@ def parseGlobalVars ( parsedStr ) :
       # check global vars first
       if parsedStr [ ( parserPos + 1 ) : ( parserPos + 2 ) ] == '{' :
         globStart = parserPos + 2
-        parserPos = str( parsedStr ).find ( '}', globStart )
+        parserPos = parsedStr.find ( '}', globStart )
         global_var_name = parsedStr [ globStart : ( parserPos ) ]
 
         #print '-> found global var %s' % global_var_name

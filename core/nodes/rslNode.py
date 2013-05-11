@@ -12,28 +12,6 @@ from core.nodeParam import NodeParam
 
 from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
-
-#
-# RSL_code
-#
-class RSL_code ( Node ) :
-  #
-  # __init__
-  #
-  def __init__ ( self, xml_node = None ) :
-    #
-    Node.__init__ ( self, xml_node )
-    #super( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
-    self.shaderName = ''
-    #print ">> RSL_code __init__"
-  #
-  # copy
-  #
-  def copy ( self ) :
-    if DEBUG_MODE : print '>> RSL_code::copy (%s)' % self.label
-    newNode = RSL_code ()
-    self.copySetup ( newNode )
-    return newNode
 #
 # RSLNode
 #
@@ -45,12 +23,11 @@ class RSLNode ( Node ) :
     #
     Node.__init__ ( self, xml_node )
     self.shaderName = ''
-    #print ">> RSLNode __init__"
   #
   # copy
   #
   def copy ( self ) :
-    if DEBUG_MODE : print '>> RSLNode::copy (%s)' % self.label
+    if DEBUG_MODE : print '>> RSLNode( %s ).copy' % self.label
     newNode = RSLNode ()
     self.copySetup ( newNode )
     return newNode

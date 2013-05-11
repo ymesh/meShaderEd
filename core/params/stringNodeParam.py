@@ -1,51 +1,37 @@
 #===============================================================================
-# controlParam.py
+# stringNodeParam.py
 #===============================================================================
 import os, sys
-import re
-import copy
+
 from PyQt4 import QtCore
 
-from node import Node
-from nodeParam import NodeParam
+from core.node import Node
+from core.nodeParam import NodeParam
 from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import parseGlobalVars
 #
-# ControlParam
+# String
 #
-class ControlParam ( NodeParam ) :
+class StringNodeParam ( NodeParam ) :
   #
   # __init__
   #
   def __init__ ( self, xml_param = None, isRibParam = False ) :
     #
     NodeParam.__init__ ( self, xml_param, isRibParam )
-
-    if xml_param is None :
-      self.type = 'control'
-      self.control_code = ''
-
-    if DEBUG_MODE : print '>> ControlParam ( %s ).__init__' % self.label
+    self.type = 'string'
   #
   # encodedTypeStr
   #
-  def encodedTypeStr ( self ) : return 'l'
+  def encodedTypeStr ( self ) : return 's'
   #
   # copy
   #
   def copy ( self ) :
     #
-    newParam = ControlParam ()
+    newParam = StringNodeParam ()
     self.copySetup ( newParam )
     return newParam
-  #
-  # copySetup
-  #
-  def copySetup ( self, newParam ) :
-    #
-    if DEBUG_MODE : print '>> ControlParam ( %s ).copySetup' % self.label
-    NodeParam.copySetup ( self, newParam )
-    newParam.control_code = self.control_code
   #
   # valueFromStr
   #
@@ -55,7 +41,7 @@ class ControlParam ( NodeParam ) :
   #
   def valueToStr ( self, value ) :
     #
-    ret_str = str ( value )
+    ret_str = str ( value ) 
     if not self.isRibParam : ret_str = str ( "\"" + value + "\"" )
     return ret_str
   #
@@ -81,23 +67,3 @@ class ControlParam ( NodeParam ) :
           value = s
         rangeList.append ( ( parseGlobalVars ( label ), parseGlobalVars ( value ) ) )
     return rangeList
-  #
-  # parseFromXML
-  #
-  def parseFromXML ( self, xml_param ) :
-    #
-    if DEBUG_MODE : print '>> ControlParam ( %s ).parseFromXML' % self.label
-    NodeParam.parseFromXML ( self, xml_param )
-
-    control_code_tag = xml_param.namedItem ( 'control_code' )
-    if not control_code_tag.isNull () :
-      self.control_code = str ( control_code_tag.toElement ().text () )
-  #
-  # execParamCode
-  #
-  def execControlCode ( self, node ) :
-    #
-    if self.control_code != None :
-      control_code = self.control_code.lstrip ()
-      if control_code != '' :
-        exec ( control_code, { 'node' : node, 'self' : self } )

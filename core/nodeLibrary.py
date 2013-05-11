@@ -13,12 +13,8 @@ from PyQt4.QtGui  import QStandardItemModel, QStandardItem
 from global_vars import app_global_vars
 
 from core.node import Node
-from core.rslNode import RSLNode
-from core.ribNode import RIBNode
-from core.imageNode import ImageNode
-from core.nodeParam import *
-#from core.nodeParam import FloatNodeParam
-#from core.nodeParam import ColorNodeParam
+from core.nodeParam import NodeParam
+
 #
 # NodeLibrary
 #  
@@ -120,4 +116,4 @@ class NodeLibrary () : # QtCore.QObject
             item.setWhatsThis ( 'node' )
           
           self.parentItem.appendRow ( item )
-    file.close()
+    file.close ()

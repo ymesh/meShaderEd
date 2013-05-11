@@ -10,7 +10,7 @@ from PyQt4 import QtCore, QtGui
 from core.meCommon import *
 
 from core.nodeLink import NodeLink
-from core.connectorNode import ConnectorNode
+from core.nodes.connectorNode import ConnectorNode
 from core.nodeNetwork import *
 
 from gfx.gfxNode import GfxNode

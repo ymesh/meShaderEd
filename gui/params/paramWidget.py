@@ -4,6 +4,8 @@
 
 from PyQt4 import QtGui, QtCore
 
+from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, INVALID_RSL_PARAM_TYPES
+
 import gui.ui_settings as UI
 
 #
@@ -34,7 +36,7 @@ class ParamWidget ( QtGui.QWidget ) :
   #
   def onParamChanged ( self, param ) :
     #
-    print ">> ParamWidget.onParamChanged ( %s )" % param.name
+    print ">> ParamWidget( %s ).onParamChanged" % param.name
     self.ui.disconnectSignals ( self )
     self.ui.updateGui ( self.param.value )
     self.ui.connectSignals ( self )
@@ -59,7 +61,7 @@ class ParamWidget ( QtGui.QWidget ) :
     # add 'isShaderParam' check box only for RSL nodes
     #
     if self.gfxNode is not None :
-      if not self.gfxNode.node.type in [ 'rib', 'rib_code', 'image', 'swatch' ]:
+      if not self.gfxNode.node.type in INVALID_RSL_PARAM_TYPES :
         if self.param.provider != 'attribute' :
 
           self.check = QtGui.QCheckBox ( self )
@@ -68,7 +70,7 @@ class ParamWidget ( QtGui.QWidget ) :
           self.check.setToolTip ( 'Use as Shader parameter' )
 
           self.check.setChecked ( self.param.shaderParam )
-          self.connect ( self.check, QtCore.SIGNAL ('stateChanged(int)'), self.onShaderParamChanged )
+          self.connect ( self.check, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onShaderParamChanged )
 
           self.hl.addWidget ( self.check )
         else :

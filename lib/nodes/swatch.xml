@@ -4,7 +4,7 @@
 	<help>Swatch node viewer </help>
 	<input>
     <property name="image" type="image" default="" subtype="file" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"/>		
-    <property name="size" type="int" default="64" provider="attribute" subtype="selector" range="32=32:64=64:128=128:256=256"/>		
+    <property name="size" type="int" default="80" provider="attribute" subtype="selector" range="64=64:80=80:128=128:160=160:256=256"/>		
 	</input>
 	<output>
 	</output>

@@ -325,6 +325,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   # setupParams
   #
   def setupParams ( self, params, labels, connectors ):
+    #
     for param in params :
       # ignore attributes
       if param.provider != 'attribute' :

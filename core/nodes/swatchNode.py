@@ -5,8 +5,9 @@ import os, sys
 from PyQt4 import QtCore
 
 from core.node import Node
-from core.imageNode import ImageNode
 from core.nodeParam import NodeParam
+from core.nodes.imageNode import ImageNode
+
 from global_vars import app_global_vars, DEBUG_MODE
 
 import gui.ui_settings as UI

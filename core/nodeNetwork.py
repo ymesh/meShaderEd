@@ -1,8 +1,5 @@
 #===============================================================================
 # nodeNetwork.py
-#
-#
-#
 #===============================================================================
 import os, sys
 
@@ -10,13 +7,13 @@ from PyQt4 import QtCore, QtXml
 from PyQt4.QtCore import QDir, QFile, QVariant
 
 from node import *
-from rslNode import RSLNode
-from ribCodeNode import RIBCodeNode
-from ribNode import RIBNode
-from imageNode import ImageNode
-from connectorNode import ConnectorNode
-from noteNode import NoteNode
-from swatchNode import SwatchNode
+from nodes.rslNode import RSLNode
+from nodes.ribCodeNode import RIBCodeNode
+from nodes.ribNode import RIBNode
+from nodes.imageNode import ImageNode
+from nodes.connectorNode import ConnectorNode
+from nodes.noteNode import NoteNode
+from nodes.swatchNode import SwatchNode
 
 from nodeParam import NodeParam
 from nodeLink import NodeLink
@@ -230,7 +227,7 @@ class NodeNetwork ( QtCore.QObject ) :
   #
   # getNodeByName
   #
-  #def getNodeByName ( self, nodeName ) :
+  # def getNodeByName ( self, nodeName ) :
   #  for node in self.nodes.values () :
   #    if node.name == nodeName:
   #      return node

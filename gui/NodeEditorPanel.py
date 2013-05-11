@@ -12,7 +12,7 @@ import os, sys
 from PyQt4 import Qt, QtCore, QtGui, QtXml
 
 from core.meCommon import *
-from global_vars import app_global_vars, DEBUG_MODE
+from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, VALID_RIB_TYPES
 import gui.ui_settings as UI
 
 from core.nodeNetwork import *
@@ -485,7 +485,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
     if DEBUG_MODE : print '>> NodeEditorPanel::onAddParam (%s) ' % (newName)
     isInputParam = False
     paramType = None
-    isRibParam = ( self.editNode.type == 'rib' or self.editNode.type == 'rib_code' )
+    isRibParam = ( self.editNode.type in VALID_RIB_TYPES )
     tab_idx = self.ui.tabs_param_list.currentIndex ()
     if tab_idx == 0 : isInputParam = True
     # ask user about param type
@@ -504,10 +504,9 @@ class NodeEditorPanel ( QtGui.QDialog ) :
     typeDialog.verticalLayout = QtGui.QVBoxLayout ( typeDialog )
     typeDialog.verticalLayout.setSizeConstraint ( QtGui.QLayout.SetMinimumSize )
     typeDialog.type_comboBox = QtGui.QComboBox ( typeDialog )
-    for label in [ 'float', 'int', 'color', 'string', 'normal', 'point', 'vector', 'matrix',
-                   'surface', 'displacement', 'volume', 'light',
-                   'rib', 'text', 'transform','image'  ]  :
-      typeDialog.type_comboBox.addItem ( label )
+    
+    for label in VALID_PARAM_TYPES : typeDialog.type_comboBox.addItem ( label )
+    
     typeDialog.verticalLayout.addWidget ( typeDialog.type_comboBox )
 
     typeDialog.btnBox = QtGui.QDialogButtonBox ( QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel, parent = typeDialog )

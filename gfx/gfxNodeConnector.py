@@ -30,6 +30,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
                             ,'v' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkMagenta ) )
                             ,'n' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkBlue ) )
                             ,'I' : QtGui.QBrush ( QtGui.QColor ( 'white' ) )
+                            ,'G' : QtGui.QBrush ( QtGui.QColor ( 'red' ) )
                             ,'R' : QtGui.QBrush ( QtGui.QColor ( 'orange' ) )
                          }
     self.brush = QtGui.QBrush ( QtGui.QColor ( 140, 140, 140 ) ) # ( 128, 128, 128 ) ( 132, 132, 132 )
@@ -183,7 +184,6 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
       else :
         self.removeAllLinks ()
     self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
-
   #
   # isInput
   #

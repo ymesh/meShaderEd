@@ -12,7 +12,7 @@ import os, sys
 from PyQt4 import QtCore, QtGui
 
 from core.meCommon import *
-from global_vars import app_global_vars
+from global_vars import app_global_vars, DEBUG_MODE, VALID_NODE_TYPES
 
 import gui.ui_settings as UI
 
@@ -92,11 +92,12 @@ class NodeEditor ( QtGui.QWidget ) :
 
       currentIdx = -1
       i = 0
-      for label in [ 'rib', 'rib_code', 'rsl_code', 'image', 'surface', 'displacement', 'light', 'volume', 'variable', 'connector', 'swatch' ]  :
+      for label in VALID_NODE_TYPES :
         self.ui.type_comboBox.addItem ( label )
         if label == self.editNode.type :
           currentIdx = i
         i += 1
+        
       self.ui.type_comboBox.setCurrentIndex ( currentIdx )
 
       # temporary disabled, until "how to do it gracefully" will be clear ...
