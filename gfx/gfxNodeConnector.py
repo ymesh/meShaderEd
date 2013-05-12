@@ -14,6 +14,7 @@ import gui.ui_settings as UI
 # GfxNodeConnector
 #
 class GfxNodeConnector ( QtGui.QGraphicsItem ) :
+  #
   Type = GFX_NODE_CONNECTOR_TYPE
   isRound = True
   #
@@ -78,6 +79,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # shape
   #
   def shape ( self ) :
+    #
     shape = QtGui.QPainterPath ()
     shape_rect = QtCore.QRectF ( self.rect )
     shape.addEllipse ( shape_rect )
@@ -86,6 +88,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # paint
   #
   def paint ( self, painter, option, widget ) :
+    #
     pen = self.PenBorderNormal
     if self.isNodeSelected : #  isSelected()
       pen =  self.PenBorderSelected
@@ -115,6 +118,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # getInputParam
   #
   def getInputParam ( self ) :
+    #
     param = self.param
     if self.isNode () :
       param = self.node.inputParams [ 0 ]
@@ -127,6 +131,7 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # getOutputParam
   #
   def getOutputParam ( self ) :
+    #
     param = self.param
     if self.isNode () :
       param = self.node.outputParams [ 0 ]
@@ -135,12 +140,14 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
   # removeGfxLink
   #
   def removeGfxLink ( self, gfxLink ) :
+    #
     if DEBUG_MODE : print '>> GfxNodeConnector::removeGfxLink'
     if gfxLink in self.links : self.links.remove ( gfxLink )
   #
   # removeAllLinks
   #
   def removeAllLinks ( self ) :
+    #
     if DEBUG_MODE : print '>> GfxNodeConnector::removeAllLinks (count = %d)' % len ( self.links )
     for gfxLink in list ( self.links ) : gfxLink.remove () 
   #

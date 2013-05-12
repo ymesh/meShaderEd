@@ -90,8 +90,11 @@ color diff_coloration = color(1.000,1.000,1.000);
 	
 	color diff_result = 0;
 	color diff_diffColor = 0;
-              
+  #ifndef AIR             
 	illuminance ( diff_category, P, FaceForwardNormal0_fwN, PI/2, "lightcache", "refresh" ) 
+	#else
+	illuminance ( diff_category, P, FaceForwardNormal0_fwN, PI/2 ) 
+	#endif
 	{
 		float nondiff = 0;
 		lightsource( "__nondiffuse", nondiff );
@@ -116,8 +119,12 @@ color diff_coloration = color(1.000,1.000,1.000);
 	color	me_inShadowC_inShadow = color( 0 );
 	color	me_inShadowC_value = color( 0 );
 	uniform float me_inShadowC_count = 0;
-	
+	#ifndef AIR
   illuminance( me_inShadowC_category, P, normalizeN0_Nn, radians( me_inShadowC_angle ), "lightcache", "refresh" )  
+  P = P; /* dirty light cache */
+  #else
+  illuminance( me_inShadowC_category, P, normalizeN0_Nn, radians( me_inShadowC_angle ) )  
+  #endif
   {
     lightsource( "__inShadowC", me_inShadowC_inShadow ); 	
     me_inShadowC_value += me_inShadowC_inShadow;
@@ -187,7 +194,7 @@ uniform float occ_clamp = 1.000;
    color occ_occ_C = occlusion( P  
               ,ShadingNormal1_NS 
               ,radians( occ_ConeAngle )
-              ,bent_dir
+              ,occ_bent_dir
               ,"samples",       occ_MaxSamples
               /* ,"blur", mapblur */
               ,"bias",          occ_Bias
@@ -195,7 +202,7 @@ uniform float occ_clamp = 1.000;
               ,"subset",        occ_subset
               ,"maxdist",       occ_MaxDist
               ,"maxerror",      occ_MaxError 
-              ,"maxpixeldist",  MaxPixelDist );
+              ,"maxpixeldist",  occ_MaxPixelDist );
              occ_result = comp( occ_occ_C, 0 ); 
 #else                           
    #ifdef PIXIE
@@ -365,8 +372,12 @@ string me_diff_ibi_category = "environment";
   __blur = me_diff_ibi_dBlur;
 	
 	color me_diff_ibi_result = 0;
-	  
-	illuminance ( me_diff_ibi_category, P,  "lightcache", "refresh" ) 
+	#ifndef AIR   
+	illuminance ( me_diff_ibi_category, P,  "lightcache", "refresh" )
+	#else
+	P = P; /* dirty light cache */
+	illuminance ( me_diff_ibi_category, P )
+	#endif 
   {
     me_diff_ibi_result += Cl;
   }     
@@ -425,7 +436,12 @@ string spec_ibi1_category = "environment";
   __L = spec_ibi1_R;
   __blur = spec_ibi1_rBlur;
   /* P = P; dirty light cache */
+  #ifndef AIR
   illuminance ( spec_ibi1_category, P, "lightcache", "refresh" ) /* , "lightcache", "refresh" */
+  #else
+  P = P; /* dirty light cache */
+  illuminance ( spec_ibi1_category, P )
+  #endif
   {
     spec_ibi1_result += Cl;
   }     

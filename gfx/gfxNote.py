@@ -33,8 +33,6 @@ class GfxNote ( QtGui.QGraphicsItem ):
     self.y_offset = 10
     self.radius = 10
 
-    
-
     # node parameters
     self.showBorder = True
     self.justify = QtCore.Qt.AlignLeft # left:center:right
@@ -45,7 +43,7 @@ class GfxNote ( QtGui.QGraphicsItem ):
     self.node = node
     
     if self.node is not None :
-      self.updateNode ()
+      self.updateGfxNode ()
       ( x, y ) = self.node.offset
       self.setPos ( x, y )
     
@@ -82,6 +80,7 @@ class GfxNote ( QtGui.QGraphicsItem ):
   # remove
   #
   def remove ( self ) :
+    #
     if DEBUG_MODE : print '>> GfxNote remove gfxNode (temp)'
     self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
   #
@@ -93,9 +92,9 @@ class GfxNote ( QtGui.QGraphicsItem ):
     self.setupGeometry ()
     self.update ()
   #
-  # updateNode
+  # updateGfxNode
   #
-  def updateNode ( self ) :
+  def updateGfxNode ( self ) :
     # remove all children
     for item in self.childItems () : self.scene ().removeItem ( item )
     self.setupParameters ()

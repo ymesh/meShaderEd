@@ -45,8 +45,13 @@
   
   __L = $(R);
   __blur = $(rBlur);
-  /* P = P; dirty light cache */
-  illuminance ( $(category), P, "lightcache", "refresh" ) /* , "lightcache", "refresh" */
+  
+  #ifndef AIR   
+  illuminance ( $(category), P, "lightcache", "refresh" ) 
+  #else
+  P = P; /* dirty light cache */
+  illuminance ( $(category), P ) 
+  #endif
   {
     $(result) += Cl;
   }     

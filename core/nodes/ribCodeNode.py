@@ -29,6 +29,32 @@ class RIBCodeNode ( Node ) :
     self.copySetup ( newNode )
     return newNode
   #
+  # getParamDeclaration
+  #
+  def getParamDeclaration ( self, param ) :
+    #
+    paramValueStr = param.getValueToStr ()
+    if param.type == 'string' :
+      paramValueStr = '"' + paramValueStr + '"'
+    result = '"' + param.typeToStr () + ' ' + self.getParamName ( param ) + '" '
+    result += '[ ' + paramValueStr + ' ]'
+    return result
+  #
+  # getRiCallForShaderType
+  #
+  def getRiCallForShaderType ( self, shader_type ) :
+    #
+    result = ''
+    shaderRiCall = {   'surface' : 'Surface' 
+                      ,'displacement' : 'Displacement'
+                      ,'light' : 'LightSource'
+                      ,'volume' : 'Volume'
+                      ,'shader' : 'Shader'
+                    }
+    if shader_type in shaderRiCall.keys () :
+      result = shaderRiCall [ shader_type ]
+    return result
+  #
   # getInputParamValueByName
   #
   def getInputParamValueByName ( self, name ) :

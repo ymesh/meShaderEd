@@ -35,62 +35,64 @@ class VectorNodeParam ( NodeParam ) :
   #
   # valueFromStr
   #
-  def valueFromStr ( self, str ) :
+  def valueFromStr ( self, strValue ) :
     #
     value = [ 0.0, 0.0, 0.0 ]
 
-    if str != '' :
-      str = str.replace ( ' ', '' )
+    if strValue != '' :
+      strValue = strValue.replace ( ' ', '' )
       vector3_pattern_str = 'vector\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
       vector1_pattern_str = 'vector\(([-+]?([0-9]*\.)?[0-9]+\))'
       vector3_space_pattern_str = 'vector"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
       vector1_space_pattern_str = 'vector"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+\))'
       float_pattern_str = '[-+]?[0-9]*\.?[0-9]+'
       space_pattern_str = '"[a-z]*"'
-      
+
       p = re.compile ( vector3_pattern_str )
-      match = p.match ( str )
+      match = p.match ( strValue )
       if match :
         # vector(0,0,0)
         p = re.compile ( float_pattern_str )
-        f = p.findall ( str )
+        f = p.findall ( strValue )
         f = map ( float, f )
         value = [ f[0], f[1], f[2] ]
       else :
         # vector(0)
         p = re.compile ( vector1_pattern_str )
-        match = p.match ( str )
+        match = p.match ( strValue )
         if match :
           p = re.compile ( float_pattern_str )
-          f = p.findall ( str )
+          f = p.findall ( strValue )
           f = map ( float, f )
           value = [ f[0], f[0], f[0] ]
         else :
           # vector "space" (0,0,0)
           p = re.compile ( vector3_space_pattern_str )
-          match = p.match ( str )
+          match = p.match ( strValue )
           if match :
             p = re.compile ( float_pattern_str )
-            f = p.findall ( str )
+            f = p.findall ( strValue )
             f = map ( float, f )
             value = [ f[0], f[1], f[2] ]
 
             p = re.compile ( space_pattern_str )
-            s = p.findall ( str )
-            self.space = s[0].strip ( '"' )
+            s = p.findall ( strValue )
+            sp = str ( s[0] )
+            self.space = sp.strip ( '"' )
           else :
             # vector "space" (0)
             p = re.compile ( vector1_space_pattern_str )
-            match = p.match ( str )
+            match = p.match ( strValue )
             if match :
               p = re.compile ( float_pattern_str )
-              f = p.findall ( str )
+              f = p.findall ( strValue )
               f = map ( float, f )
               value = [ f[0], f[0], f[0] ]
 
               p = re.compile ( space_pattern_str )
-              s = p.findall ( str )
-              self.space = s[0].strip ( '"' )
+              s = p.findall ( strValue )
+              sp = str ( s[0] )
+              self.space = sp.strip ( '"' )
             else :
               err = 'Cannot parse vector %s values' % self.name
               raise Exception ( err )
@@ -101,7 +103,7 @@ class VectorNodeParam ( NodeParam ) :
   def valueToStr ( self, value ) :
     #
     ret_str = 'vector'
-    
+
     if self.space != None :
       if self.space != '' :
         ret_str += ' "' + self.space + '" '

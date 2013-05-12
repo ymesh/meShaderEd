@@ -27,6 +27,7 @@ class FloatNodeParam ( NodeParam ) :
   # copy
   #
   def copy ( self ) :
+    #
     newParam = FloatNodeParam ()
     self.copySetup ( newParam )
     return newParam
@@ -48,14 +49,13 @@ class FloatNodeParam ( NodeParam ) :
   #
   # getRangeValues
   #
-  # if subtype == selector then return list of (label,value) pairs
-  # It's supposed, that range is defined as "value1:value2:value3"
-  # or "label1=value1:label2=value2:label3=value3:"
-  #
-  # if subtype == slider then return list [min, max, step] from
-  # space separated string range="min max step"
-  #
   def getRangeValues ( self ) :
+    # if subtype == selector then return list of (label,value) pairs
+    # It's supposed, that range is defined as "value1:value2:value3"
+    # or "label1=value1:label2=value2:label3=value3:"
+    #
+    # if subtype == slider then return list [min, max, step] from
+    # space separated string range="min max step"
     #
     rangeList = []
     i = 0

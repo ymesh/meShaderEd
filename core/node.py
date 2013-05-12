@@ -10,6 +10,7 @@ from core.node_global_vars import node_global_vars
 # Node
 #
 class Node ( QtCore.QObject ) :
+  #
   id = 0
   #
   # __init__
@@ -65,14 +66,14 @@ class Node ( QtCore.QObject ) :
   # __del__
   #
   def __del__ ( self ) :
-    if DEBUG_MODE : print '>> Node( %s ).__del__ ' % self.label
+    if DEBUG_MODE : print '>> Node( %s ).__del__' % self.label
   #
   # build
   #
   @classmethod
   def build ( cls ) :
-    node = cls ()
     # set unique id while building
+    node = cls ()
     Node.id += 1
     node.id = Node.id
     return node
@@ -80,6 +81,13 @@ class Node ( QtCore.QObject ) :
   # copy
   #
   def copy ( self ) : assert 0, 'copy needs to be implemented!'
+  #
+  # updateNode
+  #
+  def updateNode ( self ) : 
+    #
+    if DEBUG_MODE : print '>> Node( %s ).updateNode' % self.label
+    self.emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
   #
   # addChild
   #
@@ -202,7 +210,6 @@ class Node ( QtCore.QObject ) :
         removedLink = link
         outputLinks.remove ( link )
     return removedLink
-
   #
   # isInputParamLinked
   #
@@ -214,10 +221,9 @@ class Node ( QtCore.QObject ) :
   #
   # getLinkedSrcNode
   #
-  # returns node linked to input parameter param,
-  # skipping all ConnectorNode
-  #
   def getLinkedSrcNode ( self, param ) :
+    # returns node linked to input parameter param,
+    # skipping all ConnectorNode
     #
     if DEBUG_MODE : print '* getLinkedSrcNode node = %s param = %s' % ( self.label, param.label )
     srcNode = None
@@ -253,6 +259,7 @@ class Node ( QtCore.QObject ) :
   # getInputParamByName
   #
   def getInputParamByName ( self, name ) :
+    #
     result = None
     for param in self.inputParams :
       if param.name == name :
@@ -263,6 +270,7 @@ class Node ( QtCore.QObject ) :
   # getOutputParamByName
   #
   def getOutputParamByName ( self, name ) :
+    #
     result = None
     for param in self.outputParams :
       if param.name == name :
@@ -335,6 +343,7 @@ class Node ( QtCore.QObject ) :
   # getInputLinkByID
   #
   def getInputLinkByID ( self, id ) :
+    #
     result = None
     for link in self.getInputLinks () :
       if link.id == id :
@@ -345,6 +354,7 @@ class Node ( QtCore.QObject ) :
   # getOutputLinkByID
   #
   def getOutputLinkByID ( self, id ) :
+    #
     result = None
     for link in self.getOutputLinks () :
       if link.id == id :
@@ -371,6 +381,7 @@ class Node ( QtCore.QObject ) :
   # onParamChanged
   #
   def onParamChanged ( self, param ) :
+    #
     if DEBUG_MODE : print ">> Node: onParamChanged node = %s param = %s" % ( self.label, param.name )
     pass
     #self.emit( QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self, param )
@@ -390,18 +401,20 @@ class Node ( QtCore.QObject ) :
   # getParamName
   #
   def getParamName ( self, param ) :
+    #
     result = param.name
-    if not ( param.provider == 'primitive' or param.isRibParam ) :
+    if not ( param.provider in [ 'primitive', 'attribute' ] or param.isRibParam ) :
       result = self.getInstanceName () + '_' + param.name
     return result
   #
   # getParamDeclaration
   #
   def getParamDeclaration ( self, param ) :
+    #
     result = ''
-    result += param.typeToStr() + ' '
+    result += param.typeToStr () + ' '
     result += self.getParamName ( param ) + ' = '
-    result += param.getValueToStr() + ';\n'
+    result += param.getValueToStr () + ';\n'
     return result
   #
   # parseFromXML

@@ -44,7 +44,9 @@ if self.getInputParamByName ( 'Raytrace' ).value == 1 :
   Attribute "trace" "int maxdiffusedepth" [1]
   Attribute "trace" "int maxspeculardepth" [4]
   """
-
+else :
+  self.getInputParamByName ( 'RaytraceCode' ).value = ''
+  
 if self.getInputParamByName ( 'Primitive' ).value == 'Sphere':
   self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Sphere 1.0 -1.0 1.0 360"
 

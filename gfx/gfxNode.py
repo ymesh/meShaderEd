@@ -18,6 +18,7 @@ import gui.ui_settings as UI
 # GfxNode
 #
 class GfxNode ( QtGui.QGraphicsItem ) :
+  #
   Type = GFX_NODE_TYPE
   #
   # __init__
@@ -74,7 +75,8 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     self.collapse = None # 'input' 'output' 'all'
 
     if self.node is not None :
-      self.updateNode ()
+      QtCore.QObject.connect ( self.node, QtCore.SIGNAL ( 'nodeUpdated' ), self.onUpdateNode )
+      self.updateGfxNode ()
       ( x, y ) = self.node.offset
       self.setPos ( x, y )
 
@@ -91,16 +93,26 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   def type ( self ) : return GfxNode.Type
   #
-  # updateNode
+  # onUpdateNode
   #
-  def updateNode ( self ) :
+  def onUpdateNode ( self ) :
+    #
+    if DEBUG_MODE : print '>> GfxNode( %s ).updateNode' % ( self.node.label )
+    # self.updateGfxNode ()
+    self.update ()
+    self.adjustLinks ()
+    self.scene().emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
+  #
+  # updateGfxNode
+  #
+  def updateGfxNode ( self ) :
     # remove all GfxLinks
     for connect in self.inputConnectors : connect.removeAllLinks ()
     for connect in self.outputConnectors : connect.removeAllLinks ()
     # remove all children
     for item in self.childItems () : self.scene().removeItem ( item )
     self.header = {}
-    self.setupHeader()
+    self.setupHeader ()
     self.outputParamLabels = []
     self.inputParamLabels = []
     self.outputConnectors = []
@@ -136,6 +148,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   def remove ( self ) :
     #
     if DEBUG_MODE : print '>> GfxNode.remove'
+    QtCore.QObject.disconnect ( self.node, QtCore.SIGNAL ( 'nodeUpdated' ), self.onUpdateNode )
     for connect in self.inputConnectors : connect.removeAllLinks ()
     for connect in self.outputConnectors : connect.removeAllLinks ()
     self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
@@ -169,6 +182,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   # setupGeometry
   #
   def setupGeometry ( self ) :
+    #
     ( wi_header, hi_header ) = self.getHeaderSize ()
     ( wi_output, hi_output ) = self.getParamsSize ( self.outputParamLabels )
     ( wi_input, hi_input ) = self.getParamsSize ( self.inputParamLabels )
@@ -296,6 +310,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   # setupInputParamsGeometry
   #
   def setupInputParamsGeometry ( self, xs, ys ) :
+    #
     y = ys
     hi = 0
     for label in self.inputParamLabels :
@@ -314,6 +329,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   # getParamsSize
   #
   def getParamsSize ( self, paramLabels ) :
+    #
     wi = 0
     hi = 0
     for label in paramLabels :
@@ -348,7 +364,8 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   # itemChange
   #
-  def itemChange ( self, change, value ):
+  def itemChange ( self, change, value ) :
+    #
     if change == QtGui.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
       if self.node.type != 'variable' :
         # variable node has not header
@@ -361,7 +378,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
             if items [ i ] != self :
               items [ i ].stackBefore ( self )
         #scene.setFocusItem ( self )
-    elif change == QtGui.QGraphicsItem.ItemPositionHasChanged:
+    elif change == QtGui.QGraphicsItem.ItemPositionHasChanged :
       from meShaderEd import getDefaultValue
       grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
       grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
@@ -379,7 +396,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   # paint
   #
-  def paint ( self, painter, option, widget ):
+  def paint ( self, painter, option, widget ) :
     # print ( ">> GfxNode.paint" )
     painter.setRenderHint ( QtGui.QPainter.Antialiasing )
     painter.setRenderHint ( QtGui.QPainter.SmoothPixmapTransform )
@@ -389,7 +406,8 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   # paintShadow
   #
-  def paintShadow ( self, painter ):
+  def paintShadow ( self, painter ) :
+    #
     painter.setBrush ( self.BrushShadow )
     painter.setPen ( self.PenShadow )
     painter.drawRoundedRect ( self.shadowRect (), self.radius, self.radius, QtCore.Qt.AbsoluteSize )

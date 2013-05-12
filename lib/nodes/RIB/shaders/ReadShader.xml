@@ -12,8 +12,42 @@ if node is not None :
   from core.utils.ShaderInfo import ShaderInfo
   shaderInfo = ShaderInfo ( node.getInputParamByName ( 'file_name' ).value )
 
+  print '** shader type = %s' % shaderInfo.type
 
+  node.getInputParamByName ( 'shader_name' ).value = shaderInfo.name
+  node.getInputParamByName ( 'shader_type' ).value = shaderInfo.type
+  node.getInputParamByName ( 'rib_shader_type' ).value = node.getRiCallForShaderType ( shaderInfo.type )
+  node.getInputParamByName ( 'shader_params' ).value = ''
 
+  lastInputParam = node.getInputParamByName ( 'shader_params' )
+  lastOutputParam = node.getOutputParamByName ( 'shader' )
+
+  lastInputParamIdx = node.inputParams.index ( lastInputParam )
+  lastOutputParamIdx = node.outputParams.index ( lastOutputParam )
+
+  print '*** removing input params ***'
+  while lastInputParamIdx < ( len ( node.inputParams ) - 1 ) :
+    param = node.inputParams.pop ()
+    print param.name, param.type
+
+  print '*** removing output params ***'
+  while lastOutputParamIdx < ( len ( node.outputParams ) - 1 ) :
+    param = node.outputParams.pop ()
+    print param.name, param.type
+
+  print '*** added input params ***'
+  for param in shaderInfo.inputParams :
+    if param.arraySize is None :
+      node.addInputParam ( param )
+      print param.name, param.type
+
+  print '*** added output params ***'
+  for param in shaderInfo.outputParams :
+    if param.arraySize is None :
+      node.addOutputParam ( param )
+      print param.name, param.type
+
+  node.updateNode ()
 
 
 ]]>
@@ -22,9 +56,11 @@ if node is not None :
     <property name="file_name" label="File Name" type="string" default="" subtype="file" range="${Renderer} ${SLO}=*.${SLO}:All files=*.*"/>
     <property name="Color" type="color" default="0 0 1" provider="attribute"/>
     <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>
-    <property name="shader_name" label="Shader Name" type="string" provider="attribute" default="null" display="0" />
-    <property name="shader_type" label="Shader Type" type="string" provider="attribute" default="Surface" subtype="selector"
-      range = "Surface:Displacement:Light:Volume"/>
+    <property name="shader_name" label="Shader Name" type="string" provider="attribute" default="null" display="1" enabled="0"/>
+    <property name="shader_type" label="Shader Type" type="string" provider="attribute" default="surface" enabled="0"
+      subtype="selector"
+      range = "Surface=surface:Displacement=displacement:Light=light:Volume=volume:Shader=shader"/>
+    <property name="rib_shader_type" type="string" provider="attribute" default="Surface" display="0" enabled="0"/>
     <property name="shader_params" type="string" provider="attribute" default="" display="0"/>
 
   </input>
@@ -33,8 +69,21 @@ if node is not None :
   </output>
 <param_code>
 <![CDATA[
-print ":: Hello from %s XML param_code !!!" % self.label
+print ":: Hello from (%s) XML param_code !!!" % self.label
+lastInputParam = self.getInputParamByName ( 'shader_params' )
+lastInputParamIdx = self.inputParams.index ( lastInputParam )
 
+
+ribInputParamsDeclaration = []
+
+for i in range ( lastInputParamIdx + 1, len ( self.inputParams ) ) :
+  declStr = self.getParamDeclaration ( self.inputParams [ i ] )
+  ribInputParamsDeclaration.append ( declStr )
+  print declStr
+
+self.getInputParamByName ( 'shader_params' ).value = ''
+if len ( ribInputParamsDeclaration ) > 0 :
+  self.getInputParamByName ( 'shader_params' ).value = ( ' ' ).join ( ribInputParamsDeclaration )
 
 
 ]]>
@@ -44,7 +93,7 @@ print ":: Hello from %s XML param_code !!!" % self.label
 <![CDATA[
     Color [$(Color)]
     Opacity [$(Opacity)]
-    $(shader_type) "$(shader_name)" $(shader_params)
+    $(rib_shader_type) "$(shader_name)" $(shader_params)
 ]]>
 </code>
 </node>

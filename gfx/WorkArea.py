@@ -249,6 +249,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # adjustLinks
   #
   def adjustLinks ( self ) :
+    #
     for item in self.scene ().items () :
       if isinstance ( item, GfxLink ): item.adjust ()
   #
@@ -539,6 +540,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # onRemoveNode
   #
   def onRemoveNode ( self, gfxNode ) :
+    #
     print ">> WorkArea.onRemoveNode %s (id = %d)" % ( gfxNode.node.label, gfxNode.node.id )
     self.emit ( QtCore.SIGNAL ( 'gfxNodeRemoved' ), gfxNode )
     self.scene ().removeItem ( gfxNode )
@@ -736,6 +738,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   # resetZoom
   #
   def resetZoom ( self ) :
+    #
     if DEBUG_MODE : print ">> WorkArea.resetZoom"
     self.setInteractive ( False )
     self.resetTransform()

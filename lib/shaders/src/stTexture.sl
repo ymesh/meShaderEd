@@ -7,6 +7,10 @@ surface sttexture (string texturename = "") {
   /* prman  */  uniform string tn = concat (texturename, ".tex");  /**/
 #endif
 
+#ifdef AIR
+  /* air  */  uniform string tn = concat (texturename, ".tx");  /**/
+#endif
+
 #ifdef BMRT
   /* BMRT 2.6 and later  */  uniform string tn = concat (texturename, ".rdc");  /**/
 #endif

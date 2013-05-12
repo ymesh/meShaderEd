@@ -23,7 +23,12 @@
 
   float $(w) = .18 * (1 - $(sharpness) );
   
+  #ifndef AIR   
   illuminance ( $(category), P, $(N), PI/2, "lightcache", "refresh" ) 
+  #else
+  P = P; /* dirty light cache */
+  illuminance ( $(category), P, $(N), PI/2 ) 
+  #endif
   {
     float nonspec = 0;
     lightsource ( "__nonspecular", nonspec );

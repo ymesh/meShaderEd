@@ -34,15 +34,16 @@ class MatrixNodeParam ( NodeParam ) :
   #
   # valueFromStr
   #
-  def valueFromStr ( self, str ) :
+  def valueFromStr ( self, strValue ) :
     #
     value = [ [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0] ]
 
-    if str != '' and str != '0':
-      if str == '1' :
+    if strValue != '' and strValue != '0' :
+      if strValue == '1' :
         value = [ [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0] ] # default
       else:
-        str = str.replace ( ' ', '' )
+        strValue = str.replace ( ' ', '' )
+
         matrix16_pattern_str = 'matrix\(([-+]?([0-9]*\.)?[0-9]+,){15}[-+]?([0-9]*\.)?[0-9]+\)'
         matrix1_pattern_str  = 'matrix\(([-+]?([0-9]*\.)?[0-9]+\))'
         matrix16_space_pattern_str = 'matrix"[a-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){15}[-+]?([0-9]*\.)?[0-9]+\)'
@@ -51,43 +52,43 @@ class MatrixNodeParam ( NodeParam ) :
         space_pattern_str = '"[a-z]*"'
 
         p = re.compile ( matrix16_pattern_str )
-        match = p.match ( str )
+        match = p.match ( strValue)
         if match :
           p = re.compile ( float_pattern_str )
-          f = p.findall ( str )
+          f = p.findall ( strValue )
           f = map ( float, f )
           value = [ f[0:4], f[4:8], f[8:12], f[12:16] ]
         else :
           p = re.compile ( matrix1_pattern_str )
-          match = p.match ( str )
+          match = p.match ( strValue )
           if match :
             p = re.compile ( float_pattern_str )
-            f = p.findall ( str )
+            f = p.findall ( strValue )
             f = map ( float, f )
             value = [ [f[0], 0.0, 0.0, 0.0], [0.0, f[0], 0.0, 0.0], [0.0, 0.0, f[0], 0.0], [0.0, 0.0, 0.0, f[0]] ]
           else :
             p = re.compile ( matrix16_space_pattern_str )
-            match = p.match ( str )
+            match = p.match ( strValue )
             if match :
               p = re.compile ( float_pattern_str )
-              f = p.findall ( str )
+              f = p.findall ( strValue )
               f = map ( float, f )
               value = [ f[0:4], f[4:8], f[8:12], f[12:16] ]
 
               p = re.compile ( space_pattern_str )
-              s = p.findall ( str )
+              s = p.findall ( strValue )
               self.space = s[0].strip ( '"' )
             else :
               p = re.compile ( matrix1_space_pattern_str )
-              match = p.match ( str )
+              match = p.match ( strValue )
               if match :
                 p = re.compile ( float_pattern_str )
-                f = p.findall ( str )
+                f = p.findall ( strValue )
                 f = map ( float, f )
                 value = [ [f[0], 0.0, 0.0, 0.0], [0.0, f[0], 0.0, 0.0], [0.0, 0.0, f[0], 0.0], [0.0, 0.0, 0.0, f[0]] ]
 
                 p = re.compile ( space_pattern_str )
-                s = p.findall ( str )
+                s = p.findall ( strValue )
                 self.space = s[0].strip ( '"' )
               else :
                 err = 'Cannot parse matrix %s values' % self.name

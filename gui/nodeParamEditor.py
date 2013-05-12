@@ -74,6 +74,9 @@ class NodeParamEditor ( QtGui.QWidget ) :
     self.ui.setupUi ( self )
 
     # correct UI sizes for some controls
+    self.ui.check_enabled.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
+    self.ui.check_enabled.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
+    
     self.ui.check_display.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
     self.ui.check_display.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
 
@@ -128,6 +131,7 @@ class NodeParamEditor ( QtGui.QWidget ) :
     self.connect ( self.param_default, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamDefValueChanged )
     self.connect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditParamName )
     self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditParamLabel )
+    self.connect ( self.ui.check_enabled, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onEditParamEnabled )
     self.connect ( self.ui.check_display, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onEditParamDisplay )
     self.connect ( self.ui.check_shader, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onEditParamShader )
     self.connect ( self.ui.type_comboBox, QtCore.SIGNAL ( 'activated(int)' ), self.onEditParamType )
@@ -146,6 +150,7 @@ class NodeParamEditor ( QtGui.QWidget ) :
     if self.param is not None :
       self.disconnect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditParamName )
       self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditParamLabel )
+      self.disconnect ( self.ui.check_enabled, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onEditParamEnabled )
       self.disconnect ( self.ui.check_display, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onEditParamDisplay )
       self.disconnect ( self.ui.check_shader, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onEditParamShader )
       self.disconnect ( self.ui.type_comboBox, QtCore.SIGNAL ( 'activated(int)' ), self.onEditParamType )
@@ -160,7 +165,9 @@ class NodeParamEditor ( QtGui.QWidget ) :
     #
     self.ui.name_lineEdit.setText ( '' )
     self.ui.label_lineEdit.setText ( '' )
-    self.ui.check_display.setChecked ( False )
+    
+    self.ui.check_enabled.setChecked ( True )
+    self.ui.check_display.setChecked ( True )
     self.ui.check_shader.setChecked ( False )
 
     self.ui.type_comboBox.setCurrentIndex( -1 )
@@ -203,6 +210,8 @@ class NodeParamEditor ( QtGui.QWidget ) :
 
       self.ui.name_lineEdit.setText ( self.param.name )
       self.ui.label_lineEdit.setText ( self.param.label )
+      
+      self.ui.check_enabled.setChecked ( self.param.enabled )
       self.ui.check_display.setChecked ( self.param.display )
       self.ui.check_shader.setChecked ( self.param.shaderParam )
 
@@ -279,7 +288,10 @@ class NodeParamEditor ( QtGui.QWidget ) :
       self.ui.label_lineEdit.setText ( self.param.label )
     if newName != self.param.label :
       self.emit( QtCore.SIGNAL ( 'changeParamLabel' ), self.param.label, newName )
-
+  #
+  #
+  #
+  def onEditParamEnabled ( self, value ) : self.param.enabled = self.ui.check_enabled.isChecked ()
   def onEditParamDisplay ( self, value ) : self.param.display = self.ui.check_display.isChecked ()
   def onEditParamShader ( self, value )  : self.param.shaderParam = self.ui.check_shader.isChecked ()
   def onEditParamType ( self, idx ) :

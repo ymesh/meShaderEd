@@ -187,6 +187,8 @@ class NodeParamView ( QtGui.QWidget ) :
               #print '%s type = %s' % ( inputParam.label, inputParam.type )
               paramWidget = apply ( self.paramWidgets [ inputParam.type ], [ inputParam, self.gfxNode, self ] )
               frameLayout.addWidget ( paramWidget )
+              if not inputParam.enabled :
+                paramWidget.setEnabled ( False )
 
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding )
     frameLayout.addItem ( spacer )

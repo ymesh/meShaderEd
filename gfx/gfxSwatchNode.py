@@ -60,7 +60,7 @@ class GfxSwatchNode ( QtGui.QGraphicsItem ) :
     self.pixmap = None
 
     if self.node is not None :
-      self.updateNode ()
+      self.updateGfxNode ()
       ( x, y ) = self.node.offset
       self.setPos ( x, y )
 
@@ -112,9 +112,9 @@ class GfxSwatchNode ( QtGui.QGraphicsItem ) :
         break
     return connector
   #
-  # updateNode
+  # updateGfxNode
   #
-  def updateNode ( self ) :
+  def updateGfxNode ( self ) :
     # remove all GfxLinks
     for connect in self.inputConnectors : connect.removeAllLinks ()
     # remove all children
@@ -130,7 +130,7 @@ class GfxSwatchNode ( QtGui.QGraphicsItem ) :
   #
   def setupParams ( self ) :
     #
-    # get known node parametres
+    # get known node parameters
     #
     for name in [ 'size' ] :
       param = self.node.getInputParamByName ( name )
@@ -172,8 +172,9 @@ class GfxSwatchNode ( QtGui.QGraphicsItem ) :
   # boundingRect
   #
   def boundingRect ( self ) :
-     bound_rect = QtCore.QRectF ( self.rect ).united( self.shadowRect () )
-     return bound_rect
+    #
+    bound_rect = QtCore.QRectF ( self.rect ).united( self.shadowRect () )
+    return bound_rect
   #
   # shape
   #
@@ -191,7 +192,8 @@ class GfxSwatchNode ( QtGui.QGraphicsItem ) :
   #
   # itemChange
   #
-  def itemChange ( self, change, value ):
+  def itemChange ( self, change, value ) :
+    #
     if change == QtGui.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
       if value.toBool () :
         items = self.scene ().items ()
@@ -199,7 +201,7 @@ class GfxSwatchNode ( QtGui.QGraphicsItem ) :
           if items [ i ].parentItem() is None :
             if items [ i ] != self :
               items [ i ].stackBefore ( self )
-    elif change == QtGui.QGraphicsItem.ItemPositionHasChanged:
+    elif change == QtGui.QGraphicsItem.ItemPositionHasChanged :
       from meShaderEd import getDefaultValue
       grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
       grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
@@ -241,7 +243,8 @@ class GfxSwatchNode ( QtGui.QGraphicsItem ) :
   #
   # paintShadow
   #
-  def paintShadow ( self, painter ):
+  def paintShadow ( self, painter ) :
+    #
     painter.setBrush ( self.BrushShadow )
     painter.setPen ( self.PenShadow )
     painter.drawRoundedRect ( self.shadowRect (), self.radius, self.radius, QtCore.Qt.AbsoluteSize )

@@ -90,7 +90,7 @@
    color $(occ_C) = occlusion( P  
               ,$(N) 
               ,radians( $(ConeAngle) )
-              ,bent_dir
+              ,$(bent_dir)
               ,"samples",       $(MaxSamples)
               /* ,"blur", mapblur */
               ,"bias",          $(Bias)
@@ -98,7 +98,7 @@
               ,"subset",        $(subset)
               ,"maxdist",       $(MaxDist)
               ,"maxerror",      $(MaxError) 
-              ,"maxpixeldist",  MaxPixelDist );
+              ,"maxpixeldist",  $(MaxPixelDist) );
              $(result) = comp( $(occ_C), 0 ); 
 #else                           
    #ifdef PIXIE

@@ -17,8 +17,8 @@
     </preset>
     <preset name="Air">
         <renderer flags="" name="air"/>
-        <texture viewer="airshow" texinfo="" texmake="mktex" extension="tex"/>
-        <shader compiler="shaded" sloinfo="slbtell" extension="slb" defines="AIR"/>
+        <texture viewer="airshow" texinfo="" texmake="mktex" extension="tx"/>
+        <shader compiler="shaded" sloinfo="slbtell" extension="slb" defines=""/>
     </preset>
     <preset name="Pixie">
         <renderer flags="" name="rndr"/>
@@ -31,4 +31,3 @@
         <shader compiler="shaderdc" sloinfo="soinfo" extension="dll" defines="RDC"/>
     </preset>
 </renderers>
-

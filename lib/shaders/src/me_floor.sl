@@ -105,7 +105,7 @@ uniform float occ0_clamp = 1.000;
    color occ0_occ_C = occlusion( P  
               ,ShadingNormal1_NS 
               ,radians( occ0_ConeAngle )
-              ,bent_dir
+              ,occ0_bent_dir
               ,"samples",       occ0_MaxSamples
               /* ,"blur", mapblur */
               ,"bias",          occ0_Bias
@@ -113,7 +113,7 @@ uniform float occ0_clamp = 1.000;
               ,"subset",        occ0_subset
               ,"maxdist",       occ0_MaxDist
               ,"maxerror",      occ0_MaxError 
-              ,"maxpixeldist",  MaxPixelDist );
+              ,"maxpixeldist",  occ0_MaxPixelDist );
              occ0_result = comp( occ0_occ_C, 0 ); 
 #else                           
    #ifdef PIXIE
@@ -181,8 +181,11 @@ uniform float occ0_clamp = 1.000;
 	color	me_inShadowC0_inShadow = color( 0 );
 	color	me_inShadowC0_value = color( 0 );
 	uniform float me_inShadowC0_count = 0;
-	
-  illuminance( me_inShadowC0_category, P, normalizeN0_Nn, radians( me_inShadowC0_angle ), "lightcache", "refresh" )  
+	#ifndef AIR 
+  illuminance( me_inShadowC0_category, P, normalizeN0_Nn, radians( me_inShadowC0_angle ), "lightcache", "refresh" ) 
+  #else
+  illuminance( me_inShadowC0_category, P, normalizeN0_Nn, radians( me_inShadowC0_angle ) ) 
+  #endif
   {
     lightsource( "__inShadowC", me_inShadowC0_inShadow ); 	
     me_inShadowC0_value += me_inShadowC0_inShadow;

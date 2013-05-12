@@ -37,16 +37,20 @@
     $(E) = 1 / ( $(eccentricity) * $(eccentricity) - 1);
   else
     $(E) = -1e5;
-  
+  #ifndef AIR 
   illuminance( $(category), P, $(N), PI/2, "lightcache", "refresh" )
+  #else
+  P = P; /* dirty light cache */
+  illuminance( $(category), P, $(N), PI/2 )
+  #endif
   {
     vector H, Ln;
     float nondiff, nonspec;
     float NH, NH2, NHSQ, Dd, Gg, VH, LN, Ff, tmp;
     
-    if( 0 == lightsource("__nonspecular", nonspec) )
+    if ( 0 == lightsource("__nonspecular", nonspec) )
       nonspec = 0;
-    if( nonspec < 1 )
+    if ( nonspec < 1 )
     {
       Ln = normalize(L);
       H = normalize( Ln + $(V) );
@@ -57,9 +61,9 @@
       Dd *= Dd;
       VH = $(V).H;
       LN = Ln.$(N);
-      if( $(VN) < LN )
+      if ( $(VN) < LN )
       {
-        if( $(VN) * NH2 < VH )
+        if ( $(VN) * NH2 < VH )
           Gg = NH2 / VH;
         else
           Gg = 1 / $(VN);
@@ -79,7 +83,7 @@
       /* now look for environment reflections.  
          These are indicated by lights which are specular AND nondiffuse 
       */
-      if( 0 != lightsource( "__nondiffuse", nondiff ) )
+      if ( 0 != lightsource( "__nondiffuse", nondiff ) )
       {
         $(Cr) += ( 1 - nonspec ) * nondiff * Ff * Cl;
       }

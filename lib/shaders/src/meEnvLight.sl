@@ -94,7 +94,7 @@ SLIM_INSTANCENAME (
         		
     		    color filt = mix (color 1, cFilt, Coloration);
     		       		    
-    		    result = filt * color meEnvironment ( envname, Rfldir, envspace, envrad, blur, samples, kr, filter, lerp );
+    		    result = filt * meEnvironment ( envname, Rfldir, envspace, envrad, blur, samples, kr, filter, lerp );
            
         } else
       	  result = color(0);

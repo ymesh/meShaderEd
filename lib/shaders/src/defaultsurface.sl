@@ -1,4 +1,3 @@
-/* $Id: //depot/branches/rmanprod/rman-13.5/shaders/defaultsurface.sl#1 $  (Pixar - RenderMan Division)  $Date: 2007/07/06 $ */
 /*
 ** Copyright (c) 1999 PIXAR.  All rights reserved.  This program or
 ** documentation contains proprietary confidential information and trade
@@ -19,8 +18,8 @@
 ** 1001 West Cutting Blvd.
 ** Richmond, CA  94804
 */
-surface
-defaultsurface(float Kd=.8, Ka=.2)
+
+surface defaultsurface(float Kd=.8, Ka=.2)
 {
     float diff ;
 

@@ -1,6 +1,16 @@
 
 meShaderEd changes log
 
+version 0.3.1 (?? May 2013)
+  - ControlParam with special <control_code> section in XML, that allows to execute
+    python code for dynamic parameters manipulation 
+  - ShaderInfo class for parsing compiled shaders parameters
+  - Lib/RIB/shaders/ReadShader.xml node that uses ShaderInfo call inside <control_code> section
+    for reloading shader parameters
+  - NodeParam new attributes : enabled, spaceDef, arraySize, defaultArray, valueArray 
+    (though arrays parameters support is not fully implemented yet...)
+  - Fixed some shading nodes and code for AIR compatibility 
+  
 version 0.3.0 (16 Apr 2013)
   SwatchNode for image preview in shading network
   Duplicate nodes with links

@@ -1,22 +1,22 @@
 #!/usr/bin/python
-#
-# meShaderEd.py
-#
-# version 0.3.1b (26 Apr 2013)
-#
-# written by Yuri.Meshalkin (mesh@kpp.kiev.ua)
-#
-# Initial code and data structure was based on
-# ShaderLink of Libero Spagnolini (Libe)
-#   http://libe.ocracy.org/shaderlink.html
-#   http://code.google.com/p/shaderlink/
-#
-# And idea of open source RSL tool belongs to Alexei Puzikov (Kidd)
-#   http://code.google.com/p/shaderman/
-#
-# The RenderMan Shader Editor
-#
-#===============================================================================
+"""
+ meShaderEd.py
+
+ version 0.3.1b (26 Apr 2013)
+
+ written by Yuri.Meshalkin (mesh@kpp.kiev.ua)
+
+ Initial code and data structure was based on
+ ShaderLink of Libero Spagnolini (Libe)
+   http://libe.ocracy.org/shaderlink.html
+   http://code.google.com/p/shaderlink/
+
+ And idea of open source RSL tool belongs to Alexei Puzikov (Kidd)
+   http://code.google.com/p/shaderman/
+
+ The RenderMan Shader Editor
+
+"""
 import sys
 import os
 #import ntpath

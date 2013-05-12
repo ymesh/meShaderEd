@@ -40,7 +40,12 @@
 	
 	color $(diffColor) = 0;
               
+	#ifndef AIR 
 	illuminance ( $(category), P, $(N), PI/2, "lightcache", "refresh" ) 
+	#else
+	P = P; /* dirty light cache */
+	illuminance ( $(category), P, $(N), PI/2 ) 
+	#endif
 	{
 		float nondiff = 0;
 		lightsource( "__nondiffuse", nondiff );

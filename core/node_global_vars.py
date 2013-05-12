@@ -5,6 +5,6 @@ node_global_vars = {
    'NODELABEL':'label'
   ,'NODENAME':'name'
   ,'INSTANCENAME':'label' 
-  ,'PARAMS':'label' 
+  ,'PARAMS':'' 
   
 }

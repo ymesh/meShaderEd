@@ -1,9 +1,7 @@
-#===============================================================================
-# MainWindow.py
-#
-#
-#
-#===============================================================================
+"""
+  MainWindow.py
+
+"""
 import os, sys
 
 from PyQt4 import QtCore, QtGui, QtXml
@@ -106,6 +104,7 @@ class MainWindow ( QtGui.QMainWindow ) :
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
       #QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
+      QtCore.QObject.connect ( self.workArea.scene(), QtCore.SIGNAL ( 'nodeUpdated' ), self.updateNodeParamView )
   #
   # disconnectWorkAreaSignals
   #
@@ -119,6 +118,7 @@ class MainWindow ( QtGui.QMainWindow ) :
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
       #QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
+      QtCore.QObject.disconnect ( self.workArea.scene(), QtCore.SIGNAL ( 'nodeUpdated' ), self.updateNodeParamView )
   #
   #
   #
@@ -291,7 +291,6 @@ class MainWindow ( QtGui.QMainWindow ) :
     settingsSetupDlg = SettingsSetup ( app_settings )
     settingsSetupDlg.exec_()
     self.ui.nodeList_ctl.setLibrary ( app_global_vars [ 'NodesPath' ] )
-
   #
   # onRenderSettings
   #
@@ -374,6 +373,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # setActiveNodeList
   #
   def setActiveNodeList ( self, nodeList ) :
+    #
     if DEBUG_MODE : print '>> MainWindow.setActiveNodeList'
     if self.activeNodeList != None :
       QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
@@ -512,10 +512,10 @@ class MainWindow ( QtGui.QMainWindow ) :
 
       # set new node to gfxNode.node
       gfxNode.node = editNode
-      gfxNode.updateNode ()
+      gfxNode.updateGfxNode ()
       for link in editNode.getInputLinks ()  : self.workArea.addGfxLink ( link  )
       for link in editNode.getOutputLinks () : self.workArea.addGfxLink ( link  )
-      self.ui.nodeParam_ctl.updateGui ()
+      self.updateNodeParamView ()
       self.workArea.scene().update ()
 
     else :
@@ -603,7 +603,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     # hence need to update nodeParam_ctl
     if isinstance ( gfxNode, GfxNote ) :
       #if DEBUG_MODE : print "* update GfxNote"
-      gfxNode.updateNode ()
+      gfxNode.updateGfxNode ()
       #node.update ()
       self.workArea.scene ().update ()
     elif isinstance ( gfxNode, GfxSwatchNode ) :
@@ -626,11 +626,20 @@ class MainWindow ( QtGui.QMainWindow ) :
     if isinstance ( gfxNode, GfxNode )  :
       #if DEBUG_MODE : print "* update nodeView"
       gfxNode.updateInputParams ()
-      self.ui.nodeParam_ctl.updateGui ()
+      self.updateNodeParamView ()
       self.workArea.scene ().update ()
 
     if self.ui.imageView_ctl.autoUpdate () : self.ui.imageView_ctl.updateViewer()
-        
+  #
+  # updateNodeParamView
+  #
+  def updateNodeParamView ( self, gfxNode = None ) :
+    #
+    if DEBUG_MODE : 
+      print '>> MainWindow.updateNodeParamView'
+      if gfxNode is not None :
+        print '** gfxNode = "%s"' % gfxNode.node.label
+    self.ui.nodeParam_ctl.updateGui ()
   #
   # onFitAll
   #
