@@ -9,7 +9,7 @@ version 0.3.1 (?? May 2013)
     for reloading shader parameters
   - NodeParam new attributes : enabled, spaceDef, arraySize, defaultArray, valueArray 
     (though arrays parameters support is not fully implemented yet...)
-  - Fixed some shading nodes and code for AIR compatibility 
+  - Fixed some shading nodes, code, shaders and textures for Air, Aqsis, Pixie and RenderDotC compatibility 
   
 version 0.3.0 (16 Apr 2013)
   SwatchNode for image preview in shading network

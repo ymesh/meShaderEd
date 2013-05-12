@@ -1,33 +1,31 @@
-#===============================================================================
-# meCommon.py
-#
-# 
-#
-#===============================================================================
+"""
+ meCommon.py
+
+"""
 import os, sys
 
 from PyQt4 import QtCore
 #
 # findExecutable
 #
-def findExecutable ( executable, path = None ):
+def findExecutable ( executable, path = None ) :
   """Try to find 'executable' in the directories listed in 'path' (a
   string listing directories separated by 'os.pathsep'; defaults to
   os.environ['PATH']).  Returns the complete filename or None if not
   found
   """
   if path is None:
-    path = os.environ['PATH']
+    path = os.environ [ 'PATH' ]
   paths = path.split(os.pathsep)
-  extlist = ['']
-  if os.name == 'os2':
-    (base, ext) = os.path.splitext(executable)
+  extlist = [ '' ]
+  if os.name == 'os2' :
+    ( base, ext ) = os.path.splitext ( executable )
     # executable files on OS/2 can have an arbitrary extension, but
     # .exe is automatically appended if no dot is present in the name
     if not ext:
       executable = executable + ".exe"
-  elif sys.platform == 'win32':
-    pathext = os.environ['PATHEXT'].lower().split(os.pathsep)
+  elif sys.platform == 'win32' :
+    pathext = os.environ [ 'PATHEXT' ].lower ().split ( os.pathsep )
     (base, ext) = os.path.splitext(executable)
     if ext.lower() not in pathext:
       extlist = pathext

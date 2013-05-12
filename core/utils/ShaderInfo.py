@@ -41,8 +41,8 @@ class ShaderInfo () :
       ,'renderdl' : self.parseParamLine
       ,'air'      : self.parseParamLine_air
       ,'aqsis'    : self.parseParamLine
-      ,'rndr'     : self.parseParamLine
-      ,'renderdc' : self.parseParamLine
+      ,'rndr'     : self.parseParamLine_pixie
+      ,'renderdc' : self.parseParamLine_pixie
     }
     
     parseValueLineProcTable = {
@@ -51,7 +51,7 @@ class ShaderInfo () :
       ,'air'      : self.parseValueLine_air
       ,'aqsis'    : self.parseValueLine_aqsis
       ,'rndr'     : self.parseValueLine_pixie
-      ,'renderdc' : self.parseValueLine_rdc
+      ,'renderdc' : self.parseValueLine_prman
     }
 
     self.renderer = app_global_vars [ 'Renderer' ]
@@ -61,6 +61,11 @@ class ShaderInfo () :
 
     if self.fileName is not None :
       self.parseParamsInfo ( self.getShaderInfo () )
+      if self.renderer == 'rndr' :
+        # Pixie's sdrinfo outputs parameters in reverse order.
+        # Hence, lets reverse them again
+        self.inputParams.reverse ()
+        self.outputParams.reverse ()
   #
   # getShaderInfo
   #
@@ -71,12 +76,20 @@ class ShaderInfo () :
     # app_global_vars [ 'ShaderCompiler' ]
     # app_global_vars [ 'SLO' ]
     from core.meCommon import launchProcess
-
+    curDir =  os.getcwd ()
+    
     cmdList = []
     cmdList.append ( app_global_vars [ 'ShaderInfo' ] )
     if methods :
       cmdList.append ( '--methods' )
-    cmdList.append ( self.fileName )
+    if self.renderer == 'renderdc' :
+      dirName = os.path.dirname ( self.fileName )
+      fileName = os.path.basename ( self.fileName )
+      ( fileName, ext ) = os.path.splitext ( fileName )
+      cmdList.append ( fileName )
+      os.chdir ( dirName )
+    else :
+      cmdList.append ( self.fileName )
 
     tmpDir = app_global_vars [ 'TempPath' ]
 
@@ -92,6 +105,7 @@ class ShaderInfo () :
 
     stdout.close ()
     stderr.close ()
+    if self.renderer == 'renderdc' : os.chdir ( curDir )
     return  inputLines
   #
   # parseParamsInfo
@@ -155,10 +169,10 @@ class ShaderInfo () :
             print '* Error: unknown param type !'
 
           valueNum = 1
-          if self.renderer == 'prman' :
+          if self.renderer in [ 'prman', 'aqsis', 'renderdc' ]  :
             if paramArraySize is not None :
               valueNum = paramArraySize
-            if paramType == 'matrix' :
+            if paramType == 'matrix' and self.renderer in [ 'prman', 'renderdc' ] :
               accumLine = ''
               accumLinesNum = 3
           valueIdx = 0
@@ -182,12 +196,11 @@ class ShaderInfo () :
                   param.valueArray.append ( paramValue )   
         elif state == 'GET_VALUE' :
           # get value ( or arrays elements )
-          # print valueIdx, valueNum
           if accumLinesNum > 0 :
             accumLinesNum -= 1
-            accumLine += line
+            accumLine += ( line + ' '  )
             continue
-          if self.renderer == 'prman' and paramType == 'matrix' :
+          if self.renderer in [ 'prman', 'renderdc' ] and paramType == 'matrix' :
             line = accumLine + line
           if paramArraySize is None :
             ( paramValue, paramSpace ) = self.parseValueLineProc ( line, paramType )
@@ -198,9 +211,9 @@ class ShaderInfo () :
               param.space = paramSpace
           else :
             print '* Warning: Arrays are not fully supported yet !'
-            if self.renderer == 'prman' :
+            if self.renderer in [ 'prman', 'aqsis', 'renderdc' ] :
               ( paramValue, paramSpace ) = self.parseValueLineProc ( line, paramType, valueIdx )
-              #print '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace )
+              print '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace )
               if param is not None :
                 param.defaultArray.append ( paramValue )
                 param.valueArray.append ( paramValue )
@@ -215,7 +228,7 @@ class ShaderInfo () :
           if valueIdx >= valueNum :
             state = 'GET_PARAM'
           else :
-            if self.renderer == 'prman' and paramType == 'matrix' :
+            if self.renderer in [ 'prman', 'renderdc' ] and paramType == 'matrix' :
               accumLine = ''
               accumLinesNum = 3
   #
@@ -320,13 +333,57 @@ class ShaderInfo () :
 
     return ( paramName, paramType, paramDetail, isOutput, paramArraySize )
   #
+  # parseParamLine_pixie
+  #
+  def parseParamLine_pixie ( self, inputStr ) :
+    #
+    # print 'parsing param: %s ...' % inputStr
+    paramName = None
+    paramType = None
+    paramDetail = None
+    isOutput = False
+    paramArraySize = None
+
+    name_pattern_str = '"\w*"'
+    type_pattern_str = '"[][\w\s]*"'
+    type_prefix = '(output )?[uniformvaryg ]+ '
+
+    p = re.compile ( name_pattern_str )
+    if p.match ( inputStr ) :
+      paramName = ( p.findall ( inputStr ) [ 0 ]  ).strip ( '"' )
+      p = re.compile ( type_pattern_str )
+      if p.match ( inputStr ) :
+        typeStr = ( p.findall ( inputStr ) [ 1 ]  ).strip ( '"' )
+
+        if 'output' in typeStr : isOutput = True
+
+        for param_type in VALID_RSL_PARAM_TYPES :
+          p = re.compile ( type_prefix + param_type )
+          if p.match ( typeStr ) :
+            paramType = param_type
+            break
+
+        for param_detail in [ 'uniform', 'varying' ] :
+          if param_detail in typeStr :
+            paramDetail = param_detail
+            break
+
+        match = re.search ( r'\[[\d]*\]$', typeStr )
+
+        if match :
+          arr_size_str = match.group ().strip ( '[]' )
+          if arr_size_str == '' : arr_size_str = '0'
+          paramArraySize = int ( arr_size_str )
+
+    return ( paramName, paramType, paramDetail, isOutput, paramArraySize )
+  #
   # parseValueLine_prman
   #
   def parseValueLine_prman ( self, inputStr, paramType, idxInArray = 0, isArray = False ) :
     # idxInArray is dummy parameter here and used only for compatibility
     # with other renderers parseValueLine functions
     #
-    # print 'parsing value: %s ...' % inputStr
+    print 'parsing prman value:%s ...' % inputStr
 
     paramValue = None
     paramSpace = None
@@ -346,14 +403,15 @@ class ShaderInfo () :
       elif paramType == 'float' :
         paramValue = float ( valueStr )
       elif paramType in [ 'color', 'point', 'vector', 'normal', 'matrix' ] :
-        match = re.search ( r'\A"[A-z]+"', valueStr )
+        match = re.search ( r'\A"[a-zA-Z]+"', valueStr )
         if match :
           paramSpace = match.group ().strip ( '"' )
-        s = re.findall ( r'[+-]?[0-9]+\.[0-9]*', valueStr )
+        s = re.findall ( r'[+-]?[\d\.]+', valueStr )
         f = map ( float, s )
         if paramType != 'matrix' :
           paramValue = [ f[0], f[1], f[2] ]
         else :
+          print '*** ', s
           paramValue = [ f[0:4], f[4:8], f[8:12], f[12:16] ]
 
     return ( paramValue, paramSpace )
@@ -385,11 +443,11 @@ class ShaderInfo () :
           valueArray = valueArrayStr.split ( ',' )
           paramValue = float ( valueArray [ idxInArray ] )
       elif paramType in [ 'color', 'point', 'vector', 'normal', 'matrix' ] :
-        match = re.search ( r'\A"[A-z]+"', valueStr )
+        match = re.search ( r'\A"[a-zA-Z]+"', valueStr )
         if match :
           paramSpace = match.group ().strip ( '"' )
         if not isArray :
-          s = re.findall ( r'[+-]?[0-9]+?\.?[0-9]*', valueStr )
+          s = re.findall ( r'[+-]?[\d\.]+', valueStr )
           f = map ( float, s )
           if paramType != 'matrix' :
             if len ( f ) == 3 :
@@ -401,7 +459,7 @@ class ShaderInfo () :
         else :
           valueArrayStr = valueStr.strip ( '{}' )
           valueArray = valueArrayStr.split ( ',' )
-          s = re.findall ( r'[+-]?[0-9]+?\.?[0-9]*', valueArray [ idxInArray ] )
+          s = re.findall ( r'[+-]?[\d\.]+', valueArray [ idxInArray ] )
           f = map ( float, s )
           if paramType != 'matrix' :
             paramValue = [ f[0], f[1], f[2] ]
@@ -414,21 +472,20 @@ class ShaderInfo () :
   #
   def parseValueLine_air ( self, inputStr, paramType, idxInArray = 0, isArray = False ) :
     #
-    print 'parsing value: %s ...' % inputStr
+    # print 'parsing value: %s ...' % inputStr
 
     paramValue = None
     paramSpace = None
-    
+
     match = re.search ( r'\[[+-]?[a-zA-Z\d \."]+\]$', inputStr  )
     if match :
       valueStr = match.group ().strip ( '[]' )
       if paramType in [ 'string', 'shader' ] :
         if not isArray :
           paramValue = valueStr.strip ( ' "' )
-          #print '*** valueStr = "%s" paramValue = "%s"' % ( valueStr, paramValue ) 
         else :
           valueArray = re.findall ( r'"[\w\s\d]*"', valueStr  )
-          paramValue = valueArray [ idxInArray ] .strip ( '"' )
+          paramValue = valueArray [ idxInArray ] .strip ( ' "' )
       elif paramType == 'float' :
         if not isArray :
           paramValue = float ( valueStr )
@@ -437,7 +494,7 @@ class ShaderInfo () :
           paramValue = float ( valueArray [ idxInArray ].strip ( ' ' ) )
       elif paramType in [ 'color', 'point', 'vector', 'normal', 'matrix' ] :
         if not isArray :
-          s = re.findall ( r'[+-]?[0-9]+?\.?[0-9]*', valueStr )
+          s = re.findall ( r'[+-]?[\d\.]+', valueStr )
           f = map ( float, s )
           if paramType != 'matrix' :
             if len ( f ) == 3 :
@@ -447,25 +504,49 @@ class ShaderInfo () :
           else :
             paramValue = [ f[0:4], f[4:8], f[8:12], f[12:16] ]
         else :
-          s = re.findall ( r'[+-]?[0-9]+?\.?[0-9]*', valueStr )
+          s = re.findall ( r'[+-]?[\d\.]+', valueStr )
           print s
           f = map ( float, s )
           if paramType != 'matrix' :
             paramValue = [ f[0 + idxInArray*3], f[1 + idxInArray*3], f[2 + idxInArray*3] ]
           else :
             paramValue = [ f[0 + idxInArray*16:4 + idxInArray*16], f[4 + idxInArray*16:8 + idxInArray*16], f[8 + idxInArray*16:12 + idxInArray*16], f[12 + idxInArray*16:16 + idxInArray*16] ]
-
+  
+            
     return ( paramValue, paramSpace )
   #
   # parseValueLine_aqsis
   #
   def parseValueLine_aqsis ( self, inputStr, paramType, idxInArray = 0, isArray = False ) :
+    # idxInArray is dummy parameter here and used only for compatibility
+    # with other renderers parseValueLine functions
     #
-    print 'parsing value: %s ...' % inputStr
+    print 'parsing aqsis value: %s ...' % inputStr
 
     paramValue = None
     paramSpace = None
-
+    
+    match = re.search ( r'\ADefault value: ', inputStr )
+    if match :
+      valueStr = inputStr.replace ( match.group (), '' )
+      if paramType in [ 'string', 'shader' ] :
+        paramValue = valueStr.strip ( ' "' )
+      elif paramType == 'float' :
+        paramValue = float ( valueStr )
+      elif paramType in [ 'color', 'point', 'vector', 'normal', 'matrix' ] :
+        match = re.search ( r'\A"[a-zA-Z]+"', valueStr )
+        if match :
+          paramSpace = match.group ().strip ( '"' )
+        s = re.findall ( r'[+-]?[\d\.]+', valueStr )
+        f = map ( float, s )
+        if paramType != 'matrix' :
+          if len ( f ) == 3 :
+            paramValue = [ f[0], f[1], f[2] ]
+          else :
+            paramValue = [ f[0], f[0], f[0] ]
+        else :
+          paramValue = [ f[0:4], f[4:8], f[8:12], f[12:16] ]
+    
     return ( paramValue, paramSpace )
   #
   # parseValueLine_pixie
@@ -476,6 +557,47 @@ class ShaderInfo () :
 
     paramValue = None
     paramSpace = None
+
+    match = re.search ( r'\ADefault value: ', inputStr )
+    if match :
+      valueStr = inputStr.replace ( match.group (), '' )
+      if paramType in [ 'string', 'shader' ] :
+        if not isArray :
+          paramValue = valueStr.strip ( ' "' )
+        else :
+          valueArray = re.findall ( r'"[\w\s\d]*"', valueStr  )
+          paramValue = valueArray [ idxInArray ] .strip ( ' "' )
+      elif paramType == 'float' :
+        if not isArray :
+          paramValue = float ( valueStr )
+        else :
+          valueArray = valueStr.split ( ' ' )
+          print valueArray
+          paramValue = float ( valueArray [ idxInArray ] )
+      elif paramType in [ 'color', 'point', 'vector', 'normal', 'matrix' ] :
+        match = re.search ( r'\A"[a-zA-Z]+"', valueStr )
+        if match :
+          paramSpace = match.group ().strip ( '"' )
+        if not isArray :
+          s = re.findall ( r'[+-]?[\d\.]+', valueStr )
+          f = map ( float, s )
+          if paramType != 'matrix' :
+            if len ( f ) == 3 :
+              paramValue = [ f[0], f[1], f[2] ]
+            else :
+              paramValue = [ f[0], f[0], f[0] ]
+          else :
+            paramValue = [ f[0:4], f[4:8], f[8:12], f[12:16] ]
+        else :
+          valueArray = re.findall ( r'\[[+-]?[\d\s\.]+\]', valueStr )
+          print valueArray
+          s = re.findall ( r'[+-]?[\d\.]+', valueArray [ idxInArray ].strip ( '[]' ) )
+          print s
+          f = map ( float, s )
+          if paramType != 'matrix' :
+            paramValue = [ f[0], f[1], f[2] ]
+          else :
+            paramValue = [ f[0:4], f[4:8], f[8:12], f[12:16] ]
 
     return ( paramValue, paramSpace )
   #

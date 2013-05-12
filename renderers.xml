@@ -2,7 +2,7 @@
 <renderers>
     <preset name="Aqsis">
         <renderer flags="-progress" name="aqsis"/>
-        <texture viewer="" texinfo="" texmake="teqser" extension="tex"/>
+        <texture viewer="" texinfo="" texmake="teqser" extension="teq"/>
         <shader compiler="aqsl" sloinfo="aqsltell" extension="slx" defines="AQSIS"/>
     </preset>
     <preset name="3Delight">
