@@ -4,14 +4,14 @@
 	<help>Dummy color parameter. 
 	Useful for connecting color inputs from the other nodes to a single value.</help>
 	<input>
-		<property name="color" type="color" default="color(0)" detail="uniform"/>
+		<property name="C" type="color" default="color(0)" detail="uniform"/>
 	</input>
 	<output>
 		<property name="output" type="color" detail="uniform"/>
 	</output>
 	<code><![CDATA[
 
-$(output) = $(color);
+$(output) = $(C);
 	]]>
 	</code>
 </node>

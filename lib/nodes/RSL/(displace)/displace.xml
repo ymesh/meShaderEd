@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="displacement" type="rsl_code" author="DRL">
+<node name="displace" type="rsl_code" author="DRL">
 	<help>Simple displacement shader.</help>
 	<input>
 	  <property name="P" type="point" default="point (0)" />
