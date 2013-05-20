@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
 
-<node name="color" type="rsl_code" author="mesh">
-	<help>color operand</help>
+<node name="color" label="color" author="DRL">
+	<help>Dummy color parameter. 
+	Useful for connecting color inputs from the other nodes to a single value.</help>
 	<input>
-		<property name="inColor" type="color" default="color(0,0,0)" />
+		<property name="C" type="color" default="color(0)" detail="uniform"/>
 	</input>
 	<output>
-		<property name="outColor" type="color" default="color(0,0,0)"/>
+		<property name="output" type="color" detail="uniform"/>
 	</output>
-	<code>
-	  <![CDATA[
-	  $(outColor) = $(inColor);
-	  ]]>
+	<code><![CDATA[
+
+$(output) = $(C);
+	]]>
 	</code>
 </node>

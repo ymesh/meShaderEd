@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="color_HSV" type="rsl_code" author="mesh">
+<node name="float3ToColorHSV" type="rsl_code" author="mesh">
 	<help>Simple color builder in HSV space.</help>
 	<input>
 		<property name="h" label="Hue" type="float" default="1.0" subtype="slider" range="0 1 0.001"/>

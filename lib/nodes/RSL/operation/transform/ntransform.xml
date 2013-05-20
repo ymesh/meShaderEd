@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="ntransform" author="DRL">
+	<help>Transform a normal from one coordinate system to another.</help>
+	<input>
+		<property name="fromSpace" type="string" default="current" detail="uniform"/>		
+		<property name="toSpace" type="string" default="shader" detail="uniform"/>		
+		<property name="inNormal" type="normal"/>				
+	</input>
+	<output>
+		<property name="outNormal" type="normal"/>		
+	</output>
+	<code><![CDATA[
+$(outNormal) = transform( $(fromSpace), $(toSpace), $(inNormal) );
+]]>
+	</code>
+</node>

@@ -1,13 +1,17 @@
 <?xml version="1.0"?>
 
-<node name="float" type="rsl_code" author="mesh">
-	<help>float operand</help>
+<node name="float" label="float" author="DRL">
+	<help>Dummy float parameter. 
+	Useful for connecting float inputs from the other nodes to a single value.</help>
 	<input>
-		<property name="inFloat" type="float" default="0" />
+		<property name="float" type="float" default="0" detail="uniform"/>
 	</input>
 	<output>
-		<property name="outFloat" type="float" default="0"/>
+		<property name="output" type="float" detail="uniform"/>
 	</output>
-	<code><![CDATA[$(outFloat) = $(inFloat);]]>
+	<code><![CDATA[
+
+$(output) = $(float);
+	]]>
 	</code>
 </node>

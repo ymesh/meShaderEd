@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
 
-<node name="string" author="mesh" type="rsl_code">
-	<help>RSL string operand</help>
+<node name="string" label="string" author="DRL">
+	<help>Dummy string parameter. 
+	Useful for connecting string inputs (such as coordSpace) from the other nodes to a single value.</help>
 	<input>
-		<property name="in" type="string" detail="uniform" default="" />
+		<property name="string" type="string" default="" detail="uniform"/>
 	</input>
 	<output>
-		<property name="out" type="string" detail="uniform" default="" />
+		<property name="output" type="string" detail="uniform"/>
 	</output>
-	<code>
-	<![CDATA[$(out) = $(in);]]>
+	<code><![CDATA[
+
+$(output) = $(string);
+	]]>
 	</code>
-	
 </node>

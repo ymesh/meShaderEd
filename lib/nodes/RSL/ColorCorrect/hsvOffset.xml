@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<node name="adjustHSV" type="rsl_code" author="mesh">
-	<help>Adjust HSV color components.</help>
+<node name="hsvOffset" type="rsl_code" author="mesh">
+	<help>Offset HSV color components.</help>
 	<input>
 	  <property name="inpColor" label="input" type="color" default="color(0, 0, 1.0)"/>
 		<property name="hv" label="Hue" type="float" default="0" subtype="slider" range="-1.0 1.0 0.001"/>
@@ -12,21 +12,21 @@
 		<property name="result" type="color"/>
 	</output>
 	<internal>
+		<variable name="hsvColor"/>
 	  <variable name="hueComp"/>
 	  <variable name="satComp"/>
 	  <variable name="valComp"/>
 	</internal>
-	<code>
-	<![CDATA[
-	float $(hueComp) = $(hv) + comp( ctransform( "hsv", $(inpColor) ), 0 );
-  float $(satComp) = $(sv) + comp( ctransform( "hsv", $(inpColor) ), 1 );
-  float $(valComp) = $(vv) + comp( ctransform( "hsv", $(inpColor) ), 2 ); 
+	<code><![CDATA[
+	color $(hsvColor) = ctransform( "hsv", $(inpColor) );
+	float $(hueComp) = $(hv) + comp( $(hsvColor), 0 );
+  float $(satComp) = $(sv) + comp( $(hsvColor), 1 );
+  float $(valComp) = $(vv) + comp( $(hsvColor), 2 ); 
     		
   $(hueComp) = clamp( $(hueComp), 0, 1 );
   $(satComp) = clamp( $(satComp), 0, 1 );
-  $(valComp) = clamp( $(valComp), 0, 1 );
  
   $(result) = color "hsv" ( $(hueComp), $(satComp), $(valComp) );
-	]]>
+]]>
 	</code>		
 </node>

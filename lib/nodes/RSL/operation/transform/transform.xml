@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="transform" author="DRL">
+	<help>Transform a point from one coordinate system to another.</help>
+	<input>
+		<property name="fromSpace" type="string" default="current" detail="uniform"/>		
+		<property name="toSpace" type="string" default="shader"/>		
+		<property name="inPoint" type="point"/>				
+	</input>
+	<output>
+		<property name="outPoint" type="point"/>		
+	</output>
+	<code><![CDATA[
+$(outPoint) = transform( $(fromSpace), $(toSpace), $(inPoint) );
+]]>
+	</code>
+</node>

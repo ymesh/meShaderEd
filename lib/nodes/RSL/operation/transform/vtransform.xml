@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="vtransform" author="DRL">
+	<help>Transform a vector from one coordinate system to another.</help>
+	<input>
+		<property name="fromSpace" type="string" default="current" detail="uniform"/>		
+		<property name="toSpace" type="string" default="shader" detail="uniform"/>		
+		<property name="inVector" type="vector"/>				
+	</input>
+	<output>
+		<property name="outVector" type="vector"/>		
+	</output>
+	<code><![CDATA[
+$(outVector) = transform( $(fromSpace), $(toSpace), $(inVector) );
+]]>
+	</code>
+</node>

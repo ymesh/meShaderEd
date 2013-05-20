@@ -1,9 +1,9 @@
 <?xml version="1.0"?> 
 
-<node name="ntransform" author="mesh">
+<node name="ntransformTo" author="mesh">
 	<help>Transform a normal into a specific coordinate system.</help>
 	<input>
-		<property name="space" type="string" default="shader" detail="uniform"/>		
+		<property name="toSpace" type="string" default="shader" detail="uniform"/>		
 		<property name="inNormal" type="normal"/>				
 	</input>
 	<output>
@@ -11,7 +11,7 @@
 	</output>
 	<code>
 <![CDATA[
-$(outNormal) = transform($(space), $(inNormal));
+$(outNormal) = transform($(toSpace), $(inNormal));
 ]]>
 	</code>
 </node>

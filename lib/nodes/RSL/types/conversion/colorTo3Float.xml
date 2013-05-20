@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="compC" author="Alexei Puzikov">
+<node name="colorTo3Float" author="Alexei Puzikov">
 	<help>This function get individual color components.</help>
 	<input>
 		<property name="inColor" type="color"/>		

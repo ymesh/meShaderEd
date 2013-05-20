@@ -1,9 +1,9 @@
 <?xml version="1.0"?> 
 
-<node name="transform" author="Libero Spagnolini">
+<node name="transformTo" author="Libero Spagnolini">
 	<help>Transform a point into a specific coordinate system.</help>
 	<input>
-		<property name="space" type="string" default="shader"/>		
+		<property name="toSpace" type="string" default="shader"/>		
 		<property name="inPoint" type="point"/>				
 	</input>
 	<output>
@@ -11,7 +11,7 @@
 	</output>
 	<code>
 <![CDATA[
-$(outPoint) = transform($(space), $(inPoint));
+$(outPoint) = transform($(toSpace), $(inPoint));
 ]]>
 	</code>
 </node>
