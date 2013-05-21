@@ -5,7 +5,7 @@
 	<input>
 		<property name="fromSpace" type="string" default="current" detail="uniform"/>		
 		<property name="toSpace" type="string" default="shader" detail="uniform"/>		
-		<property name="inVector" type="vector"/>				
+		<property name="inVector" type="vector"/>
 	</input>
 	<output>
 		<property name="outVector" type="vector"/>		

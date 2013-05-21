@@ -1,13 +1,16 @@
 <?xml version="1.0"?> 
 
-<node name="displace" type="rsl_code" author="DRL">
-	<help>Simple displacement shader.</help>
+<node name="displaceVector" type="rsl_code" author="DRL">
+	<help>Vector displacement shader.</help>
 	<input>
 	  <property name="P" type="point" default="point (0)" />
 		<property name="N" type="normal" default="normal (0, 1, 0)" />
 		
 		<property name="Kdisp" type="float" default="1" detail="uniform"/>
-		<property name="inputDisp" type="float" default="0"/>
+		<property name="dispHeight" type="float" default="0"/>
+		<property name="dispVector" type="vector" default="vector(0)">
+			<help>Vector direction. You most likely would want to normalize it first.</help>
+		</property>
 		<property name="dispSpace" type="string" default="object" detail="uniform">
 			<help>The space that displacement is performed in. 
 			You may want to set it to "world" to ignore object scale.</help>
@@ -23,9 +26,8 @@
 	<code><![CDATA[
 normal $(Ndiff) = normalize( $(N) ) - normalize(Ng);
 $(outP) = transform( $(dispSpace), $(P) );
-$(outN) = normalize(ntransform( $(dispSpace), $(N) ));
 
-$(outP) += $(Kdisp) * $(inputDisp) * $(outN);
+$(outP) += $(Kdisp) * $(dispHeight) * $(dispVector);
 $(outP) = transform( $(dispSpace), "current", $(outP) );
 $(outN) = normalize(calculatenormal( $(outP) ));
 $(outN) += $(Ndiff);
