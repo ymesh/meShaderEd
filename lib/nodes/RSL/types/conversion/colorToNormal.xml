@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<node name="colorToNormal" type="rsl_code" author="DRL">
+	<help>Color to normal converter.</help>
+	<input>
+		<property name="inC" type="color" default="color(0)" />
+	</input>
+	<output>
+		<property name="outN type="normal" />
+	</output>
+	<code><![CDATA[
+$(outP) = normal($(inC));
+]]>
+	</code>
+</node>

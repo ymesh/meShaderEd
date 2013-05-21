@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<node name="colorToVector" type="rsl_code" author="DRL">
+	<help>Color to vector converter.</help>
+	<input>
+		<property name="inC" type="color" default="color(0)" />
+	</input>
+	<output>
+		<property name="outV" type="vector" />
+	</output>
+	<code><![CDATA[
+$(outV) = vector($(inC));
+]]>
+	</code>
+</node>
