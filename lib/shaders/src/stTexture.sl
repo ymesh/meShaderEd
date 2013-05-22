@@ -12,15 +12,15 @@ surface sttexture (string texturename = "") {
 #endif
 
 #ifdef BMRT
-  /* BMRT 2.6 and later  */  uniform string tn = concat (texturename, ".rdc");  /**/
+  /* BMRT 2.6 and later  */  uniform string tn = concat (texturename, ".tex");  /**/
 #endif
 
 #ifdef RDC
-  /* RDC 3.1.X and later  */  uniform string tn = concat (texturename, ".rdc");  /**/
+  /* RDC 3.1.X and later  */  uniform string tn = concat (texturename, ".map");  /**/
 #endif
 
 #ifdef AQSIS
-   uniform string tn = concat (texturename, ".rdc");
+   uniform string tn = concat (texturename, ".teq");
 #endif
 
 #ifdef DELIGHT

@@ -7,7 +7,7 @@ surface empty (
 		color basicColor    	=   color( 0.5, 0.6, 0.8 ); 
 		color arrayColor[2] 	=   {
 		    	    	    	    	color( 0.4, 0.2,  0.6 ),
-		    	    	    	    	color( 0.7, 0.8,  0.9 )
+		    	    	    	    	color( 1, 2.0, 3 )
 		    	    	    	    };
 		point basicPoint    	=   point( 7.1, 7.2, 7.3 );
 		point arrayPoint[3]     =   {

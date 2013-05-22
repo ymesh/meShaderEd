@@ -181,11 +181,12 @@ uniform float occ0_clamp = 1.000;
 	color	me_inShadowC0_inShadow = color( 0 );
 	color	me_inShadowC0_value = color( 0 );
 	uniform float me_inShadowC0_count = 0;
-	#ifndef AIR 
+#if defined(PRMAN) || defined(DELIGHT) 
   illuminance( me_inShadowC0_category, P, normalizeN0_Nn, radians( me_inShadowC0_angle ), "lightcache", "refresh" ) 
-  #else
+#else
+  P = P;
   illuminance( me_inShadowC0_category, P, normalizeN0_Nn, radians( me_inShadowC0_angle ) ) 
-  #endif
+#endif
   {
     lightsource( "__inShadowC", me_inShadowC0_inShadow ); 	
     me_inShadowC0_value += me_inShadowC0_inShadow;

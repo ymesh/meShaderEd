@@ -90,11 +90,11 @@ color diff_coloration = color(1.000,1.000,1.000);
 	
 	color diff_result = 0;
 	color diff_diffColor = 0;
-  #ifndef AIR             
-	illuminance ( diff_category, P, FaceForwardNormal0_fwN, PI/2, "lightcache", "refresh" ) 
-	#else
-	illuminance ( diff_category, P, FaceForwardNormal0_fwN, PI/2 ) 
-	#endif
+#if defined( PRMAN ) || defined( DELIGHT )             
+	illuminance ( diff_category, P, FaceForwardNormal0_fwN, PI/2, "lightcache", "refresh" )
+#else
+	illuminance ( diff_category, P, FaceForwardNormal0_fwN, PI/2 )
+#endif
 	{
 		float nondiff = 0;
 		lightsource( "__nondiffuse", nondiff );
@@ -119,12 +119,12 @@ color diff_coloration = color(1.000,1.000,1.000);
 	color	me_inShadowC_inShadow = color( 0 );
 	color	me_inShadowC_value = color( 0 );
 	uniform float me_inShadowC_count = 0;
-	#ifndef AIR
+#if defined( PRMAN ) || defined( DELIGHT )
   illuminance( me_inShadowC_category, P, normalizeN0_Nn, radians( me_inShadowC_angle ), "lightcache", "refresh" )  
   P = P; /* dirty light cache */
-  #else
+#else
   illuminance( me_inShadowC_category, P, normalizeN0_Nn, radians( me_inShadowC_angle ) )  
-  #endif
+#endif
   {
     lightsource( "__inShadowC", me_inShadowC_inShadow ); 	
     me_inShadowC_value += me_inShadowC_inShadow;

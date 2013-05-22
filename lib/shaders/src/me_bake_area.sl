@@ -20,11 +20,16 @@ surface me_bake_area(
   normal Nn = normalize(N);
   Oi = SurfaceOpacity;
   uniform string ChannelName = "_area";
-  float a = area(P, "dicing"); /* micropolygon area */
-  float opacity = 0.333333 * (Oi[0] + Oi[1] + Oi[2]); /* average opacity */
+ #ifndef AQSIS
+  float a = area ( P, "dicing" ); /* micropolygon area */
+  float opacity = 0.333333 * ( Oi[0] + Oi[1] + Oi[2] ); /*  average opacity */
+ #else
+  float a = 0;
+  float opacity = 0.333333 * ( comp ( Oi, 0 ) + comp ( Oi, 1 ) + comp ( Oi, 2 ) ); /*  average opacity */
+ #endif
   a *= opacity; /* reduce area if non-opaque */
   if (a > 0)
-  meBake3dFloat( P, Nn
+  meBake3dFloat ( P, Nn
   					  ,ChannelName            
   					  ,a
   					  ,PtcFile
