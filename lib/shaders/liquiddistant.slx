@@ -1,5 +1,5 @@
 lightsource
-AQSIS_V 1.4.2
+AQSIS_V 2
 
 
 segment Data
@@ -33,7 +33,7 @@ segment Init
 	pop lightcolor
 	pushis ""
 	pop shadowname
-	pushif 0.01
+	pushif 0.00999999978
 	pop shadowbias
 	pushif 0
 	pop shadowblur
@@ -79,7 +79,7 @@ segment Code
 	RS_PUSH
 	RS_GET
 	RS_JZ 2
-	pushif 0.2
+	pushif 0.200000003
 	pop factor
 :2
 	RS_INVERSE
@@ -136,7 +136,6 @@ segment Code
 	pushv shadowsamples
 	pushis "samples"
 	pushv Ps
-	pushif 0
 	pushv shadowname
 	pushif 8
 	shadow

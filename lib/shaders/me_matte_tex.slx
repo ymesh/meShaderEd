@@ -1,0 +1,1276 @@
+surface
+AQSIS_V 2
+
+
+segment Data
+
+USES 510332
+
+param uniform  float diff_Kd
+param uniform  float diff_atten
+param uniform  float diff_from
+param uniform  string me_inShadowC_category
+param uniform  float me_inShadowC_opacity
+param uniform  float me_inShadowC_angle
+param uniform  float me_inShadowC_invert
+param uniform  float occ_MaxSamples
+param uniform  float occ_MinSamples
+param uniform  float occ_MaxDist
+param uniform  float occ_SampleBase
+param uniform  float occ_Bias
+param uniform  string occ_HitMode
+param uniform  string occ_HitSides
+param uniform  float occ_MaxVar
+param uniform  float occ_MaxPixelDist
+param uniform  string occ_Distribution
+param uniform  float occ_FalloffMode
+param uniform  float occ_FalloffValue
+param uniform  float ST0_repeatS
+param uniform  float ST0_repeatT
+param uniform  float ST0_offsetS
+param uniform  float ST0_offsetT
+param uniform  float ST0_flipS
+param uniform  float ST0_flipT
+param uniform  color image_defColor
+param uniform  string image_File
+param uniform  float image_fillOutside
+param uniform  float image_alphaOp
+param uniform  string image_filter
+param uniform  float image_SFilt
+param uniform  float image_TFilt
+param uniform  float image_lerp
+param uniform  float me_diff_ibi_dBlur
+param uniform  float me_diff_ibi_Kd
+param uniform  float diff_ibi_Saturation_value
+param uniform  float spec_ibi1_rBlur
+param uniform  float spec_ibi1_KrMin
+param uniform  float spec_ibi1_KrMax
+param uniform  float spec_ibi1_IOR
+param uniform  float spec_ibi_Saturation_value
+param uniform  float comp_diff_mult
+param uniform  float comp_diff_ibi_mult
+param uniform  float comp_spec_ibi_mult
+param uniform  float comp_occ_mult
+param uniform  float comp_shadow_mult
+param uniform  float me_matte_tex_mask
+param uniform  color me_matte_tex_mask_C
+output param varying  vector __L
+output param varying  float __blur
+output param varying  color __color
+output param varying  color __diff
+output param varying  color __spec
+output param varying  color __diff_ibi
+output param varying  color __spec_ibi
+output param varying  color __shadow
+output param varying  color __reflect
+output param varying  color __sss
+output param varying  color __pstrace
+output param varying  float __occ
+output param varying  color __occ_C
+output param varying  float __mask
+output param varying  color __mask_C
+varying  vector normalizeI1_In
+varying  normal normalizeN0_Nn
+varying  normal FaceForwardNormal0_fwN
+varying  string diff_category
+varying  float diff_to
+varying  color diff_coloration
+varying  color diff_result
+varying  color diff_diffColor
+varying  float b0::nondiff
+varying  float diff_hueComp
+varying  float diff_satComp
+varying  float diff_lumiComp
+varying  color diff_hsvDiff
+varying  color me_inShadowC_result
+varying  color me_inShadowC_inShadow
+varying  color me_inShadowC_value
+uniform  float me_inShadowC_count
+varying  normal ShadingNormal1_NS
+uniform  float ShadingNormal1_depth
+uniform  float b2::sides
+uniform  float occ_Invert
+uniform  float occ_Adaptive
+uniform  vector occ_SkyAxis
+varying  float occ_ConeAngle
+uniform  float occ_MaxError
+uniform  string occ_EnvMap
+uniform  string occ_EnvSpace
+uniform  float occ_BrtWarp
+uniform  string occ_coordsys
+uniform  string occ_subset
+uniform  string occ_label
+uniform  float occ_seed
+uniform  float occ_pointbased
+uniform  string occ_PtcFile
+uniform  float occ_MaxSolidAngle
+uniform  float occ_clamp
+varying  color occ_env_color
+varying  vector occ_bent_dir
+varying  float occ_result
+varying  color floatToColor0_outColor
+uniform  float ST0_angle
+varying  point ST0_Q
+varying  vector ST0_dQu
+varying  vector ST0_dQv
+varying  color image_colorResult
+varying  float image_floatResult
+varying  float image_x
+varying  float image_y
+uniform  float b3::b4::nChannels
+varying  color comp_diff_outColor
+varying  string me_diff_ibi_category
+varying  color me_diff_ibi_result
+varying  color clampC0_min
+varying  color clampC0_max
+varying  color clampC0_result
+varying  float diff_ibi_Saturation_lum
+varying  color diff_ibi_Saturation_result
+varying  color comp_diff_ibi_outColor
+varying  string spec_ibi1_category
+varying  color spec_ibi1_result
+varying  float spec_ibi1_Kr
+varying  vector spec_ibi1_R
+varying  vector spec_ibi1_V
+varying  vector b10::T
+varying  float b10::Kt
+varying  float b10::f
+varying  float spec_ibi_Saturation_lum
+varying  color spec_ibi_Saturation_result
+varying  color comp_spec_ibi_outColor
+varying  color comp_occ_outColor
+varying  color comp_shadow_outColor
+varying  normal psTrace0_Nf
+varying  normal psTrace0_Nc
+varying  color psTrace0_out
+varying  color me_matte_tex_Oi
+varying  color me_matte_tex_spec
+varying  color me_matte_tex_reflect
+varying  color me_matte_tex_sss
+varying  color me_matte_tex_occ_C
+
+
+segment Init
+	pushif 1
+	pop diff_Kd
+	pushif 1
+	pop diff_atten
+	pushif 0
+	pop diff_from
+	pushis ""
+	pop me_inShadowC_category
+	pushif 1
+	pop me_inShadowC_opacity
+	pushif 90
+	pop me_inShadowC_angle
+	pushif 0
+	pop me_inShadowC_invert
+	pushif 256
+	pop occ_MaxSamples
+	pushif 128
+	pop occ_MinSamples
+	pushif 15
+	pop occ_MaxDist
+	pushif 0
+	pop occ_SampleBase
+	pushif 0.0500000007
+	pop occ_Bias
+	pushis "default"
+	pop occ_HitMode
+	pushis "both"
+	pop occ_HitSides
+	pushif 0.150000006
+	pop occ_MaxVar
+	pushif 0
+	pop occ_MaxPixelDist
+	pushis "cosine"
+	pop occ_Distribution
+	pushif 0
+	pop occ_FalloffMode
+	pushif 0
+	pop occ_FalloffValue
+	pushif 1
+	pop ST0_repeatS
+	pushif 1
+	pop ST0_repeatT
+	pushif 0
+	pop ST0_offsetS
+	pushif 0
+	pop ST0_offsetT
+	pushif 0
+	pop ST0_flipS
+	pushif 0
+	pop ST0_flipT
+	pushif 1
+	pushif 1
+	pushif 1
+	settc
+	pop image_defColor
+	pushis ""
+	pop image_File
+	pushif 0
+	pop image_fillOutside
+	pushif 0
+	pop image_alphaOp
+	pushis "gaussian"
+	pop image_filter
+	pushif 1
+	pop image_SFilt
+	pushif 1
+	pop image_TFilt
+	pushif 1
+	pop image_lerp
+	pushif 0.699999988
+	pop me_diff_ibi_dBlur
+	pushif 0.800000012
+	pop me_diff_ibi_Kd
+	pushif 1
+	pop diff_ibi_Saturation_value
+	pushif 0.100000001
+	pop spec_ibi1_rBlur
+	pushif 0
+	pop spec_ibi1_KrMin
+	pushif 0.25
+	pop spec_ibi1_KrMax
+	pushif 1.5
+	pop spec_ibi1_IOR
+	pushif 1
+	pop spec_ibi_Saturation_value
+	pushif 1
+	pop comp_diff_mult
+	pushif 1
+	pop comp_diff_ibi_mult
+	pushif 1
+	pop comp_spec_ibi_mult
+	pushif 1
+	pop comp_occ_mult
+	pushif 1
+	pop comp_shadow_mult
+	pushif 1
+	pop me_matte_tex_mask
+	pushif 0
+	pushif 0
+	pushif 1
+	settc
+	pop me_matte_tex_mask_C
+	pushif 1
+	pushif 0
+	pushif 0
+	settv
+	pop __L
+	pushif 0
+	pop __blur
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __color
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __diff
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __spec
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __diff_ibi
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __spec_ibi
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __shadow
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __reflect
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __sss
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __pstrace
+	pushif 0
+	pop __occ
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __occ_C
+	pushif 1
+	pop __mask
+	pushif 0
+	pushif 0
+	pushif 1
+	settc
+	pop __mask_C
+
+
+segment Code
+	pushv I
+	normalize
+	pop normalizeI1_In
+	pushv N
+	normalize
+	pop normalizeN0_Nn
+	pushv normalizeN0_Nn
+	pushv normalizeI1_In
+	pushv normalizeN0_Nn
+	faceforward2
+	pop FaceForwardNormal0_fwN
+	pushis ""
+	pop diff_category
+	pushif 1
+	pop diff_to
+	pushif 1
+	pushif 1
+	pushif 1
+	settc
+	pop diff_coloration
+	pushif 0
+	setfc
+	pop diff_result
+	pushif 0
+	setfc
+	pop diff_diffColor
+	pushv FaceForwardNormal0_fwN
+	pushv P
+	init_illuminance2
+	jz 1
+:0
+	S_CLEAR
+	pushif 2
+	pushif 3.14159274
+	divff
+	pushv FaceForwardNormal0_fwN
+	pushv P
+	pushv diff_category
+	illuminance2
+	S_JZ 2
+	RS_PUSH
+	RS_GET
+	pushif 0
+	pop b0::nondiff
+	pushis "__nondiffuse"
+	lightsource b0::nondiff
+	drop
+	S_CLEAR
+	pushif 1
+	pushv b0::nondiff
+	lsff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 3
+	pushv L
+	normalize
+	pushv FaceForwardNormal0_fwN
+	dotpp
+	setfc
+	pushv Cl
+	pushv b0::nondiff
+	pushif 1
+	subff
+	mulfc
+	mulcc
+	pushv diff_diffColor
+	addcc
+	pop diff_diffColor
+:3
+	RS_POP
+	RS_POP
+:2
+	advance_illuminance
+	jnz 0
+:1
+	pushif 0
+	pushv diff_diffColor
+	pushis "hsv"
+	ctransform
+	comp
+	pop diff_hueComp
+	pushif 1
+	pushv diff_diffColor
+	pushis "hsv"
+	ctransform
+	comp
+	pop diff_satComp
+	pushif 2
+	pushv diff_diffColor
+	pushis "hsv"
+	ctransform
+	comp
+	pop diff_lumiComp
+	pushv diff_atten
+	pushv diff_lumiComp
+	pow
+	pushv diff_from
+	pushv diff_to
+	subff
+	mulff
+	pushv diff_from
+	addff
+	pushv diff_satComp
+	pushv diff_hueComp
+	settc
+	pushis "rgb"
+	pushis "hsv"
+	ctransform2
+	pop diff_hsvDiff
+	pushv diff_hsvDiff
+	pushv diff_Kd
+	setfc
+	pushv diff_coloration
+	mulcc
+	mulcc
+	pop diff_result
+	pushif 0
+	setfc
+	pop me_inShadowC_result
+	pushif 0
+	setfc
+	pop me_inShadowC_inShadow
+	pushif 0
+	setfc
+	pop me_inShadowC_value
+	pushif 0
+	pop me_inShadowC_count
+	pushv normalizeN0_Nn
+	pushv P
+	init_illuminance2
+	jz 5
+:4
+	S_CLEAR
+	pushv me_inShadowC_angle
+	radians
+	pushv normalizeN0_Nn
+	pushv P
+	pushv me_inShadowC_category
+	illuminance2
+	S_JZ 6
+	RS_PUSH
+	RS_GET
+	pushis "__inShadowC"
+	lightsource me_inShadowC_inShadow
+	drop
+	pushv me_inShadowC_inShadow
+	pushv me_inShadowC_value
+	addcc
+	pop me_inShadowC_value
+	pushif 1
+	pushv me_inShadowC_count
+	addff
+	pop me_inShadowC_count
+	RS_POP
+:6
+	advance_illuminance
+	jnz 4
+:5
+	pushv me_inShadowC_opacity
+	setfc
+	pushif 1
+	setfc
+	pushif 0
+	setfc
+	pushv me_inShadowC_value
+	cclamp
+	mulcc
+	pop me_inShadowC_result
+	S_CLEAR
+	pushv me_inShadowC_invert
+	pushif 0
+	neff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 7
+	pushv me_inShadowC_result
+	pushif 1
+	subfc
+	pop me_inShadowC_result
+:7
+	RS_POP
+	pushv normalizeN0_Nn
+	pop ShadingNormal1_NS
+	pushis "depth"
+	rayinfo ShadingNormal1_depth
+	drop
+	S_CLEAR
+	pushif 0
+	pushv ShadingNormal1_depth
+	gtff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 9
+	pushv normalizeN0_Nn
+	pushv normalizeI1_In
+	pushv normalizeN0_Nn
+	faceforward2
+	pop ShadingNormal1_NS
+:9
+	RS_INVERSE
+	RS_JZ 8
+	pushif 2
+	pop b2::sides
+	pushis "Sides"
+	attribute b2::sides
+	drop
+	S_CLEAR
+	pushif 2
+	pushv b2::sides
+	eqff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 10
+	pushv normalizeN0_Nn
+	pushv normalizeI1_In
+	pushv normalizeN0_Nn
+	faceforward2
+	pop ShadingNormal1_NS
+:10
+	RS_POP
+:8
+	RS_POP
+	pushif 0
+	pop occ_Invert
+	pushif 1
+	pop occ_Adaptive
+	pushif 0
+	pushif 1
+	pushif 0
+	settv
+	pop occ_SkyAxis
+	pushif 90
+	pop occ_ConeAngle
+	pushif 1
+	negf
+	pop occ_MaxError
+	pushis ""
+	pop occ_EnvMap
+	pushis ""
+	pop occ_EnvSpace
+	pushif 1
+	pop occ_BrtWarp
+	pushis ""
+	pop occ_coordsys
+	pushis ""
+	pop occ_subset
+	pushis ""
+	pop occ_label
+	pushif 1
+	negf
+	pop occ_seed
+	pushif 0
+	pop occ_pointbased
+	pushis ""
+	pop occ_PtcFile
+	pushif 0.100000001
+	pop occ_MaxSolidAngle
+	pushif 1
+	pop occ_clamp
+	pushif 0
+	setfc
+	pop occ_env_color
+	pushif 0
+	setfv
+	pop occ_bent_dir
+	pushif 0
+	pop occ_result
+	pushv occ_bent_dir
+	pushis "environmentdir"
+	pushv occ_env_color
+	pushis "environmentcolor"
+	pushv occ_clamp
+	pushis "clamp"
+	pushv occ_MaxSolidAngle
+	pushis "maxsolidangle"
+	pushv occ_PtcFile
+	pushis "filename"
+	pushv occ_pointbased
+	pushis "pointbased"
+	pushv occ_label
+	pushis "label"
+	pushv occ_subset
+	pushis "subset"
+	pushv occ_coordsys
+	pushis "coordsystem"
+	pushv occ_EnvSpace
+	pushis "environmentspace"
+	pushv occ_EnvMap
+	pushis "environmentmap"
+	pushv occ_FalloffValue
+	pushis "falloff"
+	pushv occ_FalloffMode
+	pushis "falloffmode"
+	pushv occ_Distribution
+	pushis "distribution"
+	pushv occ_BrtWarp
+	pushis "brightnesswarp"
+	pushv occ_seed
+	pushis "seed"
+	pushv occ_MaxPixelDist
+	pushis "maxpixeldist"
+	pushv occ_MaxError
+	pushis "maxerror"
+	pushv occ_MaxVar
+	pushis "maxvariation"
+	pushv occ_HitSides
+	pushis "hitsides"
+	pushv occ_HitMode
+	pushis "hitmode"
+	pushv occ_Bias
+	pushis "bias"
+	pushv occ_SampleBase
+	pushis "samplebase"
+	pushv occ_ConeAngle
+	radians
+	pushis "coneangle"
+	pushv occ_MaxDist
+	pushis "maxdist"
+	pushv occ_MinSamples
+	pushis "minsamples"
+	pushv occ_Adaptive
+	pushis "adaptive"
+	pushv occ_MaxSamples
+	pushv ShadingNormal1_NS
+	pushv P
+	pushif 54
+	occlusion_rt
+	pop occ_result
+	S_CLEAR
+	pushif 1
+	pushv occ_Invert
+	eqff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 11
+	pushv occ_result
+	pushif 1
+	subff
+	pop occ_result
+:11
+	RS_POP
+	pushv occ_result
+	pushv occ_result
+	pushv occ_result
+	settc
+	pop floatToColor0_outColor
+	pushif 0
+	pop ST0_angle
+	pushv ST0_offsetS
+	pushv s
+	pushv ST0_repeatS
+	mulff
+	addff
+	pushv ST0_Q
+	setxcomp
+	pushv ST0_offsetT
+	pushv t
+	pushv ST0_repeatT
+	mulff
+	addff
+	pushv ST0_Q
+	setycomp
+	pushif 0
+	pushv ST0_Q
+	setzcomp
+	S_CLEAR
+	pushif 0
+	pushv ST0_angle
+	neff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 12
+	pushif 1
+	pushif 0
+	pushif 0
+	settp
+	pushif 0
+	pushif 0
+	pushif 0
+	settp
+	pushv ST0_angle
+	radians
+	pushv ST0_Q
+	rotate
+	pop ST0_Q
+:12
+	RS_POP
+	pushv du
+	setfv
+	pushv ST0_Q
+	pDu
+	mulpp
+	pop ST0_dQu
+	pushv dv
+	setfv
+	pushv ST0_Q
+	pDv
+	mulpp
+	pop ST0_dQv
+	S_CLEAR
+	pushif 1
+	pushv ST0_flipS
+	eqff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 13
+	pushv ST0_Q
+	xcomp
+	pushif 1
+	subff
+	pushv ST0_Q
+	setxcomp
+:13
+	RS_POP
+	S_CLEAR
+	pushif 1
+	pushv ST0_flipT
+	eqff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 14
+	pushv ST0_Q
+	ycomp
+	pushif 1
+	subff
+	pushv ST0_Q
+	setycomp
+:14
+	RS_POP
+	pushv image_defColor
+	pop image_colorResult
+	pushif 1
+	pop image_floatResult
+	pushv ST0_Q
+	xcomp
+	pop image_x
+	pushv ST0_Q
+	ycomp
+	pop image_y
+	S_CLEAR
+	pushis ""
+	pushv image_File
+	ness
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 15
+	pushv image_lerp
+	pushis "lerp"
+	pushv image_filter
+	pushis "filter"
+	pushv image_TFilt
+	pushis "twidth"
+	pushv image_SFilt
+	pushis "swidth"
+	pushv image_y
+	pushv image_x
+	pushv image_File
+	pushif 8
+	ctexture2
+	pop image_colorResult
+	S_CLEAR
+	pushif 0
+	pushv image_alphaOp
+	neff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 16
+	pushif 3
+	pop b3::b4::nChannels
+	pushis "channels"
+	pushv image_File
+	textureinfo b3::b4::nChannels
+	drop
+	S_CLEAR
+	pushif 3
+	pushv b3::b4::nChannels
+	gtff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 17
+	pushif 3
+	pushis "channel"
+	pushv image_lerp
+	pushis "lerp"
+	pushv image_filter
+	pushis "filter"
+	pushv image_TFilt
+	pushis "twidth"
+	pushv image_SFilt
+	pushis "swidth"
+	pushv image_y
+	pushv image_x
+	pushv image_File
+	pushif 10
+	ftexture2
+	pop image_floatResult
+	S_CLEAR
+	pushif 2
+	pushv image_alphaOp
+	eqff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 18
+	pushv image_floatResult
+	setfc
+	pushv image_colorResult
+	mulcc
+	pop image_colorResult
+:18
+	RS_POP
+	S_CLEAR
+	pushif 3
+	pushv image_alphaOp
+	eqff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 19
+	S_CLEAR
+	pushif 0
+	pushv image_floatResult
+	neff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 20
+	pushv image_floatResult
+	setfc
+	pushv image_colorResult
+	divcc
+	pop image_colorResult
+	pushif 1
+	setfc
+	pushif 0
+	setfc
+	pushv image_colorResult
+	cclamp
+	pop image_colorResult
+:20
+	RS_POP
+:19
+	RS_POP
+:17
+	RS_POP
+	pushv image_floatResult
+	pushv image_colorResult
+	pushv image_defColor
+	cmix
+	pop image_colorResult
+:16
+	RS_POP
+	S_CLEAR
+	pushif 1
+	pushv image_fillOutside
+	eqff
+	pushif 0
+	pushv image_x
+	lsff
+	pushif 1
+	pushv image_x
+	gtff
+	lor
+	pushif 0
+	pushv image_y
+	lsff
+	lor
+	pushif 1
+	pushv image_y
+	gtff
+	lor
+	land
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 21
+	pushv image_defColor
+	pop image_colorResult
+:21
+	RS_POP
+:15
+	RS_POP
+	pushv diff_result
+	pushv comp_diff_mult
+	mulfc
+	pushv comp_diff_mult
+	pushif 1
+	subff
+	addfc
+	pushv image_colorResult
+	mulcc
+	pop comp_diff_outColor
+	pushis "environment"
+	pop me_diff_ibi_category
+	pushv normalizeN0_Nn
+	pop __L
+	pushv me_diff_ibi_dBlur
+	pop __blur
+	pushif 0
+	setfc
+	pop me_diff_ibi_result
+	pushis "lightcache"
+	pushv P
+	init_illuminance2
+	jz 23
+:22
+	S_CLEAR
+	pushis "refresh"
+	pushis "lightcache"
+	pushv P
+	pushv me_diff_ibi_category
+	illuminance2
+	S_JZ 24
+	RS_PUSH
+	RS_GET
+	pushv Cl
+	pushv me_diff_ibi_result
+	addcc
+	pop me_diff_ibi_result
+	RS_POP
+:24
+	advance_illuminance
+	jnz 22
+:23
+	pushv me_diff_ibi_Kd
+	setfc
+	pushv me_diff_ibi_result
+	mulcc
+	pop me_diff_ibi_result
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop clampC0_min
+	pushif 1
+	pushif 1
+	pushif 1
+	settc
+	pop clampC0_max
+	pushv clampC0_max
+	pushv clampC0_min
+	pushv me_diff_ibi_result
+	cclamp
+	pop clampC0_result
+	pushif 2
+	pushv clampC0_result
+	comp
+	pushif 0.0720999986
+	mulff
+	pushif 1
+	pushv clampC0_result
+	comp
+	pushif 0.715399981
+	mulff
+	pushif 0
+	pushv clampC0_result
+	comp
+	pushif 0.212500006
+	mulff
+	addff
+	addff
+	pop diff_ibi_Saturation_lum
+	pushv diff_ibi_Saturation_value
+	pushv clampC0_result
+	pushv diff_ibi_Saturation_lum
+	setfc
+	cmix
+	pop diff_ibi_Saturation_result
+	pushv diff_ibi_Saturation_result
+	pushv comp_diff_ibi_mult
+	mulfc
+	pushv comp_diff_ibi_mult
+	pushif 1
+	subff
+	addfc
+	pushv comp_diff_outColor
+	mulcc
+	pop comp_diff_ibi_outColor
+	pushis "environment"
+	pop spec_ibi1_category
+	pushif 0
+	setfc
+	pop spec_ibi1_result
+	pushv spec_ibi1_KrMax
+	pop spec_ibi1_Kr
+	pushif 0
+	setfv
+	pop spec_ibi1_R
+	pushv I
+	normalize
+	pop spec_ibi1_V
+	S_CLEAR
+	pushif 0
+	pushv spec_ibi1_IOR
+	gtff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 26
+	pushif 9.99999975e-005
+	pushv spec_ibi1_IOR
+	pushif 0
+	max
+	pop b10::f
+	pushv b10::T
+	pushv spec_ibi1_R
+	pushv b10::Kt
+	pushv spec_ibi1_Kr
+	S_CLEAR
+	pushif 0
+	pushv ShadingNormal1_NS
+	pushv I
+	dotpp
+	lsff
+	dup
+	S_GET
+	RS_PUSH
+	RS_GET
+	pushv b10::f
+	pushif 1
+	divff
+	RS_INVERSE
+	pushv spec_ibi1_IOR
+	RS_POP
+	mergef
+	pushv ShadingNormal1_NS
+	pushv spec_ibi1_V
+	fresnel2
+	pushv spec_ibi1_Kr
+	pushv spec_ibi1_KrMax
+	pushv spec_ibi1_KrMin
+	fmix
+	pop spec_ibi1_Kr
+:26
+	RS_INVERSE
+	RS_JZ 25
+	pushv ShadingNormal1_NS
+	pushv spec_ibi1_V
+	reflect
+	pop spec_ibi1_R
+:25
+	RS_POP
+	pushv spec_ibi1_R
+	pop __L
+	pushv spec_ibi1_rBlur
+	pop __blur
+	pushis "lightcache"
+	pushv P
+	init_illuminance2
+	jz 28
+:27
+	S_CLEAR
+	pushis "refresh"
+	pushis "lightcache"
+	pushv P
+	pushv spec_ibi1_category
+	illuminance2
+	S_JZ 29
+	RS_PUSH
+	RS_GET
+	pushv Cl
+	pushv spec_ibi1_result
+	addcc
+	pop spec_ibi1_result
+	RS_POP
+:29
+	advance_illuminance
+	jnz 27
+:28
+	pushv spec_ibi1_Kr
+	setfc
+	pushv spec_ibi1_result
+	mulcc
+	pop spec_ibi1_result
+	pushif 2
+	pushv spec_ibi1_result
+	comp
+	pushif 0.0720999986
+	mulff
+	pushif 1
+	pushv spec_ibi1_result
+	comp
+	pushif 0.715399981
+	mulff
+	pushif 0
+	pushv spec_ibi1_result
+	comp
+	pushif 0.212500006
+	mulff
+	addff
+	addff
+	pop spec_ibi_Saturation_lum
+	pushv spec_ibi_Saturation_value
+	pushv spec_ibi1_result
+	pushv spec_ibi_Saturation_lum
+	setfc
+	cmix
+	pop spec_ibi_Saturation_result
+	pushv spec_ibi_Saturation_result
+	pushv comp_spec_ibi_mult
+	mulfc
+	pushv comp_diff_ibi_outColor
+	addcc
+	pop comp_spec_ibi_outColor
+	pushv floatToColor0_outColor
+	pushif 1
+	subfc
+	pushv comp_occ_mult
+	mulfc
+	pushv comp_occ_mult
+	pushif 1
+	subff
+	addfc
+	pushv comp_spec_ibi_outColor
+	mulcc
+	pop comp_occ_outColor
+	pushv me_inShadowC_result
+	pushif 1
+	subfc
+	pushv comp_shadow_mult
+	mulfc
+	pushv comp_shadow_mult
+	pushif 1
+	subff
+	addfc
+	pushv comp_occ_outColor
+	mulcc
+	pop comp_shadow_outColor
+	pushif 0
+	setfc
+	pop psTrace0_out
+	pushv I
+	pushv N
+	normalize
+	faceforward
+	pop psTrace0_Nf
+	pushif 0
+	pushif 0
+	pushif 0
+	settp
+	pushis "current"
+	pushis "camera"
+	transform2
+	pushv psTrace0_Nf
+	addpp
+	pushis "camera"
+	transform
+	pop psTrace0_Nc
+	pushv psTrace0_Nc
+	normalize
+	pop psTrace0_Nc
+	pushif 1
+	pushif 0
+	pushif 2
+	pushv psTrace0_Nc
+	xcomp
+	divff
+	pushif 0.5
+	subff
+	clamp
+	pushif 0
+	pushv psTrace0_out
+	setcomp
+	pushif 1
+	pushif 0
+	pushif 2
+	pushv psTrace0_Nc
+	ycomp
+	divff
+	pushif 0.5
+	addff
+	clamp
+	pushif 1
+	pushv psTrace0_out
+	setcomp
+	pushif 1
+	pushif 0
+	pushv psTrace0_Nc
+	zcomp
+	abs
+	clamp
+	pushif 2
+	pushv psTrace0_out
+	setcomp
+	pushif 1
+	pushif 1
+	pushif 1
+	settc
+	pop me_matte_tex_Oi
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_matte_tex_spec
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_matte_tex_reflect
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_matte_tex_sss
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_matte_tex_occ_C
+	pushv me_matte_tex_Oi
+	pushv comp_shadow_outColor
+	mulcc
+	pop Ci
+	pushv me_matte_tex_Oi
+	pop Oi
+	pushv image_colorResult
+	pop __color
+	pushv diff_result
+	pop __diff
+	pushv me_matte_tex_spec
+	pop __spec
+	pushv diff_ibi_Saturation_result
+	pop __diff_ibi
+	pushv spec_ibi_Saturation_result
+	pop __spec_ibi
+	pushv me_inShadowC_result
+	pop __shadow
+	pushv me_matte_tex_reflect
+	pop __reflect
+	pushv me_matte_tex_sss
+	pop __sss
+	pushv psTrace0_out
+	pop __pstrace
+	pushv occ_result
+	pop __occ
+	pushv me_matte_tex_occ_C
+	pop __occ_C
+	pushv me_matte_tex_mask
+	pop __mask
+	pushv me_matte_tex_mask_C
+	pop __mask_C

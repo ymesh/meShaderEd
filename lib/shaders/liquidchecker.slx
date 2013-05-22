@@ -1,5 +1,5 @@
 surface
-AQSIS_V 1.6.0
+AQSIS_V 2
 
 
 segment Data
@@ -8,12 +8,12 @@ USES 442378
 
 param uniform  float frequency
 param uniform  float mode
-varying  color b0::a
-varying  color b0::b
-varying  float b0::ss
-varying  float b0::tt
-varying  float b0::x
-varying  float b0::y
+varying  color b9::a
+varying  color b9::b
+varying  float b9::ss
+varying  float b9::tt
+varying  float b9::x
+varying  float b9::y
 
 
 segment Init
@@ -32,61 +32,61 @@ segment Code
 	RS_PUSH
 	RS_GET
 	RS_JZ 0
-	pushif 0.33
+	pushif 0.330000013
 	setfc
-	pop b0::a
-	pushif 0.66
+	pop b9::a
+	pushif 0.660000026
 	setfc
-	pop b0::b
+	pop b9::b
 	pushv frequency
 	pushv s
 	mulff
-	pop b0::ss
+	pop b9::ss
 	pushv frequency
 	pushv t
 	mulff
-	pop b0::tt
+	pop b9::tt
 	pushif 1
 	pushif 0.5
-	pushv b0::ss
+	pushv b9::ss
 	subff
 	mod
-	pop b0::x
+	pop b9::x
 	pushif 1
 	pushif 0.5
-	pushv b0::tt
+	pushv b9::tt
 	subff
 	mod
-	pop b0::y
+	pop b9::y
 	pushv du
-	pushv b0::x
+	pushv b9::x
 	addff
-	pushv b0::x
+	pushv b9::x
 	pushif 0.5
 	pushif 0
 	filterstep2
-	pop b0::x
+	pop b9::x
 	pushv du
-	pushv b0::y
+	pushv b9::y
 	addff
-	pushv b0::y
+	pushv b9::y
 	pushif 0.5
 	pushif 0
 	filterstep2
-	pop b0::y
+	pop b9::y
 	pushv Os
 	pop Oi
-	pushif 0.8
-	pushif 0.85
+	pushif 0.800000012
+	pushif 0.850000024
 	setfc
-	pushv b0::y
-	pushv b0::x
+	pushv b9::y
+	pushv b9::x
 	setfc
-	pushv b0::b
+	pushv b9::b
 	subcc
-	pushv b0::x
+	pushv b9::x
 	setfc
-	pushv b0::a
+	pushv b9::a
 	mulcc
 	cmix
 	cmix

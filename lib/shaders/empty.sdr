@@ -4,7 +4,7 @@ surface
 uniform	float	basicFloat	=	0.123
 uniform	float	arrayFloat[3]	=	[ 0.5 1.5 3.0  ]
 uniform	color	basicColor	=	 [ 0.5 0.6 0.8 ]
-uniform	color	arrayColor[2]	=	[  [ 0.4 0.2 0.6 ]  [ 0.7 0.8 0.9 ]  ]
+uniform	color	arrayColor[2]	=	[  [ 0.4 0.2 0.6 ]  [ 1 2.0 3 ]  ]
 uniform	point	basicPoint	=	 [ 7.1 7.2 7.3 ]
 uniform	point	arrayPoint[3]	=	[  [ 1.1 1.2 1.3 ]  [ 2.1 2.2 2.3 ]  [ 3.1 3.2 3.3 ]  ]
 uniform	vector	basicVector	=	 [ 8.1 8.2 8.3 ]
@@ -24,7 +24,7 @@ uniform	matrix	temporary_1
 	ftoa               arrayFloat 2 3.0
 	vfromf            	temporary_0 0.4 0.2 0.6
 	vtoa               arrayColor 0 temporary_0
-	vfromf            	temporary_0 0.7 0.8 0.9
+	vfromf            	temporary_0 1 2.0 3
 	vtoa               arrayColor 1 temporary_0
 	vfromf            	temporary_0 1.1 1.2 1.3
 	vtoa               arrayPoint 0 temporary_0

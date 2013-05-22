@@ -1,5 +1,5 @@
 lightsource
-AQSIS_V 1.4.2
+AQSIS_V 2
 
 
 segment Data
@@ -27,14 +27,14 @@ output param varying  color __shadowC
 output param varying  color __unshadowed_Cl
 output param uniform  float __nondiffuse
 output param uniform  float __nonspecular
-varying  vector b0::b2::Lworld
-varying  float b0::b2::Lx
-varying  float b0::b2::LxAbs
-varying  float b0::b2::Ly
-varying  float b0::b2::LyAbs
-varying  float b0::b2::Lz
-varying  float b0::b2::LzAbs
-uniform  float b0::b2::shadowsize[2]
+varying  vector b16::b18::Lworld
+varying  float b16::b18::Lx
+varying  float b16::b18::LxAbs
+varying  float b16::b18::Ly
+varying  float b16::b18::LyAbs
+varying  float b16::b18::Lz
+varying  float b16::b18::LzAbs
+uniform  float b16::b18::shadowsize[2]
 
 
 segment Init
@@ -57,7 +57,7 @@ segment Init
 	pop shadownamepz
 	pushis ""
 	pop shadownamenz
-	pushif 0.01
+	pushif 0.00999999978
 	pop shadowbias
 	pushif 0
 	pop shadowblur
@@ -113,7 +113,7 @@ segment Code
 	pushv shadowbias
 	pushis "bias"
 	pushv shadowblur
-	pushif 0.2
+	pushif 0.200000003
 	pushv shadowfiltersize
 	mulff
 	addff
@@ -121,7 +121,6 @@ segment Code
 	pushv shadowsamples
 	pushis "samples"
 	pushv Ps
-	pushif 0
 	pushv shadownamepx
 	pushif 8
 	shadow
@@ -133,31 +132,31 @@ segment Code
 	pushv L
 	pushis "world"
 	vtransform
-	pop b0::b2::Lworld
-	pushv b0::b2::Lworld
+	pop b16::b18::Lworld
+	pushv b16::b18::Lworld
 	xcomp
-	pop b0::b2::Lx
-	pushv b0::b2::Lx
+	pop b16::b18::Lx
+	pushv b16::b18::Lx
 	abs
-	pop b0::b2::LxAbs
-	pushv b0::b2::Lworld
+	pop b16::b18::LxAbs
+	pushv b16::b18::Lworld
 	ycomp
-	pop b0::b2::Ly
-	pushv b0::b2::Ly
+	pop b16::b18::Ly
+	pushv b16::b18::Ly
 	abs
-	pop b0::b2::LyAbs
-	pushv b0::b2::Lworld
+	pop b16::b18::LyAbs
+	pushv b16::b18::Lworld
 	zcomp
-	pop b0::b2::Lz
-	pushv b0::b2::Lz
+	pop b16::b18::Lz
+	pushv b16::b18::Lz
 	abs
-	pop b0::b2::LzAbs
+	pop b16::b18::LzAbs
 	S_CLEAR
-	pushv b0::b2::LyAbs
-	pushv b0::b2::LxAbs
+	pushv b16::b18::LyAbs
+	pushv b16::b18::LxAbs
 	gtff
-	pushv b0::b2::LzAbs
-	pushv b0::b2::LxAbs
+	pushv b16::b18::LzAbs
+	pushv b16::b18::LxAbs
 	gtff
 	land
 	S_GET
@@ -166,7 +165,7 @@ segment Code
 	RS_JZ 5
 	S_CLEAR
 	pushif 0
-	pushv b0::b2::Lx
+	pushv b16::b18::Lx
 	gtff
 	pushis ""
 	pushv shadownamepx
@@ -178,7 +177,7 @@ segment Code
 	RS_JZ 7
 	pushis "resolution"
 	pushv shadownamepx
-	textureinfo b0::b2::shadowsize
+	textureinfo b16::b18::shadowsize
 	drop
 	pushif 1
 	pushis "width"
@@ -186,7 +185,7 @@ segment Code
 	pushis "bias"
 	pushv shadowblur
 	pushif 0
-	ipushv b0::b2::shadowsize
+	ipushv b16::b18::shadowsize
 	pushif 1
 	pushv shadowfiltersize
 	mulff
@@ -196,7 +195,6 @@ segment Code
 	pushv shadowsamples
 	pushis "samples"
 	pushv Ps
-	pushif 0
 	pushv shadownamepx
 	pushif 8
 	shadow
@@ -214,7 +212,7 @@ segment Code
 	RS_JZ 8
 	pushis "resolution"
 	pushv shadownamenx
-	textureinfo b0::b2::shadowsize
+	textureinfo b16::b18::shadowsize
 	drop
 	pushif 1
 	pushis "width"
@@ -222,7 +220,7 @@ segment Code
 	pushis "bias"
 	pushv shadowblur
 	pushif 0
-	ipushv b0::b2::shadowsize
+	ipushv b16::b18::shadowsize
 	pushif 1
 	pushv shadowfiltersize
 	mulff
@@ -232,7 +230,6 @@ segment Code
 	pushv shadowsamples
 	pushis "samples"
 	pushv Ps
-	pushif 0
 	pushv shadownamenx
 	pushif 8
 	shadow
@@ -245,11 +242,11 @@ segment Code
 	RS_INVERSE
 	RS_JZ 4
 	S_CLEAR
-	pushv b0::b2::LxAbs
-	pushv b0::b2::LyAbs
+	pushv b16::b18::LxAbs
+	pushv b16::b18::LyAbs
 	gtff
-	pushv b0::b2::LzAbs
-	pushv b0::b2::LyAbs
+	pushv b16::b18::LzAbs
+	pushv b16::b18::LyAbs
 	gtff
 	land
 	S_GET
@@ -258,7 +255,7 @@ segment Code
 	RS_JZ 10
 	S_CLEAR
 	pushif 0
-	pushv b0::b2::Ly
+	pushv b16::b18::Ly
 	gtff
 	pushis ""
 	pushv shadownamepy
@@ -270,7 +267,7 @@ segment Code
 	RS_JZ 12
 	pushis "resolution"
 	pushv shadownamepy
-	textureinfo b0::b2::shadowsize
+	textureinfo b16::b18::shadowsize
 	drop
 	pushif 1
 	pushis "width"
@@ -278,7 +275,7 @@ segment Code
 	pushis "bias"
 	pushv shadowblur
 	pushif 0
-	ipushv b0::b2::shadowsize
+	ipushv b16::b18::shadowsize
 	pushif 1
 	pushv shadowfiltersize
 	mulff
@@ -288,7 +285,6 @@ segment Code
 	pushv shadowsamples
 	pushis "samples"
 	pushv Ps
-	pushif 0
 	pushv shadownamepy
 	pushif 8
 	shadow
@@ -306,7 +302,7 @@ segment Code
 	RS_JZ 13
 	pushis "resolution"
 	pushv shadownameny
-	textureinfo b0::b2::shadowsize
+	textureinfo b16::b18::shadowsize
 	drop
 	pushif 1
 	pushis "width"
@@ -314,7 +310,7 @@ segment Code
 	pushis "bias"
 	pushv shadowblur
 	pushif 0
-	ipushv b0::b2::shadowsize
+	ipushv b16::b18::shadowsize
 	pushif 1
 	pushv shadowfiltersize
 	mulff
@@ -324,7 +320,6 @@ segment Code
 	pushv shadowsamples
 	pushis "samples"
 	pushv Ps
-	pushif 0
 	pushv shadownameny
 	pushif 8
 	shadow
@@ -337,11 +332,11 @@ segment Code
 	RS_INVERSE
 	RS_JZ 9
 	S_CLEAR
-	pushv b0::b2::LyAbs
-	pushv b0::b2::LzAbs
+	pushv b16::b18::LyAbs
+	pushv b16::b18::LzAbs
 	gtff
-	pushv b0::b2::LxAbs
-	pushv b0::b2::LzAbs
+	pushv b16::b18::LxAbs
+	pushv b16::b18::LzAbs
 	gtff
 	land
 	S_GET
@@ -350,7 +345,7 @@ segment Code
 	RS_JZ 15
 	S_CLEAR
 	pushif 0
-	pushv b0::b2::Lz
+	pushv b16::b18::Lz
 	gtff
 	pushis ""
 	pushv shadownamepz
@@ -362,7 +357,7 @@ segment Code
 	RS_JZ 17
 	pushis "resolution"
 	pushv shadownamepz
-	textureinfo b0::b2::shadowsize
+	textureinfo b16::b18::shadowsize
 	drop
 	pushif 1
 	pushis "width"
@@ -370,7 +365,7 @@ segment Code
 	pushis "bias"
 	pushv shadowblur
 	pushif 0
-	ipushv b0::b2::shadowsize
+	ipushv b16::b18::shadowsize
 	pushif 1
 	pushv shadowfiltersize
 	mulff
@@ -380,7 +375,6 @@ segment Code
 	pushv shadowsamples
 	pushis "samples"
 	pushv Ps
-	pushif 0
 	pushv shadownamepz
 	pushif 8
 	shadow
@@ -398,7 +392,7 @@ segment Code
 	RS_JZ 18
 	pushis "resolution"
 	pushv shadownamenz
-	textureinfo b0::b2::shadowsize
+	textureinfo b16::b18::shadowsize
 	drop
 	pushif 1
 	pushis "width"
@@ -406,7 +400,7 @@ segment Code
 	pushis "bias"
 	pushv shadowblur
 	pushif 0
-	ipushv b0::b2::shadowsize
+	ipushv b16::b18::shadowsize
 	pushif 1
 	pushv shadowfiltersize
 	mulff
@@ -416,7 +410,6 @@ segment Code
 	pushv shadowsamples
 	pushis "samples"
 	pushv Ps
-	pushif 0
 	pushv shadownamenz
 	pushif 8
 	shadow

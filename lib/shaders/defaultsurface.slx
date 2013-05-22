@@ -1,5 +1,5 @@
 surface
-AQSIS_V 1.6.0
+AQSIS_V 2
 
 
 segment Data
@@ -12,9 +12,9 @@ varying  float diff
 
 
 segment Init
-	pushif 0.8
+	pushif 0.800000012
 	pop Kd
-	pushif 0.2
+	pushif 0.200000003
 	pop Ka
 
 

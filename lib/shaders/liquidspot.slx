@@ -1,5 +1,5 @@
 lightsource
-AQSIS_V 1.4.2
+AQSIS_V 2
 
 
 segment Data
@@ -126,7 +126,7 @@ segment Init
 	pop endDistanceIntensity3
 	pushis ""
 	pop shadowname
-	pushif 0.01
+	pushif 0.00999999978
 	pop shadowbias
 	pushif 0
 	pop shadowblur
@@ -256,7 +256,7 @@ segment Code
 	pushv Pshad
 	zcomp
 	pop Pz
-	pushif 1e-06
+	pushif 9.99999997e-007
 	pushv dv
 	pushv Pz
 	fDv
@@ -327,7 +327,7 @@ segment Code
 	dotpp
 	divff
 	pop cosangle
-	pushif 1e-06
+	pushif 9.99999997e-007
 	pushv dv
 	pushv cosangle
 	fDv
@@ -546,7 +546,7 @@ segment Code
 	ycomp
 	divff
 	pop b5::b7::y
-	pushif 1e-06
+	pushif 9.99999997e-007
 	pushv dv
 	pushv b5::b7::x
 	fDv
@@ -561,7 +561,7 @@ segment Code
 	pushif 0
 	max
 	pop b5::b7::pwx
-	pushif 1e-06
+	pushif 9.99999997e-007
 	pushv dv
 	pushv b5::b7::y
 	fDv
@@ -676,7 +676,6 @@ segment Code
 	pushv shadowsamples
 	pushis "samples"
 	pushv Ps
-	pushif 0
 	pushv shadowname
 	pushif 6
 	shadow

@@ -1,0 +1,44 @@
+surface
+AQSIS_V 2
+
+
+segment Data
+
+USES 180224
+
+param uniform  string texturename
+uniform  string tn
+
+
+segment Init
+	pushis ""
+	pop texturename
+
+
+segment Code
+	pushis ".teq"
+	pushv texturename
+	pushif 0
+	concat
+	pop tn
+	S_CLEAR
+	pushis ""
+	pushv texturename
+	ness
+	dup
+	S_GET
+	RS_PUSH
+	RS_GET
+	pushv t
+	pushv s
+	pushv tn
+	pushif 0
+	ctexture2
+	RS_INVERSE
+	pushif 1
+	pushif 1
+	pushif 1
+	settc
+	RS_POP
+	mergec
+	pop Ci

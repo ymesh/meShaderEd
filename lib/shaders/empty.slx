@@ -1,5 +1,5 @@
 surface
-AQSIS_V 1.6.0
+AQSIS_V 2
 
 
 segment Data
@@ -23,7 +23,7 @@ param uniform  matrix arrayMatrix[2]
 
 
 segment Init
-	pushif 0.123
+	pushif 0.123000003
 	pop basicFloat
 	pushif 0.5
 	pushif 0
@@ -34,89 +34,89 @@ segment Init
 	pushif 3
 	pushif 2
 	ipop arrayFloat
-	pushif 0.8
-	pushif 0.6
+	pushif 0.800000012
+	pushif 0.600000024
 	pushif 0.5
 	settc
 	pop basicColor
-	pushif 0.6
-	pushif 0.2
-	pushif 0.4
+	pushif 0.600000024
+	pushif 0.200000003
+	pushif 0.400000006
 	settc
 	pushif 0
 	ipop arrayColor
-	pushif 0.9
-	pushif 0.8
-	pushif 0.7
+	pushif 3
+	pushif 2
+	pushif 1
 	settc
 	pushif 1
 	ipop arrayColor
-	pushif 7.3
-	pushif 7.2
-	pushif 7.1
+	pushif 7.30000019
+	pushif 7.19999981
+	pushif 7.0999999
 	settp
 	pop basicPoint
-	pushif 1.3
-	pushif 1.2
-	pushif 1.1
+	pushif 1.29999995
+	pushif 1.20000005
+	pushif 1.10000002
 	settp
 	pushif 0
 	ipop arrayPoint
-	pushif 2.3
-	pushif 2.2
-	pushif 2.1
+	pushif 2.29999995
+	pushif 2.20000005
+	pushif 2.0999999
 	settp
 	pushif 1
 	ipop arrayPoint
-	pushif 3.3
-	pushif 3.2
-	pushif 3.1
+	pushif 3.29999995
+	pushif 3.20000005
+	pushif 3.0999999
 	settp
 	pushif 2
 	ipop arrayPoint
-	pushif 8.3
-	pushif 8.2
-	pushif 8.1
+	pushif 8.30000019
+	pushif 8.19999981
+	pushif 8.10000038
 	settv
 	pop basicVector
-	pushif 0.3
-	pushif 0.2
-	pushif 0.1
+	pushif 0.300000012
+	pushif 0.200000003
+	pushif 0.100000001
 	settv
 	pushif 0
 	ipop arrayVector
-	pushif 2.3
-	pushif 2.2
-	pushif 2.1
+	pushif 2.29999995
+	pushif 2.20000005
+	pushif 2.0999999
 	settv
 	pushif 1
 	ipop arrayVector
-	pushif 4.3
-	pushif 4.2
-	pushif 4.1
+	pushif 4.30000019
+	pushif 4.19999981
+	pushif 4.0999999
 	settv
 	pushif 2
 	ipop arrayVector
-	pushif 11.3
-	pushif 11.2
-	pushif 11.1
+	pushif 11.3000002
+	pushif 11.1999998
+	pushif 11.1000004
 	settn
 	pop basicNormal
-	pushif 21.3
-	pushif 21.2
-	pushif 21.1
+	pushif 21.2999992
+	pushif 21.2000008
+	pushif 21.1000004
 	settn
 	pushif 0
 	ipop arrayNormal
-	pushif 22.3
-	pushif 22.2
-	pushif 22.1
+	pushif 22.2999992
+	pushif 22.2000008
+	pushif 22.1000004
 	settn
 	pushif 1
 	ipop arrayNormal
-	pushif 23.3
-	pushif 23.2
-	pushif 23.1
+	pushif 23.2999992
+	pushif 23.2000008
+	pushif 23.1000004
 	settn
 	pushif 2
 	ipop arrayNormal
@@ -134,59 +134,59 @@ segment Init
 	pushis "test"
 	pushif 3
 	ipop arrayString
-	pushif 1.1
+	pushif 1.10000002
 	pushif 2.5
-	pushif 3.9
-	pushif 4.03
-	pushif 5.2
-	pushif 6.6
+	pushif 3.9000001
+	pushif 4.03000021
+	pushif 5.19999981
+	pushif 6.5999999
 	pushif 7
-	pushif 8.04
-	pushif 9.3
-	pushif 10.7
-	pushif 11.01
-	pushif 12.05
-	pushif 13.4
-	pushif 14.8
-	pushif 15.02
-	pushif 16.06
+	pushif 8.03999996
+	pushif 9.30000019
+	pushif 10.6999998
+	pushif 11.0100002
+	pushif 12.0500002
+	pushif 13.3999996
+	pushif 14.8000002
+	pushif 15.0200005
+	pushif 16.0599995
 	setwm
 	pop basicMatrix
-	pushif 31.1
+	pushif 31.1000004
 	pushif 32.5
-	pushif 33.9
-	pushif 34.3
-	pushif 35.2
-	pushif 36.6
+	pushif 33.9000015
+	pushif 34.2999992
+	pushif 35.2000008
+	pushif 36.5999985
 	pushif 37
-	pushif 38.04
-	pushif 39.3
-	pushif 40.7
-	pushif 41.01
-	pushif 42.05
-	pushif 43.4
-	pushif 44.8
-	pushif 45.02
-	pushif 46.06
+	pushif 38.0400009
+	pushif 39.2999992
+	pushif 40.7000008
+	pushif 41.0099983
+	pushif 42.0499992
+	pushif 43.4000015
+	pushif 44.7999992
+	pushif 45.0200005
+	pushif 46.0600014
 	setwm
 	pushif 0
 	ipop arrayMatrix
-	pushif 11.1
+	pushif 11.1000004
 	pushif 12.5
-	pushif 13.9
-	pushif 14.03
-	pushif 15.2
-	pushif 16.6
+	pushif 13.8999996
+	pushif 14.0299997
+	pushif 15.1999998
+	pushif 16.6000004
 	pushif 17
-	pushif 18.04
-	pushif 19.3
-	pushif 20.7
-	pushif 21.01
-	pushif 22.05
-	pushif 23.4
-	pushif 24.8
-	pushif 25.02
-	pushif 26.06
+	pushif 18.0400009
+	pushif 19.2999992
+	pushif 20.7000008
+	pushif 21.0100002
+	pushif 22.0499992
+	pushif 23.3999996
+	pushif 24.7999992
+	pushif 25.0200005
+	pushif 26.0599995
 	setwm
 	pushif 1
 	ipop arrayMatrix

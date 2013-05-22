@@ -1,0 +1,693 @@
+surface
+AQSIS_V 2
+
+
+segment Data
+
+USES 461056
+
+param uniform  float occ0_MaxSamples
+param uniform  float occ0_MinSamples
+param uniform  float occ0_MaxDist
+param uniform  float occ0_SampleBase
+param uniform  float occ0_Bias
+param uniform  string occ0_HitMode
+param uniform  string occ0_HitSides
+param uniform  float occ0_MaxVar
+param uniform  float occ0_MaxPixelDist
+param uniform  string occ0_Distribution
+param uniform  float occ0_FalloffMode
+param uniform  float occ0_FalloffValue
+param uniform  string me_inShadowC0_category
+param uniform  float me_inShadowC0_opacity
+param uniform  float me_inShadowC0_angle
+param uniform  float me_inShadowC0_invert
+param uniform  float comp_MultInvertedC1_mult
+param uniform  color me_gather0_filter
+param uniform  color me_gather0_fill
+param uniform  string me_gather0_traceSet
+param uniform  string me_gather0_rayLabel
+param uniform  float me_gather0_rayDepth
+param uniform  float me_gather0_samples
+param uniform  float me_gather0_sampleBase
+param uniform  float me_gather0_blur
+param uniform  float me_gather0_maxdist
+param uniform  float me_gather0_twosided
+param uniform  float me_floor_mask
+output param varying  color __color
+output param varying  color __diff
+output param varying  color __spec
+output param varying  color __diff_ibi
+output param varying  color __spec_ibi
+output param varying  color __shadow
+output param varying  color __reflect
+output param varying  color __sss
+output param varying  color __pstrace
+output param varying  float __occ
+output param varying  color __occ_C
+output param varying  float __mask
+output param varying  color __mask_C
+varying  vector normalizeI1_In
+varying  normal normalizeN0_Nn
+varying  normal ShadingNormal1_NS
+uniform  float ShadingNormal1_depth
+uniform  float b0::sides
+uniform  float occ0_Invert
+uniform  float occ0_Adaptive
+uniform  vector occ0_SkyAxis
+varying  float occ0_ConeAngle
+uniform  float occ0_MaxError
+uniform  string occ0_EnvMap
+uniform  string occ0_EnvSpace
+uniform  float occ0_BrtWarp
+uniform  string occ0_coordsys
+uniform  string occ0_subset
+uniform  string occ0_label
+uniform  float occ0_seed
+uniform  float occ0_pointbased
+uniform  string occ0_PtcFile
+uniform  float occ0_MaxSolidAngle
+uniform  float occ0_clamp
+varying  color occ0_env_color
+varying  vector occ0_bent_dir
+varying  float occ0_result
+varying  color me_inShadowC0_result
+varying  color me_inShadowC0_inShadow
+varying  color me_inShadowC0_value
+uniform  float me_inShadowC0_count
+varying  color color0_in
+varying  color color0_out
+varying  color comp_MultInvertedC1_outColor
+varying  point P0_P
+varying  vector reflect0_outVector
+varying  vector me_gather0_dQu
+varying  vector me_gather0_dQv
+uniform  float me_gather0_raydepth
+varying  color me_gather0_sci
+varying  color me_gather0_soi
+varying  color me_gather0_outColor
+varying  color me_gather0_outOpacity
+varying  color b2::b3::me_gather0_outOpacity
+varying  float comp_AddC1_mult
+varying  color comp_AddC1_outColor
+varying  color me_floor_Oi
+varying  color me_floor_diff
+varying  color me_floor_spec
+varying  color me_floor_diff_ibi
+varying  color me_floor_spec_ibi
+varying  color me_floor_sss
+varying  color me_floor_pstrace
+varying  color me_floor_occ_C
+
+
+segment Init
+	pushif 256
+	pop occ0_MaxSamples
+	pushif 128
+	pop occ0_MinSamples
+	pushif 15
+	pop occ0_MaxDist
+	pushif 0
+	pop occ0_SampleBase
+	pushif 0.0500000007
+	pop occ0_Bias
+	pushis "default"
+	pop occ0_HitMode
+	pushis "both"
+	pop occ0_HitSides
+	pushif 0.150000006
+	pop occ0_MaxVar
+	pushif 0
+	pop occ0_MaxPixelDist
+	pushis "cosine"
+	pop occ0_Distribution
+	pushif 0
+	pop occ0_FalloffMode
+	pushif 0
+	pop occ0_FalloffValue
+	pushis ""
+	pop me_inShadowC0_category
+	pushif 1
+	pop me_inShadowC0_opacity
+	pushif 90
+	pop me_inShadowC0_angle
+	pushif 0
+	pop me_inShadowC0_invert
+	pushif 1
+	pop comp_MultInvertedC1_mult
+	pushif 1
+	pushif 1
+	pushif 1
+	settc
+	pop me_gather0_filter
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_gather0_fill
+	pushis ""
+	pop me_gather0_traceSet
+	pushis ""
+	pop me_gather0_rayLabel
+	pushif 2
+	pop me_gather0_rayDepth
+	pushif 1
+	pop me_gather0_samples
+	pushif 1
+	pop me_gather0_sampleBase
+	pushif 0
+	pop me_gather0_blur
+	pushif 1
+	negf
+	pop me_gather0_maxdist
+	pushif 1
+	pop me_gather0_twosided
+	pushif 1
+	pop me_floor_mask
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __color
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __diff
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __spec
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __diff_ibi
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __spec_ibi
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __shadow
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __reflect
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __sss
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __pstrace
+	pushif 0
+	pop __occ
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop __occ_C
+	pushif 1
+	pop __mask
+	pushif 0
+	pushif 0
+	pushif 1
+	settc
+	pop __mask_C
+
+
+segment Code
+	pushv I
+	normalize
+	pop normalizeI1_In
+	pushv N
+	normalize
+	pop normalizeN0_Nn
+	pushv normalizeN0_Nn
+	pop ShadingNormal1_NS
+	pushis "depth"
+	rayinfo ShadingNormal1_depth
+	drop
+	S_CLEAR
+	pushif 0
+	pushv ShadingNormal1_depth
+	gtff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 1
+	pushv normalizeN0_Nn
+	pushv normalizeI1_In
+	pushv normalizeN0_Nn
+	faceforward2
+	pop ShadingNormal1_NS
+:1
+	RS_INVERSE
+	RS_JZ 0
+	pushif 2
+	pop b0::sides
+	pushis "Sides"
+	attribute b0::sides
+	drop
+	S_CLEAR
+	pushif 2
+	pushv b0::sides
+	eqff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 2
+	pushv normalizeN0_Nn
+	pushv normalizeI1_In
+	pushv normalizeN0_Nn
+	faceforward2
+	pop ShadingNormal1_NS
+:2
+	RS_POP
+:0
+	RS_POP
+	pushif 0
+	pop occ0_Invert
+	pushif 1
+	pop occ0_Adaptive
+	pushif 0
+	pushif 1
+	pushif 0
+	settv
+	pop occ0_SkyAxis
+	pushif 90
+	pop occ0_ConeAngle
+	pushif 1
+	negf
+	pop occ0_MaxError
+	pushis ""
+	pop occ0_EnvMap
+	pushis ""
+	pop occ0_EnvSpace
+	pushif 1
+	pop occ0_BrtWarp
+	pushis ""
+	pop occ0_coordsys
+	pushis ""
+	pop occ0_subset
+	pushis ""
+	pop occ0_label
+	pushif 1
+	negf
+	pop occ0_seed
+	pushif 0
+	pop occ0_pointbased
+	pushis ""
+	pop occ0_PtcFile
+	pushif 0.100000001
+	pop occ0_MaxSolidAngle
+	pushif 1
+	pop occ0_clamp
+	pushif 0
+	setfc
+	pop occ0_env_color
+	pushif 0
+	setfv
+	pop occ0_bent_dir
+	pushif 0
+	pop occ0_result
+	pushv occ0_bent_dir
+	pushis "environmentdir"
+	pushv occ0_env_color
+	pushis "environmentcolor"
+	pushv occ0_clamp
+	pushis "clamp"
+	pushv occ0_MaxSolidAngle
+	pushis "maxsolidangle"
+	pushv occ0_PtcFile
+	pushis "filename"
+	pushv occ0_pointbased
+	pushis "pointbased"
+	pushv occ0_label
+	pushis "label"
+	pushv occ0_subset
+	pushis "subset"
+	pushv occ0_coordsys
+	pushis "coordsystem"
+	pushv occ0_EnvSpace
+	pushis "environmentspace"
+	pushv occ0_EnvMap
+	pushis "environmentmap"
+	pushv occ0_FalloffValue
+	pushis "falloff"
+	pushv occ0_FalloffMode
+	pushis "falloffmode"
+	pushv occ0_Distribution
+	pushis "distribution"
+	pushv occ0_BrtWarp
+	pushis "brightnesswarp"
+	pushv occ0_seed
+	pushis "seed"
+	pushv occ0_MaxPixelDist
+	pushis "maxpixeldist"
+	pushv occ0_MaxError
+	pushis "maxerror"
+	pushv occ0_MaxVar
+	pushis "maxvariation"
+	pushv occ0_HitSides
+	pushis "hitsides"
+	pushv occ0_HitMode
+	pushis "hitmode"
+	pushv occ0_Bias
+	pushis "bias"
+	pushv occ0_SampleBase
+	pushis "samplebase"
+	pushv occ0_ConeAngle
+	radians
+	pushis "coneangle"
+	pushv occ0_MaxDist
+	pushis "maxdist"
+	pushv occ0_MinSamples
+	pushis "minsamples"
+	pushv occ0_Adaptive
+	pushis "adaptive"
+	pushv occ0_MaxSamples
+	pushv ShadingNormal1_NS
+	pushv P
+	pushif 54
+	occlusion_rt
+	pop occ0_result
+	S_CLEAR
+	pushif 1
+	pushv occ0_Invert
+	eqff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 3
+	pushv occ0_result
+	pushif 1
+	subff
+	pop occ0_result
+:3
+	RS_POP
+	pushif 0
+	setfc
+	pop me_inShadowC0_result
+	pushif 0
+	setfc
+	pop me_inShadowC0_inShadow
+	pushif 0
+	setfc
+	pop me_inShadowC0_value
+	pushif 0
+	pop me_inShadowC0_count
+	pushv P
+	pop P
+	pushv normalizeN0_Nn
+	pushv P
+	init_illuminance2
+	jz 5
+:4
+	S_CLEAR
+	pushv me_inShadowC0_angle
+	radians
+	pushv normalizeN0_Nn
+	pushv P
+	pushv me_inShadowC0_category
+	illuminance2
+	S_JZ 6
+	RS_PUSH
+	RS_GET
+	pushis "__inShadowC"
+	lightsource me_inShadowC0_inShadow
+	drop
+	pushv me_inShadowC0_inShadow
+	pushv me_inShadowC0_value
+	addcc
+	pop me_inShadowC0_value
+	pushif 1
+	pushv me_inShadowC0_count
+	addff
+	pop me_inShadowC0_count
+	RS_POP
+:6
+	advance_illuminance
+	jnz 4
+:5
+	pushv me_inShadowC0_opacity
+	setfc
+	pushif 1
+	setfc
+	pushif 0
+	setfc
+	pushv me_inShadowC0_value
+	cclamp
+	mulcc
+	pop me_inShadowC0_result
+	S_CLEAR
+	pushv me_inShadowC0_invert
+	pushif 0
+	neff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 7
+	pushv me_inShadowC0_result
+	pushif 1
+	subfc
+	pop me_inShadowC0_result
+:7
+	RS_POP
+	pushif 0.453000009
+	pushif 0.469000012
+	pushif 0.640999973
+	settc
+	pop color0_in
+	pushv color0_in
+	pop color0_out
+	pushv me_inShadowC0_result
+	pushif 1
+	subfc
+	pushv comp_MultInvertedC1_mult
+	mulfc
+	pushv comp_MultInvertedC1_mult
+	pushif 1
+	subff
+	addfc
+	pushv color0_out
+	mulcc
+	pop comp_MultInvertedC1_outColor
+	pushv P
+	pop P0_P
+	pushv normalizeN0_Nn
+	pushv normalizeI1_In
+	reflect
+	pop reflect0_outVector
+	pushif 0
+	pushif 0
+	pushif 0
+	settv
+	pop me_gather0_dQu
+	pushif 0
+	pushif 0
+	pushif 0
+	settv
+	pop me_gather0_dQv
+	pushif 0
+	pop me_gather0_raydepth
+	pushif 0
+	setfc
+	pop me_gather0_sci
+	pushif 0
+	setfc
+	pop me_gather0_soi
+	pushif 0
+	setfc
+	pop me_gather0_outColor
+	pushif 1
+	setfc
+	pop me_gather0_outOpacity
+	pushis "depth"
+	rayinfo me_gather0_raydepth
+	drop
+	S_CLEAR
+	pushv me_gather0_rayDepth
+	pushv me_gather0_raydepth
+	leff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 8
+	S_CLEAR
+	pushif 0
+	pushv me_gather0_twosided
+	neff
+	pushif 0
+	pushv I
+	pushv ShadingNormal1_NS
+	dotpp
+	leff
+	lor
+	pushif 0
+	pushv me_gather0_samples
+	gtff
+	land
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 9
+	pushif 0
+	setfc
+	pop b2::b3::me_gather0_outOpacity
+	pushv me_gather0_samples
+	init_gather
+:10
+	S_CLEAR
+	pushv me_gather0_soi
+	pushis "surface:Oi"
+	pushv me_gather0_sci
+	pushis "surface:Ci"
+	pushv me_gather0_maxdist
+	pushis "maxdist"
+	pushv me_gather0_sampleBase
+	pushis "samplebase"
+	pushv me_gather0_rayLabel
+	pushis "label"
+	pushv me_gather0_traceSet
+	pushis "subset"
+	pushv me_gather0_samples
+	pushif 5
+	radians
+	pushv me_gather0_blur
+	mulff
+	pushv reflect0_outVector
+	pushv P0_P
+	pushis "illuminance"
+	pushif 12
+	gather
+	RS_PUSH
+	RS_GET
+	RS_JZ 13
+	pushv me_gather0_sci
+	pushv me_gather0_outColor
+	addcc
+	pop me_gather0_outColor
+	pushv me_gather0_soi
+	pushv b2::b3::me_gather0_outOpacity
+	addcc
+	pop b2::b3::me_gather0_outOpacity
+:13
+	RS_INVERSE
+	RS_JZ 12
+	pushv me_gather0_fill
+	pushv me_gather0_outColor
+	addcc
+	pop me_gather0_outColor
+:12
+	RS_POP
+	advance_gather
+	jnz 10
+:11
+	pushv me_gather0_samples
+	setfc
+	pushv me_gather0_outColor
+	divcc
+	pop me_gather0_outColor
+	pushv me_gather0_samples
+	setfc
+	pushv b2::b3::me_gather0_outOpacity
+	divcc
+	pop b2::b3::me_gather0_outOpacity
+:9
+	RS_POP
+:8
+	RS_POP
+	pushv me_gather0_filter
+	pushv me_gather0_outColor
+	mulcc
+	pop me_gather0_outColor
+	pushif 1
+	pop comp_AddC1_mult
+	pushv me_gather0_outColor
+	pushv comp_AddC1_mult
+	mulfc
+	pushv comp_MultInvertedC1_outColor
+	addcc
+	pop comp_AddC1_outColor
+	pushif 1
+	pushif 1
+	pushif 1
+	settc
+	pop me_floor_Oi
+	pushif 1
+	pushif 1
+	pushif 1
+	settc
+	pop me_floor_diff
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_floor_spec
+	pushif 1
+	pushif 1
+	pushif 1
+	settc
+	pop me_floor_diff_ibi
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_floor_spec_ibi
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_floor_sss
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_floor_pstrace
+	pushif 0
+	pushif 0
+	pushif 0
+	settc
+	pop me_floor_occ_C
+	pushv me_floor_Oi
+	pushv comp_AddC1_outColor
+	mulcc
+	pop Ci
+	pushv me_floor_Oi
+	pop Oi
+	pushv color0_out
+	pop __color
+	pushv me_floor_diff
+	pop __diff
+	pushv me_floor_spec
+	pop __spec
+	pushv me_floor_diff_ibi
+	pop __diff_ibi
+	pushv me_floor_spec_ibi
+	pop __spec_ibi
+	pushv me_inShadowC0_result
+	pop __shadow
+	pushv me_gather0_outColor
+	pop __reflect
+	pushv me_floor_sss
+	pop __sss
+	pushv me_floor_pstrace
+	pop __pstrace
+	pushv occ0_result
+	pop __occ
+	pushv me_floor_occ_C
+	pop __occ_C
+	pushv me_floor_mask
+	pop __mask
+	pushv me_gather0_outOpacity
+	pop __mask_C

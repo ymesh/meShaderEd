@@ -1,0 +1,144 @@
+surface
+AQSIS_V 2
+
+
+segment Data
+
+USES 395520
+
+varying  float meBake3dFloat5::result
+uniform  float meBake3dFloat5::raydepth
+uniform  float meBake3dFloat5::disable
+param uniform  color SurfaceColor
+param uniform  color SurfaceOpacity
+param uniform  string PtcFile
+param uniform  string BakeCoordSys
+param uniform  string CacheLifetime
+param uniform  float Radius
+param uniform  float RadiusScale
+param uniform  float Interpolate
+varying  normal Nn
+uniform  string ChannelName
+varying  float a
+varying  float opacity
+
+
+segment Init
+	pushif 1
+	pushif 0.25
+	pushif 0
+	settc
+	pop SurfaceColor
+	pushif 1
+	setfc
+	pop SurfaceOpacity
+	pushis ""
+	pop PtcFile
+	pushis ""
+	pop BakeCoordSys
+	pushis ""
+	pop CacheLifetime
+	pushif 0
+	pop Radius
+	pushif 1
+	pop RadiusScale
+	pushif 0
+	pop Interpolate
+
+
+segment Code
+	pushv N
+	normalize
+	pop Nn
+	pushv SurfaceOpacity
+	pop Oi
+	pushis "_area"
+	pop ChannelName
+	pushif 0
+	pop a
+	pushif 2
+	pushv Oi
+	comp
+	pushif 1
+	pushv Oi
+	comp
+	pushif 0
+	pushv Oi
+	comp
+	addff
+	addff
+	pushif 0.333332986
+	mulff
+	pop opacity
+	pushv opacity
+	pushv a
+	mulff
+	pop a
+	S_CLEAR
+	pushif 0
+	pushv a
+	gtff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 0
+	pushv a
+	pop meBake3dFloat5::result
+	pushif 0
+	pop meBake3dFloat5::disable
+	pushis "depth"
+	rayinfo meBake3dFloat5::raydepth
+	drop
+	S_CLEAR
+	pushif 0
+	pushv meBake3dFloat5::raydepth
+	gtff
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 1
+	pushif 1
+	pop meBake3dFloat5::disable
+:1
+	RS_POP
+	S_CLEAR
+	pushif 1
+	pushv meBake3dFloat5::disable
+	neff
+	pushis ""
+	pushv PtcFile
+	ness
+	land
+	S_GET
+	RS_PUSH
+	RS_GET
+	RS_JZ 2
+	pushv Interpolate
+	pushis "interpolate"
+	pushv RadiusScale
+	pushis "radiusscale"
+	pushv Radius
+	pushis "radius"
+	pushv CacheLifetime
+	pushis "cachelifetime"
+	pushv BakeCoordSys
+	pushis "coordsystem"
+	pushv meBake3dFloat5::result
+	pushv ChannelName
+	pushv Nn
+	pushv P
+	pushv ChannelName
+	pushv PtcFile
+	pushif 12
+	bake3d
+	drop
+:2
+	RS_POP
+	pushv meBake3dFloat5::result
+	drop
+:0
+	RS_POP
+	pushv Oi
+	pushv SurfaceColor
+	mulcc
+	pop Ci
