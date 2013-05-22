@@ -9,14 +9,14 @@ from PyQt4 import QtCore, QtGui
 
 from gfx.gfxNodeLabel import GfxNodeLabel
 
-from global_vars import DEBUG_MODE
+from global_vars import DEBUG_MODE, GFX_NOTE_TYPE
 from meShaderEd import app_settings
 #
 # GfxNote
 #
 class GfxNote ( QtGui.QGraphicsItem ):
   #
-  Type = QtGui.QGraphicsItem.UserType + 10
+  Type = GFX_NOTE_TYPE
   #
   # __init__
   #

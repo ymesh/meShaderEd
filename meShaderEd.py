@@ -189,7 +189,8 @@ if __name__ == "__main__":
 
   if sys.platform == 'win32' :
     #pass
-    QtGui.QApplication.setStyle(QtGui.QStyleFactory.create ( 'Cleanlooks' ) )
-    QtGui.QApplication.setPalette( QtGui.QApplication.style ().standardPalette () )
+    QtGui.QApplication.setStyle ( QtGui.QStyleFactory.create ( 'Cleanlooks' ) )
+    if QtCore.QT_VERSION < 50000 :
+    	QtGui.QApplication.setPalette ( QtGui.QApplication.style ().standardPalette () )
 
   main()

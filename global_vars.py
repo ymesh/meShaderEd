@@ -33,11 +33,21 @@ app_global_vars = {
 }
 DEBUG_MODE = True
 
-GFX_NODE_TYPE           = QtGui.QGraphicsItem.UserType + 1
-GFX_LINK_TYPE           = QtGui.QGraphicsItem.UserType + 2
-GFX_NODE_LABEL_TYPE     = QtGui.QGraphicsItem.UserType + 3
-GFX_NODE_CONNECTOR_TYPE = QtGui.QGraphicsItem.UserType + 4
-GFX_SWATCH_NODE_TYPE    = QtGui.QGraphicsItem.UserType + 5
+if QtCore.QT_VERSION < 50000 :
+	GFX_NODE_TYPE           = QtGui.QGraphicsItem.UserType + 1
+	GFX_LINK_TYPE           = QtGui.QGraphicsItem.UserType + 2
+	GFX_NODE_LABEL_TYPE     = QtGui.QGraphicsItem.UserType + 3
+	GFX_NODE_CONNECTOR_TYPE = QtGui.QGraphicsItem.UserType + 4
+	GFX_SWATCH_NODE_TYPE    = QtGui.QGraphicsItem.UserType + 5
+	GFX_NOTE_TYPE           = QtGui.QGraphicsItem.UserType + 6
+else	:
+	UserType = 65536
+	GFX_NODE_TYPE           = UserType + 1
+	GFX_LINK_TYPE           = UserType + 2
+	GFX_NODE_LABEL_TYPE     = UserType + 3
+	GFX_NODE_CONNECTOR_TYPE = UserType + 4
+	GFX_SWATCH_NODE_TYPE    = UserType + 5
+	GFX_NOTE_TYPE           = UserType + 6
 
 VALID_NODE_TYPES = [ 'rib', 
                      'rib_code', 
