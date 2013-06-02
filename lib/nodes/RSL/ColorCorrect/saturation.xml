@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 
 <node name="saturation" author="mesh">
-	<help>Controls the color sauration value</help>
+	<help>Controls the color saturation value</help>
 	<input>
 	  <property name="input" type="color" default="color(0,0,0)"/>
 	  <property name="value" type="float" default="1" subtype="slider" range="0 1 0.01"/>

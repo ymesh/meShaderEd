@@ -4,14 +4,14 @@
 	<help>Dummy string parameter. 
 	Useful for connecting string inputs (such as coordSpace) from the other nodes to a single value.</help>
 	<input>
-		<property name="string" type="string" default="" detail="uniform"/>
+		<property name="S" type="string" default="" detail="uniform"/>
 	</input>
 	<output>
 		<property name="output" type="string" detail="uniform"/>
 	</output>
 	<code><![CDATA[
 
-$(output) = $(string);
+$(output) = $(S);
 	]]>
 	</code>
 </node>

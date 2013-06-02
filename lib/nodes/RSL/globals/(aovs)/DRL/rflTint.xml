@@ -4,18 +4,23 @@
 	<help>This node produces "rfl_tint" AOV. 
 	ATTENTION: you really don't want to use this node more then once in any shader.</help>
 	<input>
+		<property name="input" type="color" default="color(0)">
+			<help>Any color component used just for connecting this node to shader network.</help>
+		</property>
 		<property name="rflTint" type="color" default="color(0)">
 			<help>Reflection Tint AOV.</help>
 		</property>
 	</input>
 	
 	<output>
+		<property detail="varying" name="output" type="color"/>
 		<property detail="varying" provider="primitive" name="rfl_tint" type="color" default="color(0)"/>
 	</output>
 	
 	<code><![CDATA[
 
 rfl_tint = $(rflTint);
+$(output) = $(input);
 
 ]]>
 	</code>
