@@ -82,8 +82,8 @@ class ParamWidget ( QtGui.QWidget ) :
     font.setBold ( False )
     self.label.setFont ( font )
 
-    if self.param.type != 'control' :
-      self.label.setText ( self.param.label )
+    #if self.param.type != 'control' :
+    self.label.setText ( self.param.label )
 
     self.label.setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
     self.label.setMaximumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )

@@ -1,7 +1,7 @@
 #===============================================================================
 # imageViewWidget.py
 #
-# 
+#
 #
 #===============================================================================
 
@@ -18,7 +18,7 @@ import gui.ui_settings as UI
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 #
-#
+# ImageViewWidget
 #
 class ImageViewWidget ( QtGui.QWidget ) :
   #
@@ -29,36 +29,37 @@ class ImageViewWidget ( QtGui.QWidget ) :
     QtGui.QWidget.__init__ ( self )
 
     # This is always the same
-    self.ui=Ui_imageViewWidget () 
+    self.ui = Ui_imageViewWidget ()
     self.ui.setupUi ( self )
-    
+
     self.ui.selector.setMinimumSize ( QtCore.QSize ( UI.COMBO_WIDTH, UI.COMBO_HEIGHT ) )
     self.ui.selector.setMaximumSize ( QtCore.QSize( UI.MAX, UI.COMBO_HEIGHT ) )
-    
+
     self.imageNodes = []
-    
+
     #self.ui.treeView.setDragEnabled ( True )
     #self.ui.treeView.setRootIsDecorated( True )
-    
+
     QtCore.QObject.connect ( self.ui.imageArea, QtCore.SIGNAL ( 'mouseDoubleClickEvent' ), self.updateViewer )
     QtCore.QObject.connect ( self.ui.selector, QtCore.SIGNAL ( 'currentIndexChanged(int)' ), self.onViewerChanged )
     #QtCore.QObject.connect( self.ui, QtCore.SIGNAL( 'paramChanged()' ), self.onParamChanged )
-    
+
     #self.updateGui()
-    #self.emit( QtCore.SIGNAL( 'onGfxNodeParamChanged(QObject,QObject)' ), self, param.name )   
+    #self.emit( QtCore.SIGNAL( 'onGfxNodeParamChanged(QObject,QObject)' ), self, param.name )
   #
   # currentImageNode
   #
-  def currentImageNode ( self ) : 
+  def currentImageNode ( self ) :
     gfxNode = None
     idx = self.ui.selector.currentIndex ()
     if len ( self.imageNodes ) > 0 :
       gfxNode = self.imageNodes [ idx ]
-    return gfxNode     
+    return gfxNode
   #
   # addViewer
   #
   def addViewer ( self, gfxNode ) :
+    #
     self.imageNodes.append ( gfxNode )
     self.ui.selector.addItem ( gfxNode.node.label )
   #
@@ -78,7 +79,7 @@ class ImageViewWidget ( QtGui.QWidget ) :
         self.imageNodes.pop ( i )
         self.ui.selector.removeItem ( i )
         #QtCore.QObject.disconnect ( gfxNode.node, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.onNodeParamChanged )
-        break    
+        break
   #
   # onViewerChanged
   #
@@ -86,7 +87,7 @@ class ImageViewWidget ( QtGui.QWidget ) :
     #
     if len ( self.imageNodes ) > 0 :
       print ">> ImageViewWidget.onViewerChanged to %s" % self.imageNodes [ idx ].node.label
-      #QtCore.QObject.connect( self.imageNodes[ idx ].node, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.onNodeParamChanged ) 
+      #QtCore.QObject.connect( self.imageNodes[ idx ].node, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.onNodeParamChanged )
       self.updateViewer()
   #
   # updateViewer
@@ -99,7 +100,7 @@ class ImageViewWidget ( QtGui.QWidget ) :
     if len ( self.imageNodes ) > 0 :
       gfxNode = self.imageNodes [ idx ]
       print ">> ImageViewWidget.getImageName on %s" % gfxNode.node.label
-      
+
       imageInputParam = gfxNode.node.getInputParamByName ( 'image' )
       if imageInputParam is not None :
         if gfxNode.node.isInputParamLinked ( imageInputParam ):
@@ -108,15 +109,15 @@ class ImageViewWidget ( QtGui.QWidget ) :
           if displayParam is not None :
             print '>> Display driver = %s' % displayParam.value
             if displayParam.value != 'tiff' :
-              RenderViewMode = True  
-      
+              RenderViewMode = True
+
       imageName = gfxNode.node.computeNode ()
-      
+
       print ">> ImageViewWidget: imageName = %s" % imageName
-      
+
       if not RenderViewMode :
         self.ui.imageArea.setImage ( imageName )
-      
+
       #imageParam = None
       #for param in gfxNode.node.inputParams :
       #  if param.name == 'image' :
@@ -124,7 +125,7 @@ class ImageViewWidget ( QtGui.QWidget ) :
       #    break
       #if imageParam is not None :
       #  print ">> ImageViewWidget: image = %s" % imageParam.value
-      #  self.ui.imageArea.setImage ( imageParam.value )   
+      #  self.ui.imageArea.setImage ( imageParam.value )
   #
   # autoUpdate
   #
@@ -142,11 +143,11 @@ class ImageViewWidget ( QtGui.QWidget ) :
   #
   def onNodeLabelChanged ( self, gfxNode, newLabel ) :
     #
-    print ">> ImageViewWidget.onNodeLabelChanged %s %s" % ( gfxNode.node.label, newLabel ) 
+    print ">> ImageViewWidget.onNodeLabelChanged %s %s" % ( gfxNode.node.label, newLabel )
     i = 0
     for i in range ( len ( self.imageNodes ) ) :
       if gfxNode ==  self.imageNodes [ i ] :
         self.ui.selector.setItemText ( i, newLabel )
-        break    
-      i += 1 
+        break
+      i += 1
 

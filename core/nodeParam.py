@@ -46,6 +46,7 @@ class NodeParam ( QtCore.QObject ) :
     self.subtype = ''
     self.range = ''
 
+
     self.space = None # actual for color, point, vector, normal, matrix
     self.spaceDef = None # default value space
 
@@ -237,7 +238,7 @@ class NodeParam ( QtCore.QObject ) :
     if self.provider != '' : xmlnode.setAttribute ( 'provider', self.provider )
     # ui decorative parameters
     if self.subtype != ''  : xmlnode.setAttribute ( 'subtype', self.subtype )
-    if self.range != ''    : xmlnode.setAttribute ( "range", self.range )
+    if self.range != ''    : xmlnode.setAttribute ( 'range', self.range )
 
     if self.space != None  :
       if self.space != ''  : xmlnode.setAttribute ( 'space', self.space )

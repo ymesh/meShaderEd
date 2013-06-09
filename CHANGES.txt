@@ -10,6 +10,8 @@ version 0.3.1 (?? May 2013)
   - NodeParam new attributes : enabled, spaceDef, arraySize, defaultArray, valueArray 
     (though arrays parameters support is not fully implemented yet...)
   - Fixed some shading nodes, code, shaders and textures for Air, Aqsis, Pixie and RenderDotC compatibility 
+  - Tested on PyQt 4.10.2 that was linked with Qt 5.0.2 libraries.
+  - New service nodes in Library
   
 version 0.3.0 (16 Apr 2013)
   SwatchNode for image preview in shading network

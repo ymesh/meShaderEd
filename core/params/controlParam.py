@@ -19,13 +19,12 @@ class ControlParam ( NodeParam ) :
   #
   def __init__ ( self, xml_param = None, isRibParam = False ) :
     #
+    self.btext = '' # button text
+    self.type = 'control'
+    self.control_code = ''
     NodeParam.__init__ ( self, xml_param, isRibParam )
 
-    if xml_param is None :
-      self.type = 'control'
-      self.control_code = ''
-
-    if DEBUG_MODE : print '>> ControlParam ( %s ).__init__' % self.label
+    if DEBUG_MODE : print '>> ControlParam ( %s ).__init__ btext = "%s"' % ( self.label, self.btext )
   #
   # encodedTypeStr
   #
@@ -46,6 +45,7 @@ class ControlParam ( NodeParam ) :
     if DEBUG_MODE : print '>> ControlParam ( %s ).copySetup' % self.label
     NodeParam.copySetup ( self, newParam )
     newParam.control_code = self.control_code
+    newParam.btext = self.btext
   #
   # valueFromStr
   #
@@ -92,6 +92,7 @@ class ControlParam ( NodeParam ) :
     control_code_tag = xml_param.namedItem ( 'control_code' )
     if not control_code_tag.isNull () :
       self.control_code = str ( control_code_tag.toElement ().text () )
+    self.btext = str ( xml_param.attributes ().namedItem ( 'btext' ).nodeValue () )
   #
   # parseToXML
   #
@@ -99,12 +100,13 @@ class ControlParam ( NodeParam ) :
     #
     if DEBUG_MODE : print '>> ControlParam ( %s ).parseToXML' % self.label
     xmlnode = NodeParam.parseToXML ( self, dom )
-    
+
     if self.control_code is not None :
       code_tag = dom.createElement ( 'control_code' )
       code_text = dom.createTextNode ( self.control_code )
       code_tag.appendChild ( code_text )
       xmlnode.appendChild ( code_tag )
+    if self.btext != '' : xmlnode.setAttribute ( 'btext', self.range )
 
     return xmlnode
   #

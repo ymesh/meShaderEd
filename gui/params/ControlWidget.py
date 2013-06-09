@@ -83,7 +83,7 @@ class Ui_ControlWidget_button ( object ) :
     #
     self.widget = ControlWidget
 
-    self.button = QtGui.QPushButton ( self.widget.param.label, ControlWidget )
+    self.button = QtGui.QPushButton ( self.widget.param.btext, ControlWidget )
     #self.button.setMinimumSize ( QtCore.QSize ( UI.COMBO_WIDTH, UI.COMBO_HEIGHT ) )
     #self.button.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.COMBO_HEIGHT ) )
 

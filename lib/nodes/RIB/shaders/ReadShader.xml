@@ -3,7 +3,7 @@
 <node name="ReadShader" author="mesh" type="rib_code">
   <help>Read compiled shader</help>
   <input>
-    <property name="Reload" label="Reload Parameters" type="control" default="" provider="attribute" subtype="button">
+    <property name="Reload" label="Shader Parameters" btext="Reload" type="control" default="" provider="attribute" subtype="button">
 <control_code>
 <![CDATA[
 print ":: Hello from (%s) XML control_code !!!" % self.label
