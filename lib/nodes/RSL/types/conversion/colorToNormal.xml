@@ -6,10 +6,10 @@
 		<property name="inC" type="color" default="color(0)" />
 	</input>
 	<output>
-		<property name="outN type="normal" />
+		<property name="outN" type="normal" />
 	</output>
 	<code><![CDATA[
-$(outP) = normal($(inC));
+$(outN) = normal($(inC));
 ]]>
 	</code>
 </node>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="gradeCC" label="gradeCC" author="DRL">
+<node name="gradeFromCC" label="gradeCC" author="DRL">
 	<help>Remap color in [0-1] range to new value between defined min and max.</help>
 	<input>
 		<property name="input" type="color" default="color(0)"/>

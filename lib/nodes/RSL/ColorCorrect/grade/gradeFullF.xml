@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<node name="remapF" author="Pixar">
+<node name="gradeFullF" author="Pixar">
 	<help>Remap float value	</help>
 	<input>
 	  <property name="input" type="float" default="0" subtype="slider" range="0 1.0 .01"/>	
@@ -16,7 +16,7 @@
 <![CDATA[
 	$(result) = clamp($(input), $(inputmin), $(inputmax) );
 	$(result) = $(outputmin) + 
-	          ($(outputmax) - $(outputmin)) * ($(result) - $(inputmin)) / ($(inputmax) - $(inputmin));
-	]]>
+		($(outputmax) - $(outputmin)) * ($(result) - $(inputmin)) / ($(inputmax) - $(inputmin));
+]]>
 	</code>		
 </node>

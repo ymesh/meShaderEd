@@ -1,0 +1,31 @@
+<?xml version="1.0"?> 
+
+<node name="NormalMapSpace" label="nmS" author="DRL">
+	<help>Normalmap texture in custom space.</help>
+	
+	<input>
+		<property name="N" type="normal" default="normal (0, 1, 0)">
+			<help>Normal vector.</help>
+		</property>
+		<property name="sourceSpace" type="string" default="current" detail="uniform">
+			<help>The space that incoming N vector is in.</help>
+		</property>
+		<property name="bakeSpace" type="string" default="object" detail="uniform">
+			<help>The space to calculate normal map for.</help>
+		</property>
+	</input>
+	
+	<output>
+		<property detail="varying" name="NM" type="color"/>
+	</output>
+	
+	<code><![CDATA[
+
+// code begin - NormalMapSpace
+$(NM) = color( normalize( transform( $(sourceSpace), $(bakeSpace), $(N) )));
+$(NM) = ( $(NM) + color(1) ) / 2; // grade NM to [0-1] color range
+$(NM) = clamp( $(NM), color(0), color(1) );
+// code end - NormalMapSpace
+]]>
+	</code>
+</node>

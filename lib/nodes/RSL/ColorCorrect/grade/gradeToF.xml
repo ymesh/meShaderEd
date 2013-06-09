@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<node name="gradeToF" label="gradeToF" author="DRL">
+	<help>Remap float value from min and max to [0-1] range.</help>
+	<input>
+		<property name="input" type="float" default="0"/>
+		<property name="min" type="float" default="0" detail="uniform"
+			subtype="slider"
+			range="0 1 .01"/>
+		<property name="max" type="float" default="1" detail="uniform"
+			subtype="slider"
+			range="0 1 .01"/>
+	</input>
+	<output>
+		<property name="result" type="float"/>
+	</output>
+	<code><![CDATA[
+
+$(result) = ( $(input) - $(min) ) / ( $(max) - $(min) );
+]]>
+	</code>
+</node>

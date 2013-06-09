@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="gradeF" label="gradeF" author="DRL">
+<node name="gradeFromF" label="gradeF" author="DRL">
 	<help>Remap float value in [0-1] range to new min and max.</help>
 	<input>
 		<property name="input" type="float" default="0"/>
