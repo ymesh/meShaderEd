@@ -37,6 +37,7 @@ class NodeParam ( QtCore.QObject ) :
     self.isRibParam = isRibParam
     self.display = True
     self.enabled = True
+    self.removable = False
 
     # extra parameter description
     self.detail = '' # variable, uniform
@@ -195,6 +196,10 @@ class NodeParam ( QtCore.QObject ) :
     self.enabled = True
     if not xml_param.attributes ().namedItem ( 'enabled' ).isNull () :
       self.enabled = xml_param.attributes ().namedItem ( 'enabled' ).nodeValue () == '1'
+      
+    self.removable = False
+    if not xml_param.attributes ().namedItem ( 'removable' ).isNull () :
+      self.removable = xml_param.attributes ().namedItem ( 'removable' ).nodeValue () == '1'
 
     if not xml_param.attributes ().namedItem ( 'space' ).isNull () :
       space = str ( xml_param.attributes ().namedItem ( 'space' ).nodeValue () )
@@ -234,6 +239,7 @@ class NodeParam ( QtCore.QObject ) :
     if self.shaderParam    : xmlnode.setAttribute ( 'shaderParam', True )
     if not self.display    : xmlnode.setAttribute ( 'display', False )
     if not self.enabled    : xmlnode.setAttribute ( 'enabled', False )
+    if self.removable      : xmlnode.setAttribute ( 'removable', True )
     if self.detail != ''   : xmlnode.setAttribute ( 'detail', self.detail )
     if self.provider != '' : xmlnode.setAttribute ( 'provider', self.provider )
     # ui decorative parameters

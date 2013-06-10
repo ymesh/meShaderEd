@@ -18,7 +18,7 @@ from ui_nodeList import Ui_nodeList
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 #
-#
+# NodeList
 #
 class NodeList ( QtGui.QWidget ) :
   #
@@ -111,7 +111,7 @@ class NodeList ( QtGui.QWidget ) :
     description = ''
     
     if nodeKind != 'folder' :
-      if nodeIcon !='' :
+      if nodeIcon != '' :
         iconFileName = os.path.join ( os.path.dirname ( str ( nodeFilename ) ), str ( nodeIcon ) ) 
         print str ( iconFileName )
         description += '<img src="' + iconFileName + '" />'  # width="128" height="128"

@@ -106,7 +106,8 @@ class ControlParam ( NodeParam ) :
       code_text = dom.createTextNode ( self.control_code )
       code_tag.appendChild ( code_text )
       xmlnode.appendChild ( code_tag )
-    if self.btext != '' : xmlnode.setAttribute ( 'btext', self.range )
+    
+    if self.btext != '' : xmlnode.setAttribute ( 'btext', self.btext )
 
     return xmlnode
   #

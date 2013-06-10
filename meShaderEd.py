@@ -2,7 +2,7 @@
 """
  meShaderEd.py
 
- version 0.3.1b (26 Apr 2013)
+ version 0.3.1 (10 Jun 2013)
 
  written by Yuri.Meshalkin (mesh@kpp.kiev.ua)
 
@@ -31,7 +31,7 @@ from global_vars import app_global_vars, DEBUG_MODE
 
 
 root = normPath ( sys.path[0] )
-version = '0.3.1b'
+version = '0.3.1'
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
                                   QtCore.QSettings.UserScope,
@@ -65,13 +65,11 @@ def getDefaultValue ( settings, group, key ) :
 defRenderer = setDefaultValue ( 'defRenderer','3Delight' )
 app_renderer = meRendererPreset ( os.path.join ( root, 'renderers.xml' ), defRenderer )
 #app_renderer.setPresetFile ( os.path.join( root, 'renderers.xml' ), defRenderer )
-
 #
+# main routine
 #
-#
-def main ():
+def main () :
   #global root
-
   app = QtGui.QApplication ( sys.argv )
 
   app_settings.setValue ( 'version', version )
@@ -104,7 +102,6 @@ def main ():
   #
   setDefaultValue ( 'recent_projects_max', 10 )
   setDefaultValue ( 'recent_networks_max', 10 )
-
   #
   # setup globals
   #
@@ -150,9 +147,7 @@ def main ():
 
   #app_global_vars[ 'RibPath' ] = ''
   #app_global_vars[ 'DisplayPath' ] = ''
-
   app_settings.beginGroup ( 'WorkArea' )
-
   #grid_enabled = bool( setDefaultValue( 'grid_enabled', True ).toString() )
   grid_enabled   = setDefaultValue ( 'grid_enabled', True )
   grid_size      = int ( setDefaultValue ( 'grid_size', 10 ) )
@@ -170,7 +165,7 @@ def main ():
   # It's exec_ because exec is a reserved word in Python
   sys.exit ( app.exec_ () )
 #
-#
+# 
 #
 if __name__ == "__main__":
   #
@@ -193,4 +188,4 @@ if __name__ == "__main__":
     if QtCore.QT_VERSION < 50000 :
     	QtGui.QApplication.setPalette ( QtGui.QApplication.style ().standardPalette () )
 
-  main()
+  main ()

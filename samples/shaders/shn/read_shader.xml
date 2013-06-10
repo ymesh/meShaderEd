@@ -21,157 +21,6 @@ self.imageName = self.getInputParamValueByName ( 'image' )
    <code><![CDATA[]]></code>
    <offset x="165" y="-158"/>
   </node>
-  <node icon="" type="rib_code" author="mesh" id="7" name="ReadShader" label="ReadShader0">
-   <help>Read compiled shader</help>
-   <input>
-    <property provider="attribute" default="" subtype="button" type="control" value="" name="Reload" label="Reload Parameters">
-     <control_code>
-print ":: Hello from (%s) XML control_code !!!" % self.label
-if node is not None :
-  print ":: Node = %s" % node.label
-  from core.utils.ShaderInfo import ShaderInfo
-  shaderInfo = ShaderInfo ( node.getInputParamByName ( 'file_name' ).value )
-
-  print '** shader type = %s' % shaderInfo.type
-  
-  node.getInputParamByName ( 'shader_name' ).value = shaderInfo.name
-  node.getInputParamByName ( 'shader_type' ).value = shaderInfo.type
-  node.getInputParamByName ( 'rib_shader_type' ).value = node.getRiCallForShaderType ( shaderInfo.type )
-  node.getInputParamByName ( 'shader_params' ).value = ''
-  
-  lastInputParam = node.getInputParamByName ( 'shader_params' )
-  lastOutputParam = node.getOutputParamByName ( 'shader' )
-  
-  lastInputParamIdx = node.inputParams.index ( lastInputParam )
-  lastOutputParamIdx = node.outputParams.index ( lastOutputParam )
-  
-  print '*** removing input params ***'
-  while lastInputParamIdx &lt; ( len ( node.inputParams ) - 1 ) : 
-    param = node.inputParams.pop ()
-    print param.name, param.type
-  
-  print '*** removing output params ***'
-  while lastOutputParamIdx &lt; ( len ( node.outputParams ) - 1 ) : 
-    param = node.outputParams.pop ()
-    print param.name, param.type
-  
-  print '*** added input params ***'
-  for param in shaderInfo.inputParams :
-    node.addInputParam ( param )
-    print param.name, param.type
-  
-  print '*** added output params ***'
-  for param in shaderInfo.outputParams :
-    node.addOutputParam ( param )
-    print param.name, param.type
-
-  node.updateNode ()
-
-
-</control_code>
-    </property>
-    <property default="" range="${Renderer} ${SLO}=*.${SLO}:All files=*.*" subtype="file" type="string" value="D:/code/meTools/meShaderEd/lib/shaders/me_matte_tex.${SLO}" name="file_name" label="File Name"/>
-    <property provider="attribute" default="0.000 0.000 1.000" type="color" value="0.000 0.000 1.000" name="Color" label="Color"/>
-    <property provider="attribute" default="1.000 1.000 1.000" type="color" value="1.000 1.000 1.000" name="Opacity" label="Opacity"/>
-    <property provider="attribute" default="null" enabled="0" type="string" value="me_matte_tex" name="shader_name" label="Shader Name"/>
-    <property provider="attribute" default="surface" enabled="0" range="Surface=surface:Displacement=displacement:Light=light:Volume=volume:Shader=shader" subtype="selector" type="string" value="surface" name="shader_type" label="Shader Type"/>
-    <property display="0" provider="attribute" default="Surface" enabled="0" type="string" value="Surface" name="rib_shader_type" label="rib_shader_type"/>
-    <property display="0" provider="attribute" default="" type="string" value="uniform float diff_Kd&quot; [ 1.000 ] &quot;uniform float diff_atten&quot; [ 1.000 ] &quot;uniform float diff_from&quot; [ 0.000 ] &quot;uniform string me_inShadowC_category&quot; [ &quot;&quot; ] &quot;uniform float me_inShadowC_opacity&quot; [ 1.000 ] &quot;uniform float me_inShadowC_angle&quot; [ 90.000 ] &quot;uniform float me_inShadowC_invert&quot; [ 0.000 ] &quot;uniform float occ_MaxSamples&quot; [ 256.000 ] &quot;uniform float occ_MinSamples&quot; [ 128.000 ] &quot;uniform float occ_MaxDist&quot; [ 15.000 ] &quot;uniform float occ_SampleBase&quot; [ 0.000 ] &quot;uniform float occ_Bias&quot; [ 0.050 ] &quot;uniform string occ_HitMode&quot; [ &quot;default&quot; ] &quot;uniform string occ_HitSides&quot; [ &quot;both&quot; ] &quot;uniform float occ_MaxVar&quot; [ 0.150 ] &quot;uniform float occ_MaxPixelDist&quot; [ 0.000 ] &quot;uniform string occ_Distribution&quot; [ &quot;cosine&quot; ] &quot;uniform float occ_FalloffMode&quot; [ 0.000 ] &quot;uniform float occ_FalloffValue&quot; [ 0.000 ] &quot;uniform float ST0_repeatS&quot; [ 1.000 ] &quot;uniform float ST0_repeatT&quot; [ 1.000 ] &quot;uniform float ST0_offsetS&quot; [ 0.000 ] &quot;uniform float ST0_offsetT&quot; [ 0.000 ] &quot;uniform float ST0_flipS&quot; [ 0.000 ] &quot;uniform float ST0_flipT&quot; [ 0.000 ] &quot;uniform color image_defColor&quot; [ 1.000 1.000 1.000 ] &quot;uniform string image_File&quot; [ &quot;&quot; ] &quot;uniform float image_fillOutside&quot; [ 0.000 ] &quot;uniform float image_alphaOp&quot; [ 0.000 ] &quot;uniform string image_filter&quot; [ &quot;gaussian&quot; ] &quot;uniform float image_SFilt&quot; [ 1.000 ] &quot;uniform float image_TFilt&quot; [ 1.000 ] &quot;uniform float image_lerp&quot; [ 1.000 ] &quot;uniform float me_diff_ibi_dBlur&quot; [ 0.700 ] &quot;uniform float me_diff_ibi_Kd&quot; [ 0.800 ] &quot;uniform float diff_ibi_Saturation_value&quot; [ 1.000 ] &quot;uniform float spec_ibi1_rBlur&quot; [ 0.100 ] &quot;uniform float spec_ibi1_KrMin&quot; [ 0.000 ] &quot;uniform float spec_ibi1_KrMax&quot; [ 0.250 ] &quot;uniform float spec_ibi1_IOR&quot; [ 1.500 ] &quot;uniform float spec_ibi_Saturation_value&quot; [ 1.000 ] &quot;uniform float comp_diff_mult&quot; [ 0.200 ] &quot;uniform float comp_diff_ibi_mult&quot; [ 0.200 ] &quot;uniform float comp_spec_ibi_mult&quot; [ 1.000 ] &quot;uniform float comp_occ_mult&quot; [ 1.000 ] &quot;uniform float comp_shadow_mult&quot; [ 1.000 ] &quot;uniform float me_matte_tex_mask&quot; [ 1.000 ] &quot;uniform color me_matte_tex_mask_C&quot; [ 1.000 0.000 0.000 ]" name="shader_params" label="shader_params"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="diff_Kd" label="diff_Kd"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="diff_atten" label="diff_atten"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="diff_from" label="diff_from"/>
-    <property detail="uniform" provider="attribute" default="" type="string" value="" name="me_inShadowC_category" label="me_inShadowC_category"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="me_inShadowC_opacity" label="me_inShadowC_opacity"/>
-    <property detail="uniform" provider="attribute" default="90.000" type="float" value="90.000" name="me_inShadowC_angle" label="me_inShadowC_angle"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="me_inShadowC_invert" label="me_inShadowC_invert"/>
-    <property detail="uniform" provider="attribute" default="256.000" type="float" value="256.000" name="occ_MaxSamples" label="occ_MaxSamples"/>
-    <property detail="uniform" provider="attribute" default="128.000" type="float" value="128.000" name="occ_MinSamples" label="occ_MinSamples"/>
-    <property detail="uniform" provider="attribute" default="15.000" type="float" value="15.000" name="occ_MaxDist" label="occ_MaxDist"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="occ_SampleBase" label="occ_SampleBase"/>
-    <property detail="uniform" provider="attribute" default="0.050" type="float" value="0.050" name="occ_Bias" label="occ_Bias"/>
-    <property detail="uniform" provider="attribute" default="default" type="string" value="default" name="occ_HitMode" label="occ_HitMode"/>
-    <property detail="uniform" provider="attribute" default="both" type="string" value="both" name="occ_HitSides" label="occ_HitSides"/>
-    <property detail="uniform" provider="attribute" default="0.150" type="float" value="0.150" name="occ_MaxVar" label="occ_MaxVar"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="occ_MaxPixelDist" label="occ_MaxPixelDist"/>
-    <property detail="uniform" provider="attribute" default="cosine" type="string" value="cosine" name="occ_Distribution" label="occ_Distribution"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="occ_FalloffMode" label="occ_FalloffMode"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="occ_FalloffValue" label="occ_FalloffValue"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="ST0_repeatS" label="ST0_repeatS"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="ST0_repeatT" label="ST0_repeatT"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="ST0_offsetS" label="ST0_offsetS"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="ST0_offsetT" label="ST0_offsetT"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="ST0_flipS" label="ST0_flipS"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="ST0_flipT" label="ST0_flipT"/>
-    <property space="rgb" detail="uniform" provider="attribute" default="1.000 1.000 1.000" type="color" value="1.000 1.000 1.000" name="image_defColor" label="image_defColor"/>
-    <property detail="uniform" provider="attribute" default="" type="string" value="" name="image_File" label="image_File"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="image_fillOutside" label="image_fillOutside"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="image_alphaOp" label="image_alphaOp"/>
-    <property detail="uniform" provider="attribute" default="gaussian" type="string" value="gaussian" name="image_filter" label="image_filter"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="image_SFilt" label="image_SFilt"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="image_TFilt" label="image_TFilt"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="image_lerp" label="image_lerp"/>
-    <property detail="uniform" provider="attribute" default="0.700" type="float" value="0.700" name="me_diff_ibi_dBlur" label="me_diff_ibi_dBlur"/>
-    <property detail="uniform" provider="attribute" default="0.800" type="float" value="0.800" name="me_diff_ibi_Kd" label="me_diff_ibi_Kd"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="diff_ibi_Saturation_value" label="diff_ibi_Saturation_value"/>
-    <property detail="uniform" provider="attribute" default="0.100" type="float" value="0.100" name="spec_ibi1_rBlur" label="spec_ibi1_rBlur"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="spec_ibi1_KrMin" label="spec_ibi1_KrMin"/>
-    <property detail="uniform" provider="attribute" default="0.250" type="float" value="0.250" name="spec_ibi1_KrMax" label="spec_ibi1_KrMax"/>
-    <property detail="uniform" provider="attribute" default="1.500" type="float" value="1.500" name="spec_ibi1_IOR" label="spec_ibi1_IOR"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="spec_ibi_Saturation_value" label="spec_ibi_Saturation_value"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="0.200" name="comp_diff_mult" label="comp_diff_mult"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="0.200" name="comp_diff_ibi_mult" label="comp_diff_ibi_mult"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="comp_spec_ibi_mult" label="comp_spec_ibi_mult"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="comp_occ_mult" label="comp_occ_mult"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="comp_shadow_mult" label="comp_shadow_mult"/>
-    <property detail="uniform" provider="attribute" default="1.000" type="float" value="1.000" name="me_matte_tex_mask" label="me_matte_tex_mask"/>
-    <property space="rgb" detail="uniform" provider="attribute" default="1.000 0.000 0.000" type="color" value="1.000 0.000 0.000" name="me_matte_tex_mask_C" label="me_matte_tex_mask_C"/>
-   </input>
-   <output>
-    <property default="" type="rib" value="" name="shader" label="Surface"/>
-    <property space="current" detail="varying" provider="attribute" default="vector &quot;current&quot; (0.000,0.000,1.000)" type="vector" value="vector &quot;current&quot; (0.000,0.000,1.000)" name="__L" label="__L"/>
-    <property detail="varying" provider="attribute" default="0.000" type="float" value="0.000" name="__blur" label="__blur"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__color" label="__color"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__diff" label="__diff"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__spec" label="__spec"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__diff_ibi" label="__diff_ibi"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__spec_ibi" label="__spec_ibi"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__shadow" label="__shadow"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__reflect" label="__reflect"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__sss" label="__sss"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__pstrace" label="__pstrace"/>
-    <property detail="varying" provider="attribute" default="0.000" type="float" value="0.000" name="__occ" label="__occ"/>
-    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" type="color" value="0.000 0.000 0.000" name="__occ_C" label="__occ_C"/>
-    <property detail="varying" provider="attribute" default="1.000" type="float" value="1.000" name="__mask" label="__mask"/>
-    <property space="rgb" detail="varying" provider="attribute" default="1.000 0.000 0.000" type="color" value="1.000 0.000 0.000" name="__mask_C" label="__mask_C"/>
-   </output>
-   <internal/>
-   <include/>
-   <param_code><![CDATA[
-print ":: Hello from (%s) XML param_code !!!" % self.label
-lastInputParam = self.getInputParamByName ( 'shader_params' )
-lastInputParamIdx = self.inputParams.index ( lastInputParam )
-
-
-ribInputParamsDeclaration = []
-
-for i in range ( lastInputParamIdx + 1, len ( self.inputParams ) ) :
-  declStr = self.getParamDeclaration ( self.inputParams [ i ] )
-  ribInputParamsDeclaration.append ( declStr )
-  print declStr
-  
-self.getInputParamByName ( 'shader_params' ).value = ''
-if len ( ribInputParamsDeclaration ) > 0 :
-  self.getInputParamByName ( 'shader_params' ).value = ( ' ' ).join ( ribInputParamsDeclaration )
-
-
-]]></param_code>
-   <code><![CDATA[
-    Color [$(Color)]
-    Opacity [$(Opacity)]
-    $(rib_shader_type) "$(shader_name)" $(shader_params)
-]]></code>
-   <offset x="-202" y="-106"/>
-  </node>
   <node icon="" type="rib" author="mesh" id="10" name="swatchRib" label="swatchRib">
    <help>Basic primitive preview RIB for swatch node</help>
    <input>
@@ -295,6 +144,101 @@ if self.getInputParamByName ( 'BG_surf' ).value == 'stTexture': self.getInputPar
   ]]></code>
    <offset x="-8" y="-131"/>
   </node>
+  <node icon="" type="rib_code" author="mesh" id="114" name="ReadShader" label="ReadShader10">
+   <help>Read compiled shader</help>
+   <input>
+    <property provider="attribute" default="" subtype="button" type="control" value="" btext="Reload" name="Reload" label="Shader Parameters">
+     <control_code>
+print ":: Hello from (%s) XML control_code !!!" % self.label
+if node is not None :
+  print ":: Node = %s" % node.label
+  from core.utils.ShaderInfo import ShaderInfo
+  shaderInfo = ShaderInfo ( node.getInputParamByName ( 'file_name' ).value )
+
+  print '** shader type = %s' % shaderInfo.type
+
+  node.getInputParamByName ( 'shader_name' ).value = shaderInfo.name
+  node.getInputParamByName ( 'shader_type' ).value = shaderInfo.type
+  node.getInputParamByName ( 'rib_shader_type' ).value = node.getRiCallForShaderType ( shaderInfo.type )
+  node.getInputParamByName ( 'shader_params' ).value = ''
+
+  lastInputParam = node.getInputParamByName ( 'shader_params' )
+  lastOutputParam = node.getOutputParamByName ( 'shader' )
+
+  lastInputParamIdx = node.inputParams.index ( lastInputParam )
+  lastOutputParamIdx = node.outputParams.index ( lastOutputParam )
+
+  print '*** removing input params ***'
+  
+  while lastInputParamIdx &lt; ( len ( node.inputParams ) - 1 ) :
+    param = node.inputParams.pop ()
+    print param.name, param.type
+
+  print '*** removing output params ***'
+  while lastOutputParamIdx &lt; ( len ( node.outputParams ) - 1 ) :
+    param = node.outputParams.pop ()
+    print param.name, param.type
+
+  print '*** added input params ***'
+  for param in shaderInfo.inputParams :
+    if param.arraySize is None :
+      param.removable = True
+      node.addInputParam ( param )
+      print param.name, param.type
+
+  print '*** added output params ***'
+  for param in shaderInfo.outputParams :
+    if param.arraySize is None :
+      param.removable = True
+      node.addOutputParam ( param )
+      print param.name, param.type
+
+  node.updateNode ()
+
+
+</control_code>
+    </property>
+    <property default="" range="${Renderer} ${SLO}=*.${SLO}:All files=*.*" subtype="file" type="string" value="D:/code/meTools/meShaderEd/lib/shaders/liquidchecker.${SLO}" name="file_name" label="File Name"/>
+    <property provider="attribute" default="0.000 0.000 1.000" type="color" value="0.000 0.000 1.000" name="Color" label="Color"/>
+    <property provider="attribute" default="1.000 1.000 1.000" type="color" value="1.000 1.000 1.000" name="Opacity" label="Opacity"/>
+    <property provider="attribute" default="null" enabled="0" type="string" value="liquidchecker" name="shader_name" label="Shader Name"/>
+    <property provider="attribute" default="surface" enabled="0" range="Surface=surface:Displacement=displacement:Light=light:Volume=volume:Shader=shader" subtype="selector" type="string" value="surface" name="shader_type" label="Shader Type"/>
+    <property display="0" provider="attribute" default="Surface" enabled="0" type="string" value="Surface" name="rib_shader_type" label="rib_shader_type"/>
+    <property display="0" provider="attribute" default="" type="string" value="uniform float frequency&quot; [ 8.000 ] &quot;uniform float mode&quot; [ 0.000 ]" name="shader_params" label="shader_params"/>
+    <property detail="uniform" provider="attribute" default="4.500" removable="1" type="float" value="8.000" name="frequency" label="frequency"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="mode" label="mode"/>
+   </input>
+   <output>
+    <property default="" type="rib" value="" name="shader" label="Surface"/>
+   </output>
+   <internal/>
+   <include/>
+   <param_code><![CDATA[
+print ":: Hello from (%s) XML param_code !!!" % self.label
+lastInputParam = self.getInputParamByName ( 'shader_params' )
+lastInputParamIdx = self.inputParams.index ( lastInputParam )
+
+
+ribInputParamsDeclaration = []
+
+for i in range ( lastInputParamIdx + 1, len ( self.inputParams ) ) :
+  declStr = self.getParamDeclaration ( self.inputParams [ i ] )
+  ribInputParamsDeclaration.append ( declStr )
+  print declStr
+
+self.getInputParamByName ( 'shader_params' ).value = ''
+if len ( ribInputParamsDeclaration ) > 0 :
+  self.getInputParamByName ( 'shader_params' ).value = ( ' ' ).join ( ribInputParamsDeclaration )
+
+
+]]></param_code>
+   <code><![CDATA[
+    Color [$(Color)]
+    Opacity [$(Opacity)]
+    $(rib_shader_type) "$(shader_name)" $(shader_params)
+]]></code>
+   <offset x="-203" y="63"/>
+  </node>
   <node icon="" type="swatch" author="mesh" id="19" name="swatchNode" label="swatchNode0">
    <help>Swatch node viewer </help>
    <input>
@@ -314,10 +258,10 @@ self.imageName = self.getInputParamValueByName ( 'image' )
    <code><![CDATA[]]></code>
    <offset x="166" y="31"/>
   </node>
-  <node icon="" type="rib_code" author="mesh" id="24" name="ReadShader" label="ReadShader00">
+  <node icon="" type="rib_code" author="mesh" id="57" name="ReadShader" label="ReadShader1">
    <help>Read compiled shader</help>
    <input>
-    <property provider="attribute" default="" subtype="button" type="control" value="" name="Reload" label="Reload Parameters">
+    <property provider="attribute" default="" subtype="button" type="control" value="" btext="Reload" name="Reload" label="Shader Parameters">
      <control_code>
 print ":: Hello from (%s) XML control_code !!!" % self.label
 if node is not None :
@@ -326,55 +270,121 @@ if node is not None :
   shaderInfo = ShaderInfo ( node.getInputParamByName ( 'file_name' ).value )
 
   print '** shader type = %s' % shaderInfo.type
-  
+
   node.getInputParamByName ( 'shader_name' ).value = shaderInfo.name
   node.getInputParamByName ( 'shader_type' ).value = shaderInfo.type
   node.getInputParamByName ( 'rib_shader_type' ).value = node.getRiCallForShaderType ( shaderInfo.type )
   node.getInputParamByName ( 'shader_params' ).value = ''
-  
+
   lastInputParam = node.getInputParamByName ( 'shader_params' )
   lastOutputParam = node.getOutputParamByName ( 'shader' )
-  
+
   lastInputParamIdx = node.inputParams.index ( lastInputParam )
   lastOutputParamIdx = node.outputParams.index ( lastOutputParam )
-  
+
   print '*** removing input params ***'
-  while lastInputParamIdx &lt; ( len ( node.inputParams ) - 1 ) : 
+  
+  while lastInputParamIdx &lt; ( len ( node.inputParams ) - 1 ) :
     param = node.inputParams.pop ()
     print param.name, param.type
-  
+
   print '*** removing output params ***'
-  while lastOutputParamIdx &lt; ( len ( node.outputParams ) - 1 ) : 
+  while lastOutputParamIdx &lt; ( len ( node.outputParams ) - 1 ) :
     param = node.outputParams.pop ()
     print param.name, param.type
-  
+
   print '*** added input params ***'
   for param in shaderInfo.inputParams :
-    node.addInputParam ( param )
-    print param.name, param.type
-  
+    if param.arraySize is None :
+      param.removable = True
+      node.addInputParam ( param )
+      print param.name, param.type
+
   print '*** added output params ***'
   for param in shaderInfo.outputParams :
-    node.addOutputParam ( param )
-    print param.name, param.type
+    if param.arraySize is None :
+      param.removable = True
+      node.addOutputParam ( param )
+      print param.name, param.type
 
   node.updateNode ()
 
 
 </control_code>
     </property>
-    <property default="" range="${Renderer} ${SLO}=*.${SLO}:All files=*.*" subtype="file" type="string" value="D:/code/meTools/meShaderEd/lib/shaders/liquidchecker.${SLO}" name="file_name" label="File Name"/>
+    <property default="" range="${Renderer} ${SLO}=*.${SLO}:All files=*.*" subtype="file" type="string" value="D:/code/meTools/meShaderEd/lib/shaders/me_matte_tex.${SLO}" name="file_name" label="File Name"/>
     <property provider="attribute" default="0.000 0.000 1.000" type="color" value="0.000 0.000 1.000" name="Color" label="Color"/>
     <property provider="attribute" default="1.000 1.000 1.000" type="color" value="1.000 1.000 1.000" name="Opacity" label="Opacity"/>
-    <property provider="attribute" default="null" enabled="0" type="string" value="liquidchecker" name="shader_name" label="Shader Name"/>
+    <property provider="attribute" default="null" enabled="0" type="string" value="me_matte_tex" name="shader_name" label="Shader Name"/>
     <property provider="attribute" default="surface" enabled="0" range="Surface=surface:Displacement=displacement:Light=light:Volume=volume:Shader=shader" subtype="selector" type="string" value="surface" name="shader_type" label="Shader Type"/>
     <property display="0" provider="attribute" default="Surface" enabled="0" type="string" value="Surface" name="rib_shader_type" label="rib_shader_type"/>
-    <property display="0" provider="attribute" default="" type="string" value="uniform float frequency&quot; [ 8.000 ] &quot;uniform float mode&quot; [ 0.000 ]" name="shader_params" label="shader_params"/>
-    <property detail="uniform" provider="attribute" default="4.500" type="float" value="8.000" name="frequency" label="frequency"/>
-    <property detail="uniform" provider="attribute" default="0.000" type="float" value="0.000" name="mode" label="mode"/>
+    <property display="0" provider="attribute" default="" type="string" value="uniform float diff_Kd&quot; [ 1.000 ] &quot;uniform float diff_atten&quot; [ 1.000 ] &quot;uniform float diff_from&quot; [ 0.000 ] &quot;uniform string me_inShadowC_category&quot; [ &quot;&quot; ] &quot;uniform float me_inShadowC_opacity&quot; [ 1.000 ] &quot;uniform float me_inShadowC_angle&quot; [ 90.000 ] &quot;uniform float me_inShadowC_invert&quot; [ 0.000 ] &quot;uniform float occ_MaxSamples&quot; [ 256.000 ] &quot;uniform float occ_MinSamples&quot; [ 128.000 ] &quot;uniform float occ_MaxDist&quot; [ 15.000 ] &quot;uniform float occ_SampleBase&quot; [ 0.000 ] &quot;uniform float occ_Bias&quot; [ 0.050 ] &quot;uniform string occ_HitMode&quot; [ &quot;default&quot; ] &quot;uniform string occ_HitSides&quot; [ &quot;both&quot; ] &quot;uniform float occ_MaxVar&quot; [ 0.150 ] &quot;uniform float occ_MaxPixelDist&quot; [ 0.000 ] &quot;uniform string occ_Distribution&quot; [ &quot;cosine&quot; ] &quot;uniform float occ_FalloffMode&quot; [ 0.000 ] &quot;uniform float occ_FalloffValue&quot; [ 0.000 ] &quot;uniform float ST0_repeatS&quot; [ 1.000 ] &quot;uniform float ST0_repeatT&quot; [ 1.000 ] &quot;uniform float ST0_offsetS&quot; [ 0.000 ] &quot;uniform float ST0_offsetT&quot; [ 0.000 ] &quot;uniform float ST0_flipS&quot; [ 0.000 ] &quot;uniform float ST0_flipT&quot; [ 0.000 ] &quot;uniform color image_defColor&quot; [ 1.000 1.000 1.000 ] &quot;uniform string image_File&quot; [ &quot;&quot; ] &quot;uniform float image_fillOutside&quot; [ 0.000 ] &quot;uniform float image_alphaOp&quot; [ 0.000 ] &quot;uniform string image_filter&quot; [ &quot;gaussian&quot; ] &quot;uniform float image_SFilt&quot; [ 1.000 ] &quot;uniform float image_TFilt&quot; [ 1.000 ] &quot;uniform float image_lerp&quot; [ 1.000 ] &quot;uniform float me_diff_ibi_dBlur&quot; [ 0.700 ] &quot;uniform float me_diff_ibi_Kd&quot; [ 0.800 ] &quot;uniform float diff_ibi_Saturation_value&quot; [ 1.000 ] &quot;uniform float spec_ibi1_rBlur&quot; [ 0.100 ] &quot;uniform float spec_ibi1_KrMin&quot; [ 0.000 ] &quot;uniform float spec_ibi1_KrMax&quot; [ 0.250 ] &quot;uniform float spec_ibi1_IOR&quot; [ 1.500 ] &quot;uniform float spec_ibi_Saturation_value&quot; [ 1.000 ] &quot;uniform float comp_diff_mult&quot; [ 1.000 ] &quot;uniform float comp_diff_ibi_mult&quot; [ 1.000 ] &quot;uniform float comp_spec_ibi_mult&quot; [ 1.000 ] &quot;uniform float comp_occ_mult&quot; [ 1.000 ] &quot;uniform float comp_shadow_mult&quot; [ 1.000 ] &quot;uniform float me_matte_tex_mask&quot; [ 1.000 ] &quot;uniform color me_matte_tex_mask_C&quot; [ 1.000 0.000 0.000 ]" name="shader_params" label="shader_params"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="diff_Kd" label="diff_Kd"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="diff_atten" label="diff_atten"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="diff_from" label="diff_from"/>
+    <property detail="uniform" provider="attribute" default="" removable="1" type="string" value="" name="me_inShadowC_category" label="me_inShadowC_category"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="me_inShadowC_opacity" label="me_inShadowC_opacity"/>
+    <property detail="uniform" provider="attribute" default="90.000" removable="1" type="float" value="90.000" name="me_inShadowC_angle" label="me_inShadowC_angle"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="me_inShadowC_invert" label="me_inShadowC_invert"/>
+    <property detail="uniform" provider="attribute" default="256.000" removable="1" type="float" value="256.000" name="occ_MaxSamples" label="occ_MaxSamples"/>
+    <property detail="uniform" provider="attribute" default="128.000" removable="1" type="float" value="128.000" name="occ_MinSamples" label="occ_MinSamples"/>
+    <property detail="uniform" provider="attribute" default="15.000" removable="1" type="float" value="15.000" name="occ_MaxDist" label="occ_MaxDist"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="occ_SampleBase" label="occ_SampleBase"/>
+    <property detail="uniform" provider="attribute" default="0.050" removable="1" type="float" value="0.050" name="occ_Bias" label="occ_Bias"/>
+    <property detail="uniform" provider="attribute" default="default" removable="1" type="string" value="default" name="occ_HitMode" label="occ_HitMode"/>
+    <property detail="uniform" provider="attribute" default="both" removable="1" type="string" value="both" name="occ_HitSides" label="occ_HitSides"/>
+    <property detail="uniform" provider="attribute" default="0.150" removable="1" type="float" value="0.150" name="occ_MaxVar" label="occ_MaxVar"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="occ_MaxPixelDist" label="occ_MaxPixelDist"/>
+    <property detail="uniform" provider="attribute" default="cosine" removable="1" type="string" value="cosine" name="occ_Distribution" label="occ_Distribution"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="occ_FalloffMode" label="occ_FalloffMode"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="occ_FalloffValue" label="occ_FalloffValue"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="ST0_repeatS" label="ST0_repeatS"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="ST0_repeatT" label="ST0_repeatT"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="ST0_offsetS" label="ST0_offsetS"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="ST0_offsetT" label="ST0_offsetT"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="ST0_flipS" label="ST0_flipS"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="ST0_flipT" label="ST0_flipT"/>
+    <property space="rgb" detail="uniform" provider="attribute" default="1.000 1.000 1.000" removable="1" type="color" value="1.000 1.000 1.000" name="image_defColor" label="image_defColor"/>
+    <property detail="uniform" provider="attribute" default="" removable="1" type="string" value="" name="image_File" label="image_File"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="image_fillOutside" label="image_fillOutside"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="image_alphaOp" label="image_alphaOp"/>
+    <property detail="uniform" provider="attribute" default="gaussian" removable="1" type="string" value="gaussian" name="image_filter" label="image_filter"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="image_SFilt" label="image_SFilt"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="image_TFilt" label="image_TFilt"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="image_lerp" label="image_lerp"/>
+    <property detail="uniform" provider="attribute" default="0.700" removable="1" type="float" value="0.700" name="me_diff_ibi_dBlur" label="me_diff_ibi_dBlur"/>
+    <property detail="uniform" provider="attribute" default="0.800" removable="1" type="float" value="0.800" name="me_diff_ibi_Kd" label="me_diff_ibi_Kd"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="diff_ibi_Saturation_value" label="diff_ibi_Saturation_value"/>
+    <property detail="uniform" provider="attribute" default="0.100" removable="1" type="float" value="0.100" name="spec_ibi1_rBlur" label="spec_ibi1_rBlur"/>
+    <property detail="uniform" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="spec_ibi1_KrMin" label="spec_ibi1_KrMin"/>
+    <property detail="uniform" provider="attribute" default="0.250" removable="1" type="float" value="0.250" name="spec_ibi1_KrMax" label="spec_ibi1_KrMax"/>
+    <property detail="uniform" provider="attribute" default="1.500" removable="1" type="float" value="1.500" name="spec_ibi1_IOR" label="spec_ibi1_IOR"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="spec_ibi_Saturation_value" label="spec_ibi_Saturation_value"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="comp_diff_mult" label="comp_diff_mult"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="comp_diff_ibi_mult" label="comp_diff_ibi_mult"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="comp_spec_ibi_mult" label="comp_spec_ibi_mult"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="comp_occ_mult" label="comp_occ_mult"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="comp_shadow_mult" label="comp_shadow_mult"/>
+    <property detail="uniform" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="me_matte_tex_mask" label="me_matte_tex_mask"/>
+    <property space="rgb" detail="uniform" provider="attribute" default="1.000 0.000 0.000" removable="1" type="color" value="1.000 0.000 0.000" name="me_matte_tex_mask_C" label="me_matte_tex_mask_C"/>
    </input>
    <output>
     <property default="" type="rib" value="" name="shader" label="Surface"/>
+    <property space="current" detail="varying" provider="attribute" default="vector &quot;current&quot; (0.000,0.000,1.000)" removable="1" type="vector" value="vector &quot;current&quot; (0.000,0.000,1.000)" name="__L" label="__L"/>
+    <property detail="varying" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="__blur" label="__blur"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__color" label="__color"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__diff" label="__diff"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__spec" label="__spec"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__diff_ibi" label="__diff_ibi"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__spec_ibi" label="__spec_ibi"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__shadow" label="__shadow"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__reflect" label="__reflect"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__sss" label="__sss"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__pstrace" label="__pstrace"/>
+    <property detail="varying" provider="attribute" default="0.000" removable="1" type="float" value="0.000" name="__occ" label="__occ"/>
+    <property space="rgb" detail="varying" provider="attribute" default="0.000 0.000 0.000" removable="1" type="color" value="0.000 0.000 0.000" name="__occ_C" label="__occ_C"/>
+    <property detail="varying" provider="attribute" default="1.000" removable="1" type="float" value="1.000" name="__mask" label="__mask"/>
+    <property space="rgb" detail="varying" provider="attribute" default="1.000 0.000 0.000" removable="1" type="color" value="1.000 0.000 0.000" name="__mask_C" label="__mask_C"/>
    </output>
    <internal/>
    <include/>
@@ -390,7 +400,7 @@ for i in range ( lastInputParamIdx + 1, len ( self.inputParams ) ) :
   declStr = self.getParamDeclaration ( self.inputParams [ i ] )
   ribInputParamsDeclaration.append ( declStr )
   print declStr
-  
+
 self.getInputParamByName ( 'shader_params' ).value = ''
 if len ( ribInputParamsDeclaration ) > 0 :
   self.getInputParamByName ( 'shader_params' ).value = ( ' ' ).join ( ribInputParamsDeclaration )
@@ -402,13 +412,13 @@ if len ( ribInputParamsDeclaration ) > 0 :
     Opacity [$(Opacity)]
     $(rib_shader_type) "$(shader_name)" $(shader_params)
 ]]></code>
-   <offset x="-198" y="63"/>
+   <offset x="-208" y="-117"/>
   </node>
   <node icon="" type="rib" author="mesh" id="27" name="swatchRib" label="swatchRib0">
    <help>Basic primitive preview RIB for swatch node</help>
    <input>
     <property provider="attribute" default="0" subtype="switch" type="int" value="0" name="Raytrace" label="Raytrace"/>
-    <property provider="attribute" default="Sphere" range="Sphere:Teapot:Cylinder:Torus:Plane" subtype="selector" type="string" value="Sphere" name="Primitive" label="Primitive"/>
+    <property provider="attribute" default="Sphere" range="Sphere:Teapot:Cylinder:Torus:Plane" subtype="selector" type="string" value="Teapot" name="Primitive" label="Primitive"/>
     <property provider="attribute" default="256" type="int" value="256" name="Size" label="Size"/>
     <property provider="attribute" default="1.000" type="float" value="1.000" name="ShadingRate" label="Shading rate"/>
     <property provider="attribute" default="1.250" type="float" value="2.500" name="EnvIntensity" label="EnvLight Intensity"/>
@@ -420,7 +430,7 @@ if len ( ribInputParamsDeclaration ) > 0 :
     <property default="Surface &quot;defaultsurface&quot;" type="rib" value="Surface &quot;defaultsurface&quot;" name="FG_surf" label="Surface Shader"/>
     <property provider="attribute" default="liquidchecker" range="null:liquidchecker:stTexture" subtype="selector" type="string" value="stTexture" name="BG_surf" label="Background Shader"/>
     <property display="0" provider="attribute" default="" type="string" value="sttexture&quot; &quot;texturename&quot; &quot;grid.tif" name="BG_surf_name" label="BG_surf_name"/>
-    <property display="0" provider="attribute" default="" type="string" value="Rotate 60 1 0 0&#xa; Sphere 1.0 -1.0 1.0 360" name="PrimitiveCode" label="PrimitiveCode"/>
+    <property display="0" provider="attribute" default="" type="string" value="&#xa;      Rotate 0 0 1 0&#xa;      AttributeBegin&#xa;        Scale 0.35 0.35 0.35&#xa;        Translate -0.6 -1 0&#xa;        Rotate 120 -1 0 0&#xa;        Rotate 30 0 0 1&#xa;        Geometry &quot;teapot&quot;&#xa;      AttributeEnd&#xa;      " name="PrimitiveCode" label="PrimitiveCode"/>
     <property display="0" provider="attribute" default="" type="string" value="" name="RaytraceCode" label="RaytraceCode"/>
    </input>
    <output>
@@ -530,9 +540,9 @@ if self.getInputParamByName ( 'BG_surf' ).value == 'stTexture': self.getInputPar
  </nodes>
  <links>
   <link srcNode_id="10" dstNode_id="2" id="2" srcParam="ImageFile" dstParam="image"/>
+  <link srcNode_id="57" dstNode_id="10" id="4" srcParam="shader" dstParam="FG_surf"/>
   <link srcNode_id="10" dstNode_id="2" id="5" srcParam="ImageFile" dstParam="image"/>
-  <link srcNode_id="7" dstNode_id="10" id="6" srcParam="shader" dstParam="FG_surf"/>
+  <link srcNode_id="114" dstNode_id="27" id="6" srcParam="shader" dstParam="FG_surf"/>
   <link srcNode_id="27" dstNode_id="19" id="7" srcParam="ImageFile" dstParam="image"/>
-  <link srcNode_id="24" dstNode_id="27" id="8" srcParam="shader" dstParam="FG_surf"/>
  </links>
 </nodenet>

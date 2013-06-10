@@ -109,6 +109,17 @@ class NodeParamView ( QtGui.QWidget ) :
     print ">> NodeParamView.onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )
     self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node
   #
+  # onParamRemoved
+  #
+  def onParamRemoved ( self, param ) :
+    #
+    print ">> NodeParamView.onRemoved node = %s param = %s" % ( self.gfxNode.node.label, param.name )
+    self.gfxNode.node.removeParam ( param )
+    #self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node
+    self.disconnectParamSignals ()
+    self.updateGui ()
+    self.connectParamSignals ()
+  #
   # nodeLabelChanged
   #
   def nodeLabelChanged ( self ) :
@@ -189,6 +200,9 @@ class NodeParamView ( QtGui.QWidget ) :
               frameLayout.addWidget ( paramWidget )
               if not inputParam.enabled :
                 paramWidget.setEnabled ( False )
+              
+              if inputParam.removable :
+                QtCore.QObject.connect ( paramWidget, QtCore.SIGNAL ( 'nodeParamRemoved' ), self.onParamRemoved )
 
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding )
     frameLayout.addItem ( spacer )

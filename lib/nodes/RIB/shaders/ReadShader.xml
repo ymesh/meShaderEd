@@ -26,6 +26,7 @@ if node is not None :
   lastOutputParamIdx = node.outputParams.index ( lastOutputParam )
 
   print '*** removing input params ***'
+  
   while lastInputParamIdx < ( len ( node.inputParams ) - 1 ) :
     param = node.inputParams.pop ()
     print param.name, param.type
@@ -38,12 +39,14 @@ if node is not None :
   print '*** added input params ***'
   for param in shaderInfo.inputParams :
     if param.arraySize is None :
+      param.removable = True
       node.addInputParam ( param )
       print param.name, param.type
 
   print '*** added output params ***'
   for param in shaderInfo.outputParams :
     if param.arraySize is None :
+      param.removable = True
       node.addOutputParam ( param )
       print param.name, param.type
 

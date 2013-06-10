@@ -1,7 +1,6 @@
-
 meShaderEd changes log
 
-version 0.3.1 (?? May 2013)
+version 0.3.1 (10 Jun 2013)
   - ControlParam with special <control_code> section in XML, that allows to execute
     python code for dynamic parameters manipulation 
   - ShaderInfo class for parsing compiled shaders parameters
@@ -9,9 +8,12 @@ version 0.3.1 (?? May 2013)
     for reloading shader parameters
   - NodeParam new attributes : enabled, spaceDef, arraySize, defaultArray, valueArray 
     (though arrays parameters support is not fully implemented yet...)
+    btext (button text for button ControlParam)
+    removable (for removing dynamcally added parameters)
   - Fixed some shading nodes, code, shaders and textures for Air, Aqsis, Pixie and RenderDotC compatibility 
   - Tested on PyQt 4.10.2 that was linked with Qt 5.0.2 libraries.
   - New service nodes in Library
+
   
 version 0.3.0 (16 Apr 2013)
   SwatchNode for image preview in shading network
