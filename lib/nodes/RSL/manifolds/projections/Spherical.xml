@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<node name="Spherical" label="Spherical" author="mesh">
+  <help>Spherical projection</help>
+  <input>
+    <property name="coordsys" type="string" default="" detail="uniform">
+		<help>define shader space</help>
+		</property>
+  </input>
+  <output>
+    <property name="Q" type="point"/> 
+    <property name="dQu" type="vector"/>  
+    <property name="dQv" type="vector"/>  
+  </output>
+
+  <internal>
+  <variable name="sys"/>
+  <variable name="Qin"/>
+  <variable name="QN"/>
+  <variable name="X"/>  
+  <variable name="Y"/>  
+  <variable name="circum"/>   
+  <variable name="pi"/> 
+  <variable name="pi2"/> 
+  </internal>
+  <code>
+<![CDATA[
+      
+    varying vector $(X), $(Y), $(QN);
+    varying float $(circum);
+    uniform float $(pi) = radians ( 180 );
+    uniform float $(pi2) = radians ( 360 );
+
+    uniform string $(sys) = ( $(coordsys) != "" ) ? $(coordsys) : "world";
+    point $(Qin) = transform ( $(sys), P );
+    
+    $(Q) = point (
+        .5 + atan ( xcomp ( $(Qin) ), -zcomp ( $(Qin) ) ) / $(pi2),
+        .5 - atan ( ycomp ( $(Qin) ), length ( vector ( xcomp ( $(Qin) ), 0, zcomp ( $(Qin) ) ) ) ) / $(pi),
+        0
+    );
+
+    $(QN) = normalize ( vector $(Qin) );
+
+    $(X) = normalize (vector ( zcomp( $(Qin) ), 0, xcomp ( $(Qin) ) ) );
+    $(circum) = $(pi2) * length ( vector ( zcomp( $(Qin) ), 0, xcomp ( $(Qin) ) ) );
+    $(circum) = max ( $(circum), 1e-10 );
+
+    $(Y) = normalize ( $(QN) ^ normalize ( $(QN) ^ vector ( 0, 1, 0 ) ) );
+
+    
+    $(dQu) = vector ( dPdu.$(X) / $(circum), dPdu.$(Y) / $(pi), 0);
+    $(dQv) = vector ( dPdv.$(X) / $(circum), dPdv.$(Y) / $(pi), 0);
+    
+    
+  ]]>
+  </code> 
+</node>

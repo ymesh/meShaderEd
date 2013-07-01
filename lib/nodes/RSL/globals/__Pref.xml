@@ -6,7 +6,7 @@
 		<property name="__Pref" type="point"/>
 	</output>
 	<code><![CDATA[
-	  exter point __Pref;
+	  extern point __Pref;
 	  $(__Pref) = __Pref;
 	  ]]>	
 	</code>

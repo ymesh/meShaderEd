@@ -13,6 +13,8 @@
     <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
     <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>
 
+    <property name="Coordsys" label="CoordinateSystem" type="rib" default="" />
+      
     <property name="LightSource" label="LightSource" type="rib"
       default="LightSource &quot;distantlight&quot; 1 &quot;intensity&quot; 1.0 &quot;from&quot; [-2 2 -3] &quot;to&quot; [0 0 0]" />
 
@@ -92,6 +94,8 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
       Rotate -90 1 0 0
       CoordinateSystem "_environment"
     TransformEnd
+    
+    $(Coordsys)
 
     $(LightSource)
 

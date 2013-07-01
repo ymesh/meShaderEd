@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="me_planar" label="Planar" author="mesh">
+<node name="Planar" label="Planar" author="mesh">
 	<help>Planar projection</help>
 	<input>
 		<property name="coordsys" type="string" default="" detail="uniform">

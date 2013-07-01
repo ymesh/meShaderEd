@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<node name="CoordinateSystem" author="mesh" type="rib_code">
+	<help>CoordinateSystem</help>
+	<input>
+    <property name="space" type="string" default="sys" provider="attribute"/>
+	</input>
+    
+	<output>
+    <property name="rib" label="rib" type="rib" default=""/>
+	</output>
+	<code_param>
+  <![CDATA[
+	]]>    
+	</code_param>
+	<code>
+  <![CDATA[
+  CoordinateSystem "$(space)"
+  ]]>
+	</code>		
+</node>

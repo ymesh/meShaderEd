@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<node name="Cylindrical" label="Cylindrical" author="mesh">
+  <help>Cylindrical projection</help>
+  <input>
+    <property name="coordsys" type="string" default="" detail="uniform">
+    <help>define shader space</help>
+    </property>
+  </input>
+  <output>
+    <property name="Q" type="point"/> 
+    <property name="dQu" type="vector"/>  
+    <property name="dQv" type="vector"/>  
+  </output>
+
+  <internal>
+  <variable name="sys"/>
+  <variable name="Qin"/>
+  <variable name="X"/>  
+  <variable name="pi"/> 
+  <variable name="pi2"/> 
+  </internal>
+  <code>
+<![CDATA[
+    varying vector $(X);
+
+    uniform float $(pi) = radians ( 180 );
+    uniform float $(pi2) = radians ( 360 );
+
+    uniform string $(sys) = ( $(coordsys) != "" ) ? $(coordsys) : "world";
+    point $(Qin) = transform ( $(sys), P );
+    
+    varying vector  X;
+
+    $(Q) = point (
+        .5 + atan ( xcomp ( $(Qin) ), -zcomp ( $(Qin) ) ) / $(pi2),
+        -ycomp ( $(Qin) ) + .5,
+        0
+    );
+
+    $(X) = normalize ( vector ( zcomp ( $(Qin) ), 0, xcomp ( $(Qin) ) ) );
+
+    $(dQu) = vector ( dPdu.$(X) / $(pi2), ycomp ( dPdu ), 0);
+    $(dQv) = vector ( dPdv.$(X) / $(pi2), ycomp ( dPdv ), 0);
+  ]]>
+  </code> 
+</node>

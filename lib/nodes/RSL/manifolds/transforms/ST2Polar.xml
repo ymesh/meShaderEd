@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<node name="ST2Polar" label="ST2Polar" author="mesh">
+	<help>Takes ST and returns polar coordinates: angle and distance from centre</help>
+	<input>
+		<property name="Kw" type="float" default="1" detail="uniform" subtype="slider" range="0 10 0.01">
+		<help>A scale for radius.</help>
+		</property>
+		<property name="sctr" label="S center" type="float" default="0.5" detail="uniform" subtype="slider" range="0 4 0.01">
+		</property>
+		<property name="tctr" label="T center" type="float" default="0.5" detail="uniform" subtype="slider" range="0 4 0.01">
+		</property>
+		<property name="Qin" type="point"/>	
+		<property name="dQuin" type="vector"/>	
+		<property name="dQvin" type="vector"/>	
+	</input>
+	<output>
+		<property name="Q" type="point"/>	
+		<property name="dQu" type="vector"/>	
+		<property name="dQv" type="vector"/>	
+	</output>
+
+	<internal>
+	<variable name="ss"/>
+	<variable name="tt"/>
+	<variable name="angle"/>	
+	<variable name="r"/>	
+	<variable name="a"/>
+	</internal>
+	<code>
+<![CDATA[
+  float $(ss), $(tt), $(angle), $(r), $(a);
+
+  $(ss) = xcomp ( $(Qin) ) - $(sctr);
+  $(tt) = ycomp ( $(Qin) ) - $(tctr);
+  $(angle) = atan ( $(ss), $(tt) ) + PI;
+  $(r) = sqrt ( $(ss) * $(ss) + $(tt) * $(tt) ) * $(Kw);
+
+  $(Q) = point ( $(angle) / ( 2 * PI ), $(r), zcomp ( $(Qin) ) );
+  $(dQu) = vector Du ( $(Q) ) * du;
+  $(dQv) = vector Dv ( $(Q) ) * dv;
+  	
+  ]]>
+	</code>	
+</node>
