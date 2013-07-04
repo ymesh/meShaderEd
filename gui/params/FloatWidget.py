@@ -1,9 +1,7 @@
-#===============================================================================
-# FloatWidget.py
-#
-# 
-#
-#===============================================================================
+"""
+ FloatWidget.py
+
+"""
 import math
 from decimal import *
 
@@ -11,14 +9,13 @@ from PyQt4 import QtGui, QtCore
 
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
-
 #
 # FloatWidget
 #
-class FloatWidget ( ParamWidget ):
+class FloatWidget ( ParamWidget ) :
   #
   #                 
-  def buildGui ( self ):
+  def buildGui ( self ) :
     #
     if not self.ignoreSubtype :
       if self.param.subtype == 'selector': 
@@ -36,14 +33,15 @@ class FloatWidget ( ParamWidget ):
 #
 # Ui_FloatWidget_field
 #          
-class Ui_FloatWidget_field ( object ):
+class Ui_FloatWidget_field ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, FloatWidget ):
-
+  def setupUi ( self, FloatWidget ) :
+    #
     self.widget = FloatWidget
     
-    self.floatEdit = QtGui.QLineEdit( FloatWidget )
+    self.floatEdit = QtGui.QLineEdit ( FloatWidget )
     
     self.floatEdit.setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
     self.floatEdit.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
@@ -51,40 +49,47 @@ class Ui_FloatWidget_field ( object ):
     
     self.widget.hl.addWidget ( self.floatEdit )
     self.widget.hl.addItem ( spacer )
-    #self.widget.hl.setStretch ( 1, 1 )
     
     QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
     self.connectSignals ( FloatWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, FloatWidget ):
-    FloatWidget.connect ( self.floatEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
+  def connectSignals ( self, FloatWidget ) :
+    #
+    FloatWidget.connect ( self.floatEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, FloatWidget ):
-    FloatWidget.disconnect ( self.floatEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
+  def disconnectSignals ( self, FloatWidget ) :
+    #
+    FloatWidget.disconnect ( self.floatEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
   #
-  #                      
-  def onFloatEditEditingFinished ( self ):
-    floatStr = self.floatEdit.text()
-    floatValue = floatStr.toFloat()[0] 
+  # onFloatEditEditingFinished
+  #
+  def onFloatEditEditingFinished ( self ) :
+    #
+    floatStr = self.floatEdit.text ()
+    floatValue = floatStr.toFloat () [0] 
     self.widget.param.setValue ( floatValue )       
     # self.widget.param.paramChanged ()
   #
-  #      
-  def updateGui ( self, value ): 
+  # updateGui
+  #
+  def updateGui ( self, value ) :
+    # 
     self.floatEdit.setText ( QtCore.QString.number(value, 'f', 3) )
 #
 # Ui_FloatWidget_switch
 #          
-class Ui_FloatWidget_switch ( object ):
+class Ui_FloatWidget_switch ( object ) :
   #
-  #
-  def setupUi ( self, FloatWidget ):
-
+  # setupUi
+  def setupUi ( self, FloatWidget ) :
+    #
     self.widget = FloatWidget
     
-    self.checkBox = QtGui.QCheckBox( FloatWidget )
+    self.checkBox = QtGui.QCheckBox ( FloatWidget )
     
     self.checkBox.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
     self.checkBox.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
@@ -92,35 +97,42 @@ class Ui_FloatWidget_switch ( object ):
     
     self.widget.hl.addWidget ( self.checkBox )
     self.widget.hl.addItem ( spacer )
-    #self.widget.hl.setStretch ( 1, 1 )
     
     QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
     self.connectSignals ( FloatWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, FloatWidget ):
-    FloatWidget.connect( self.checkBox, QtCore.SIGNAL('stateChanged(int)'), self.onStateChanged )
+  def connectSignals ( self, FloatWidget ) :
+    #
+    FloatWidget.connect ( self.checkBox, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onStateChanged )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, FloatWidget ):
-    FloatWidget.disconnect( self.checkBox, QtCore.SIGNAL('stateChanged(int)'), self.onStateChanged )  #
+  def disconnectSignals ( self, FloatWidget ) :
+    #
+    FloatWidget.disconnect ( self.checkBox, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onStateChanged )
   # 
-  #                     
-  def onStateChanged ( self, value ):
-    floatValue = self.checkBox.isChecked()    
-    # print "CALL: onStateChanged value = %d  floatValue = %d" % ( value, floatValue )
+  # onStateChanged
+  #    
+  def onStateChanged ( self, value ) :
+    #
+    floatValue = self.checkBox.isChecked ()    
     self.widget.param.setValue ( floatValue )
-    # self.widget.param.paramChanged ()
   #
+  # updateGui
   #      
-  def updateGui ( self, value ): self.checkBox.setChecked( value != 0 )  
+  def updateGui ( self, value ) : 
+    #
+    self.checkBox.setChecked ( value != 0 )  
 #
 # Ui_FloatWidget_selector
 #          
-class Ui_FloatWidget_selector ( object ):
+class Ui_FloatWidget_selector ( object ) :
   #
+  # setupUi
   #
-  def setupUi ( self, FloatWidget ):
+  def setupUi ( self, FloatWidget ) :
     
     self.widget = FloatWidget
     
@@ -131,7 +143,6 @@ class Ui_FloatWidget_selector ( object ):
     
     rangeList = self.widget.param.getRangeValues ()
     for ( label, value ) in rangeList :
-      #print "label = %s value = %s" % ( label, value )
       self.selector.addItem ( label, float( value ) )
     
     spacer = QtGui.QSpacerItem ( UI.HEIGHT, UI.HEIGHT, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
@@ -142,55 +153,57 @@ class Ui_FloatWidget_selector ( object ):
     QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
     self.connectSignals ( FloatWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, FloatWidget ):
-    FloatWidget.connect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged ) #currentIndexChanged
+  def connectSignals ( self, FloatWidget ) :
+    #
+    FloatWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, FloatWidget ):
-    FloatWidget.disconnect ( self.selector, QtCore.SIGNAL( 'activated(int)' ), self.onCurrentIndexChanged )
+  def disconnectSignals ( self, FloatWidget ) :
+    FloatWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
   #
-  #                      
-  def onCurrentIndexChanged ( self, idx ):
-    ( floatValue, ok ) = self.selector.itemData ( idx ).toFloat()
-    #print ">> Ui_FloatWidget_selector setValue = " # %d" % floatValue
-    #print floatValue
-    self.widget.param.setValue ( float( floatValue ) )
-    #self.widget.param.paramChanged ()
-    
+  # onCurrentIndexChanged
   #
-  #      
-  def updateGui ( self, setValue ): 
+  def onCurrentIndexChanged ( self, idx ) :
+    #
+    ( floatValue, ok ) = self.selector.itemData ( idx ).toFloat ()
+    self.widget.param.setValue ( float ( floatValue ) )
+  #
+  # updateGui
+  #
+  def updateGui ( self, setValue ) :
+    # 
     currentIdx = -1
     i = 0
-    #print ">> Ui_FloatWidget_selector setValue = %s" % setValue
     rangeList = self.widget.param.getRangeValues ()
     for ( label, value ) in rangeList :
-      #print ( "label = %s : value = %s" ) % ( label, value )
       if setValue == value : 
         currentIdx = i
         break
       i += 1
-    self.selector.setCurrentIndex( currentIdx )
-    
+    self.selector.setCurrentIndex ( currentIdx )
 #
 # Ui_FloatWidget_slider
 #          
-class Ui_FloatWidget_slider ( object ):
+class Ui_FloatWidget_slider ( object ) :
   #
+  # getRangeMultiplier
   #
   def getRangeMultiplier ( self, floatStep ) :
-    
+    # 
     multiplier = 1.0
     value = float ( floatStep )
-    while not value.is_integer() :
+    while not value.is_integer () :
       value *= 10.0
       multiplier *= 10.0
     
     return multiplier
   #
+  # setupUi
   #
-  def setupUi ( self, FloatWidget ):
+  def setupUi ( self, FloatWidget ) :
 
     self.widget = FloatWidget
     
@@ -207,9 +220,9 @@ class Ui_FloatWidget_slider ( object ):
     
     rangeList = self.widget.param.getRangeValues ()
     if len ( rangeList ) :
-      floatMinVal = rangeList[ 0 ]
-      floatMaxVal = rangeList[ 1 ]
-      floatStep = rangeList[ 2 ]
+      floatMinVal = rangeList [ 0 ]
+      floatMaxVal = rangeList [ 1 ]
+      floatStep = rangeList [ 2 ]
     
     if floatStep == 0.0 : floatStep = 0.1
 
@@ -219,16 +232,11 @@ class Ui_FloatWidget_slider ( object ):
     intMaxVal = int ( floatMaxVal * multiplier )
     intStep = int ( floatStep * multiplier )
     
-    #print 'intMinVal = %d intMaxVal = %d' % ( intMinVal, intMaxVal )
-    
     self.slider.setRange ( intMinVal, intMaxVal )
     self.slider.setSingleStep ( intStep )
     
-    self.slider.setValue ( int( self.widget.param.value * multiplier ) )
+    self.slider.setValue ( int ( self.widget.param.value * multiplier ) )
 
-    #setTickInterval
-    #setPageStep
-    
     self.widget.hl.addWidget ( self.floatEdit )
     self.widget.hl.addWidget ( self.slider )
     self.widget.hl.setStretch ( 1, 1 )
@@ -236,22 +244,27 @@ class Ui_FloatWidget_slider ( object ):
     QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
     self.connectSignals ( FloatWidget )
   #
+  # connectSignals
   #
-  def connectSignals ( self, FloatWidget ):
-    FloatWidget.connect ( self.floatEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
-    FloatWidget.connect ( self.slider, QtCore.SIGNAL( 'valueChanged(int)' ), self.onSliderValueChanged )
+  def connectSignals ( self, FloatWidget ) :
+    #
+    FloatWidget.connect ( self.floatEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
+    FloatWidget.connect ( self.slider, QtCore.SIGNAL ( 'valueChanged(int)' ), self.onSliderValueChanged )
   #
+  # disconnectSignals
   #
-  def disconnectSignals ( self, FloatWidget ):
-    FloatWidget.disconnect ( self.floatEdit, QtCore.SIGNAL( 'editingFinished()' ), self.onFloatEditEditingFinished )
-    FloatWidget.disconnect ( self.slider, QtCore.SIGNAL( 'valueChanged(int)' ), self.onSliderValueChanged )
+  def disconnectSignals ( self, FloatWidget ) :
+    #
+    FloatWidget.disconnect ( self.floatEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
+    FloatWidget.disconnect ( self.slider, QtCore.SIGNAL ( 'valueChanged(int)' ), self.onSliderValueChanged )
   #
-  #                      
+  # onFloatEditEditingFinished
+  #
   def onFloatEditEditingFinished ( self ) :
-    floatStr = self.floatEdit.text()
-    floatValue = floatStr.toFloat()[0] 
+    #
+    floatStr = self.floatEdit.text ()
+    floatValue = floatStr.toFloat () [ 0 ] 
     self.widget.param.setValue ( floatValue )       
-    #self.widget.param.paramChanged ()
     
     floatMinVal = 0
     floatMaxVal = 1
@@ -259,9 +272,9 @@ class Ui_FloatWidget_slider ( object ):
     
     rangeList = self.widget.param.getRangeValues ()
     if len ( rangeList ) :
-      floatMinVal = rangeList[ 0 ]
-      floatMaxVal = rangeList[ 1 ]
-      floatStep = rangeList[ 2 ]
+      floatMinVal = rangeList [ 0 ]
+      floatMaxVal = rangeList [ 1 ]
+      floatStep = rangeList [ 2 ]
     
     if floatStep == 0.0 : floatStep = 0.1
     
@@ -271,11 +284,12 @@ class Ui_FloatWidget_slider ( object ):
     intMaxVal = int ( floatMaxVal * multiplier )
     intStep = int ( floatStep * multiplier )
     
-    self.slider.setValue ( int( floatValue * multiplier ) )
-    
+    self.slider.setValue ( int ( floatValue * multiplier ) )
   #
-  #                      
+  # onSliderValueChanged
+  #
   def onSliderValueChanged ( self, value ) :
+    #
     intValue = value #self.slider.value ()
     
     floatMinVal = 0
@@ -284,9 +298,9 @@ class Ui_FloatWidget_slider ( object ):
     
     rangeList = self.widget.param.getRangeValues ()
     if len ( rangeList ) :
-      floatMinVal = rangeList[ 0 ]
-      floatMaxVal = rangeList[ 1 ]
-      floatStep = rangeList[ 2 ]
+      floatMinVal = rangeList [ 0 ]
+      floatMaxVal = rangeList [ 1 ]
+      floatStep = rangeList [ 2 ]
     
     if floatStep == 0.0 : floatStep = 0.1
     
@@ -295,10 +309,9 @@ class Ui_FloatWidget_slider ( object ):
     floatValue = float ( intValue ) / float ( multiplier )
     self.widget.param.setValue ( floatValue )
     self.updateGui ( floatValue ) 
-    #self.widget.param.paramChanged ()
   #
-  #      
-  def updateGui ( self, value ): 
-    #rangeList = self.widget.param.getRangeValues ()
-    
-    self.floatEdit.setText ( QtCore.QString.number(value, 'f', 3) )
+  # updateGui
+  #
+  def updateGui ( self, value ) : 
+    #
+    self.floatEdit.setText ( QtCore.QString.number ( value, 'f', 3 ) )

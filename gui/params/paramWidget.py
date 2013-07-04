@@ -123,11 +123,11 @@ class ParamWidget ( QtGui.QWidget ) :
     #
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     self.hl.addItem ( spacer )
-    
   #
   # onRemoveItem
   #
   def onRemoveItem ( self ) : 
+    #
     print '>> ParamWidget( %s ).onRemoveItem ' % self.param.name   
     self.emit ( QtCore.SIGNAL ( 'nodeParamRemoved' ), self.param ) 
 

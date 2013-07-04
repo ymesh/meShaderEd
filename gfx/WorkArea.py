@@ -269,28 +269,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
         nodeNetRect = nodeRect
       nodeNetRect = nodeNetRect.united ( nodeRect )
     if nodeNetRect.isValid () :
-      if False : # self.animateFit
-        fitAnimation = QtCore.QPropertyAnimation ( self, 'geometry' )
-        viewRect = QtCore.QRectF ( self.rect () )
-        viewRect.moveTo ( self.mapToScene ( 0, 0 ) )
-        print "* viewRect = %f %f %f %f" % ( viewRect.left (), viewRect.top (), viewRect.width (), viewRect.height () )
-        fitAnimation.setDuration ( self.animateFitDuration )
-        fitAnimation.setStartValue ( viewRect )
-        fitAnimation.setEndValue ( nodeNetRect )
-        fitAnimation.connect ( fitAnimation, QtCore.SIGNAL ( 'valueChanged(QVariant)' ), self.fitInViewAnimation )
-        fitAnimation.start ()
-      else :
-        self.fitInView ( nodeNetRect, QtCore.Qt.KeepAspectRatio ) 
-  #
-  # 
-  #
-  def fitInViewAnimation ( self, fitRect ) :
-    #
-    if fitRect.isValid () :
-      print "* fitRect = %f %f %f %f" % ( fitRect.left (), fitRect.top (), fitRect.width (), fitRect.height () )
-      self.fitInView ( fitRect, QtCore.Qt.KeepAspectRatio )
-    else :
-       print "!! WorkArea.fitInViewAnimation invalid fitRect"
+      self.fitInView ( nodeNetRect, QtCore.Qt.KeepAspectRatio ) 
   #
   # onSelectionChanged
   #
