@@ -244,25 +244,15 @@ class NodeParamEditor ( QtGui.QWidget ) :
       if self.param.type in self.paramWidgets.keys () :
         print '>> Create %s param widget' % self.param.type
 
-        self.ui.value_label = QtGui.QLabel ( self )
-        self.ui.value_label.setText ( 'Current Value' )
-        self.ui.value_label.setMinimumSize ( QtCore.QSize ( 100, UI.HEIGHT ) )
-        self.ui.value_label.setMaximumSize ( QtCore.QSize ( 100, UI.HEIGHT ) )
-         
         # create paramWidget without GfxNode and ignoreSubtype = True
         self.ui.value_widget = apply ( self.paramWidgets [ self.param.type ], [ self.param, None, self, True ] )
-        
-        frameLayout.addWidget ( self.ui.value_label )
-        frameLayout.addWidget ( self.ui.value_widget )
+        self.ui.value_widget.label.setText ( 'Current Value' )
 
-        self.ui.def_value_label = QtGui.QLabel ( self )
-        self.ui.def_value_label.setText ( 'Default Value' )
-        self.ui.def_value_label.setMinimumSize ( QtCore.QSize ( 100, UI.HEIGHT ) )
-        self.ui.def_value_label.setMaximumSize ( QtCore.QSize ( 100, UI.HEIGHT ) )
+        frameLayout.addWidget ( self.ui.value_widget )
         
         self.ui.def_value_widget = apply ( self.paramWidgets [ self.param_default.type ], [ self.param_default, None, self, True ] )
+        self.ui.def_value_widget.label.setText ( 'Default Value' )
 
-        frameLayout.addWidget ( self.ui.def_value_label )
         frameLayout.addWidget ( self.ui.def_value_widget )
 
       self.ui.value_stackedWidget.addWidget ( frame )

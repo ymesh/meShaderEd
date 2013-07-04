@@ -16,6 +16,7 @@ class ParamWidget ( QtGui.QWidget ) :
   # __init__
   #
   def __init__ ( self, param, gfxNode, parent = None, ignoreSubtype = False ) :
+    #
     #print ">> ParamWidget  __init__"
     super ( QtGui.QWidget, self ).__init__ ( None )
     self.param = param
@@ -95,19 +96,19 @@ class ParamWidget ( QtGui.QWidget ) :
         
         self.hl.addWidget ( self.removeButton )
     
-      self.label = QtGui.QLabel ( self )
-      font = QtGui.QFont ()
-      font.setBold ( False )
-      self.label.setFont ( font )
+    self.label = QtGui.QLabel ( self )
+    font = QtGui.QFont ()
+    font.setBold ( False )
+    self.label.setFont ( font )
   
-      #if self.param.type != 'control' :
-      self.label.setText ( self.param.label )
+    #if self.param.type != 'control' :
+    self.label.setText ( self.param.label )
   
-      self.label.setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
-      self.label.setMaximumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
-      self.label.setAlignment ( QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter )
+    self.label.setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
+    self.label.setMaximumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
+    self.label.setAlignment ( QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter )
   
-      self.hl.addWidget ( self.label )
+    self.hl.addWidget ( self.label )
     self.vl.addWidget ( self.gui )
   #
   # onShaderParamChanged

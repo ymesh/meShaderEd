@@ -14,7 +14,8 @@ from paramWidget import ParamWidget
 #
 class FloatWidget ( ParamWidget ) :
   #
-  #                 
+  # buildGui
+  #
   def buildGui ( self ) :
     #
     if not self.ignoreSubtype :
