@@ -2,7 +2,7 @@
 """
  meShaderEd.py
 
- version 0.3.1 (10 Jun 2013)
+ version 0.3.2b (?? Jul 2013)
 
  written by Yuri.Meshalkin (mesh@kpp.kiev.ua)
 
@@ -29,15 +29,15 @@ from core.meRendererPreset import meRendererPreset
 
 from global_vars import app_global_vars, DEBUG_MODE
 
-
-root = normPath ( sys.path[0] )
-version = '0.3.1'
+root = normPath ( sys.path [0] )
+version = '0.3.2b'
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
                                   QtCore.QSettings.UserScope,
                                   'mesh', 'meShaderEd' )
 
 #
+# setDefaultValue
 #
 def setDefaultValue ( key, def_value ) :
   if not app_settings.contains ( key ):
@@ -50,6 +50,7 @@ def setDefaultValue ( key, def_value ) :
     value = str ( value.toString () )
   return value
 #
+# getDefaultValue
 #
 def getDefaultValue ( settings, group, key ) :
   if group != '' : settings.beginGroup ( group )
@@ -183,9 +184,8 @@ if __name__ == "__main__":
     print '* PYQT_VERSION = %0X' % QtCore.PYQT_VERSION
 
   if sys.platform == 'win32' :
-    #pass
     QtGui.QApplication.setStyle ( QtGui.QStyleFactory.create ( 'Cleanlooks' ) )
     if QtCore.QT_VERSION < 50000 :
-    	QtGui.QApplication.setPalette ( QtGui.QApplication.style ().standardPalette () )
+      QtGui.QApplication.setPalette ( QtGui.QApplication.style ().standardPalette () )
 
   main ()

@@ -1,5 +1,8 @@
 meShaderEd changes log
 
+version 0.3.2 (?? Jul 2013)
+  - "Fit All", "Fit Selected" actions implemented.
+
 version 0.3.1 (10 Jun 2013)
   - ControlParam with special <control_code> section in XML, that allows to execute
     python code for dynamic parameters manipulation 
@@ -13,7 +16,6 @@ version 0.3.1 (10 Jun 2013)
   - Fixed some shading nodes, code, shaders and textures for Air, Aqsis, Pixie and RenderDotC compatibility 
   - Tested on PyQt 4.10.2 that was linked with Qt 5.0.2 libraries.
   - New service nodes in Library
-
   
 version 0.3.0 (16 Apr 2013)
   SwatchNode for image preview in shading network

@@ -67,7 +67,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
     self.setRenderHint ( QtGui.QPainter.Antialiasing )
 
     self.setTransformationAnchor ( QtGui.QGraphicsView.AnchorUnderMouse )
-    self.setResizeAnchor ( QtGui.QGraphicsView.AnchorViewCenter )
+    self.setResizeAnchor ( QtGui.QGraphicsView.AnchorUnderMouse )  # AnchorViewCenter
     self.setDragMode ( QtGui.QGraphicsView.RubberBandDrag )
 
     self.setMouseTracking ( False )
@@ -132,7 +132,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
       if ( isinstance ( item, GfxNode ) or
            ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
         if type is None or item.node.type == type :
-          print '>> item.node.type = %s' % item.node.type
+          # print '>> item.node.type = %s' % item.node.type
           resultList.append ( item )
     return resultList
   #
@@ -152,9 +152,13 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   # selectAllNodes
   #
+  def getAllGfxNodes ( self ) : return self.getGfxNodesByType ( None )
+  #
+  # selectAllNodes
+  #
   def selectAllNodes ( self ) :
     #
-    for item in self.getGfxNodesByType ( None ) : item.setSelected ( True )
+    for item in self.getAllGfxNodes () : item.setSelected ( True )
   #
   # selectAbove
   #
@@ -186,6 +190,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   def setNodeNetwork ( self, nodeNet ) : self.nodeNet = nodeNet
   #
+  # clear
   #
   def clear ( self ):
     #
@@ -252,6 +257,40 @@ class WorkArea ( QtGui.QGraphicsView ) :
     #
     for item in self.scene ().items () :
       if isinstance ( item, GfxLink ): item.adjust ()
+  #
+  # fitGfxNodesInView
+  #
+  def fitGfxNodesInView ( self, gfxNodeList ) :
+    #
+    nodeNetRect = QtCore.QRectF ()
+    for gfxNode in gfxNodeList :
+      nodeRect = gfxNode.sceneBoundingRect ()
+      if nodeNetRect.isNull () :
+        nodeNetRect = nodeRect
+      nodeNetRect = nodeNetRect.united ( nodeRect )
+    if nodeNetRect.isValid () :
+      if False : # self.animateFit
+        fitAnimation = QtCore.QPropertyAnimation ( self, 'geometry' )
+        viewRect = QtCore.QRectF ( self.rect () )
+        viewRect.moveTo ( self.mapToScene ( 0, 0 ) )
+        print "* viewRect = %f %f %f %f" % ( viewRect.left (), viewRect.top (), viewRect.width (), viewRect.height () )
+        fitAnimation.setDuration ( self.animateFitDuration )
+        fitAnimation.setStartValue ( viewRect )
+        fitAnimation.setEndValue ( nodeNetRect )
+        fitAnimation.connect ( fitAnimation, QtCore.SIGNAL ( 'valueChanged(QVariant)' ), self.fitInViewAnimation )
+        fitAnimation.start ()
+      else :
+        self.fitInView ( nodeNetRect, QtCore.Qt.KeepAspectRatio ) 
+  #
+  # 
+  #
+  def fitInViewAnimation ( self, fitRect ) :
+    #
+    if fitRect.isValid () :
+      print "* fitRect = %f %f %f %f" % ( fitRect.left (), fitRect.top (), fitRect.width (), fitRect.height () )
+      self.fitInView ( fitRect, QtCore.Qt.KeepAspectRatio )
+    else :
+       print "!! WorkArea.fitInViewAnimation invalid fitRect"
   #
   # onSelectionChanged
   #

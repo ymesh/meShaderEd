@@ -71,7 +71,7 @@
      <x>0</x>
      <y>0</y>
      <width>874</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="font">
@@ -715,16 +715,22 @@
    <property name="text">
     <string>Fit All</string>
    </property>
+   <property name="shortcut">
+    <string>F</string>
+   </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionFitSelected">
    <property name="text">
     <string>Fit Selected</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+F</string>
+   </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionZoomReset">

@@ -3,10 +3,7 @@
  
  Written by Yuri.Meshalkin (mesh@kpp.kiev.ua)
 
- version 0.2.0 27 May 2012
- version 0.1.1 16 May 2012
- version 0.1.0 13 May 2012
- version 0.0.1 5 Mar 2011
+ Initial version -- 0.0.1 (5 Mar 2011)
 
  Initial code and data structure was based on 
  ShaderLink of Libero Spagnolini (Libe)
@@ -20,7 +17,7 @@
  To start this program -- run: python ./meShaderEd.py
  
  Supported OS: Windows, MacOSX, Linux
- (Tested on : Win7, OSX Lion 10.7.4, Ubuntu 12.04)  
+ (Tested on : Win7(Win8), OSX Lion 10.7(10.8), Ubuntu 12.04)  
  
  Software requirements:
  

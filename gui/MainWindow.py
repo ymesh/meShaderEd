@@ -208,6 +208,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   # addRecentProject
   #
   def addRecentProject ( self, project ) :
+    #
     if project is not None :
       recent_projects_max = getDefaultValue ( app_settings, '', 'recent_projects_max' )
 
@@ -241,10 +242,14 @@ class MainWindow ( QtGui.QMainWindow ) :
   def setupActions ( self ) :
     #
     if DEBUG_MODE : print '>> MainWindow.setupActions'
-    enableForNodes = False
-    enableForLinks = False
+    numNodes = 0
+    numSelectedNodes = 0
+    numSelectedLinks = 0
+    if self.workArea is not None :
+      numNodes = len ( self.workArea.getAllGfxNodes () )
+      numSelectedNodes = len ( self.workArea.selectedNodes )
+      numSelectedLinks = len ( self.workArea.selectedLinks )
     enableForPaste = False
-    enableSelectAll = False
 
     if self.clipboard.ownsClipboard () or (sys.platform == 'darwin'):
       if DEBUG_MODE : print '** self.clipboard.ownsClipboard'
@@ -252,23 +257,18 @@ class MainWindow ( QtGui.QMainWindow ) :
       if data is not None :
         if data.hasText () :
           enableForPaste = True
-
-    if self.workArea is not None :
-      enableSelectAll = True
-      if len ( self.workArea.selectedNodes ) > 0 : enableForNodes = True
-      if len ( self.workArea.selectedLinks ) > 0 : enableForLinks = True
-
-    self.ui.actionSelectAll.setEnabled ( enableSelectAll )
-    self.ui.actionSelectAbove.setEnabled ( len ( self.workArea.selectedNodes ) == 1 )
-    self.ui.actionSelectBelow.setEnabled ( len ( self.workArea.selectedNodes ) == 1 )
-
-    self.ui.actionDuplicate.setEnabled ( enableForNodes )
-    self.ui.actionDuplicateWithLinks.setEnabled ( enableForNodes )
-    self.ui.actionDelete.setEnabled ( enableForNodes or enableForLinks )
-
-    self.ui.actionCut.setEnabled ( enableForNodes )
-    self.ui.actionCopy.setEnabled ( enableForNodes )
+          
+    self.ui.actionSelectAll.setEnabled ( numNodes > 0 )
+    self.ui.actionSelectAbove.setEnabled ( numSelectedNodes == 1 )
+    self.ui.actionSelectBelow.setEnabled ( numSelectedNodes == 1 )
+    self.ui.actionDuplicate.setEnabled ( numSelectedNodes > 0 )
+    self.ui.actionDuplicateWithLinks.setEnabled ( numSelectedNodes > 0 )
+    self.ui.actionDelete.setEnabled ( ( numSelectedNodes > 0 ) or ( numSelectedLinks > 0 ) )
+    self.ui.actionCut.setEnabled ( numSelectedNodes > 0 )
+    self.ui.actionCopy.setEnabled ( numSelectedNodes > 0 )
     self.ui.actionPaste.setEnabled ( enableForPaste )
+    self.ui.actionFitAll.setEnabled ( numNodes > 0 )
+    self.ui.actionFitSelected.setEnabled ( numSelectedNodes > 0 )
   #
   # onProjectSetup
   #
@@ -643,11 +643,11 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onFitAll
   #
-  def onFitAll ( self ) : print ">> MainWindow.onFitAll (not implemented yet...)"
+  def onFitAll ( self ) : self.workArea.fitGfxNodesInView ( self.workArea.getAllGfxNodes () )
   #
   # onFitSelected
   #
-  def onFitSelected ( self ) : print ">> MainWindow.onFitSelected (not implemented yet...)"
+  def onFitSelected ( self ) : self.workArea.fitGfxNodesInView ( self.workArea.selectedNodes )
   #
   # onZoomReset
   #

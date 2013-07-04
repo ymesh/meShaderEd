@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui\ui_nodeParamEditor.ui'
 #
-# Created: Sat May 11 22:05:05 2013
-#      by: PyQt4 UI code generator 4.9.4
+# Created: Wed Jul 03 21:58:32 2013
+#      by: PyQt4 UI code generator 4.10.2-snapshot-a8a14dd99d1e
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,12 +12,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_NodeParamEditor(object):
     def setupUi(self, NodeParamEditor):
         NodeParamEditor.setObjectName(_fromUtf8("NodeParamEditor"))
-        NodeParamEditor.resize(706, 773)
+        NodeParamEditor.resize(646, 773)
         self.verticalLayout = QtGui.QVBoxLayout(NodeParamEditor)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
@@ -169,16 +178,16 @@ class Ui_NodeParamEditor(object):
         QtCore.QMetaObject.connectSlotsByName(NodeParamEditor)
 
     def retranslateUi(self, NodeParamEditor):
-        NodeParamEditor.setWindowTitle(QtGui.QApplication.translate("NodeParamEditor", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.name_label.setText(QtGui.QApplication.translate("NodeParamEditor", "Name", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_label.setText(QtGui.QApplication.translate("NodeParamEditor", "Label", None, QtGui.QApplication.UnicodeUTF8))
-        self.enabled_label.setText(QtGui.QApplication.translate("NodeParamEditor", "Enabled", None, QtGui.QApplication.UnicodeUTF8))
-        self.display_label.setText(QtGui.QApplication.translate("NodeParamEditor", "Display", None, QtGui.QApplication.UnicodeUTF8))
-        self.shader_label.setText(QtGui.QApplication.translate("NodeParamEditor", "Use in Shader", None, QtGui.QApplication.UnicodeUTF8))
-        self.type_label.setText(QtGui.QApplication.translate("NodeParamEditor", "Type", None, QtGui.QApplication.UnicodeUTF8))
-        self.detail_label.setText(QtGui.QApplication.translate("NodeParamEditor", "Detail", None, QtGui.QApplication.UnicodeUTF8))
-        self.provider_label_2.setText(QtGui.QApplication.translate("NodeParamEditor", "Provider", None, QtGui.QApplication.UnicodeUTF8))
-        self.subtype_label.setText(QtGui.QApplication.translate("NodeParamEditor", "GUI Subtype", None, QtGui.QApplication.UnicodeUTF8))
-        self.range_label.setText(QtGui.QApplication.translate("NodeParamEditor", "Range", None, QtGui.QApplication.UnicodeUTF8))
-        self.descr_label.setText(QtGui.QApplication.translate("NodeParamEditor", "Description", None, QtGui.QApplication.UnicodeUTF8))
+        NodeParamEditor.setWindowTitle(_translate("NodeParamEditor", "Form", None))
+        self.name_label.setText(_translate("NodeParamEditor", "Name", None))
+        self.label_label.setText(_translate("NodeParamEditor", "Label", None))
+        self.enabled_label.setText(_translate("NodeParamEditor", "Enabled", None))
+        self.display_label.setText(_translate("NodeParamEditor", "Display", None))
+        self.shader_label.setText(_translate("NodeParamEditor", "Use in Shader", None))
+        self.type_label.setText(_translate("NodeParamEditor", "Type", None))
+        self.detail_label.setText(_translate("NodeParamEditor", "Detail", None))
+        self.provider_label_2.setText(_translate("NodeParamEditor", "Provider", None))
+        self.subtype_label.setText(_translate("NodeParamEditor", "GUI Subtype", None))
+        self.range_label.setText(_translate("NodeParamEditor", "Range", None))
+        self.descr_label.setText(_translate("NodeParamEditor", "Description", None))
 
