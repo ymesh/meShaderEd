@@ -1,0 +1,15 @@
+<?xml version="1.0"?> 
+
+<node name="calculateNormal" label="calcN" type="rsl_code" author="DRL">
+	<help>Calculates normal vector for the given point.</help>
+	<input>
+	  <property name="P" type="point" default="point(0)"/>
+	</input>
+	<output>
+		<property name="N" type="normal"/>
+	</output>
+	<code><![CDATA[
+$(N) = calculatenormal( $(P) );
+]]>
+	</code>	
+</node>

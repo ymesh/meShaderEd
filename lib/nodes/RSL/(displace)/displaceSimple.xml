@@ -1,0 +1,28 @@
+<?xml version="1.0"?> 
+
+<node name="displaceSimple" label="dispSimple" type="rsl_code" author="DRL">
+	<help>Extremely simple displacement shader. It slightly boosts performance by "stupidly" re-calculating normal and therefore losing any previous bump.</help>
+	<input>
+	  <property name="P" type="point" default="point (0)" />
+		<property name="N" type="normal" default="normal (0, 1, 0)" />
+		
+		<property name="inputDisp" type="float" default="0"/>
+		<property name="dispSpace" type="string" default="object" detail="uniform">
+			<help>The space that displacement is performed in. 
+			You may want to set it to "world" to ignore object scale.</help>
+		</property>
+	</input>
+	<output>
+		<property name="outP" type="point" default="point (0)"/>
+		<property name="outN" type="normal" default="normal (0, 1, 0)"/>
+	</output>
+	<code><![CDATA[
+$(outP) = transform( $(dispSpace), $(P) );
+$(outN) = normalize(ntransform( $(dispSpace), $(N) ));
+
+$(outP) += $(inputDisp) * $(outN);
+$(outP) = transform( $(dispSpace), "current", $(outP) );
+$(outN) = calculatenormal( $(outP) );
+]]>
+	</code>	
+</node>
