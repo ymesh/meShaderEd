@@ -1,9 +1,8 @@
-#===============================================================================
-# WorkArea.py
-#
-#
-#
-#===============================================================================
+"""
+ WorkArea.py
+
+
+"""
 import os, sys
 from PyQt4 import QtCore, QtGui
 
@@ -130,9 +129,9 @@ class WorkArea ( QtGui.QGraphicsView ) :
     resultList = []
     for item in self.scene ().items () :
       if ( isinstance ( item, GfxNode ) or
+           isinstance ( item, GfxSwatchNode ) or 
            ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
         if type is None or item.node.type == type :
-          # print '>> item.node.type = %s' % item.node.type
           resultList.append ( item )
     return resultList
   #
@@ -281,11 +280,11 @@ class WorkArea ( QtGui.QGraphicsView ) :
     selected = self.scene ().selectedItems ()
 
     for item in selected:
-      if   isinstance ( item, GfxNode ): self.selectedNodes.append ( item )
-      elif isinstance ( item, GfxNote ): self.selectedNodes.append ( item )
-      elif isinstance ( item, GfxNodeConnector ): self.selectedNodes.append ( item )
-      elif isinstance ( item, GfxSwatchNode ): self.selectedNodes.append ( item )
-      elif isinstance ( item, GfxLink ): self.selectedLinks.append ( item )
+      if   isinstance ( item, GfxNode ) : self.selectedNodes.append ( item )
+      elif isinstance ( item, GfxNote ) : self.selectedNodes.append ( item )
+      elif isinstance ( item, GfxNodeConnector ) : self.selectedNodes.append ( item )
+      elif isinstance ( item, GfxSwatchNode ) : self.selectedNodes.append ( item )
+      elif isinstance ( item, GfxLink ) : self.selectedLinks.append ( item )
 
     self.emit ( QtCore.SIGNAL ( 'selectNodes' ), self.selectedNodes, self.selectedLinks )
   #

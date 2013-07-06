@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Thu Jul 04 12:44:02 2013
+# Created: Sat Jul 06 15:57:11 2013
 #      by: PyQt4 UI code generator 4.10.2-snapshot-a8a14dd99d1e
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,7 +51,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.tabs, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 874, 20))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 874, 21))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Lucida Sans"))
         font.setPointSize(9)
@@ -285,15 +285,21 @@ class Ui_MainWindow(object):
         self.actionSnapGrid.setIcon(icon12)
         self.actionSnapGrid.setObjectName(_fromUtf8("actionSnapGrid"))
         self.actionFitAll = QtGui.QAction(MainWindow)
+        icon13 = QtGui.QIcon()
+        icon13.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/fit_all.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionFitAll.setIcon(icon13)
         self.actionFitAll.setVisible(True)
         self.actionFitAll.setObjectName(_fromUtf8("actionFitAll"))
         self.actionFitSelected = QtGui.QAction(MainWindow)
+        icon14 = QtGui.QIcon()
+        icon14.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/fit_selected.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionFitSelected.setIcon(icon14)
         self.actionFitSelected.setVisible(True)
         self.actionFitSelected.setObjectName(_fromUtf8("actionFitSelected"))
         self.actionZoomReset = QtGui.QAction(MainWindow)
-        icon13 = QtGui.QIcon()
-        icon13.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/zoom_reset.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionZoomReset.setIcon(icon13)
+        icon15 = QtGui.QIcon()
+        icon15.addPixmap(QtGui.QPixmap(_fromUtf8(":/show_icons/resources/zoom_reset.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionZoomReset.setIcon(icon15)
         self.actionZoomReset.setObjectName(_fromUtf8("actionZoomReset"))
         self.actionNewParamView = QtGui.QAction(MainWindow)
         self.actionNewParamView.setObjectName(_fromUtf8("actionNewParamView"))

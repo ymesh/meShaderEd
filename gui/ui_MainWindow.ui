@@ -71,7 +71,7 @@
      <x>0</x>
      <y>0</y>
      <width>874</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="font">
@@ -668,7 +668,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset>
      <normaloff>:/show_icons/resources/ledoff.png</normaloff>
      <normalon>:/show_icons/resources/ledon.png</normalon>:/show_icons/resources/ledoff.png</iconset>
    </property>
@@ -712,6 +712,10 @@
    </property>
   </action>
   <action name="actionFitAll">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/show_icons/resources/fit_all.png</normaloff>:/show_icons/resources/fit_all.png</iconset>
+   </property>
    <property name="text">
     <string>Fit All</string>
    </property>
@@ -723,6 +727,10 @@
    </property>
   </action>
   <action name="actionFitSelected">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/show_icons/resources/fit_selected.png</normaloff>:/show_icons/resources/fit_selected.png</iconset>
+   </property>
    <property name="text">
     <string>Fit Selected</string>
    </property>
