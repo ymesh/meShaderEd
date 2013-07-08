@@ -151,6 +151,14 @@ def getUniqueName  ( name, nameList ) :
     sfx += 1
   return str( newName )  
 #
+# getParsedLabel
+#
+def getParsedLabel ( text ) :
+  #
+  newLabel = text.simplified ()
+  newLabel = newLabel.replace ( ' ', "_" )
+  return newLabel  
+#
 # createDefaultProject 
 #  
 def createDefaultProject ( settings, check_if_exist = False ) :

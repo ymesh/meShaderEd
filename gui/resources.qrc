@@ -6,6 +6,7 @@
     <file>resources/new.png</file>
   </qresource>
   <qresource prefix="show_icons">
+    <file>resources/show_connect.png</file>
     <file>resources/fit_all.png</file>
     <file>resources/fit_selected.png</file>
     <file>resources/check_off.png</file>
@@ -25,8 +26,6 @@
     <file>resources/minus.png</file>
     <file>resources/plus.png</file>
     <file>resources/delete.png</file>
-    <file>resources/redo.png</file>
-    <file>resources/undo.png</file>
     <file>resources/paste.png</file>
     <file>resources/copy.png</file>
     <file>resources/editcut1.png</file>

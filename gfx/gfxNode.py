@@ -11,7 +11,7 @@ from gfx.gfxNodeLabel import GfxNodeLabel
 from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
 
-from global_vars import DEBUG_MODE, GFX_NODE_TYPE
+from global_vars import DEBUG_MODE, GFX_NODE_TYPE, VALID_RSL_PARAM_TYPES
 from meShaderEd import app_settings
 import gui.ui_settings as UI
 #
@@ -47,14 +47,22 @@ class GfxNode ( QtGui.QGraphicsItem ) :
 
     self.shadow_offset = UI.SHADOW_OFFSET
     self.shadow_opacity = UI.SHADOW_OPACITY
-
-    self.PenBorderNormal = QtGui.QPen( QtGui.QBrush( QtGui.QColor( 0, 0, 0 ) ),
+    
+    self.normalColor = QtGui.QColor ( 0, 0, 0 )
+    self.selectedColor = QtGui.QColor ( 250, 250, 250 )
+    alternateColor = QtGui.QColor ( 240, 140, 0 )
+    self.bgColor = QtGui.QColor ( 128, 128, 128 )
+    
+    self.shadowColor = QtGui.QColor ( 0, 0, 0 )
+    self.shadowColor.setAlphaF ( self.shadow_opacity )
+    
+    self.PenBorderNormal = QtGui.QPen( QtGui.QBrush ( self.normalColor ),
                                    1.0,
                                    QtCore.Qt.SolidLine,
                                    QtCore.Qt.RoundCap,
                                    QtCore.Qt.RoundJoin )
 
-    self.PenBorderSelected = QtGui.QPen( QtGui.QBrush( QtGui.QColor( 250, 250, 250 ) ),
+    self.PenBorderSelected = QtGui.QPen( QtGui.QBrush ( self.selectedColor ),
                                    2.0,
                                    QtCore.Qt.SolidLine,
                                    QtCore.Qt.RoundCap,
@@ -62,13 +70,9 @@ class GfxNode ( QtGui.QGraphicsItem ) :
 
     self.PenNodeShaderParam = QtGui.QPen( QtGui.QColor( 250, 250, 250 ) )
 
-    self.BrushNodeNormal = QtGui.QBrush ( QtGui.QColor( 128, 128, 128 ) )
-    self.BrushNodeSelected = QtGui.QBrush ( QtGui.QColor( 140, 140, 140 ) )
-
-    shadowColor = QtGui.QColor( 0, 0, 0 )
-    shadowColor.setAlphaF ( self.shadow_opacity )
-    self.BrushShadow = QtGui.QBrush ( shadowColor )
-    self.PenShadow = QtGui.QPen ( shadowColor )
+    self.BrushNodeNormal = QtGui.QBrush ( self.bgColor )
+    self.BrushShadow = QtGui.QBrush ( self.shadowColor )
+    self.PenShadow = QtGui.QPen ( self.shadowColor )
 
     self.node = node
 
@@ -102,6 +106,19 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     self.update ()
     self.adjustLinks ()
     self.scene().emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
+  #
+  # onUpdateGfxNodeParams
+  #
+  def onUpdateGfxNodeParams ( self, param ) :
+    #
+    if DEBUG_MODE : print '>> GfxNode( %s ).onUpdateGfxNodeParams' % ( self.node.label )
+    if param.isInput :
+      self.updateInputParams ()
+    else :
+      self.updateOutputParams ()
+    self.update ()
+    self.adjustLinks ()
+    self.scene().emit ( QtCore.SIGNAL ( 'gxNodeParamChanged' ), self, param )
   #
   # updateGfxNode
   #
@@ -164,18 +181,29 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   # updateInputParams
   #
-  def updateInputParams ( self ) :
+  def updateInputParams ( self ) : self.updateParams ( self.node.inputParams, self.inputParamLabels )
+  #
+  # updateOutputParams
+  #
+  def updateOutputParams ( self ) : self.updateParams ( self.node.outputParams, self.outputParamLabels )
+  #
+  # updateParams
+  #
+  def updateParams ( self, params, labels ) :
     #
+    if DEBUG_MODE : print '>> GfxNode.updateParams'
     i = 0
-    for param in self.node.inputParams : # for i in range( len( self.node.inputParams )) :
+    for param in params : # for i in range( len( self.node.inputParams )) :
       if param.type != 'control' :
         if param.provider != 'attribute' :
-          label = self.inputParamLabels [ i ]
-          label.brush = self.BrushNodeNormal
-          label.PenNormal = self.PenBorderNormal
-          if param.shaderParam :
-            if not self.node.isInputParamLinked ( param ) :
-              label.PenNormal = self.PenNodeShaderParam
+          label = labels [ i ]
+          if param.type in VALID_RSL_PARAM_TYPES :
+            label.setNormal ()
+            isVarying = ( param.detail == 'varying' )
+            isPrimitive = ( param.provider == 'primitive' )
+            label.setItalic ( isVarying ) 
+            label.setSelected ( param.shaderParam  ) 
+            label.setAlternate ( isPrimitive  ) 
           label.update()
           i += 1
   #
@@ -224,19 +252,18 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   def setupHeader ( self ) :
     #
     if self.node.type != 'variable' :
-      self.header [ 'name' ] = GfxNodeLabel ( self.node.name )
-
-      self.header [ 'name' ].brush = self.BrushNodeNormal
-      self.header [ 'name' ].pen = self.PenBorderNormal
-      #self.header [ 'name' ].font = self.headerFont
-      self.header [ 'name' ].font.setItalic ( True )
-
       self.header [ 'label' ] = GfxNodeLabel ( self.node.label )
 
-      self.header [ 'label' ].brush = self.BrushNodeNormal
-      self.header [ 'label' ].pen = self.PenBorderNormal
-      #self.header [ 'label' ].font = self.headerFont
-      self.header [ 'label' ].font.setBold ( True )
+      self.header [ 'label' ].setBgColor ( self.bgColor )
+      self.header [ 'label' ].setNormalColor ( self.normalColor )
+      self.header [ 'label' ].setBold ()
+      
+      self.header [ 'name' ] = GfxNodeLabel ( self.node.name )
+
+      self.header [ 'name' ].setBgColor ( self.bgColor )
+      self.header [ 'name' ].setNormalColor ( self.normalColor )
+      self.header [ 'name' ].setItalic ()
+      self.header [ 'name' ].setProcessEvents ( False )
 
       if self.hasSwatch : self.header [ 'swatch' ] = GfxNodeSwatch ( self.swatchSize )
 
@@ -249,7 +276,6 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     #
     wi = 80 # minimal node width
     hi = 0
-
     if self.node.type != 'variable' :
       ( wi_label, hi_label ) = self.header [ 'label' ].getLabelSize ()
       ( wi_name, hi_name ) = self.header [ 'name' ].getLabelSize()
@@ -268,7 +294,6 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     #
     if self.node.type != 'variable' :
       wi_header = self.rect.width ()
-
       if self.hasSwatch :
         self.header [ 'swatch' ].rect.moveTo ( x, y )
         #self.header['input'].rect.moveTo( x - self.x_offset - self.header['input'].radius,
@@ -292,13 +317,11 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     #
     y = ys
     hi = 0
-
     for label in self.outputParamLabels :
       ( wi, hi ) = label.getLabelSize ()
       label.rect = QtCore.QRectF ( xs - wi, y, wi, hi )
       y += hi
       label.setParentItem ( self )
-
     # wi_header = self.rect.width()
     y = ys
     x = xs + self.x_offset
@@ -345,11 +368,20 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     for param in params :
       # ignore attributes
       if param.provider != 'attribute' :
-        label = GfxNodeLabel ( param.label )
-        label.brush = self.BrushNodeNormal
-        label.PenNormal = self.PenBorderNormal
-        if not param.isInput : label.font.setBold ( True )
-        if param.shaderParam : label.PenNormal = self.PenNodeShaderParam
+        label = GfxNodeLabel ( param.label, param )
+        label.setBgColor ( self.bgColor )
+        label.setNormalColor ( self.normalColor )
+        if not param.isInput : label.setBold ()
+        if param.type in VALID_RSL_PARAM_TYPES :
+          label.setNormal ()
+          isVarying = ( param.detail == 'varying' )
+          isPrimitive = ( param.provider == 'primitive' )
+          label.setItalic ( isVarying ) 
+          label.setSelected ( param.shaderParam  ) 
+          label.setAlternate ( isPrimitive  ) 
+          # this allows to change param.shaderParam attribute by CTRL-click on label
+          # and switch param.provide to "primitive" by ALT-click
+          label.setProcessEvents ( True )   
         labels.append ( label )
         connector = GfxNodeConnector ( param, UI.CONNECTOR_RADIUS, node = None )
         if not param.isInput : connector.singleLinkOnly = False
@@ -369,7 +401,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     if change == QtGui.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
       if self.node.type != 'variable' :
         # variable node has not header
-        self.header [ 'label' ].isNodeSelected = value.toBool ()
+        self.header [ 'label' ].setSelected ( value.toBool () )
         #self.header['swatch'].isNodeSelected = self.isNodeSelected
       if value.toBool () :
         items = self.scene ().items ()

@@ -1,15 +1,13 @@
-#===============================================================================
-#
-# gfxNodeLabel.py
-#
-#
-#
-#===============================================================================
+"""
+ gfxNodeLabel.py
+
+"""
 from PyQt4 import QtCore, QtGui
+
+
 
 from global_vars import DEBUG_MODE, GFX_NODE_LABEL_TYPE
 from meShaderEd import app_settings
-
 #
 # GfxNodeLabel
 #
@@ -19,25 +17,40 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
   #
   # __init__
   #
-  def __init__ ( self, label, fill_BG = True ) :
+  def __init__ ( self, text, param = None, bgFill = True ) :
     #
     QtGui.QGraphicsItem.__init__ ( self )
 
-    self.label = label
+    self.text = text
+    self.param = param
 
-    self.textColor = QtGui.QColor ( 0, 0, 0 )
-    self.selectedColor = QtGui.QColor ( 240, 240, 240 )
+    normalColor = QtGui.QColor ( 0, 0, 0 )
+    selectedColor = QtGui.QColor ( 240, 240, 240 )
+    alternateColor = QtGui.QColor ( 250, 220, 0 )
+    bgColor = QtGui.QColor ( 140, 140, 140 )
     
-    self.PenNormal = QtGui.QPen ( self.textColor )
-    self.PenSelected = QtGui.QPen ( self.selectedColor )
+    self.PenNormal = QtGui.QPen ( normalColor )
+    self.PenSelected = QtGui.QPen ( selectedColor )
+    self.PenAlternate = QtGui.QPen ( alternateColor )
+    self.bgBrush = QtGui.QBrush ( bgColor )
+    
+    self.pen = self.PenNormal
 
     self.font = QtGui.QFont ()
-    self.brush = QtGui.QBrush ( QtGui.QColor ( 140, 140, 140 ) )
     
     self.justify = QtCore.Qt.AlignLeft
     
-    self.fill_BG = fill_BG
-    self.isNodeSelected = False
+    self.bgFill = bgFill
+    self.selected = False
+    self.alternate = False
+    self.bold = False
+    self.italic = False
+    
+    self.editable = False
+    self.processEvents = False
+    self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable, False )
+    self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable, False )
+    
     self.rect = QtCore.QRectF ()
   #
   # type
@@ -48,18 +61,67 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
   #
   def boundingRect ( self ) : return self.rect
   #
-  # setTextColor
+  # setNormal
   #
-  def setTextColor ( self, color ) : 
-    self.textColor = color
-    self.PenNormal = QtGui.QPen ( self.textColor ) 
+  def setNormal ( self, normal = True ) : 
+    #
+    if normal :
+      self.pen = self.PenNormal
+      self.selected = False
+      self.alternate = False
+  #
+  # setSelected
+  #
+  def setSelected ( self, selected = True ) : 
+    #
+    self.selected = selected
+    if selected :
+      self.pen = self.PenSelected
+      self.alternate = False
+  #
+  # setAlternate
+  #
+  def setAlternate ( self, alternate = True ) : 
+    #
+    self.alternate = alternate
+    if alternate :
+      self.pen = self.PenAlternate
+      self.selected = False
+  #
+  # setNormalColor
+  #
+  def setNormalColor ( self, color ) : self.PenNormal = QtGui.QPen ( color ) 
+  #
+  # setSelectedColor
+  #
+  def setSelectedColor ( self, color ) : self.PenSelected = QtGui.QPen ( color ) 
+  #
+  # setAlternateColor
+  #
+  def setAlternateColor ( self, color ) : self.PenAlternate = QtGui.QPen ( color ) 
+  #
+  # setBgColor
+  #
+  def setBgColor ( self, color ) : self.brush = QtGui.QBrush ( color )
+  #
+  # setBold
+  #
+  def setBold ( self, bold = True ) :  self.font.setBold ( bold )
+  #
+  # setItalic
+  #
+  def setItalic ( self, italic = True ) :  self.font.setItalic ( italic )
+  #
+  # setText
+  #
+  def setText ( self, text ) :  self.text = text
   #
   # getLabelSize
   #
   def getLabelSize ( self ) :
     #
     labelFontMetric = QtGui.QFontMetricsF ( self.font )
-    lines = self.label.split ( '\n' )
+    lines = self.text.split ( '\n' )
     height = 0
     width = 0
     for line in lines :
@@ -72,8 +134,64 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
   def paint ( self, painter, option, widget ) :
     #
     painter.setFont ( self.font )
-    pen = self.PenNormal
-    if self.isNodeSelected : pen = self.PenSelected
-    if self.fill_BG : painter.fillRect ( self.rect, self.brush )
-    painter.setPen ( pen )
-    painter.drawText ( self.rect, self.justify, self.label )
+    if self.bgFill : painter.fillRect ( self.rect, self.brush )
+    painter.setPen ( self.pen )
+    painter.drawText ( self.rect, self.justify, self.text )
+  #
+  # setProcessEvents
+  #
+  def setProcessEvents ( self, process = True ) :
+    #
+    self.processEvents = process
+    #self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable, False )
+    self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable, process )
+  #
+  # mouseDoubleClickEvent
+  #
+  """
+  def mouseDoubleClickEvent ( self, event ) :
+    #
+    if self.processEvents :
+      print ">> GfxNodeLabel.mouseDoubleClickEvent"
+      if event.button () == QtCore.Qt.LeftButton :
+        if event.modifiers () == QtCore.Qt.ControlModifier :
+          print '* CTRL dblclick'  
+        elif event.modifiers () == QtCore.Qt.AltModifier :
+          print '* Alt dblclick'  
+    QtGui.QGraphicsItem.mouseDoubleClickEvent ( self, event )
+  """   
+  #
+  # mousePressEvent
+  #
+  def mousePressEvent ( self, event ) :
+    if self.processEvents :
+      print ">> GfxNodeLabel.mousePressEvent"
+      from gfx.gfxNode import GfxNode
+      parentNode = self.parentItem ()
+      if isinstance ( parentNode, GfxNode ) :
+        print '* label "%s" of GfxNode "%s"' % ( self.text, parentNode.node.label )
+        if event.button () == QtCore.Qt.LeftButton :
+          if event.modifiers () == QtCore.Qt.ControlModifier :
+            print '* CTRL+LMB (change in shaderParam)' 
+            self.param.shaderParam = not self.param.shaderParam
+            parentNode.onUpdateGfxNodeParams ( self.param )
+            return
+          elif event.modifiers () == QtCore.Qt.AltModifier :
+            print '* ALT+LMB ( change detail "uniform/varying")' 
+            if self.param.detail == 'varying' :
+              self.param.detail = 'uniform'
+            else :
+              self.param.detail = 'varying' 
+            parentNode.onUpdateGfxNodeParams ( self.param )
+            #return
+        elif event.button () == QtCore.Qt.RightButton :
+          if event.modifiers () == QtCore.Qt.ControlModifier :
+            print '* CTRL+RMB change provider "primitive"/"internal"'
+            if self.param.provider == 'primitive' :
+              self.param.provider = ''
+            else :
+              self.param.provider = 'primitive' 
+            parentNode.onUpdateGfxNodeParams ( self.param )
+            return
+      QtCore.QEvent.ignore ( event )
+    QtGui.QGraphicsItem.mousePressEvent ( self, event )

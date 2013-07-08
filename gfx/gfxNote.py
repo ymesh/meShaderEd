@@ -20,7 +20,8 @@ class GfxNote ( QtGui.QGraphicsItem ):
   #
   # __init__
   #
-  def __init__ ( self, node ):
+  def __init__ ( self, node ) :
+    #
     QtGui.QGraphicsItem.__init__ ( self )
 
     self.label_widget = None
@@ -40,6 +41,8 @@ class GfxNote ( QtGui.QGraphicsItem ):
     self.opacity = 0.5
     self.bgColor = QtGui.QColor ( 128, 128, 128 )
     self.textColor = QtGui.QColor ( 0, 0, 0 )
+    self.selectedColor = QtGui.QColor ( 250, 250, 250 )
+    
     self.node = node
     
     if self.node is not None :
@@ -47,13 +50,13 @@ class GfxNote ( QtGui.QGraphicsItem ):
       ( x, y ) = self.node.offset
       self.setPos ( x, y )
     
-    self.PenBorderNormal = QtGui.QPen( QtGui.QBrush( QtGui.QColor ( 0, 0, 0 ) ),
+    self.PenBorderNormal = QtGui.QPen( QtGui.QBrush ( self.textColor ),
                                    1.0,
                                    QtCore.Qt.SolidLine,
                                    QtCore.Qt.RoundCap,
                                    QtCore.Qt.RoundJoin )
 
-    self.PenBorderSelected = QtGui.QPen( QtGui.QBrush( QtGui.QColor ( 250, 250, 250 ) ),
+    self.PenBorderSelected = QtGui.QPen( QtGui.QBrush ( self.selectedColor ),
                                    2.0,
                                    QtCore.Qt.SolidLine,
                                    QtCore.Qt.RoundCap,
@@ -139,13 +142,13 @@ class GfxNote ( QtGui.QGraphicsItem ):
             elif param.value == 2 :
               self.justify = QtCore.Qt.AlignRight
       
-      self.label_widget = GfxNodeLabel ( self.node.label, False ) # fill_BG = False
-      self.label_widget.font.setBold ( True )
-      self.label_widget.setTextColor ( self.textColor )
-      if self.isSelected () : self.label_widget.isNodeSelected = True
+      self.label_widget = GfxNodeLabel ( self.node.label, False ) # bgFill = False
+      self.label_widget.setBold ()
+      self.label_widget.setNormalColor ( self.textColor )
+      if self.isSelected () : self.label_widget.setSelected ()
 
-      self.text_widget = GfxNodeLabel ( self.text, False ) # fill_BG = False
-      self.text_widget.setTextColor ( self.textColor )
+      self.text_widget = GfxNodeLabel ( self.text, False ) # bgFill = False
+      self.text_widget.setNormalColor ( self.textColor )
       self.text_widget.justify = self.justify
       
       self.label_widget.setParentItem ( self )
@@ -194,7 +197,7 @@ class GfxNote ( QtGui.QGraphicsItem ):
   def itemChange ( self, change, value ) :
     #
     if change == QtGui.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
-      self.label_widget.isNodeSelected = value.toBool ()
+      self.label_widget.setSelected ( value.toBool () )
       if value.toBool () :
         items = self.scene ().items ()
         for i in range ( len ( items ) - 1, -1, -1 ) :

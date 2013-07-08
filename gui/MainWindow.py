@@ -100,11 +100,12 @@ class MainWindow ( QtGui.QMainWindow ) :
       if self.activeNodeList != None :
         QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'selectNodes' ), self.onSelectGfxNodes  )
-      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeConnectionChanged  )
+      QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onGxNodeParamChanged  )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
       #QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
       QtCore.QObject.connect ( self.workArea.scene(), QtCore.SIGNAL ( 'nodeUpdated' ), self.updateNodeParamView )
+      QtCore.QObject.connect ( self.workArea.scene(), QtCore.SIGNAL ( 'gxNodeParamChanged' ), self.onGxNodeParamChanged  )
   #
   # disconnectWorkAreaSignals
   #
@@ -114,11 +115,12 @@ class MainWindow ( QtGui.QMainWindow ) :
       if self.activeNodeList != None :
         QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'selectNodes' ), self.onSelectGfxNodes  )
-      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onNodeConnectionChanged  )
+      QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onGxNodeParamChanged  )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
       QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
       #QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
       QtCore.QObject.disconnect ( self.workArea.scene(), QtCore.SIGNAL ( 'nodeUpdated' ), self.updateNodeParamView )
+      QtCore.QObject.disconnect ( self.workArea.scene(), QtCore.SIGNAL ( 'gxNodeParamChanged' ), self.onGxNodeParamChanged  )
   #
   #
   #
@@ -241,7 +243,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def setupActions ( self ) :
     #
-    if DEBUG_MODE : print '>> MainWindow.setupActions'
+    #if DEBUG_MODE : print '>> MainWindow.setupActions'
     numNodes = 0
     numSelectedNodes = 0
     numSelectedLinks = 0
@@ -612,20 +614,23 @@ class MainWindow ( QtGui.QMainWindow ) :
       gfxNode.setupGeometry ()
       gfxNode.adjustLinks ()
       self.workArea.scene ().update ()
+    elif isinstance ( gfxNode, GfxNode ) :
+      if DEBUG_MODE : print "* update GfxNode"
+      self.updateNodeParamView ()
 
     if self.ui.imageView_ctl.autoUpdate () : self.ui.imageView_ctl.updateViewer()
   #
-  # onNodeConnectionChanged
+  # onGxNodeParamChanged
   #
-  def onNodeConnectionChanged ( self, gfxNode, param ) :
+  def onGxNodeParamChanged ( self, gfxNode, param ) :
     #
-    if DEBUG_MODE : print ">> MainWindow.onNodeConnectionChanged" 
+    if DEBUG_MODE : print ">> MainWindow.onGxNodeParamChanged" 
     
     # from WorkArea we have GfxNode in signal nodeConnectionChanged
     # hence need to update nodeParam_ctl
-    if isinstance ( gfxNode, GfxNode )  :
+    if isinstance ( gfxNode, GfxNode ) :
       #if DEBUG_MODE : print "* update nodeView"
-      gfxNode.updateInputParams ()
+      # gfxNode.updateInputParams ()
       self.updateNodeParamView ()
       self.workArea.scene ().update ()
 

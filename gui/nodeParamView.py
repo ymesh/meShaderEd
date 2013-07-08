@@ -1,10 +1,8 @@
-#===============================================================================
-# nodeParamView.py
-#
-#
-#
-#===============================================================================
+"""
 
+ nodeParamView.py
+
+"""
 import os, sys
 from PyQt4 import QtCore, QtGui
 
@@ -17,6 +15,7 @@ from PyQt4.QtGui  import QFileIconProvider
 
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
+from gui.nodeParamList import NodeParamList
 
 import gui.ui_settings as UI
 from gui.params.StringWidget import StringWidget
@@ -39,30 +38,30 @@ class NodeParamView ( QtGui.QWidget ) :
   def __init__ ( self ) :
     #
     QtGui.QWidget.__init__ ( self )
+
     self.gfxNode = None
-    self.paramWidgets = {  'string'       : StringWidget
-                          ,'image'        : StringWidget
-                          ,'rib'          : StringWidget
-                          ,'surface'      : StringWidget
-                          ,'displacement' : StringWidget
-                          ,'light'        : StringWidget
-                          ,'volume'       : StringWidget
-                          ,'float'        : FloatWidget
-                          ,'int'          : IntWidget
-                          ,'color'        : ColorWidget
-                          ,'normal'       : NormalWidget
-                          ,'transform'    : PointWidget
-                          ,'point'        : PointWidget
-                          ,'vector'       : VectorWidget
-                          ,'matrix'       : MatrixWidget
-                          ,'text'         : TextWidget
-                          ,'control'      : ControlWidget
-                          ,'shader'       : StringWidget
-                          ,'geom'         : StringWidget
-                        }
+    
+    self.inputParamList = None
+    self.outputParamList = None
+    
+    self.showConnected = False
     self.buildGui ()
     self.updateGui ()
     self.connectLabelSignals ()
+  #
+  # setNode
+  #
+  def setNode ( self, gfxNode ) :
+    #
+    print ">> NodeParamView.setNode"
+    self.disconnectParamSignals ()
+    self.gfxNode = gfxNode
+    self.inputParamList.setNode ( gfxNode )
+    self.outputParamList.setNode ( gfxNode )
+    self.nameEdit.setEnabled ( self.gfxNode is not None )
+    self.updateGui ()
+    self.connectParamSignals ()
+    
   #
   # connectLabelSignals
   #
@@ -79,28 +78,22 @@ class NodeParamView ( QtGui.QWidget ) :
   # connectParamSignals
   #
   def connectParamSignals ( self ) :
-    #print ">> NodeParamView: connectParamSignals"
+    #print ">> NodeParamView.connectParamSignals"
     if self.gfxNode is not None :
-      for inputParam in self.gfxNode.node.inputParams:
+      for inputParam in self.gfxNode.node.inputParams :
         self.connect ( inputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
+      for outputParam in self.gfxNode.node.outputParams :
+        self.connect ( outputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
   #
   # disconnectParamSignals
   #
   def disconnectParamSignals ( self ) :
-    #print ">> NodeParamView: disconnectParamSignals"
+    #print ">> NodeParamView.disconnectParamSignals"
     if self.gfxNode is not None :
-      for inputParam in self.gfxNode.node.inputParams:
+      for inputParam in self.gfxNode.node.inputParams :
         self.disconnect ( inputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
-  #
-  # setNode
-  #
-  def setNode ( self, gfxNode ) :
-    #
-    self.disconnectParamSignals ()
-    self.gfxNode = gfxNode
-    self.nameEdit.setEnabled ( self.gfxNode is not None )
-    self.updateGui ()
-    self.connectParamSignals ()
+      for outputParam in self.gfxNode.node.outputParams :
+        self.disconnect ( outputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
   #
   # onParamChanged
   #
@@ -125,8 +118,8 @@ class NodeParamView ( QtGui.QWidget ) :
   def nodeLabelChanged ( self ) :
     #
     if self.gfxNode is not None :
-      newLabel = self.nameEdit.text ().simplified ()
-      newLabel = newLabel.replace ( ' ', "_" )
+      from core.meCommon import getParsedLabel
+      newLabel = getParsedLabel ( self.nameEdit.text () )
       if not newLabel.isEmpty () :
         # update label only if realy changed
         if newLabel != self.gfxNode.node.label :
@@ -138,9 +131,7 @@ class NodeParamView ( QtGui.QWidget ) :
   # buildGui
   #
   def buildGui ( self ) :
-    #currentWidget = self.stackedWidget.currentWidget()
-    #self.stackedWidget.removeWidget(currentWidget)
-
+    #
     label = QtGui.QLabel ()
     label.setMinimumSize ( QtCore.QSize ( UI.NODE_LABEL_WIDTH, UI.HEIGHT ) )
     label.setMaximumSize ( QtCore.QSize ( UI.NODE_LABEL_WIDTH, UI.HEIGHT ) )
@@ -152,63 +143,77 @@ class NodeParamView ( QtGui.QWidget ) :
 
     self.nameEdit = QtGui.QLineEdit ()
     self.nameEdit.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
+    self.nameEdit.setEnabled ( False )
+    
+    self.showConnectButton = QtGui.QToolButton ( self )
+    sizePolicy = QtGui.QSizePolicy ( QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed )
+    sizePolicy.setHorizontalStretch ( 20 )
+    sizePolicy.setVerticalStretch ( 20 )
+    sizePolicy.setHeightForWidth ( self.showConnectButton.sizePolicy().hasHeightForWidth() )
+    self.showConnectButton.setSizePolicy ( sizePolicy )
+    self.showConnectButton.setMaximumSize ( QtCore.QSize ( 20, 20 ) )
+    icon = QtGui.QIcon ()
+    icon.addPixmap ( QtGui.QPixmap ( ':/show_icons/resources/show_connect.png' ), QtGui.QIcon.Normal, QtGui.QIcon.On )
+    self.showConnectButton.setIcon ( icon )
+    self.showConnectButton.setAutoRaise ( False )
+    self.showConnectButton.setCheckable ( True )
+    self.showConnectButton.setToolTip ( 'Show connected parameters' )
+    #self.showConnectButton.setIconSize ( QtCore.QSize ( 16, 16 ) )
+    self.showConnectButton.setObjectName ( 'showConnectButton' )
 
     headerLayout = QtGui.QHBoxLayout ()
     headerLayout.setSpacing ( UI.SPACING )
     headerLayout.setMargin ( UI.SPACING )
+    headerLayout.setStretch ( 1, 1 )
 
     headerLayout.addWidget ( label )
     headerLayout.addWidget ( self.nameEdit )
-
-    self.stackedWidget = QtGui.QStackedWidget ( self )
-    frame = QtGui.QFrame ()
-    self.stackedWidget.addWidget ( frame )
+    headerLayout.addWidget ( self.showConnectButton )
 
     mainLayout = QtGui.QVBoxLayout ()
     mainLayout.addLayout ( headerLayout )
-    mainLayout.addWidget ( self.stackedWidget )
-
+    
+    self.params_tabs = QtGui.QTabWidget ( self )
+    
+    self.inputs_tab = QtGui.QWidget ()
+    self.inputs_grid = QtGui.QGridLayout ( self.inputs_tab )
+    self.inputParamList = NodeParamList ( self, self.gfxNode, isInput = True, showConnected = self.showConnected )
+    self.inputs_grid.addWidget ( self.inputParamList, 0, 0, 1, 1 )
+    self.params_tabs.addTab ( self.inputs_tab, 'Input' )
+    
+    self.inputsStackedWidget = QtGui.QStackedWidget ( self.inputs_tab )
+    self.inputsFrame = QtGui.QFrame ()
+    self.inputsStackedWidget.addWidget ( self.inputsFrame )
+    self.inputs_grid.addWidget ( self.inputsStackedWidget )
+    
+    self.outputs_tab = QtGui.QWidget ()
+    self.outputs_grid = QtGui.QGridLayout ( self.outputs_tab )
+    self.outputParamList = NodeParamList ( self, self.gfxNode, isInput = False, showConnected = self.showConnected )
+    self.outputs_grid.addWidget ( self.outputParamList, 0, 0, 1, 1)
+    self.params_tabs.addTab ( self.outputs_tab, 'Output' )
+    
+    self.outputsStackedWidget = QtGui.QStackedWidget ( self.outputs_tab )
+    self.outputsFrame = QtGui.QFrame ()
+    self.outputsStackedWidget.addWidget ( self.outputsFrame )
+    self.outputs_grid.addWidget ( self.outputsStackedWidget )
+    
+    self.params_tabs.setCurrentIndex ( 0 )
+    
+    mainLayout.addWidget ( self.params_tabs )
+    
     self.setLayout ( mainLayout )
-    self.nameEdit.setEnabled ( False )
+    
+    self.inputParamList.stackedWidget = self.inputsStackedWidget
+    self.outputParamList.stackedWidget = self.outputsStackedWidget
   #
   # updateGui
   #
   def updateGui ( self ) :
     #
-    currentWidget = self.stackedWidget.currentWidget ()
-    self.stackedWidget.removeWidget ( currentWidget )
-
-    frame = QtGui.QFrame ()
-
-    frameLayout = QtGui.QVBoxLayout ()
-    frameLayout.setSpacing ( UI.SPACING )
-    frameLayout.setMargin ( UI.SPACING )
-    frameLayout.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
-
-    frame.setLayout ( frameLayout )
-
     self.nameEdit.clear ()
-
     if self.gfxNode is not None :
       self.nameEdit.setText ( self.gfxNode.node.label )
-      for inputParam in self.gfxNode.node.inputParams :
-        if inputParam.display :
-          if not self.gfxNode.node.isInputParamLinked ( inputParam ) :
-            if inputParam.type in self.paramWidgets.keys () :
-              #print '%s type = %s' % ( inputParam.label, inputParam.type )
-              paramWidget = apply ( self.paramWidgets [ inputParam.type ], [ inputParam, self.gfxNode, self ] )
-              frameLayout.addWidget ( paramWidget )
-              if not inputParam.enabled :
-                paramWidget.setEnabled ( False )
-              
-              if inputParam.removable :
-                QtCore.QObject.connect ( paramWidget, QtCore.SIGNAL ( 'nodeParamRemoved' ), self.onParamRemoved )
-
-    spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding )
-    frameLayout.addItem ( spacer )
-    # build a scroll area
-    scrollArea = QtGui.QScrollArea ()
-    scrollArea.setWidgetResizable ( True )
-    scrollArea.setWidget ( frame )
-
-    self.stackedWidget.addWidget ( scrollArea )
+    
+    self.inputParamList.updateGui ()
+    self.outputParamList.updateGui ()
+    

@@ -1,13 +1,13 @@
-#===============================================================================
-# nodeCodeEditor.py
-#
-# ver. 1.0.0
-# Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
-# 
-# Dialog for managing node code
-# 
-#===============================================================================
+"""
+ 
+ nodeCodeEditor.py
 
+ ver. 1.0.0
+ Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
+ 
+ Dialog for managing node code
+ 
+"""
 import os, sys
 from PyQt4 import QtCore, QtGui
 
@@ -19,12 +19,14 @@ from gui.codeSyntaxHighlighter import CodeSyntaxHighlighter
 
 from ui_nodeCodeEditor import Ui_NodeCodeEditor
 #
-#
+# NodeCodeEditor
 #
 class NodeCodeEditor ( QtGui.QWidget ):
   #
+  # __init__
   #
-  def __init__ ( self, parent, editNodeCode = None ):
+  def __init__ ( self, parent, editNodeCode = None ) :
+    #
     QtGui.QDialog.__init__ ( self )
     
     self.editNodeCode = editNodeCode
@@ -32,6 +34,7 @@ class NodeCodeEditor ( QtGui.QWidget ):
     #self.debugPrint()
     self.buildGui()
   #
+  # buildGui
   #
   def buildGui ( self ) :
     # build the gui created with QtDesigner
@@ -39,8 +42,10 @@ class NodeCodeEditor ( QtGui.QWidget ):
     self.ui.setupUi ( self )
     
   #
+  # setNodeCode
   #
   def setNodeCode ( self, editNodeCode, mode = 'SL' ) :
+    #
     self.editNodeCode = editNodeCode
     
     doc = QtGui.QTextDocument ()
@@ -49,7 +54,6 @@ class NodeCodeEditor ( QtGui.QWidget ):
     font.setFixedPitch ( True )
     font.setPointSize ( UI.FONT_HEIGHT )
 
-    
     codeSyntax = CodeSyntaxHighlighter ( doc, mode )
     
     self.ui.textEdit.setDocument ( doc )  

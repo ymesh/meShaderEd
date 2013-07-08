@@ -298,8 +298,8 @@ class NodeEditorPanel ( QtGui.QDialog ) :
         self.nodeCodeEditor.setNodeCode ( self.editNode.code, 'SL' )
         self.paramCodeEditor.setNodeCode ( self.editNode.param_code, 'python' )
 
-        self.ui.tab_code = self.ui.code_tabs.addTab ( self.nodeCodeEditor, 'Node Code' )
-        self.ui.tab_code = self.ui.code_tabs.addTab ( self.paramCodeEditor, 'Control Code' )
+        self.ui.code_tabs.addTab ( self.nodeCodeEditor, 'Node Code' )
+        self.ui.code_tabs.addTab ( self.paramCodeEditor, 'Control Code' )
 
         self.ui.code_tabs.setCurrentIndex ( 0 )
         self.ui.side_stackedWidget.addWidget ( self.ui.code_tabs )

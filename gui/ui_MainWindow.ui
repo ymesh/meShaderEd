@@ -507,7 +507,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset>
      <normaloff>:/edit_icons/resources/undo.png</normaloff>:/edit_icons/resources/undo.png</iconset>
    </property>
    <property name="text">
@@ -519,7 +519,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset>
      <normaloff>:/edit_icons/resources/redo.png</normaloff>:/edit_icons/resources/redo.png</iconset>
    </property>
    <property name="text">
