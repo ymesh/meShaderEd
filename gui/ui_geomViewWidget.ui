@@ -6,22 +6,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
-    <height>554</height>
+    <width>499</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>GeomView</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
-   <property name="spacing">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,1">
+   <property name="horizontalSpacing">
+    <number>4</number>
+   </property>
+   <property name="verticalSpacing">
     <number>2</number>
    </property>
    <property name="margin">
     <number>4</number>
    </property>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1,0">
+     <property name="spacing">
+      <number>8</number>
+     </property>
      <property name="leftMargin">
       <number>0</number>
      </property>
@@ -55,6 +61,28 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="btn_reset">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Reset zoom</string>
+       </property>
+       <property name="text">
+        <string>Reset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -82,7 +110,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="GeomView" name="geomView" native="true"/>
    </item>
   </layout>
@@ -93,6 +121,9 @@
    <extends>QWidget</extends>
    <header>gfx/geomView</header>
    <container>1</container>
+   <slots>
+    <slot>resetView()</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -110,6 +141,22 @@
     <hint type="destinationlabel">
      <x>233</x>
      <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_reset</sender>
+   <signal>clicked()</signal>
+   <receiver>geomView</receiver>
+   <slot>resetView()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>186</x>
+     <y>14</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>307</y>
     </hint>
    </hints>
   </connection>

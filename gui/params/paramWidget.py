@@ -4,7 +4,7 @@
 
 from PyQt4 import QtGui, QtCore
 
-from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, INVALID_RSL_PARAM_TYPES
+from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, VALID_RSL_NODE_TYPES, VALID_RSL_PARAM_TYPES
 
 import gui.ui_settings as UI
 
@@ -31,7 +31,7 @@ class ParamWidget ( QtGui.QWidget ) :
   #  __del__
   #
   def __del__ ( self ) :
-    print '>> ParamWidget( %s ).__del__ ' % self.param.name
+    if DEBUG_MODE : print '>> ParamWidget( %s ).__del__ ' % self.param.name
   #
   # onParamChanged
   #
@@ -62,20 +62,20 @@ class ParamWidget ( QtGui.QWidget ) :
     # add 'isShaderParam' check box only for RSL nodes
     #
     if self.gfxNode is not None :
-      if not self.gfxNode.node.type in INVALID_RSL_PARAM_TYPES :
-        if self.param.provider != 'attribute' :
-          self.check = QtGui.QCheckBox ( self )
-          self.check.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
-          self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
-          self.check.setToolTip ( 'Use as Shader parameter' )
-
-          self.check.setChecked ( self.param.shaderParam )
-          self.connect ( self.check, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onShaderParamChanged )
-
-          self.hl.addWidget ( self.check )
-        else :
-          spacer = QtGui.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
-          self.hl.addItem ( spacer )
+      #
+      # add "Use as Shader parameter" checkbox
+      #
+      if self.gfxNode.node.type in VALID_RSL_NODE_TYPES and self.param.type in VALID_RSL_PARAM_TYPES and self.param.provider != 'attribute' :
+        self.check = QtGui.QCheckBox ( self )
+        self.check.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
+        self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
+        self.check.setToolTip ( 'Use as Shader parameter' )
+        self.check.setChecked ( self.param.shaderParam )
+        self.connect ( self.check, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onShaderParamChanged )
+        self.hl.addWidget ( self.check )
+      else :
+        spacer = QtGui.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
+        self.hl.addItem ( spacer )
       #
       # add 'remove' button for removable parameters
       #
@@ -119,7 +119,10 @@ class ParamWidget ( QtGui.QWidget ) :
   def onShaderParamChanged ( self, value ) :
     #
     self.param.shaderParam = self.check.isChecked ()
-    self.gfxNode.updateInputParams ()
+    if self.param.isInput : 
+      self.gfxNode.updateInputParams ()
+    else :
+      self.gfxNode.updateOutputParams ()
   #
   # buildGui
   #
@@ -132,6 +135,6 @@ class ParamWidget ( QtGui.QWidget ) :
   #
   def onRemoveItem ( self ) : 
     #
-    print '>> ParamWidget( %s ).onRemoveItem ' % self.param.name   
+    if DEBUG_MODE : print '>> ParamWidget( %s ).onRemoveItem ' % self.param.name   
     self.emit ( QtCore.SIGNAL ( 'nodeParamRemoved' ), self.param ) 
 

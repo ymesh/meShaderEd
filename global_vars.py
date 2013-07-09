@@ -82,8 +82,9 @@ VALID_PARAM_TYPES = [ 'float',
                       'shader', 
                       'geom'  ]
                       
-VALID_RIB_TYPES = [ 'rib', 'rib_code' ]
+VALID_RIB_NODE_TYPES = [ 'rib', 'rib_code' ]
+VALID_RSL_NODE_TYPES = [ 'rsl_code', 'surface', 'displacement', 'light', 'volume' ]
 
 VALID_RSL_PARAM_TYPES = [ 'float', 'color', 'point', 'normal', 'vector', 'matrix', 'string', 'shader' ]
 
-INVALID_RSL_PARAM_TYPES = [ 'rib', 'rib_code', 'image', 'swatch', 'geom' ]
+

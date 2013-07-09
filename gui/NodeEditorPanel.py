@@ -12,7 +12,7 @@ import os, sys
 from PyQt4 import Qt, QtCore, QtGui, QtXml
 
 from core.meCommon import *
-from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, VALID_RIB_TYPES
+from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, VALID_RIB_NODE_TYPES
 import gui.ui_settings as UI
 
 from core.nodeNetwork import *
@@ -485,7 +485,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
     if DEBUG_MODE : print '>> NodeEditorPanel::onAddParam (%s) ' % (newName)
     isInputParam = False
     paramType = None
-    isRibParam = ( self.editNode.type in VALID_RIB_TYPES )
+    isRibParam = ( self.editNode.type in VALID_RIB_NODE_TYPES )
     tab_idx = self.ui.tabs_param_list.currentIndex ()
     if tab_idx == 0 : isInputParam = True
     # ask user about param type

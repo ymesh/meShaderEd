@@ -434,6 +434,10 @@ class Node ( QtCore.QObject ) :
 
     self.author = str ( xml_node.attributes ().namedItem ( 'author' ).nodeValue () )
     self.type = str ( xml_node.attributes ().namedItem ( 'type' ).nodeValue () )
+    #
+    # Assume that all nodes without specified type, have to be 'rsl_code'
+    #
+    if self.type == '' or self.type is None : self.type = 'rsl_code'
 
     help_tag = xml_node.namedItem ( 'help' )
     if not help_tag.isNull() :

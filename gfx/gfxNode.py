@@ -1,9 +1,8 @@
-#===============================================================================
-# gfxNode.py
-#
-#
-#
-#===============================================================================
+"""
+
+ gfxNode.py
+
+"""
 import os, sys
 from PyQt4 import QtCore, QtGui
 
@@ -118,7 +117,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
       self.updateOutputParams ()
     self.update ()
     self.adjustLinks ()
-    self.scene().emit ( QtCore.SIGNAL ( 'gxNodeParamChanged' ), self, param )
+    self.scene().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self, param )
   #
   # updateGfxNode
   #
@@ -174,7 +173,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   def updateNodeLabel ( self ) :
     #
-    self.header [ 'label' ].label = self.node.label
+    self.header [ 'label' ].setText ( self.node.label )
     self.setupGeometry ()
     self.update ()
     self.adjustLinks ()

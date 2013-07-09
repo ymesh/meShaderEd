@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui\ui_imageViewWidget.ui'
 #
-# Created: Tue Oct 30 13:51:50 2012
-#      by: PyQt4 UI code generator 4.9.4
+# Created: Tue Jul 09 00:42:52 2013
+#      by: PyQt4 UI code generator 4.10.2-snapshot-a8a14dd99d1e
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,12 +12,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_imageViewWidget(object):
     def setupUi(self, imageViewWidget):
         imageViewWidget.setObjectName(_fromUtf8("imageViewWidget"))
-        imageViewWidget.resize(479, 520)
+        imageViewWidget.resize(479, 334)
         self.gridLayout = QtGui.QGridLayout(imageViewWidget)
         self.gridLayout.setMargin(4)
         self.gridLayout.setHorizontalSpacing(4)
@@ -53,6 +62,7 @@ class Ui_imageViewWidget(object):
         self.imageArea = ImageView(imageViewWidget)
         self.imageArea.setObjectName(_fromUtf8("imageArea"))
         self.gridLayout.addWidget(self.imageArea, 1, 0, 1, 1)
+        self.gridLayout.setRowStretch(1, 1)
 
         self.retranslateUi(imageViewWidget)
         QtCore.QObject.connect(self.btn_render, QtCore.SIGNAL(_fromUtf8("clicked()")), imageViewWidget.updateViewer)
@@ -60,11 +70,11 @@ class Ui_imageViewWidget(object):
         QtCore.QMetaObject.connectSlotsByName(imageViewWidget)
 
     def retranslateUi(self, imageViewWidget):
-        imageViewWidget.setWindowTitle(QtGui.QApplication.translate("imageViewWidget", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("imageViewWidget", "Node", None, QtGui.QApplication.UnicodeUTF8))
-        self.btn_reset.setToolTip(QtGui.QApplication.translate("imageViewWidget", "Reset zoom", None, QtGui.QApplication.UnicodeUTF8))
-        self.btn_reset.setText(QtGui.QApplication.translate("imageViewWidget", "1:1", None, QtGui.QApplication.UnicodeUTF8))
-        self.chk_auto.setText(QtGui.QApplication.translate("imageViewWidget", "auto", None, QtGui.QApplication.UnicodeUTF8))
-        self.btn_render.setText(QtGui.QApplication.translate("imageViewWidget", "Update", None, QtGui.QApplication.UnicodeUTF8))
+        imageViewWidget.setWindowTitle(_translate("imageViewWidget", "ImageView", None))
+        self.label.setText(_translate("imageViewWidget", "Node", None))
+        self.btn_reset.setToolTip(_translate("imageViewWidget", "Reset zoom", None))
+        self.btn_reset.setText(_translate("imageViewWidget", "1:1", None))
+        self.chk_auto.setText(_translate("imageViewWidget", "auto", None))
+        self.btn_render.setText(_translate("imageViewWidget", "Update", None))
 
 from gfx.imageView import ImageView

@@ -1,4 +1,5 @@
 """
+
  WorkArea.py
 
 
@@ -43,7 +44,8 @@ class WorkArea ( QtGui.QGraphicsView ) :
     self.current_Z = 1
 
     self.state = 'idle'
-    self.panStartPos = None
+    self.pressed = False
+    self.startPos = None
 
     self.lastConnectCandidate = None
     self.currentGfxLink = None
@@ -65,7 +67,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
     self.setCacheMode ( QtGui.QGraphicsView.CacheBackground )
     self.setRenderHint ( QtGui.QPainter.Antialiasing )
 
-    self.setTransformationAnchor ( QtGui.QGraphicsView.AnchorUnderMouse )
+    self.setTransformationAnchor ( QtGui.QGraphicsView.AnchorUnderMouse ) # QtGui.QGraphicsView.AnchorUnderMouse
     self.setResizeAnchor ( QtGui.QGraphicsView.AnchorUnderMouse )  # AnchorViewCenter
     self.setDragMode ( QtGui.QGraphicsView.RubberBandDrag )
 
@@ -683,18 +685,19 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   # mousePressEvent
   #
-  def mousePressEvent ( self, event ):
+  def mousePressEvent ( self, event ) :
     #print ">> WorkArea.mousePressEvent"
-    if ( event.button () == QtCore.Qt.MidButton or
-      ( event.button () == QtCore.Qt.LeftButton and event.modifiers () == QtCore.Qt.ShiftModifier ) ) :
-      if self.state == 'idle':
-        self.panStartPos = self.mapToScene ( event.pos () )
-        self.state = 'pan'
-        return
-    if ( event.button () == QtCore.Qt.RightButton and event.modifiers () == QtCore.Qt.ShiftModifier ) :
-      if self.state == 'idle':
-        self.state = 'zoom'
-        self.panStartPos = self.mapToScene ( event.pos () )
+    #self.setFocus ()
+    self.startPos = self.mapToScene ( event.pos () )
+    self.pressed = True
+    button = event.button ()
+    modifiers = event.modifiers ()
+    
+    if ( button == QtCore.Qt.MidButton or ( button == QtCore.Qt.LeftButton and modifiers == QtCore.Qt.ShiftModifier ) ) :
+      self.state = 'pan'
+      return
+    if button == QtCore.Qt.RightButton and modifiers == QtCore.Qt.ShiftModifier :
+      self.state = 'zoom'
       return
     QtGui.QGraphicsView.mousePressEvent ( self, event )
   #
@@ -705,41 +708,36 @@ class WorkArea ( QtGui.QGraphicsView ) :
     #print ">> WorkArea.mouseDoubleClickEvent"
     selected = self.scene ().selectedItems ()
 
-    #for item in selected:
-    #  if isinstance ( item, GfxNode ):
-    #    print '>> Edit node %s' % item.node.label
-    #    self.emit ( QtCore.SIGNAL ( "editGfxNode" ), item )
     QtGui.QGraphicsView.mouseDoubleClickEvent ( self, event )
   #
   # mouseMoveEvent
   #
   def mouseMoveEvent ( self, event ) :
     #print ">> WorkArea.mouseMoveEvent"
+    #if self.pressed :
+    currentPos = self.mapToScene( event.pos() )
     if self.state == 'pan' :
-      panCurrentPos = self.mapToScene( event.pos() )
-      panDeltaPos = panCurrentPos - self.panStartPos
-      # update view matrix
+      deltaPos = currentPos - self.startPos
       self.setInteractive ( False )
-      self.translate ( panDeltaPos.x(), panDeltaPos.y() )
+      self.translate ( deltaPos.x (), deltaPos.y () )
       self.setInteractive ( True )
     
     elif self.state == 'zoom' :
-      panCurrentPos = self.mapToScene( event.pos() )
-      panDeltaPos = panCurrentPos - self.panStartPos
+      deltaPos = currentPos - self.startPos
 
       scale = -1.0
       if 'linux' in sys.platform: scale = 1.0
       import math
-      scaleFactor = math.pow( 2.0, scale * max( panDeltaPos.x(), panDeltaPos.y() ) / 200.0  ) #
+      scaleFactor = math.pow ( 2.0, scale * max ( deltaPos.x (), deltaPos.y () ) / 200.0  ) #
       factor = self.matrix().scale( scaleFactor, scaleFactor ).mapRect( QtCore.QRectF( -1, -1, 2, 2 ) ).width()
 
       if factor < 0.07 or factor > 100: return
       # update view matrix
       self.setInteractive ( False )
       self.scale ( scaleFactor, scaleFactor )
-      self.translate ( -panDeltaPos.x() * scaleFactor, -panDeltaPos.y() * scaleFactor )
+      self.translate ( -deltaPos.x () * scaleFactor, -deltaPos.y () * scaleFactor )
       self.setInteractive ( True )
-    
+      #self.startPos = currentPos
     else :
       QtGui.QGraphicsView.mouseMoveEvent ( self, event )
   #
@@ -747,9 +745,10 @@ class WorkArea ( QtGui.QGraphicsView ) :
   #
   def mouseReleaseEvent ( self, event ) :
     #print ">> WorkArea.mouseReleaseEvent"
-    if self.state == 'pan' or self.state == 'zoom':
+    if self.state in [ 'pan', 'zoom' ] :
       self.state = 'idle'
-      self.panStartPos = None
+      self.startPos = None
+      self.pressed = False
     QtGui.QGraphicsView.mouseReleaseEvent ( self, event )
   #
   # resetZoom
@@ -759,6 +758,7 @@ class WorkArea ( QtGui.QGraphicsView ) :
     if DEBUG_MODE : print ">> WorkArea.resetZoom"
     self.setInteractive ( False )
     self.resetTransform()
+    self.centerOn ( 0.0, 0.0 )
     self.setInteractive ( True )
   #
   # viewportEvent

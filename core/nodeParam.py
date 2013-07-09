@@ -1,6 +1,8 @@
-#===============================================================================
-# nodeParam.py
-#===============================================================================
+"""
+
+ nodeParam.py
+
+"""
 import os, sys
 import re
 import copy
@@ -10,7 +12,7 @@ from core.node import Node
 from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import parseGlobalVars
 #
-# Abstract Parameter Class
+# Abstract Node Parameter Class
 #
 class NodeParam ( QtCore.QObject ) :
   #
@@ -46,7 +48,6 @@ class NodeParam ( QtCore.QObject ) :
     # ui decorative parameters
     self.subtype = ''
     self.range = ''
-
 
     self.space = None # actual for color, point, vector, normal, matrix
     self.spaceDef = None # default value space
@@ -154,9 +155,11 @@ class NodeParam ( QtCore.QObject ) :
   #
   def valueToStr ( self, value ) : return str ( value )
   #
+  # paramChanged
   #
   def paramChanged ( self ) :
-    #print '>> NodeParam.paramChanged (name = %s)' % self.name
+    #
+    if DEBUG_MODE : print '>> NodeParam.paramChanged (name = %s)' % self.name
     self.emit ( QtCore.SIGNAL ( 'paramChanged(QObject)' ), self )
   #
   # setupUI

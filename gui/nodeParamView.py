@@ -13,21 +13,13 @@ from PyQt4.QtGui  import QFileIconProvider
 #from ui_nodeParam import Ui_nodeParam
 #from MainWindow import MainWindow
 
+
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 from gui.nodeParamList import NodeParamList
 
 import gui.ui_settings as UI
-from gui.params.StringWidget import StringWidget
-from gui.params.FloatWidget import FloatWidget
-from gui.params.IntWidget import IntWidget
-from gui.params.ColorWidget import ColorWidget
-from gui.params.NormalWidget import NormalWidget
-from gui.params.PointWidget import PointWidget
-from gui.params.VectorWidget import VectorWidget
-from gui.params.MatrixWidget import MatrixWidget
-from gui.params.TextWidget import TextWidget
-from gui.params.ControlWidget import ControlWidget
+from global_vars import DEBUG_MODE
 #
 # NodeParamView
 #
@@ -53,7 +45,7 @@ class NodeParamView ( QtGui.QWidget ) :
   #
   def setNode ( self, gfxNode ) :
     #
-    print ">> NodeParamView.setNode"
+    if DEBUG_MODE : print ">> NodeParamView.setNode"
     self.disconnectParamSignals ()
     self.gfxNode = gfxNode
     self.inputParamList.setNode ( gfxNode )
@@ -99,14 +91,14 @@ class NodeParamView ( QtGui.QWidget ) :
   #
   def onParamChanged ( self, param ) :
     #
-    print ">> NodeParamView.onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )
+    if DEBUG_MODE : print ">> NodeParamView.onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )
     self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node
   #
   # onParamRemoved
   #
   def onParamRemoved ( self, param ) :
     #
-    print ">> NodeParamView.onRemoved node = %s param = %s" % ( self.gfxNode.node.label, param.name )
+    if DEBUG_MODE : print ">> NodeParamView.onRemoved node = %s param = %s" % ( self.gfxNode.node.label, param.name )
     self.gfxNode.node.removeParam ( param )
     #self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node
     self.disconnectParamSignals ()
@@ -117,9 +109,11 @@ class NodeParamView ( QtGui.QWidget ) :
   #
   def nodeLabelChanged ( self ) :
     #
+    #if DEBUG_MODE : print ">> NodeParamView.nodeLabelChanged"
     if self.gfxNode is not None :
       from core.meCommon import getParsedLabel
       newLabel = getParsedLabel ( self.nameEdit.text () )
+      #if DEBUG_MODE : print "** newLabel = %s" % newLabel
       if not newLabel.isEmpty () :
         # update label only if realy changed
         if newLabel != self.gfxNode.node.label :

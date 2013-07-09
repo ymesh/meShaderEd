@@ -18,7 +18,7 @@ from core.nodeParam import NodeParam
 #
 # NodeLibrary
 #  
-class NodeLibrary () : # QtCore.QObject
+class NodeLibrary ( QtCore.QObject ) : # QtCore.QObject
   #
   # __init__
   #

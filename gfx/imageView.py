@@ -172,6 +172,7 @@ class ImageView ( QtGui.QGraphicsView ) :
   # resetZoom
   #
   def resetZoom ( self ) :
+    #
     self.setInteractive ( False )
     self.resetTransform () 
     self.setInteractive ( True )          

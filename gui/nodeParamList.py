@@ -15,6 +15,7 @@ from PyQt4.QtGui  import QFileIconProvider
 
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
+from global_vars import DEBUG_MODE
 
 import gui.ui_settings as UI
 from gui.params.StringWidget import StringWidget
@@ -73,7 +74,7 @@ class NodeParamList ( QtGui.QWidget ) :
   #
   def setNode ( self, gfxNode ) :
     #
-    print ">> NodeParamList.setNode"
+    if DEBUG_MODE :print ">> NodeParamList.setNode"
     self.gfxNode = gfxNode
     self.updateGui ()
   #
