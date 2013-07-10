@@ -39,7 +39,7 @@ class NodeParamView ( QtGui.QWidget ) :
     self.showConnected = False
     self.buildGui ()
     self.updateGui ()
-    self.connectLabelSignals ()
+    self.connectSignals ()
   #
   # setNode
   #
@@ -53,19 +53,20 @@ class NodeParamView ( QtGui.QWidget ) :
     self.nameEdit.setEnabled ( self.gfxNode is not None )
     self.updateGui ()
     self.connectParamSignals ()
-    
   #
-  # connectLabelSignals
+  # connectSignals
   #
-  def connectLabelSignals ( self ) :
+  def connectSignals ( self ) :
     #
     self.connect( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
+    self.connect( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
   #
-  # disconnectLabelSignals
+  # disconnectSignals
   #
-  def disconnectLabelSignals ( self ) :
+  def disconnectSignals ( self ) :
     #
     self.disconnect( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
+    self.disconnect( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
   #
   # connectParamSignals
   #
@@ -86,6 +87,17 @@ class NodeParamView ( QtGui.QWidget ) :
         self.disconnect ( inputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
       for outputParam in self.gfxNode.node.outputParams :
         self.disconnect ( outputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
+  #
+  # showConnections
+  #
+  def showConnections ( self, show ) :
+    #
+    print ">> NodeParamView.showConnections %s" % show
+    self.showConnected = show
+    self.inputParamList.showConnected = show
+    self.outputParamList.showConnected = show
+    self.inputParamList.updateGui ()
+    self.outputParamList.updateGui ()
   #
   # onParamChanged
   #
@@ -151,6 +163,7 @@ class NodeParamView ( QtGui.QWidget ) :
     self.showConnectButton.setIcon ( icon )
     self.showConnectButton.setAutoRaise ( False )
     self.showConnectButton.setCheckable ( True )
+    self.showConnectButton.setChecked ( self.showConnected ) 
     self.showConnectButton.setToolTip ( 'Show connected parameters' )
     #self.showConnectButton.setIconSize ( QtCore.QSize ( 16, 16 ) )
     self.showConnectButton.setObjectName ( 'showConnectButton' )

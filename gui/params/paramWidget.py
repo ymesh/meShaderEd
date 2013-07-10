@@ -1,13 +1,12 @@
-#===============================================================================
-# paramWidget.py
-#===============================================================================
+"""
 
+ paramWidget.py
+
+"""
 from PyQt4 import QtGui, QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, VALID_RSL_NODE_TYPES, VALID_RSL_PARAM_TYPES
-
 import gui.ui_settings as UI
-
 #
 # ParamWidget general class for parameter widgets
 #
@@ -15,9 +14,8 @@ class ParamWidget ( QtGui.QWidget ) :
   #
   # __init__
   #
-  def __init__ ( self, param, gfxNode, parent = None, ignoreSubtype = False ) :
+  def __init__ ( self, param, gfxNode, ignoreSubtype = False ) :
     #
-    #print ">> ParamWidget  __init__"
     super ( QtGui.QWidget, self ).__init__ ( None )
     self.param = param
     self.gfxNode = gfxNode
@@ -27,17 +25,19 @@ class ParamWidget ( QtGui.QWidget ) :
     self.buildGui ()
     self.ui.updateGui ( self.param.value )
     #self.connect( self.param, QtCore.SIGNAL( 'paramChanged(QObject)' ), self.onParamChanged )
+    #if DEBUG_MODE : print ">> ParamWidget  __init__"
   #
   #  __del__
   #
   def __del__ ( self ) :
+    #
     if DEBUG_MODE : print '>> ParamWidget( %s ).__del__ ' % self.param.name
   #
   # onParamChanged
   #
   def onParamChanged ( self, param ) :
     #
-    print ">> ParamWidget( %s ).onParamChanged" % param.name
+    if DEBUG_MODE : print ">> ParamWidget( %s ).onParamChanged" % param.name
     self.ui.disconnectSignals ( self )
     self.ui.updateGui ( self.param.value )
     self.ui.connectSignals ( self )
@@ -46,7 +46,7 @@ class ParamWidget ( QtGui.QWidget ) :
   # buildGeneralGui
   #
   def buildGeneralGui ( self ) :
-    #print ">> ParamWidget buildGeneralGui"
+    #if DEBUG_MODE : print ">> ParamWidget buildGeneralGui"
     self.vl = QtGui.QVBoxLayout ( self )
     self.vl.setSpacing ( UI.SPACING )
     self.vl.setMargin ( 0 )
@@ -65,7 +65,7 @@ class ParamWidget ( QtGui.QWidget ) :
       #
       # add "Use as Shader parameter" checkbox
       #
-      if self.gfxNode.node.type in VALID_RSL_NODE_TYPES and self.param.type in VALID_RSL_PARAM_TYPES and self.param.provider != 'attribute' :
+      if ( self.gfxNode.node.type in VALID_RSL_NODE_TYPES ) and ( self.param.type in VALID_RSL_PARAM_TYPES ) and ( self.param.provider != 'attribute' ) :
         self.check = QtGui.QCheckBox ( self )
         self.check.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
         self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
@@ -103,6 +103,9 @@ class ParamWidget ( QtGui.QWidget ) :
     font = QtGui.QFont ()
     font.setBold ( False )
     self.label.setFont ( font )
+    
+    if self.param.help is not None :
+      self.label.setWhatsThis ( self.param.help )
   
     #if self.param.type != 'control' :
     self.label.setText ( self.param.label )
@@ -124,7 +127,8 @@ class ParamWidget ( QtGui.QWidget ) :
     else :
       self.gfxNode.updateOutputParams ()
   #
-  # buildGui
+  # buildGui -- virtual method
+  # should be overriden in inherited classes
   #
   def buildGui ( self ) :
     #

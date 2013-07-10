@@ -266,6 +266,9 @@
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
+   <property name="toolTip">
+    <string>Enter to Help Mode</string>
+   </property>
    <property name="allowedAreas">
     <set>Qt::LeftToolBarArea|Qt::TopToolBarArea</set>
    </property>
@@ -399,6 +402,9 @@
    </property>
    <property name="statusTip">
     <string notr="true" extracomment="Create a new project">Create a new project</string>
+   </property>
+   <property name="whatsThis">
+    <string extracomment="comment: Create a new project">Click this option to create a new project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -831,6 +837,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+H</string>
+   </property>
+  </action>
+  <action name="actionHelpMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F1</string>
    </property>
   </action>
   <zorder>dockNodes</zorder>
@@ -1410,5 +1427,6 @@
   <slot>onRenderPreview()</slot>
   <slot>onShowSwatch()</slot>
   <slot>onHideSwatch()</slot>
+  <slot>onHelpMode(bool)</slot>
  </slots>
 </ui>

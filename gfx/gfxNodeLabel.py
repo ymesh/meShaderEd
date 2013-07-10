@@ -1,17 +1,16 @@
 """
- gfxNodeLabel.py
+
+  gfxNodeLabel.py
 
 """
-from PyQt4 import QtCore, QtGui
-
-
+from PyQt4 import Qt, QtCore, QtGui
 
 from global_vars import DEBUG_MODE, GFX_NODE_LABEL_TYPE
 from meShaderEd import app_settings
 #
 # GfxNodeLabel
 #
-class GfxNodeLabel ( QtGui.QGraphicsItem ) :
+class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
   #
   Type = GFX_NODE_LABEL_TYPE
   #
@@ -23,6 +22,7 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
 
     self.text = text
     self.param = param
+    self.help = None
 
     normalColor = QtGui.QColor ( 0, 0, 0 )
     selectedColor = QtGui.QColor ( 240, 240, 240 )
@@ -48,7 +48,7 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
     
     self.editable = False
     self.processEvents = False
-    self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable, False )
+    self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable, False )     # QGraphicsItem QGraphicsWidget
     self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable, False )
     
     self.rect = QtCore.QRectF ()
@@ -60,6 +60,16 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
   # boundingRect
   #
   def boundingRect ( self ) : return self.rect
+  #
+  # setWhatsThis
+  #
+  def setWhatsThis ( self, helpString ) : 
+    #
+    self.help = helpString
+    #self.setAttribute ( QtCore.Qt.WA_CustomWhatsThis, ( self.help is not None ) ) 
+    #print '** setWhatsThis = %s' % self.testAttribute ( QtCore.Qt.WA_CustomWhatsThis )
+    # PyQt4.QtCore.Qt.WhatsThisCursor
+    # PyQt4.QtCore.Qt.WhatsThisRole
   #
   # setNormal
   #
@@ -78,6 +88,8 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
     if selected :
       self.pen = self.PenSelected
       self.alternate = False
+    else :
+      self.setNormal ()
   #
   # setAlternate
   #
@@ -143,8 +155,9 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
   def setProcessEvents ( self, process = True ) :
     #
     self.processEvents = process
-    #self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable, False )
+    #self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable, process )
     self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable, process )
+    #self.setFlag ( QtGui.QGraphicsWidget.ItemIsSelectable, process )
   #
   # mouseDoubleClickEvent
   #
@@ -166,6 +179,9 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
   def mousePressEvent ( self, event ) :
     if self.processEvents :
       print ">> GfxNodeLabel.mousePressEvent"
+      inWhatsThisMode = QtGui.QWhatsThis.inWhatsThisMode ()
+      if inWhatsThisMode :
+        print '** inWhatsThisMode active'
       from gfx.gfxNode import GfxNode
       parentNode = self.parentItem ()
       if isinstance ( parentNode, GfxNode ) :
@@ -195,3 +211,30 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) :
             return
       QtCore.QEvent.ignore ( event )
     QtGui.QGraphicsItem.mousePressEvent ( self, event )
+    #QtGui.QGraphicsWidget.mousePressEvent ( self, event )
+  """
+  #
+  # mouseMoveEvent
+  #
+  def mouseMoveEvent ( self, event ) :
+    #
+    print ">> GfxNodeLabel.mouseMoveEvent"  
+    inWhatsThisMode = QtGui.QWhatsThis.inWhatsThisMode ()
+    if inWhatsThisMode :
+      print '** inWhatsThisMode active'
+    #QtCore.QEvent.ignore ( event ) 
+    QtGui.QGraphicsItem.mouseMoveEvent ( self, event )
+  
+  #
+  # event
+  # The type() can be either QEvent::ToolTip or QEvent::WhatsThis. QWhatsThisClickedEvent.
+  def event ( self, event ) :
+    #
+    print ">> GfxNodeLabel.event"
+    if inWhatsThisMode :
+      print '** inWhatsThisMode active' 
+    return QtGui.QGraphicsItem.event ( self, event )
+  #
+  #
+  #
+  """

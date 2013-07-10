@@ -1,16 +1,13 @@
-#===============================================================================
-# StringWidget.py
-#
-# 
-#
-#===============================================================================
+"""
 
+ StringWidget.py
+
+"""
 from PyQt4 import QtGui, QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
-
 #
 # StringWidget
 #
@@ -73,7 +70,8 @@ class Ui_StringWidget_field ( object ) :
   #
   # updateGui
   #
-  def updateGui ( self, value ) : 
+  def updateGui ( self, value ) :
+    # 
     self.stringEdit.setText ( value )
 #
 # Ui_StringWidget_selector

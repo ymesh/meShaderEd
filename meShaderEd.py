@@ -1,10 +1,11 @@
 #!/usr/bin/python
 """
+ 
  meShaderEd.py
 
  version 0.3.2b (?? Jul 2013)
 
- written by Yuri.Meshalkin (mesh@kpp.kiev.ua)
+ Author: Yuri Meshalkin (aka mesh) (mesh@kpp.kiev.ua)
 
  Initial code and data structure was based on
  ShaderLink of Libero Spagnolini (Libe)
@@ -35,7 +36,6 @@ version = '0.3.2b'
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
                                   QtCore.QSettings.UserScope,
                                   'mesh', 'meShaderEd' )
-
 #
 # setDefaultValue
 #

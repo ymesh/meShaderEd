@@ -257,6 +257,9 @@ class GfxNode ( QtGui.QGraphicsItem ) :
       self.header [ 'label' ].setNormalColor ( self.normalColor )
       self.header [ 'label' ].setBold ()
       
+      if self.node.help is not None :
+        self.header [ 'label' ].setWhatsThis ( self.node.help )
+      
       self.header [ 'name' ] = GfxNodeLabel ( self.node.name )
 
       self.header [ 'name' ].setBgColor ( self.bgColor )
@@ -371,6 +374,10 @@ class GfxNode ( QtGui.QGraphicsItem ) :
         label.setBgColor ( self.bgColor )
         label.setNormalColor ( self.normalColor )
         if not param.isInput : label.setBold ()
+          
+        if param.help is not None :
+          label.setWhatsThis ( self.node.help )
+        
         if param.type in VALID_RSL_PARAM_TYPES :
           label.setNormal ()
           isVarying = ( param.detail == 'varying' )

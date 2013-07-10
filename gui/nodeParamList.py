@@ -18,6 +18,7 @@ from core.nodeLibrary import NodeLibrary
 from global_vars import DEBUG_MODE
 
 import gui.ui_settings as UI
+from gui.params.linkWidget import LinkWidget
 from gui.params.StringWidget import StringWidget
 from gui.params.FloatWidget import FloatWidget
 from gui.params.IntWidget import IntWidget
@@ -107,24 +108,37 @@ class NodeParamList ( QtGui.QWidget ) :
     
         frame.setLayout ( frameLayout )
         
-        params = self.gfxNode.node.inputParams
-        isParamLinked = self.gfxNode.node.isInputParamLinked
-        if not self.isInput :
+        params = []
+        if self.isInput :
+          params = self.gfxNode.node.inputParams
+        else :
           params = self.gfxNode.node.outputParams
-          isParamLinked = self.gfxNode.node.isOutputParamLinked
           
         for param in params :
+          isParamLinked = False
+          if self.isInput :
+            ( srcNode, srcParam ) = self.gfxNode.node.getLinkedSrcNode ( param )
+            isParamLinked = srcNode is not None 
+          else :
+            isParamLinked = self.gfxNode.node.isOutputParamLinked ( param )
+          
           if param.display :
-            if not isParamLinked ( param ) :
-              if param.type in self.paramWidgets.keys () :
-                #print '%s type = %s' % ( inputParam.label, inputParam.type )
-                paramWidget = apply ( self.paramWidgets [ param.type ], [ param, self.gfxNode, self ] )
-                frameLayout.addWidget ( paramWidget )
-                if not param.enabled :
-                  paramWidget.setEnabled ( False )
-                
-                if param.removable :
-                  QtCore.QObject.connect ( paramWidget, QtCore.SIGNAL ( 'nodeParamRemoved' ), self.nodeParamView.onParamRemoved )
+            if param.type in self.paramWidgets.keys () :
+              #print '%s type = %s' % ( inputParam.label, inputParam.type )
+              if isParamLinked :
+                if self.showConnected :
+                  paramWidget = LinkWidget ( param, self.gfxNode )
+                else :
+                  continue
+              else :
+                paramWidget = apply ( self.paramWidgets [ param.type ], [ param, self.gfxNode ] )
+              
+              frameLayout.addWidget ( paramWidget )
+              if not param.enabled :
+                paramWidget.setEnabled ( False )
+              
+              if param.removable :
+                QtCore.QObject.connect ( paramWidget, QtCore.SIGNAL ( 'nodeParamRemoved' ), self.nodeParamView.onParamRemoved )
     
         spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding )
         frameLayout.addItem ( spacer )

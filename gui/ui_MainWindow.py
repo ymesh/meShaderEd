@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Sat Jul 06 16:38:19 2013
+# Created: Wed Jul 10 23:40:41 2013
 #      by: PyQt4 UI code generator 4.10.2-snapshot-a8a14dd99d1e
 #
 # WARNING! All changes made in this file will be lost!
@@ -321,6 +321,9 @@ class Ui_MainWindow(object):
         self.actionShowSwatch.setObjectName(_fromUtf8("actionShowSwatch"))
         self.actionHideSwatch = QtGui.QAction(MainWindow)
         self.actionHideSwatch.setObjectName(_fromUtf8("actionHideSwatch"))
+        self.actionHelpMode = QtGui.QAction(MainWindow)
+        self.actionHelpMode.setCheckable(True)
+        self.actionHelpMode.setObjectName(_fromUtf8("actionHelpMode"))
         self.menuRecent_Projects.addSeparator()
         self.menuRecent_Networks.addSeparator()
         self.menuFile.addAction(self.actionNew)
@@ -450,6 +453,7 @@ class Ui_MainWindow(object):
         self.menuView.setTitle(_translate("MainWindow", "View", None))
         self.dockNodes.setWindowTitle(_translate("MainWindow", "Library", None))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar", None))
+        self.toolBar.setToolTip(_translate("MainWindow", "Enter to Help Mode", None))
         self.dockPreview.setWindowTitle(_translate("MainWindow", "Image View", None))
         self.dockParam.setWindowTitle(_translate("MainWindow", "Node Parameters", None))
         self.dockGeom.setWindowTitle(_translate("MainWindow", "Geometry View", None))
@@ -460,6 +464,7 @@ class Ui_MainWindow(object):
         self.actionPreviewOptions.setText(_translate("MainWindow", "Preview ...", None))
         self.actionPreviewOptions.setToolTip(_translate("MainWindow", "Preview Options", None))
         self.actionNew.setText(_translate("MainWindow", "&New", None))
+        self.actionNew.setWhatsThis(_translate("MainWindow", "Click this option to create a new project", None))
         self.actionNew.setShortcut(_translate("MainWindow", "Ctrl+N", None))
         self.actionOpen.setText(_translate("MainWindow", "&Open", None))
         self.actionOpen.setStatusTip(_translate("MainWindow", "Open existing project", None))
@@ -530,6 +535,8 @@ class Ui_MainWindow(object):
         self.actionShowSwatch.setShortcut(_translate("MainWindow", "Ctrl+Shift+S", None))
         self.actionHideSwatch.setText(_translate("MainWindow", "Hide Swatch", None))
         self.actionHideSwatch.setShortcut(_translate("MainWindow", "Ctrl+Shift+H", None))
+        self.actionHelpMode.setText(_translate("MainWindow", "Help", None))
+        self.actionHelpMode.setShortcut(_translate("MainWindow", "Shift+F1", None))
 
 from gfx.WorkArea import WorkArea
 from nodeSwatchParam import NodeSwatchParam

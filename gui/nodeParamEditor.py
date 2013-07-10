@@ -1,12 +1,13 @@
-#===============================================================================
-# nodeParamEditor.py
-#
-# ver. 1.0.0
-# Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
-#
-# Dialog for managing node
-#
-#===============================================================================
+"""
+ nodeParamEditor.py
+
+ ver. 1.0.0
+ 
+ Author: Yuri Meshalkin (aka mesh) (mesh@kpp.kiev.ua)
+
+ Dialog for managing node
+
+"""
 import os, sys
 from PyQt4 import QtCore, QtGui
 
@@ -64,6 +65,7 @@ class NodeParamEditor ( QtGui.QWidget ) :
   #
   #
   def __delete__ ( self, obj ) :
+    #
     print '* NodeParamEditor closed... %s' % str( obj )
   #
   # buildGui
@@ -245,12 +247,12 @@ class NodeParamEditor ( QtGui.QWidget ) :
         print '>> Create %s param widget' % self.param.type
 
         # create paramWidget without GfxNode and ignoreSubtype = True
-        self.ui.value_widget = apply ( self.paramWidgets [ self.param.type ], [ self.param, None, self, True ] )
+        self.ui.value_widget = apply ( self.paramWidgets [ self.param.type ], [ self.param, None, True ] )
         self.ui.value_widget.label.setText ( 'Current Value' )
 
         frameLayout.addWidget ( self.ui.value_widget )
         
-        self.ui.def_value_widget = apply ( self.paramWidgets [ self.param_default.type ], [ self.param_default, None, self, True ] )
+        self.ui.def_value_widget = apply ( self.paramWidgets [ self.param_default.type ], [ self.param_default, None, True ] )
         self.ui.def_value_widget.label.setText ( 'Default Value' )
 
         frameLayout.addWidget ( self.ui.def_value_widget )

@@ -4,8 +4,8 @@
 """
 import os, sys
 
-from PyQt4 import QtCore, QtGui, QtXml
-
+from PyQt4 import QtCore, QtGui, QtXml 
+#from PyQt4.QtGui import QWhatsThis 
 from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import *
 from core.nodeNetwork import *
@@ -42,7 +42,16 @@ class MainWindow ( QtGui.QMainWindow ) :
 
     self.ui = Ui_MainWindow ()
     self.ui.setupUi ( self )
-
+    #
+    # setup WhatsThis help action
+    #
+    self.ui.actionHelpMode = QtGui.QWhatsThis.createAction ( )
+    self.ui.actionHelpMode.setToolTip ( 'Enter "WhatsThis" help mode' )
+    self.ui.menuHelp.addAction ( self.ui.actionHelpMode )
+    self.ui.toolBar.addSeparator()
+    self.ui.toolBar.addAction ( self.ui.actionHelpMode )
+    QtCore.QObject.connect ( self.ui.actionHelpMode, QtCore.SIGNAL ( 'toggled(bool)' ), self.onHelpMode )
+    
     self.clipboard = QtGui.QApplication.clipboard ()
 
     self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
@@ -854,4 +863,12 @@ class MainWindow ( QtGui.QMainWindow ) :
       self.addRecentNetwork ( normPath ( filename ) )
       self.buildRecentNetworksMenu ()
       self.ui.project_ctl.onReload ()
-
+  #
+  # onHelpNode
+  #
+  def onHelpMode ( self, showWhatsThis ) :
+    #
+    #if showWhatsThis :
+    QtGui.QWhatsThis.enterWhatsThisMode ()
+    #else :
+    #  QtGui.QWhatsThis.leaveWhatsThisMode ()

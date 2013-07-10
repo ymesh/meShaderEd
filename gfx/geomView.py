@@ -71,13 +71,10 @@ class GeomView ( QtOpenGL.QGLWidget ) : # , QGLFunctions
     self.isGridVisible = True
     self.headLight = False
 
-    self.printModelMatrix ()
     self.modelMatrix.translate ( 0.0, 0.0, 10.0 )
-    self.printModelMatrix ()
     self.target = QtGui.QVector3D ( 0.0, 0.0, 0.0 )
     self.orbit ( 45, -45 )
     self.dolly ( 240 )
-    self.printModelMatrix ()
     
     self.geom_code = ''
     
