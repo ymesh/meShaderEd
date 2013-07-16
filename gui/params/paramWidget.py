@@ -7,6 +7,8 @@ from PyQt4 import QtGui, QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, VALID_RSL_NODE_TYPES, VALID_RSL_PARAM_TYPES
 import gui.ui_settings as UI
+
+from paramLabel import ParamLabel 
 #
 # ParamWidget general class for parameter widgets
 #
@@ -24,14 +26,21 @@ class ParamWidget ( QtGui.QWidget ) :
     self.buildGeneralGui ()
     self.buildGui ()
     self.ui.updateGui ( self.param.value )
+    #self.connectSignals ()
     #self.connect( self.param, QtCore.SIGNAL( 'paramChanged(QObject)' ), self.onParamChanged )
-    #if DEBUG_MODE : print ">> ParamWidget  __init__"
+    #if DEBUG_MODE : print ">> ParamWidget (%s.%s)  __init__" % ( self.gfxNode.node.label, self.param.label )
   #
   #  __del__
   #
   def __del__ ( self ) :
     #
     if DEBUG_MODE : print '>> ParamWidget( %s ).__del__ ' % self.param.name
+  #
+  # connectSignals
+  #
+  def connectSignals ( self ) :
+    #
+    pass
   #
   # onParamChanged
   #
@@ -47,17 +56,24 @@ class ParamWidget ( QtGui.QWidget ) :
   #
   def buildGeneralGui ( self ) :
     #if DEBUG_MODE : print ">> ParamWidget buildGeneralGui"
-    self.vl = QtGui.QVBoxLayout ( self )
-    self.vl.setSpacing ( UI.SPACING )
-    self.vl.setMargin ( 0 )
-    self.vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
+    
+    self.label_vl = QtGui.QVBoxLayout ()
+    self.label_vl.setSpacing ( UI.SPACING )
+    self.label_vl.setMargin ( 0 )
+    self.label_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 
-    self.gui = QtGui.QWidget( self )
+    #self.gui = QtGui.QWidget ( self )
 
-    self.hl = QtGui.QHBoxLayout ( self.gui )
+    self.hl = QtGui.QHBoxLayout ()
     self.hl.setSpacing ( UI.SPACING )
     self.hl.setMargin ( 0 )
     self.hl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
+    
+    # vertical layout for parametrs values (e.g. output links or matrix rows)
+    self.param_vl = QtGui.QVBoxLayout ()
+    self.param_vl.setSpacing ( UI.SPACING )
+    self.param_vl.setMargin ( 0 )
+    self.param_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
     #
     # add 'isShaderParam' check box only for RSL nodes
     #
@@ -94,28 +110,48 @@ class ParamWidget ( QtGui.QWidget ) :
         self.removeButton.setToolTip ( 'Remove parameter' )
         self.removeButton.setIconSize ( QtCore.QSize ( 16, 16 ) )
         self.removeButton.setObjectName ( 'removeButton' )
-        
-        QtCore.QObject.connect ( self.removeButton, QtCore.SIGNAL ( 'clicked()' ), self.onRemoveItem )
-        
         self.hl.addWidget ( self.removeButton )
+        QtCore.QObject.connect ( self.removeButton, QtCore.SIGNAL ( 'clicked()' ), self.onRemoveItem )
     
-    self.label = QtGui.QLabel ( self )
+    #self.label = QtGui.QLabel ( self )
+    self.label = ParamLabel ( self, self.param )
     font = QtGui.QFont ()
     font.setBold ( False )
     self.label.setFont ( font )
+    # QtCore.QObject
+    #self.connect ( self.label, QtCore.SIGNAL ( 'mouseDoubleClickEvent(QEvent)' ), self.onMouseDoubleClickEvent )
+    #self.connect ( self.label, QtCore.SIGNAL ( 'mousePressEvent(QEvent)' ), self.onMousePressEvent )
     
-    if self.param.help is not None :
+    self.helpMark = QtGui.QLabel ( self )
+    palette = QtGui.QPalette ()
+    palette.setColor ( QtGui.QPalette.WindowText, QtGui.QColor ( 0, 140, 0 ) )
+    font1 = QtGui.QFont ()
+    font1.setBold ( True )
+    self.helpMark.setPalette ( palette )
+    self.helpMark.setFont ( font1 )
+    self.helpMark.setText ( '' )
+    
+    self.helpMark.setMinimumSize ( QtCore.QSize ( 6, UI.HEIGHT ) )
+    self.helpMark.setMaximumSize ( QtCore.QSize ( 6, UI.HEIGHT ) )
+    
+    self.helpMark.setEnabled ( False )
+    
+    if self.param.help is not None and self.param.help != '' :
       self.label.setWhatsThis ( self.param.help )
-  
-    #if self.param.type != 'control' :
-    self.label.setText ( self.param.label )
-  
-    self.label.setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
-    self.label.setMaximumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
+      self.helpMark.setWhatsThis ( self.param.help )
+      self.helpMark.setText ( '?' )
+      self.helpMark.setEnabled ( True )
+    
     self.label.setAlignment ( QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter )
-  
+    #self.label.setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
+    #self.label.setMaximumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
+    
+    #self.vl.addWidget ( self.gui )
     self.hl.addWidget ( self.label )
-    self.vl.addWidget ( self.gui )
+    self.hl.addWidget ( self.helpMark )
+    #self.hl.addLayout ( self.param_vl )
+    self.label_vl.addItem ( QtGui.QSpacerItem ( 20, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum ) )
+    self.label_vl.addLayout ( self.hl )
   #
   # onShaderParamChanged
   #
@@ -132,6 +168,7 @@ class ParamWidget ( QtGui.QWidget ) :
   #
   def buildGui ( self ) :
     #
+    pass
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     self.hl.addItem ( spacer )
   #

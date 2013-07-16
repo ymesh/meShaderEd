@@ -121,21 +121,25 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   # updateGfxNode
   #
-  def updateGfxNode ( self ) :
-    # remove all GfxLinks
-    for connect in self.inputConnectors : connect.removeAllLinks ()
-    for connect in self.outputConnectors : connect.removeAllLinks ()
+  def updateGfxNode ( self, removeLinks = True ) :
+    #
+    if removeLinks :
+      # remove all GfxLinks
+      for connect in self.inputConnectors : connect.removeAllLinks ()
+      for connect in self.outputConnectors : connect.removeAllLinks ()
+      self.outputConnectors = []
+      self.inputConnectors = []
     # remove all children
     for item in self.childItems () : self.scene().removeItem ( item )
     self.header = {}
     self.setupHeader ()
     self.outputParamLabels = []
     self.inputParamLabels = []
-    self.outputConnectors = []
-    self.inputConnectors = []
-    self.setupParams ( self.node.outputParams, self.outputParamLabels, self.outputConnectors )
-    self.setupParams ( self.node.inputParams, self.inputParamLabels, self.inputConnectors )
+    
+    self.setupParams ( self.node.outputParams, self.outputParamLabels, self.outputConnectors, removeLinks )
+    self.setupParams ( self.node.inputParams, self.inputParamLabels, self.inputConnectors, removeLinks )
     self.setupGeometry ()
+    self.update ()
   #
   # getInputConnectorByParam
   #
@@ -365,7 +369,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   # setupParams
   #
-  def setupParams ( self, params, labels, connectors ):
+  def setupParams ( self, params, labels, connectors, updateConnectors = True ):
     #
     for param in params :
       # ignore attributes
@@ -389,9 +393,10 @@ class GfxNode ( QtGui.QGraphicsItem ) :
           # and switch param.provide to "primitive" by ALT-click
           label.setProcessEvents ( True )   
         labels.append ( label )
-        connector = GfxNodeConnector ( param, UI.CONNECTOR_RADIUS, node = None )
-        if not param.isInput : connector.singleLinkOnly = False
-        connectors.append ( connector )
+        if updateConnectors :
+          connector = GfxNodeConnector ( param, UI.CONNECTOR_RADIUS, node = None )
+          if not param.isInput : connector.singleLinkOnly = False
+          connectors.append ( connector )
   #
   # adjustLinks
   #

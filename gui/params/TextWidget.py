@@ -1,6 +1,8 @@
-#===============================================================================
-# TextWidget.py
-#===============================================================================
+"""
+
+ TextWidget.py
+ 
+"""
 from PyQt4 import QtGui, QtCore
 
 import gui.ui_settings as UI 
@@ -14,7 +16,7 @@ class TextWidget ( ParamWidget ) :
   #                
   def buildGui ( self ) :
     #
-    self.ui = Ui_TextWidget_field ()    
+    self.ui = Ui_TextWidget_field ()
     self.ui.setupUi ( self )
 #
 # Ui_StringWidget_field
@@ -25,6 +27,9 @@ class Ui_TextWidget_field ( object ) :
   #
   def setupUi ( self, TextWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
+    hl.setStretch ( 1, 1 )
+    
     self.widget = TextWidget
     self.text_plainTextEdit = QtGui.QPlainTextEdit ( TextWidget )
     self.text_plainTextEdit.setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
@@ -36,8 +41,8 @@ class Ui_TextWidget_field ( object ) :
     self.doc.setDocumentLayout ( layout )
     self.text_plainTextEdit.setDocument ( self.doc )  
     
-    self.widget.hl.addWidget ( self.text_plainTextEdit )
-    self.widget.hl.setStretch ( 1, 1 )
+    hl.addWidget ( self.text_plainTextEdit )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( TextWidget )
     self.connectSignals ( TextWidget )

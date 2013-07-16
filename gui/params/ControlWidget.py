@@ -1,7 +1,8 @@
-#===============================================================================
-# ControlWidget.py
-#===============================================================================
+"""
 
+ ControlWidget.py
+
+"""
 from PyQt4 import QtGui, QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE
@@ -35,6 +36,9 @@ class Ui_ControlWidget_field ( object ) :
   #
   def setupUi ( self, ControlWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
+    hl.setStretch ( 1, 1 )
+    
     self.widget = ControlWidget
 
     self.stringEdit = QtGui.QLineEdit ( ControlWidget )
@@ -42,8 +46,8 @@ class Ui_ControlWidget_field ( object ) :
     self.stringEdit.setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
     self.stringEdit.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
 
-    self.widget.hl.addWidget ( self.stringEdit )
-    self.widget.hl.setStretch ( 1, 1 )
+    hl.addWidget ( self.stringEdit )
+    self.widget.param_vl.addLayout ( hl )
 
     QtCore.QMetaObject.connectSlotsByName ( ControlWidget )
     self.connectSignals ( ControlWidget )
@@ -81,6 +85,9 @@ class Ui_ControlWidget_button ( object ) :
   #
   def setupUi ( self, ControlWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
+    hl.setStretch ( 1, 1 )
+    
     self.widget = ControlWidget
 
     self.button = QtGui.QPushButton ( self.widget.param.btext, ControlWidget )
@@ -89,8 +96,9 @@ class Ui_ControlWidget_button ( object ) :
 
     spacer = QtGui.QSpacerItem ( UI.HEIGHT, UI.HEIGHT, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
 
-    self.widget.hl.addWidget ( self.button )
-    self.widget.hl.addItem ( spacer )
+    hl.addWidget ( self.button )
+    hl.addItem ( spacer )
+    self.widget.param_vl.addLayout ( hl )
 
     QtCore.QMetaObject.connectSlotsByName ( ControlWidget )
     self.connectSignals ( ControlWidget )

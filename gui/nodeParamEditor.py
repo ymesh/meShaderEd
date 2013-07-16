@@ -233,15 +233,18 @@ class NodeParamEditor ( QtGui.QWidget ) :
       doc.setDocumentLayout( layout )
 
       self.ui.descr_plainTextEdit.setDocument ( doc )
-
-      frame = QtGui.QFrame()
-
-      frameLayout = QtGui.QVBoxLayout ()
-      frameLayout.setSpacing ( UI.SPACING )
-      frameLayout.setMargin ( 0 ) # UI.SPACING )
-      frameLayout.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
-
-      frame.setLayout( frameLayout )
+      #
+      # setup param values view
+      #
+      paramsLayout = QtGui.QGridLayout ()
+      paramsLayout.setContentsMargins ( 2, 2, 2, 2 )
+      paramsLayout.setSizeConstraint ( QtGui.QLayout.SetNoConstraint )
+      paramsLayout.setVerticalSpacing ( 4 )
+      paramsLayout.setColumnStretch ( 1, 1 )
+      paramsLayout.setRowStretch ( 2, 1 )
+      
+      frame = QtGui.QFrame ()
+      frame.setLayout ( paramsLayout )
 
       if self.param.type in self.paramWidgets.keys () :
         print '>> Create %s param widget' % self.param.type
@@ -249,13 +252,18 @@ class NodeParamEditor ( QtGui.QWidget ) :
         # create paramWidget without GfxNode and ignoreSubtype = True
         self.ui.value_widget = apply ( self.paramWidgets [ self.param.type ], [ self.param, None, True ] )
         self.ui.value_widget.label.setText ( 'Current Value' )
-
-        frameLayout.addWidget ( self.ui.value_widget )
+        
+        paramsLayout.addLayout ( self.ui.value_widget.label_vl, 0, 0, 1, 1 )
+        paramsLayout.addLayout ( self.ui.value_widget.param_vl, 0, 1, 1, 1 )
         
         self.ui.def_value_widget = apply ( self.paramWidgets [ self.param_default.type ], [ self.param_default, None, True ] )
         self.ui.def_value_widget.label.setText ( 'Default Value' )
 
-        frameLayout.addWidget ( self.ui.def_value_widget )
+        paramsLayout.addLayout ( self.ui.def_value_widget.label_vl, 1, 0, 1, 1 )
+        paramsLayout.addLayout ( self.ui.def_value_widget.param_vl, 1, 1, 1, 1 )
+        
+        spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding )
+        paramsLayout.addItem ( spacer, 2, 0, 1, 1 ) 
 
       self.ui.value_stackedWidget.addWidget ( frame )
       self.connectSignals ()

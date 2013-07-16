@@ -122,13 +122,13 @@ class GfxSwatchNode ( QtGui.QGraphicsItem ) :
 
     #self.rect = QtCore.QRectF ( 0, 0, self.swatchSize, self.swatchSize )
     self.inputConnectors = []
-    self.setupParams ()
+    self.setupSwatchParams ()
     self.setupConnectors ()
     self.setupGeometry ()
   #
-  # setupParams
+  # setupSwatchParams
   #
-  def setupParams ( self ) :
+  def setupSwatchParams ( self ) :
     #
     # get known node parameters
     #

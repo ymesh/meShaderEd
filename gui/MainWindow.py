@@ -1,4 +1,5 @@
 """
+
   MainWindow.py
 
 """
@@ -619,12 +620,13 @@ class MainWindow ( QtGui.QMainWindow ) :
       self.workArea.scene ().update ()
     elif isinstance ( gfxNode, GfxSwatchNode ) :
       if DEBUG_MODE : print "* update GfxSwatchNode"
-      gfxNode.setupParams ()
+      gfxNode.setupSwatchParams ()
       gfxNode.setupGeometry ()
       gfxNode.adjustLinks ()
       self.workArea.scene ().update ()
     elif isinstance ( gfxNode, GfxNode ) :
       if DEBUG_MODE : print "* update GfxNode"
+      gfxNode.updateGfxNode ( removeLinks = False )
       self.updateNodeParamView ()
 
     if self.ui.imageView_ctl.autoUpdate () : self.ui.imageView_ctl.updateViewer()
@@ -637,7 +639,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     
     # from WorkArea we have GfxNode in signal nodeConnectionChanged
     # hence need to update nodeParam_ctl
-    if isinstance ( gfxNode, GfxNode ) :
+    if isinstance ( gfxNode, GfxNode ) or isinstance ( gfxNode, GfxSwatchNode ) :
       #if DEBUG_MODE : print "* update nodeView"
       # gfxNode.updateInputParams ()
       self.updateNodeParamView ()

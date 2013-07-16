@@ -575,16 +575,17 @@ class WorkArea ( QtGui.QGraphicsView ) :
     self.scene ().removeItem ( gfxLink )
     
     if gfxLink.link is not None :
-      print ">> WorkArea: onRemoveLink (id = %d)" % ( gfxLink.link.id )
+      print "*** (id = %d)" % ( gfxLink.link.id )
       srcConnector = gfxLink.srcConnector
       dstConnector = gfxLink.dstConnector
       self.nodeNet.removeLink ( gfxLink.link )
       if srcConnector is not None :
-        if DEBUG_MODE : print 'srcConnector.parentItem().node.label = %s ' % srcConnector.getNode ().label
+        if DEBUG_MODE : print '*** srcConnector.parentItem().node.label = %s ' % srcConnector.getNode ().label
         #self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), srcConnector.parentItem(), srcConnector.param )
       if dstConnector is not None :
-        if DEBUG_MODE : print 'dstConnector.parentItem().node.label = %s ' % dstConnector.getNode ().label
+        if DEBUG_MODE : print '*** dstConnector.parentItem().node.label = %s ' % dstConnector.getNode ().label
         self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), dstConnector.getGfxNode (), dstConnector.param )
+    
   #
   # removeSelected
   #

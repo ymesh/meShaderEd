@@ -1,13 +1,14 @@
 meShaderEd changes log
 
-version 0.3.2b (?? Jul 2013)
+version 0.3.2 (16 Jul 2013)
   - "Fit All", "Fit Selected" actions implemented.
   - CTRL+LMB on node parameter changes attribute "shaderParam" (white color for "shaderParam == True")
   - CTRL+RMB toogles parameter provider "primitive"/"internal" (orange color for "primitive")
   - ALT+LMB parameter toogles detail "uniform/varying" (italic for "varying") 
   - Added ToolButton for show/hide connected parameter in NodeParamView
   - NodeParamView has tabs for "Input", "Output" parameters
-??? Parameters label can be edited by LMB+DblClick (CTRL+RMB changes provider, ALT+LMB changes detail ) 
+  - NodeParamView header control for resizing labels column
+  - Parameters label can be edited by LMB+DblClick
 
 version 0.3.1 (10 Jun 2013)
   - ControlParam with special <control_code> section in XML, that allows to execute

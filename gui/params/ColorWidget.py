@@ -1,32 +1,32 @@
-#===============================================================================
-# ColorWidget.py
-#
-# 
-#
-#===============================================================================
+"""
 
+ ColorWidget.py
+
+"""
 from PyQt4 import QtGui, QtCore
 
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
-
 #
 # FloatWidget
 #
 class ColorWidget ( ParamWidget ) :
   #
+  # buildGui
   #                 
   def buildGui ( self ) :
-    self.ui = Ui_ColorWidget_field() 
+    #
+    self.ui = Ui_ColorWidget_field () 
     self.ui.setupUi ( self )
 #
-#
+# ColorEditEventFilter
 #
 class ColorEditEventFilter ( QtCore.QObject ) :
   #
   # __init__
   #
   def __init__ ( self, ColorWidget ) :
+    #
     QtCore.QObject.__init__ ( self, None )
     self.ColorWidget = ColorWidget
     #print "eventFilter created..." 
@@ -50,6 +50,7 @@ class Ui_ColorWidget_field ( object ) :
   #
   def setupUi ( self, ColorWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
     self.widget = ColorWidget
     self.colorEdit = QtGui.QLabel ( ColorWidget )
     
@@ -70,10 +71,10 @@ class Ui_ColorWidget_field ( object ) :
       
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
-    self.widget.hl.addWidget ( self.colorEdit )
-    self.widget.hl.addWidget ( self.selector )
-    
-    self.widget.hl.addItem ( spacer )
+    hl.addWidget ( self.colorEdit )
+    hl.addWidget ( self.selector )
+    hl.addItem ( spacer )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( ColorWidget )
     self.connectSignals ( ColorWidget )

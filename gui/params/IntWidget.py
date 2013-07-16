@@ -1,12 +1,12 @@
-#===============================================================================
-# IntWidget.py
-#===============================================================================
+"""
 
+ IntWidget.py
+
+"""
 from PyQt4 import QtGui, QtCore
 
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
-
 #
 # IntWidget
 #
@@ -38,6 +38,7 @@ class Ui_IntWidget_field ( object ) :
   #
   def setupUi ( self, IntWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
     self.widget = IntWidget
     
     self.intEdit = QtGui.QLineEdit ( IntWidget )
@@ -46,9 +47,9 @@ class Ui_IntWidget_field ( object ) :
     self.intEdit.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
-    self.widget.hl.addWidget ( self.intEdit )
-    self.widget.hl.addItem ( spacer )
-    #self.widget.hl.setStretch ( 1, 1 )
+    hl.addWidget ( self.intEdit )
+    hl.addItem ( spacer )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( IntWidget )
     self.connectSignals ( IntWidget )
@@ -84,6 +85,7 @@ class Ui_IntWidget_switch ( object ) :
   #
   def setupUi ( self, IntWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
     self.widget = IntWidget
     
     self.checkBox = QtGui.QCheckBox ( IntWidget )
@@ -92,8 +94,9 @@ class Ui_IntWidget_switch ( object ) :
     self.checkBox.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
-    self.widget.hl.addWidget ( self.checkBox )
-    self.widget.hl.addItem ( spacer )
+    hl.addWidget ( self.checkBox )
+    hl.addItem ( spacer )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( IntWidget )
     self.connectSignals ( IntWidget )
@@ -129,6 +132,7 @@ class Ui_IntWidget_selector ( object ) :
   #
   def setupUi ( self, IntWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
     self.widget = IntWidget
     
     self.selector = QtGui.QComboBox ( IntWidget )
@@ -142,8 +146,9 @@ class Ui_IntWidget_selector ( object ) :
     
     spacer = QtGui.QSpacerItem ( UI.HEIGHT, UI.HEIGHT, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
-    self.widget.hl.addWidget ( self.selector )
-    self.widget.hl.addItem ( spacer )
+    hl.addWidget ( self.selector )
+    hl.addItem ( spacer )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( IntWidget )
     self.connectSignals ( IntWidget )
@@ -189,6 +194,9 @@ class Ui_IntWidget_slider ( object ) :
   #
   def setupUi ( self, IntWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
+    hl.setStretch ( 1, 1 )
+    
     self.widget = IntWidget
     
     self.intEdit = QtGui.QLineEdit ( IntWidget )
@@ -216,9 +224,9 @@ class Ui_IntWidget_slider ( object ) :
     
     self.slider.setValue ( int ( self.widget.param.value ) )
 
-    self.widget.hl.addWidget ( self.intEdit )
-    self.widget.hl.addWidget ( self.slider )
-    self.widget.hl.setStretch ( 1, 1 )
+    hl.addWidget ( self.intEdit )
+    hl.addWidget ( self.slider )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( IntWidget )
     self.connectSignals ( IntWidget )

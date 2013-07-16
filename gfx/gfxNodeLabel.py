@@ -24,15 +24,15 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
     self.param = param
     self.help = None
 
-    normalColor = QtGui.QColor ( 0, 0, 0 )
-    selectedColor = QtGui.QColor ( 240, 240, 240 )
-    alternateColor = QtGui.QColor ( 250, 220, 0 )
-    bgColor = QtGui.QColor ( 140, 140, 140 )
+    self.normalColor = QtGui.QColor ( 0, 0, 0 )
+    self.selectedColor = QtGui.QColor ( 240, 240, 240 )
+    self.alternateColor = QtGui.QColor ( 250, 220, 0 )
+    self.bgColor = QtGui.QColor ( 140, 140, 140 )
     
-    self.PenNormal = QtGui.QPen ( normalColor )
-    self.PenSelected = QtGui.QPen ( selectedColor )
-    self.PenAlternate = QtGui.QPen ( alternateColor )
-    self.bgBrush = QtGui.QBrush ( bgColor )
+    self.PenNormal = QtGui.QPen ( self.normalColor )
+    self.PenSelected = QtGui.QPen ( self.selectedColor )
+    self.PenAlternate = QtGui.QPen ( self.alternateColor )
+    self.bgBrush = QtGui.QBrush ( self.bgColor )
     
     self.pen = self.PenNormal
 
@@ -114,7 +114,9 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
   #
   # setBgColor
   #
-  def setBgColor ( self, color ) : self.brush = QtGui.QBrush ( color )
+  def setBgColor ( self, color ) : 
+    self.bgColor = color
+    self.bgBrush.setColor ( self.bgColor )
   #
   # setBold
   #
@@ -146,7 +148,8 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
   def paint ( self, painter, option, widget ) :
     #
     painter.setFont ( self.font )
-    if self.bgFill : painter.fillRect ( self.rect, self.brush )
+    if self.bgFill : 
+      painter.fillRect ( self.rect, self.bgBrush )
     painter.setPen ( self.pen )
     painter.drawText ( self.rect, self.justify, self.text )
   #

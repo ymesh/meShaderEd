@@ -1,5 +1,6 @@
 """
- FloatWidget.py
+
+  FloatWidget.py
 
 """
 import math
@@ -40,6 +41,7 @@ class Ui_FloatWidget_field ( object ) :
   #
   def setupUi ( self, FloatWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
     self.widget = FloatWidget
     
     self.floatEdit = QtGui.QLineEdit ( FloatWidget )
@@ -48,8 +50,9 @@ class Ui_FloatWidget_field ( object ) :
     self.floatEdit.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
-    self.widget.hl.addWidget ( self.floatEdit )
-    self.widget.hl.addItem ( spacer )
+    hl.addWidget ( self.floatEdit )
+    hl.addItem ( spacer )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
     self.connectSignals ( FloatWidget )
@@ -88,6 +91,7 @@ class Ui_FloatWidget_switch ( object ) :
   # setupUi
   def setupUi ( self, FloatWidget ) :
     #
+    hl = QtGui.QHBoxLayout ()
     self.widget = FloatWidget
     
     self.checkBox = QtGui.QCheckBox ( FloatWidget )
@@ -96,8 +100,9 @@ class Ui_FloatWidget_switch ( object ) :
     self.checkBox.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
     spacer = QtGui.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
-    self.widget.hl.addWidget ( self.checkBox )
-    self.widget.hl.addItem ( spacer )
+    hl.addWidget ( self.checkBox )
+    hl.addItem ( spacer )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
     self.connectSignals ( FloatWidget )
@@ -134,7 +139,8 @@ class Ui_FloatWidget_selector ( object ) :
   # setupUi
   #
   def setupUi ( self, FloatWidget ) :
-    
+    #
+    hl = QtGui.QHBoxLayout ()
     self.widget = FloatWidget
     
     self.selector = QtGui.QComboBox ( FloatWidget )
@@ -148,8 +154,9 @@ class Ui_FloatWidget_selector ( object ) :
     
     spacer = QtGui.QSpacerItem ( UI.HEIGHT, UI.HEIGHT, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
     
-    self.widget.hl.addWidget ( self.selector )
-    self.widget.hl.addItem ( spacer )
+    hl.addWidget ( self.selector )
+    hl.addItem ( spacer )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
     self.connectSignals ( FloatWidget )
@@ -205,7 +212,10 @@ class Ui_FloatWidget_slider ( object ) :
   # setupUi
   #
   def setupUi ( self, FloatWidget ) :
-
+    #
+    hl = QtGui.QHBoxLayout ()
+    hl.setStretch ( 1, 1 )
+    
     self.widget = FloatWidget
     
     self.floatEdit = QtGui.QLineEdit( FloatWidget )
@@ -238,9 +248,9 @@ class Ui_FloatWidget_slider ( object ) :
     
     self.slider.setValue ( int ( self.widget.param.value * multiplier ) )
 
-    self.widget.hl.addWidget ( self.floatEdit )
-    self.widget.hl.addWidget ( self.slider )
-    self.widget.hl.setStretch ( 1, 1 )
+    hl.addWidget ( self.floatEdit )
+    hl.addWidget ( self.slider )
+    self.widget.param_vl.addLayout ( hl )
     
     QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
     self.connectSignals ( FloatWidget )

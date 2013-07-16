@@ -1,6 +1,8 @@
-#===============================================================================
-# node.py
-#===============================================================================
+"""
+
+ node.py
+
+"""
 import os, sys
 from PyQt4 import QtCore
 
@@ -112,6 +114,7 @@ class Node ( QtCore.QObject ) :
       print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
       self.inputLinks [ param ].printInfo ()
     print '** Node outputLinks:'
+    #print '*****', self.outputLinks
     for param in self.outputLinks.keys () :
       print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
       linklist = self.outputLinks [ param ]
@@ -173,9 +176,11 @@ class Node ( QtCore.QObject ) :
   #
   def attachOutputParamToLink ( self, param, link ) :
     #
+    #if DEBUG_MODE : print ">> Node::attachOutputParamToLink param = %s" % param.name
     if not param in self.outputLinks.keys () :
       self.outputLinks [ param ] = []
-    self.outputLinks [ param ].append ( link )
+    if not link in self.outputLinks [ param ] :
+      self.outputLinks [ param ].append ( link )
   #
   # detachInputParam
   #
@@ -225,11 +230,11 @@ class Node ( QtCore.QObject ) :
     # returns node linked to input parameter param,
     # skipping all ConnectorNode
     #
-    if DEBUG_MODE : print '* getLinkedSrcNode node = %s param = %s' % ( self.label, param.label )
+    #if DEBUG_MODE : print '* getLinkedSrcNode node = %s param = %s' % ( self.label, param.label )
     srcNode = None
     srcParam = None
     if self.isInputParamLinked ( param ) :
-      if DEBUG_MODE : print '* isInputParamLinked'
+      #if DEBUG_MODE : print '* isInputParamLinked'
       link = self.inputLinks [ param ]
       if link.srcNode.type == 'connector' :
         if len ( link.srcNode.inputParams ) :
@@ -241,6 +246,36 @@ class Node ( QtCore.QObject ) :
         srcNode = link.srcNode
         srcParam = link.srcParam
     return ( srcNode, srcParam )
+  #
+  # getLinkedDstNodes
+  #
+  def getLinkedDstNodes ( self, param, dstConnections = [] ) :
+    # returns nodes linked to output parameter param,
+    # skipping all ConnectorNode
+    #
+    #if DEBUG_MODE : print '* getLinkedDstNodese node = %s param = %s' % ( self.label, param.label )
+    dstNode = None
+    dstParam = None
+    # dstConnections = []
+    if self.isOutputParamLinked ( param ) :
+      #if DEBUG_MODE : print '* isOutputParamLinked'
+      dstLinks = self.getOutputLinks ( param )
+      for link in dstLinks :
+        if link.dstNode.type == 'connector' :
+          connectorOutputParams = link.dstNode.outputParams
+          if len ( connectorOutputParams ) :
+            for connectorOutputParam in connectorOutputParams :
+              retList = link.dstNode.getLinkedDstNodes ( connectorOutputParam, dstConnections )
+              for ( retNode, retParam ) in retList : 
+                dstConnections.append ( ( retNode, retParam ) )
+          else :
+            if DEBUG_MODE : print '* no outputParams at connector %s' % ( link.dstNode.label )
+        else :
+          dstNode = link.dstNode
+          dstParam = link.dstParam
+          dstConnections.append ( ( dstNode, dstParam ) )
+    return dstConnections
+    
   #
   # removeParam
   #
@@ -308,7 +343,6 @@ class Node ( QtCore.QObject ) :
   def getParamsNames ( self ) :
     #
     names = []
-
     for pm in self.getParamsList () : names.append ( pm.name )
     return names
   #
@@ -317,7 +351,6 @@ class Node ( QtCore.QObject ) :
   def getParamsLabels ( self ) :
     #
     labels = []
-
     for pm in self.getParamsList () : labels.append ( pm.label )
     return labels
   #
@@ -326,17 +359,19 @@ class Node ( QtCore.QObject ) :
   def getInputLinks ( self ) :
     #
     inputLinks = []
-
     for link in self.inputLinks.values () :
       inputLinks.append ( link )
     return inputLinks
   #
   # getOutputLinks
   #
-  def getOutputLinks ( self ) :
+  def getOutputLinks ( self, param = None ) :
     outputLinks = []
     for link_list in self.outputLinks.values () :
       for link in link_list :
+        if param is not None :
+          if link.srcParam != param :
+            continue
         outputLinks.append ( link )
     return outputLinks
   #

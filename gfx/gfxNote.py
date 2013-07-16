@@ -91,7 +91,7 @@ class GfxNote ( QtGui.QGraphicsItem ):
   #
   def updateNodeLabel ( self ) :
     #
-    self.label_widget.label = self.node.label
+    self.label_widget.setText ( self.node.label )
     self.setupGeometry ()
     self.update ()
   #
@@ -142,13 +142,14 @@ class GfxNote ( QtGui.QGraphicsItem ):
             elif param.value == 2 :
               self.justify = QtCore.Qt.AlignRight
       
-      self.label_widget = GfxNodeLabel ( self.node.label, False ) # bgFill = False
+      self.label_widget = GfxNodeLabel ( self.node.label, bgFill = False )
       self.label_widget.setBold ()
       self.label_widget.setNormalColor ( self.textColor )
       if self.isSelected () : self.label_widget.setSelected ()
 
-      self.text_widget = GfxNodeLabel ( self.text, False ) # bgFill = False
+      self.text_widget = GfxNodeLabel ( self.text, bgFill = False )
       self.text_widget.setNormalColor ( self.textColor )
+      self.text_widget.setNormal ( True )
       self.text_widget.justify = self.justify
       
       self.label_widget.setParentItem ( self )

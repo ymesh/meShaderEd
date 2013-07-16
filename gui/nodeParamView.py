@@ -13,10 +13,9 @@ from PyQt4.QtGui  import QFileIconProvider
 #from ui_nodeParam import Ui_nodeParam
 #from MainWindow import MainWindow
 
-
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
-from gui.nodeParamList import NodeParamList
+from gui.nodeParamList import NodeParamListTab, NodeParamList
 
 import gui.ui_settings as UI
 from global_vars import DEBUG_MODE
@@ -33,8 +32,8 @@ class NodeParamView ( QtGui.QWidget ) :
 
     self.gfxNode = None
     
-    self.inputParamList = None
-    self.outputParamList = None
+    self.inputParamListTab = None
+    self.outputParamListTab = None
     
     self.showConnected = False
     self.buildGui ()
@@ -45,11 +44,11 @@ class NodeParamView ( QtGui.QWidget ) :
   #
   def setNode ( self, gfxNode ) :
     #
-    if DEBUG_MODE : print ">> NodeParamView.setNode"
+    #if DEBUG_MODE : print ">> NodeParamView.setNode"
     self.disconnectParamSignals ()
     self.gfxNode = gfxNode
-    self.inputParamList.setNode ( gfxNode )
-    self.outputParamList.setNode ( gfxNode )
+    self.inputParamListTab.setNode ( gfxNode )
+    self.outputParamListTab.setNode ( gfxNode )
     self.nameEdit.setEnabled ( self.gfxNode is not None )
     self.updateGui ()
     self.connectParamSignals ()
@@ -58,15 +57,15 @@ class NodeParamView ( QtGui.QWidget ) :
   #
   def connectSignals ( self ) :
     #
-    self.connect( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
-    self.connect( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
+    self.connect ( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
+    self.connect ( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
   #
   # disconnectSignals
   #
   def disconnectSignals ( self ) :
     #
-    self.disconnect( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
-    self.disconnect( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
+    self.disconnect ( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
+    self.disconnect ( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
   #
   # connectParamSignals
   #
@@ -94,10 +93,10 @@ class NodeParamView ( QtGui.QWidget ) :
     #
     print ">> NodeParamView.showConnections %s" % show
     self.showConnected = show
-    self.inputParamList.showConnected = show
-    self.outputParamList.showConnected = show
-    self.inputParamList.updateGui ()
-    self.outputParamList.updateGui ()
+    self.inputParamListTab.showConnected = show
+    self.outputParamListTab.showConnected = show
+    self.inputParamListTab.updateGui ()
+    self.outputParamListTab.updateGui ()
   #
   # onParamChanged
   #
@@ -105,17 +104,7 @@ class NodeParamView ( QtGui.QWidget ) :
     #
     if DEBUG_MODE : print ">> NodeParamView.onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )
     self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node
-  #
-  # onParamRemoved
-  #
-  def onParamRemoved ( self, param ) :
-    #
-    if DEBUG_MODE : print ">> NodeParamView.onRemoved node = %s param = %s" % ( self.gfxNode.node.label, param.name )
-    self.gfxNode.node.removeParam ( param )
-    #self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node
-    self.disconnectParamSignals ()
-    self.updateGui ()
-    self.connectParamSignals ()
+  
   #
   # nodeLabelChanged
   #
@@ -145,7 +134,7 @@ class NodeParamView ( QtGui.QWidget ) :
     font = QtGui.QFont ()
     label.setFont ( font )
     #label.setAlignment(QtCore.Qt.AlignCenter)
-    label.setText ('Node Label')
+    label.setText ( 'Label' )
 
     self.nameEdit = QtGui.QLineEdit ()
     self.nameEdit.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
@@ -182,45 +171,28 @@ class NodeParamView ( QtGui.QWidget ) :
     
     self.params_tabs = QtGui.QTabWidget ( self )
     
-    self.inputs_tab = QtGui.QWidget ()
-    self.inputs_grid = QtGui.QGridLayout ( self.inputs_tab )
-    self.inputParamList = NodeParamList ( self, self.gfxNode, isInput = True, showConnected = self.showConnected )
-    self.inputs_grid.addWidget ( self.inputParamList, 0, 0, 1, 1 )
-    self.params_tabs.addTab ( self.inputs_tab, 'Input' )
+    self.inputParamListTab = NodeParamListTab ( self, self.gfxNode, isInput = True, showConnected = self.showConnected )
+    self.params_tabs.addTab ( self.inputParamListTab, 'Input' )
     
-    self.inputsStackedWidget = QtGui.QStackedWidget ( self.inputs_tab )
-    self.inputsFrame = QtGui.QFrame ()
-    self.inputsStackedWidget.addWidget ( self.inputsFrame )
-    self.inputs_grid.addWidget ( self.inputsStackedWidget )
-    
-    self.outputs_tab = QtGui.QWidget ()
-    self.outputs_grid = QtGui.QGridLayout ( self.outputs_tab )
-    self.outputParamList = NodeParamList ( self, self.gfxNode, isInput = False, showConnected = self.showConnected )
-    self.outputs_grid.addWidget ( self.outputParamList, 0, 0, 1, 1)
-    self.params_tabs.addTab ( self.outputs_tab, 'Output' )
-    
-    self.outputsStackedWidget = QtGui.QStackedWidget ( self.outputs_tab )
-    self.outputsFrame = QtGui.QFrame ()
-    self.outputsStackedWidget.addWidget ( self.outputsFrame )
-    self.outputs_grid.addWidget ( self.outputsStackedWidget )
+    self.outputParamListTab = NodeParamListTab ( self, self.gfxNode, isInput = False, showConnected = self.showConnected )
+    self.params_tabs.addTab ( self.outputParamListTab, 'Output' )
     
     self.params_tabs.setCurrentIndex ( 0 )
     
     mainLayout.addWidget ( self.params_tabs )
     
     self.setLayout ( mainLayout )
-    
-    self.inputParamList.stackedWidget = self.inputsStackedWidget
-    self.outputParamList.stackedWidget = self.outputsStackedWidget
   #
   # updateGui
   #
   def updateGui ( self ) :
     #
+    #if DEBUG_MODE : print '>> NodeParamView.updateGui'
+      
     self.nameEdit.clear ()
     if self.gfxNode is not None :
       self.nameEdit.setText ( self.gfxNode.node.label )
     
-    self.inputParamList.updateGui ()
-    self.outputParamList.updateGui ()
+    self.inputParamListTab.updateGui ()
+    self.outputParamListTab.updateGui ()
     

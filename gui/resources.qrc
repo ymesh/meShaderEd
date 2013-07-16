@@ -21,6 +21,7 @@
     <file>resources/bg_pattern.png</file>
   </qresource>
   <qresource prefix="edit_icons">
+    <file>resources/del.png</file>
     <file>resources/add_list.png</file>
     <file>resources/del_list.png</file>
     <file>resources/minus.png</file>
