@@ -8,6 +8,7 @@ from PyQt4 import QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
+from core.meCommon import getParsedLabel
 #
 # Node
 #
@@ -431,16 +432,19 @@ class Node ( QtCore.QObject ) :
   #
   # getInstanceName
   #
-  def getInstanceName ( self ) : return self.label
+  def getInstanceName ( self ) : return  getParsedLabel ( self.label )
   #
   # getParamName
   #
   def getParamName ( self, param ) :
     #
-    result = param.name
-    if not ( param.provider in [ 'primitive', 'attribute' ] or param.isRibParam ) :
-      result = self.getInstanceName () + '_' + param.name
-    return result
+    if param.isRibParam  or param.provider == 'attribute':
+      paramName = param.name
+    elif param.provider == 'primitive' : 
+      paramName = getParsedLabel ( param.label )
+    else :
+      paramName = self.getInstanceName () + '_' + getParsedLabel ( param.label )
+    return paramName
   #
   # getParamDeclaration
   #

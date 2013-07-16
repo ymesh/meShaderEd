@@ -155,7 +155,7 @@ def getUniqueName  ( name, nameList ) :
 #
 def getParsedLabel ( text ) :
   #
-  newLabel = text.simplified ()
+  newLabel = str ( text ).strip ()
   newLabel = newLabel.replace ( ' ', "_" )
   return newLabel  
 #

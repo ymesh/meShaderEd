@@ -1,5 +1,9 @@
 meShaderEd changes log
 
+version 0.3.3 (?? Aug 2013)
+  - Shader parameters names exported as (NodeLabel)_(ParamLabel)
+  - parameters names with provider == 'primitive' exported as (ParamLabel)
+
 version 0.3.2 (16 Jul 2013)
   - "Fit All", "Fit Selected" actions implemented.
   - CTRL+LMB on node parameter changes attribute "shaderParam" (white color for "shaderParam == True")

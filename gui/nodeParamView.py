@@ -115,7 +115,7 @@ class NodeParamView ( QtGui.QWidget ) :
       from core.meCommon import getParsedLabel
       newLabel = getParsedLabel ( self.nameEdit.text () )
       #if DEBUG_MODE : print "** newLabel = %s" % newLabel
-      if not newLabel.isEmpty () :
+      if newLabel != '' :
         # update label only if realy changed
         if newLabel != self.gfxNode.node.label :
           # rename node label if same name exists in NodeNet
