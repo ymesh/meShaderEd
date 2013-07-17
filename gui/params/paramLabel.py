@@ -17,12 +17,20 @@ class ParamLabel ( QtGui.QLabel ) :
   def __init__ ( self, parent, param = None ) :
     #
     super ( QtGui.QLabel, self ).__init__ ( parent )
-    
     self.widget = parent
     self.param = param
     if param is not None :
       self.setText ( param.label )
-    self.setScaledContents ( True )
+      if self.param.provider == "primitive" :
+        primitiveColor = QtGui.QColor ( 240, 150, 0 )
+        palette = QtGui.QPalette ()
+        palette.setColor ( QtGui.QPalette.WindowText, primitiveColor )
+        self.setPalette ( palette )
+      if self.param.detail == "varying" :
+        font = QtGui.QFont ()
+        font.setItalic ( True )
+        self.setFont ( font )
+    #self.setScaledContents ( True )
     #self.setMouseTracking ( True ) 
     self.buildGui ()
     self.updateGui ()
@@ -119,7 +127,27 @@ class ParamLabel ( QtGui.QLabel ) :
     #if DEBUG_MODE : print ">> ParamLabel( %s ).mousePressEvent" % self.param.name
     button = event.button () 
     modifiers =event.modifiers ()
-    #button = event.button () 
-    #== QtCore.Qt.LeftButton :
-    #      if event.modifiers () == QtCore.Qt.ControlModifier :
+    if button == QtCore.Qt.LeftButton :
+      if modifiers == QtCore.Qt.ControlModifier :
+        print '* CTRL+LMB (change in shaderParam)' 
+        self.param.shaderParam = not self.param.shaderParam
+        self.param.paramChanged ()
+        return
+      elif modifiers == QtCore.Qt.AltModifier :
+        print '* ALT+LMB ( change detail "uniform/varying")' 
+        if self.param.detail == 'varying' :
+          self.param.detail = 'uniform'
+        else :
+          self.param.detail = 'varying' 
+        self.param.paramChanged ()
+        return
+    elif button == QtCore.Qt.RightButton :
+      if modifiers == QtCore.Qt.ControlModifier :
+        print '* CTRL+RMB change provider "primitive"/"internal"'
+        if self.param.provider == 'primitive' :
+          self.param.provider = ''
+        else :
+          self.param.provider = 'primitive' 
+        self.param.paramChanged ()
+        return
     QtGui.QWidget.mousePressEvent ( self, event )    

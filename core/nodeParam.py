@@ -84,7 +84,7 @@ class NodeParam ( QtCore.QObject ) :
   #
   def copySetup ( self, newParam ) :
     #
-    if DEBUG_MODE : print '>> NodeParam( %s ).copySetup' % self.label
+    #if DEBUG_MODE : print '>> NodeParam( %s ).copySetup' % self.label
     newParam.id = self.id
     newParam.name = self.name
     newParam.label = self.label
@@ -227,8 +227,7 @@ class NodeParam ( QtCore.QObject ) :
     help_tag = xml_param.namedItem ( 'help' )
 
     if not help_tag.isNull () :
-      help = help_tag.toElement ().text ()
-      self.help = help
+      self.help = str ( help_tag.toElement ().text () )
   #
   # parseToXML
   #

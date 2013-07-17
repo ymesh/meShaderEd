@@ -26,7 +26,7 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 
     self.normalColor = QtGui.QColor ( 0, 0, 0 )
     self.selectedColor = QtGui.QColor ( 240, 240, 240 )
-    self.alternateColor = QtGui.QColor ( 250, 220, 0 )
+    self.alternateColor = QtGui.QColor ( 250, 170, 0 )
     self.bgColor = QtGui.QColor ( 140, 140, 140 )
     
     self.PenNormal = QtGui.QPen ( self.normalColor )
@@ -189,13 +189,15 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
       parentNode = self.parentItem ()
       if isinstance ( parentNode, GfxNode ) :
         print '* label "%s" of GfxNode "%s"' % ( self.text, parentNode.node.label )
-        if event.button () == QtCore.Qt.LeftButton :
-          if event.modifiers () == QtCore.Qt.ControlModifier :
+        button = event.button ()
+        modifiers = event.modifiers ()
+        if button == QtCore.Qt.LeftButton :
+          if modifiers == QtCore.Qt.ControlModifier :
             print '* CTRL+LMB (change in shaderParam)' 
             self.param.shaderParam = not self.param.shaderParam
             parentNode.onUpdateGfxNodeParams ( self.param )
             return
-          elif event.modifiers () == QtCore.Qt.AltModifier :
+          elif modifiers == QtCore.Qt.AltModifier :
             print '* ALT+LMB ( change detail "uniform/varying")' 
             if self.param.detail == 'varying' :
               self.param.detail = 'uniform'
@@ -203,8 +205,8 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
               self.param.detail = 'varying' 
             parentNode.onUpdateGfxNodeParams ( self.param )
             #return
-        elif event.button () == QtCore.Qt.RightButton :
-          if event.modifiers () == QtCore.Qt.ControlModifier :
+        elif button == QtCore.Qt.RightButton :
+          if modifiers == QtCore.Qt.ControlModifier :
             print '* CTRL+RMB change provider "primitive"/"internal"'
             if self.param.provider == 'primitive' :
               self.param.provider = ''

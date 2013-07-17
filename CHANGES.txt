@@ -3,6 +3,7 @@ meShaderEd changes log
 version 0.3.3 (?? Aug 2013)
   - Shader parameters names exported as (NodeLabel)_(ParamLabel)
   - parameters names with provider == 'primitive' exported as (ParamLabel)
+  - Parameters labels in NodeParamView change provider and detail by CTRL+RMB and ALT+LMB
 
 version 0.3.2 (16 Jul 2013)
   - "Fit All", "Fit Selected" actions implemented.

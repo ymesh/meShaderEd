@@ -115,9 +115,9 @@ class ParamWidget ( QtGui.QWidget ) :
     
     #self.label = QtGui.QLabel ( self )
     self.label = ParamLabel ( self, self.param )
-    font = QtGui.QFont ()
-    font.setBold ( False )
-    self.label.setFont ( font )
+    #font = QtGui.QFont ()
+    #font.setBold ( False )
+    #self.label.setFont ( font )
     # QtCore.QObject
     #self.connect ( self.label, QtCore.SIGNAL ( 'mouseDoubleClickEvent(QEvent)' ), self.onMouseDoubleClickEvent )
     #self.connect ( self.label, QtCore.SIGNAL ( 'mousePressEvent(QEvent)' ), self.onMousePressEvent )

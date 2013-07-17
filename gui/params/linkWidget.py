@@ -58,7 +58,7 @@ class Ui_LinkWidget ( object ) :
       sizePolicy.setVerticalStretch ( 20 )
       
       selectButton = QtGui.QToolButton ()
-      selectButton.setText ( '>>' )
+      selectButton.setText ( '>' )
       sizePolicy.setHeightForWidth ( selectButton.sizePolicy().hasHeightForWidth() )
       selectButton.setSizePolicy ( sizePolicy )
       selectButton.setMaximumSize ( btnSize )
