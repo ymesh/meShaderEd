@@ -254,7 +254,7 @@ class Node ( QtCore.QObject ) :
     # returns nodes linked to output parameter param,
     # skipping all ConnectorNode
     #
-    #if DEBUG_MODE : print '* getLinkedDstNodese node = %s param = %s' % ( self.label, param.label )
+    #if DEBUG_MODE : print '*** getLinkedDstNodese node = %s param = %s' % ( self.label, param.label )
     dstNode = None
     dstParam = None
     # dstConnections = []
@@ -263,10 +263,12 @@ class Node ( QtCore.QObject ) :
       dstLinks = self.getOutputLinks ( param )
       for link in dstLinks :
         if link.dstNode.type == 'connector' :
+          #if DEBUG_MODE : print '* link.dstNode.type == connector'
           connectorOutputParams = link.dstNode.outputParams
-          if len ( connectorOutputParams ) :
+          if len ( connectorOutputParams ) > 0 :
             for connectorOutputParam in connectorOutputParams :
-              retList = link.dstNode.getLinkedDstNodes ( connectorOutputParam, dstConnections )
+              connectorDstConnections = []
+              retList = link.dstNode.getLinkedDstNodes ( connectorOutputParam, connectorDstConnections )
               for ( retNode, retParam ) in retList : 
                 dstConnections.append ( ( retNode, retParam ) )
           else :
