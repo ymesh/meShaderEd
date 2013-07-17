@@ -42,6 +42,16 @@ class ParamWidget ( QtGui.QWidget ) :
     #
     pass
   #
+  # setEnabled
+  #
+  def setEnabled ( self, enabled = True ) :
+    #
+    for hl in self.param_vl.children () :
+      for i in range ( hl.count () ) :
+        obj = hl.itemAt ( i ).widget ()
+        if obj is not None :
+          obj.setEnabled ( enabled )
+  #
   # onParamChanged
   #
   def onParamChanged ( self, param ) :
