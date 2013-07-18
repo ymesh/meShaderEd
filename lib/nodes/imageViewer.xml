@@ -7,7 +7,7 @@
 	</input>
 	<output>
 	</output>
-	<param_code>
+	<control_code>
 <![CDATA[
 #$(output) = $(input)
 #import core.imageNode
@@ -18,7 +18,7 @@ self.imageName = self.getInputParamValueByName ( 'image' )
 
 
 ]]>
-	</param_code>
+	</control_code>
 	<code>
 	</code>
 </node>

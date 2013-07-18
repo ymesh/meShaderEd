@@ -3,13 +3,16 @@ meShaderEd changes log
 version 0.3.3 (?? Aug 2013)
   - Shader parameters names exported as (NodeLabel)_(ParamLabel)
   - parameters names with provider == 'primitive' exported as (ParamLabel)
-  - Parameters labels in NodeParamView change provider and detail by CTRL+RMB and ALT+LMB
+  - Parameters labels in NodeParamView can change provider, detail and enabled status by CTRL+RMB, ALT+LMB and ALT+RMB
+  - For ControlParam, tag <control_code> changed to <code> (though <control_code> will work temporary)
+  - For all nodes, tag <param_code> changed to <control_code> (though <param_code> will work temporary)
+  - Service nodes (note, swatch, ...) moved to Node Library->utilites folder
 
 version 0.3.2 (16 Jul 2013)
   - "Fit All", "Fit Selected" actions implemented.
   - CTRL+LMB on node parameter changes attribute "shaderParam" (white color for "shaderParam == True")
-  - CTRL+RMB toogles parameter provider "primitive"/"internal" (orange color for "primitive")
-  - ALT+LMB parameter toogles detail "uniform/varying" (italic for "varying") 
+  - CTRL+RMB toggles parameter provider "primitive"/"internal" (orange color for "primitive")
+  - ALT+LMB toggles parameter detail "uniform/varying" (italic for "varying") 
   - Added ToolButton for show/hide connected parameter in NodeParamView
   - NodeParamView has tabs for "Input", "Output" parameters
   - NodeParamView header control for resizing labels column

@@ -9,8 +9,8 @@
 	<output>
 	  <property name="rib_out" label="rib" type="rib" default=""/>
 	</output>
-	<param_code>
-	</param_code>
+	<control_code>
+	</control_code>
 	<code>
   <![CDATA[
   $(light) $(handle)

@@ -20,13 +20,17 @@ class ParamLabel ( QtGui.QLabel ) :
     self.widget = parent
     self.param = param
     if param is not None :
-      self.setText ( param.label )
-      if self.param.provider == "primitive" :
+      if param.label != '' :
+        label_text = param.label
+      else :
+        label_text = param.name
+      self.setText ( label_text )
+      if self.param.provider == 'primitive' :
         primitiveColor = QtGui.QColor ( 240, 150, 0 )
         palette = QtGui.QPalette ()
         palette.setColor ( QtGui.QPalette.WindowText, primitiveColor )
         self.setPalette ( palette )
-      if self.param.detail == "varying" :
+      if self.param.detail == 'varying' :
         font = QtGui.QFont ()
         font.setItalic ( True )
         self.setFont ( font )
@@ -84,17 +88,13 @@ class ParamLabel ( QtGui.QLabel ) :
     if DEBUG_MODE : print ">> ParamLabel( %s ).onEditingFinished" % self.param.name
     newLabel = str ( self.editLabel.text () ).strip ()
     if newLabel == '' : newLabel = self.param.name
-    print ( '*** newLabel = %s' % newLabel )
     self.param.label = newLabel
     self.setText ( newLabel )
-    print '*** self.size = %d %d' % ( self.rect ().width (), self.rect ().height () )
     self.editLabel.adjustSize ()
     self.adjustSize ()
-    print '*** self.size = %d %d' % ( self.rect ().width (), self.rect ().height () )
     self.setVisible ( True )
     self.editLabel.setVisible ( False )
     self.param.paramChanged ()
-    #self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.widget.gfxNode, self.param )
   #
   # mouseDoubleClickEvent
   #
@@ -102,19 +102,11 @@ class ParamLabel ( QtGui.QLabel ) :
     #
     button = event.button () 
     if button == QtCore.Qt.LeftButton :
-      if DEBUG_MODE : print ">> ParamLabel( %s ).mouseDoubleClickEvent" % self.param.name
-      if DEBUG_MODE : print ">> ParamLabel width %d" % self.width ()
-      if DEBUG_MODE : print ">> ParamLabel.parentWidget width %d" % self.parentWidget ().width () 
-      if DEBUG_MODE : print ">> ParamLabel.parent %s" % self.parent ()
+      #if DEBUG_MODE : print ">> ParamLabel( %s ).mouseDoubleClickEvent" % self.param.name
       parentLayout = self.parent ().layout ()
-      if DEBUG_MODE : print ">> ParamLabel.parent layout %s (%d)" % ( parentLayout, parentLayout.columnMinimumWidth ( 0 ) )
-      print self.rect ().x (), self.rect ().y (), self.rect ().width (), self.rect ().height ()
-      print self.mapToParent ( QtCore.QPoint ( 0, 0 ) ).x () 
-      
       editWidth = parentLayout.columnMinimumWidth ( 0 ) - self.mapToParent ( QtCore.QPoint ( 0, 0 ) ).x () 
       self.setFixedWidth ( editWidth )
       self.editLabel.setFixedWidth ( editWidth )
-      #self.setVisible ( False )
       self.editLabel.setVisible ( True )
       
       return
@@ -129,12 +121,12 @@ class ParamLabel ( QtGui.QLabel ) :
     modifiers =event.modifiers ()
     if button == QtCore.Qt.LeftButton :
       if modifiers == QtCore.Qt.ControlModifier :
-        print '* CTRL+LMB (change in shaderParam)' 
+        if DEBUG_MODE : print '* CTRL+LMB (change in shaderParam)' 
         self.param.shaderParam = not self.param.shaderParam
         self.param.paramChanged ()
         return
       elif modifiers == QtCore.Qt.AltModifier :
-        print '* ALT+LMB ( change detail "uniform/varying")' 
+        if DEBUG_MODE : print '* ALT+LMB ( change detail "uniform/varying")' 
         if self.param.detail == 'varying' :
           self.param.detail = 'uniform'
         else :
@@ -143,11 +135,15 @@ class ParamLabel ( QtGui.QLabel ) :
         return
     elif button == QtCore.Qt.RightButton :
       if modifiers == QtCore.Qt.ControlModifier :
-        print '* CTRL+RMB change provider "primitive"/"internal"'
+        if DEBUG_MODE : print '* CTRL+RMB change provider "primitive"/"internal"'
         if self.param.provider == 'primitive' :
           self.param.provider = ''
         else :
           self.param.provider = 'primitive' 
         self.param.paramChanged ()
         return
+      elif modifiers == QtCore.Qt.AltModifier :
+        if DEBUG_MODE : print '* ALT+RMB "enable"/"disable" parameter'
+        self.param.enabled = not self.param.enabled
+        self.param.paramChanged ()
     QtGui.QWidget.mousePressEvent ( self, event )    

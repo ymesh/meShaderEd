@@ -40,7 +40,7 @@ class SwatchNode ( ImageNode ) :
   def computeNode ( self ) :
     #
     if DEBUG_MODE : print '>> SwatchNode( %s ).computeNode' % self.label
-    # inside param_code, imageName value can be assigned from different
+    # inside control_code, imageName value can be assigned from different
     # input parameters
-    self.execParamCode ()
+    self.execControlCode ()
     return self.imageName

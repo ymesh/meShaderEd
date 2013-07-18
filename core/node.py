@@ -34,7 +34,7 @@ class Node ( QtCore.QObject ) :
     self.master = None
 
     self.code = None
-    self.param_code = None
+    self.control_code = None
     self.computed_code = None
 
     self.display = True
@@ -561,10 +561,15 @@ class Node ( QtCore.QObject ) :
       y = float ( offset_tag.attributes ().namedItem ( 'y' ).nodeValue () )
       self.offset = ( x, y )
 
-    param_code_tag = xml_node.namedItem ( 'param_code' )
-    if not param_code_tag.isNull() :
-      self.param_code = str ( param_code_tag.toElement ().text () )
-
+    control_code_tag = xml_node.namedItem ( 'control_code' )
+    if not control_code_tag.isNull() :
+      self.control_code = str ( control_code_tag.toElement ().text () )
+    else :
+      # for temp. backward compatibility
+      control_code_tag = xml_node.namedItem ( 'param_code' )
+      if not control_code_tag.isNull() :
+        self.control_code = str ( control_code_tag.toElement ().text () )
+        
     code_tag = xml_node.namedItem ( 'code' )
     if not code_tag.isNull () :
       self.code = str ( code_tag.toElement ().text () )
@@ -617,11 +622,11 @@ class Node ( QtCore.QObject ) :
       include_tag.appendChild ( inc_tag )
     xml_node.appendChild ( include_tag )
 
-    if self.param_code != None :
-      param_code_tag = dom.createElement ( 'param_code' )
-      param_code_data = dom.createCDATASection ( self.param_code )
-      param_code_tag.appendChild ( param_code_data )
-      xml_node.appendChild ( param_code_tag )
+    if self.control_code != None :
+      control_code_tag = dom.createElement ( 'control_code' )
+      control_code_data = dom.createCDATASection ( self.control_code )
+      control_code_tag.appendChild ( control_code_data )
+      xml_node.appendChild ( control_code_tag )
 
     if self.code != None :
       code_tag = dom.createElement ( 'code' )
@@ -643,16 +648,16 @@ class Node ( QtCore.QObject ) :
   def computeNode ( self ) :
     #
     if DEBUG_MODE : print '>> Node (%s).computeNode' % self.label
-    self.execParamCode ()
+    self.execControlCode ()
   #
-  # execParamCode
+  # execControlCode
   #
-  def execParamCode ( self ) :
+  def execControlCode ( self ) :
     #
-    if self.param_code != None :
-      param_code = self.param_code.lstrip ()
-      if param_code != '' :
-        exec param_code
+    if self.control_code != None :
+      control_code = self.control_code.lstrip ()
+      if control_code != '' :
+        exec control_code
   #
   # getComputedParamList
   #
@@ -736,7 +741,7 @@ class Node ( QtCore.QObject ) :
 
     import copy
     newNode.code       = copy.copy ( self.code )
-    newNode.param_code = copy.copy ( self.param_code )
+    newNode.control_code = copy.copy ( self.control_code )
     #self.computed_code = None
 
     newNode.internals = copy.copy ( self.internals )

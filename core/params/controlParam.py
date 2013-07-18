@@ -21,7 +21,7 @@ class ControlParam ( NodeParam ) :
     #
     self.btext = '' # button text
     self.type = 'control'
-    self.control_code = ''
+    self.code = ''
     NodeParam.__init__ ( self, xml_param, isRibParam )
 
     if DEBUG_MODE : print '>> ControlParam ( %s ).__init__ btext = "%s"' % ( self.label, self.btext )
@@ -44,7 +44,7 @@ class ControlParam ( NodeParam ) :
     #
     if DEBUG_MODE : print '>> ControlParam ( %s ).copySetup' % self.label
     NodeParam.copySetup ( self, newParam )
-    newParam.control_code = self.control_code
+    newParam.code = self.code
     newParam.btext = self.btext
   #
   # valueFromStr
@@ -89,9 +89,15 @@ class ControlParam ( NodeParam ) :
     if DEBUG_MODE : print '>> ControlParam ( %s ).parseFromXML' % self.label
     NodeParam.parseFromXML ( self, xml_param )
 
-    control_code_tag = xml_param.namedItem ( 'control_code' )
+    control_code_tag = xml_param.namedItem ( 'code' )
     if not control_code_tag.isNull () :
-      self.control_code = str ( control_code_tag.toElement ().text () )
+      self.code = str ( control_code_tag.toElement ().text () )
+    else :
+      # for temp. backward compatibility check 'control_code' also
+      control_code_tag = xml_param.namedItem ( 'control_code' )
+      if not control_code_tag.isNull () :
+        self.code = str ( control_code_tag.toElement ().text () )
+      
     self.btext = str ( xml_param.attributes ().namedItem ( 'btext' ).nodeValue () )
   #
   # parseToXML
@@ -101,9 +107,9 @@ class ControlParam ( NodeParam ) :
     if DEBUG_MODE : print '>> ControlParam ( %s ).parseToXML' % self.label
     xmlnode = NodeParam.parseToXML ( self, dom )
 
-    if self.control_code is not None :
-      code_tag = dom.createElement ( 'control_code' )
-      code_text = dom.createTextNode ( self.control_code )
+    if self.code is not None :
+      code_tag = dom.createElement ( 'code' )
+      code_text = dom.createTextNode ( self.code )
       code_tag.appendChild ( code_text )
       xmlnode.appendChild ( code_tag )
     
@@ -111,11 +117,11 @@ class ControlParam ( NodeParam ) :
 
     return xmlnode
   #
-  # execParamCode
+  # execControlCode
   #
   def execControlCode ( self, node ) :
     #
-    if self.control_code != None :
-      control_code = self.control_code.lstrip ()
+    if self.code != None :
+      control_code = self.code.lstrip ()
       if control_code != '' :
         exec ( control_code, { 'node' : node, 'self' : self } )

@@ -61,7 +61,7 @@ class RIBNode ( Node ) :
     # inside code, imageName value can be assigned from different
     # input parameters
     #
-    self.execParamCode ()
+    self.execControlCode ()
 
     self.ribName = app_global_vars[ 'TempPath' ] + '/' + self.getInstanceName() + '.rib'
 

@@ -272,7 +272,6 @@ class NodeParamList ( QtGui.QWidget ) :
               self.paramListLayout.addLayout ( paramWidget.label_vl, paramRows, 0, 1, 1 )
               self.paramListLayout.addLayout ( paramWidget.param_vl, paramRows, 1, 1, 1 )
               if not param.enabled :
-                print  '** param "%s" disabled' % param.name
                 paramWidget.setEnabled ( False )
               
               if param.removable :

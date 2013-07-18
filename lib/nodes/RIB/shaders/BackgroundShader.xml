@@ -12,7 +12,7 @@
   <output>
     <property name="BG_surf" type="rib" default=""/>
   </output>
-  <param_code>
+  <control_code>
 <![CDATA[
 print ":: Hello from %s XML code !!!" % self.label
 if self.getInputParamByName ( 'Shader' ).value == 'null': self.getInputParamByName ( 'BG_surf_name' ).value = '"null"'  
@@ -22,7 +22,7 @@ if self.getInputParamByName ( 'Shader' ).value == 'stTexture': self.getInputPara
 
 
 ]]>
-  </param_code>
+  </control_code>
   <code>
   <![CDATA[
       Surface $(BG_surf_name)

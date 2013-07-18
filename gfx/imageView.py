@@ -165,6 +165,8 @@ class ImageView ( QtGui.QGraphicsView ) :
   #
   def drawBackground ( self, painter, rect ) :
     #
+    painter.setRenderHint ( QtGui.QPainter.Antialiasing )
+    painter.setRenderHint ( QtGui.QPainter.SmoothPixmapTransform )
     painter.fillRect ( rect, self.BgBrush )
     if self.pixmap is not None:
       painter.drawPixmap ( 0, 0, self.pixmap )  

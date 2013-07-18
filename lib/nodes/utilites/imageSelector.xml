@@ -20,7 +20,7 @@
 	</input>
 	<output>
 	</output>
-	<param_code>
+	<control_code>
 <![CDATA[
 #$(output) = $(input)
 #import core.imageNode
@@ -39,7 +39,7 @@ if self.getInputParamByName ( 'selector' ).value == 'image7': self.imageName = s
 
 
 ]]>
-	</param_code>
+	</control_code>
 	<code>
 	</code>
 </node>

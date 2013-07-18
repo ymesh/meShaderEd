@@ -4,7 +4,7 @@
   <help>Read compiled shader</help>
   <input>
     <property name="Reload" label="Shader Parameters" btext="Reload" type="control" default="" provider="attribute" subtype="button">
-<control_code>
+<code>
 <![CDATA[
 print ":: Hello from (%s) XML control_code !!!" % self.label
 if node is not None :
@@ -54,7 +54,7 @@ if node is not None :
 
 
 ]]>
-</control_code>
+</code>
     </property>
     <property name="file_name" label="File Name" type="string" default="" subtype="file" range="${Renderer} ${SLO}=*.${SLO}:All files=*.*"/>
     <property name="Color" type="color" default="0 0 1" provider="attribute"/>
@@ -70,9 +70,9 @@ if node is not None :
   <output>
     <property name="shader" label="Surface" type="rib" default=""/>
   </output>
-<param_code>
+<control_code>
 <![CDATA[
-print ":: Hello from (%s) XML param_code !!!" % self.label
+print ":: Hello from (%s) XML control_code !!!" % self.label
 lastInputParam = self.getInputParamByName ( 'shader_params' )
 lastInputParamIdx = self.inputParams.index ( lastInputParam )
 
@@ -90,7 +90,7 @@ if len ( ribInputParamsDeclaration ) > 0 :
 
 
 ]]>
-</param_code>
+</control_code>
 
 <code>
 <![CDATA[

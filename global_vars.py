@@ -23,6 +23,7 @@ app_global_vars = {
   ,'TextureSearchPath':''
   ,'ShaderSearchPath':''
   ,'ArchiveSearchPath':''
+  ,'RendererPreset':''
   ,'Renderer':''
   ,'RendererFlags':''
   ,'ShaderCompiler':''

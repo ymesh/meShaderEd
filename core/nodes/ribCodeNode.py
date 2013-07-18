@@ -90,7 +90,7 @@ class RIBCodeNode ( Node ) :
     # inside code, imageName value can be assigned from different
     # input parameters
     #
-    self.execParamCode ()
+    self.execControlCode ()
   #
   # parseLocalVars
   #

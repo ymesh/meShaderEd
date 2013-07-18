@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<node name="image" label="image" author="mesh" type="image">
+  <help>Useful for connecting string inputs to ImageViewer.</help>
+  <input>
+    <property name="input" type="string" default="" subtype="file" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"/>
+  </input>
+  <output>
+    <property name="output" type="image"/>
+  </output>
+  <control_code>
+<![CDATA[
+print ":: Hello from %s XML code !!!" % self.label
+inputImage = self.getInputParamValueByName ( 'input' ).strip ('"') 
+outputParam = self.getOutputParamByName ( 'output' )
+outputParam.setValue ( inputImage )
+
+
+]]>
+  </control_code>
+  <code>
+  </code>
+</node>

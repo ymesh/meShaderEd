@@ -35,13 +35,13 @@ class StringNodeParam ( NodeParam ) :
   #
   # valueFromStr
   #
-  def valueFromStr ( self, str ) : return str
+  def valueFromStr ( self, strInput ) : return parseGlobalVars ( strInput )
   #
   # valueToStr
   #
   def valueToStr ( self, value ) :
     #
-    ret_str = str ( value ) 
+    ret_str = parseGlobalVars ( value )
     if not self.isRibParam : ret_str = str ( "\"" + value + "\"" )
     return ret_str
   #

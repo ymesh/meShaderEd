@@ -50,7 +50,7 @@ class GroupNode ( Node ) :
   def computeNode ( self ) :
     #
     if DEBUG_MODE : print '>> GroupNode( %s ).computeNode' % self.label
-    # inside param_code, imageName value can be assigned from different
+    # inside controlm_code, imageName value can be assigned from different
     # input parameters
-    self.execParamCode ()
+    self.execControlCode ()
 

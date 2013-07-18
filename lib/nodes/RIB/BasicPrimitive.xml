@@ -36,7 +36,7 @@
 	<output>
 	  <property name="ImageFile" type="image" default="${TempPath}/${NODELABEL}.tif"/>
 	</output>
-	<param_code>
+	<control_code>
 <![CDATA[
 print ":: Hello from %s XML code !!!" % self.label
 
@@ -69,7 +69,7 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
 
 
 ]]>
-	</param_code>
+	</control_code>
 	<code>
   <![CDATA[
   Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"

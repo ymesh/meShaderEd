@@ -323,6 +323,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     #self.setWindowTitle ( 'meShaderEd %s (%s) %s' % ( app_global_vars [ 'version' ], presetName, app_global_vars [ 'ProjectNetworks' ] ) )
     app_settings.setValue ( 'defRenderer', presetName )
 
+    app_global_vars [ 'RendererPreset' ] = presetName
     app_global_vars [ 'Renderer' ]       = app_renderer.getCurrentValue ( 'renderer', 'name' )
     app_global_vars [ 'RendererFlags' ]  = app_renderer.getCurrentValue ( 'renderer', 'flags' )
     app_global_vars [ 'ShaderCompiler' ] = app_renderer.getCurrentValue ( 'shader', 'compiler' )
@@ -330,6 +331,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     app_global_vars [ 'ShaderInfo' ]     = app_renderer.getCurrentValue ( 'shader', 'sloinfo' )
     app_global_vars [ 'TEX' ]            = app_renderer.getCurrentValue ( 'texture', 'extension' )
     app_global_vars [ 'SLO' ]            = app_renderer.getCurrentValue ( 'shader', 'extension' )
+    app_global_vars [ 'TexMake' ]        = app_renderer.getCurrentValue ( 'texture', 'texmake' )
     self.setupWindowTitle ()
   #
   # onRenderSavePreset

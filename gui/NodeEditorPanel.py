@@ -50,7 +50,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
     self.nodeLinkEditor = None
 
     self.nodeCodeEditor = None
-    self.paramCodeEditor = None
+    self.controlCodeEditor = None
 
     self.buildGui ()
     self.setEditNode ( node )
@@ -82,8 +82,8 @@ class NodeEditorPanel ( QtGui.QDialog ) :
     if self.nodeCodeEditor is not None :
       QtCore.QObject.connect ( self.nodeCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditCode )
 
-    if self.paramCodeEditor is not None :
-      QtCore.QObject.connect ( self.paramCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditParamCode )
+    if self.controlCodeEditor is not None :
+      QtCore.QObject.connect ( self.controlCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditControlCode )
 
     QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL ( 'addItem' ), self.onAddInternal )
     QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL ( 'addItem' ), self.onAddInclude )
@@ -118,8 +118,8 @@ class NodeEditorPanel ( QtGui.QDialog ) :
     if self.nodeCodeEditor is not None :
       QtCore.QObject.disconnect ( self.nodeCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditCode )
 
-    if self.paramCodeEditor is not None :
-      QtCore.QObject.disconnect ( self.paramCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditParamCode)
+    if self.controlCodeEditor is not None :
+      QtCore.QObject.disconnect ( self.controlCodeEditor.ui.textEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditControlCode)
 
 
     QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL ( 'addItem' ), self.onAddInternal )
@@ -292,14 +292,14 @@ class NodeEditorPanel ( QtGui.QDialog ) :
         # Includes, Local Names, Code
         if self.nodeCodeEditor is None :
           self.nodeCodeEditor = NodeCodeEditor ( self )
-        if self.paramCodeEditor is None :
-          self.paramCodeEditor = NodeCodeEditor ( self )
+        if self.controlCodeEditor is None :
+          self.controlCodeEditor = NodeCodeEditor ( self )
 
         self.nodeCodeEditor.setNodeCode ( self.editNode.code, 'SL' )
-        self.paramCodeEditor.setNodeCode ( self.editNode.param_code, 'python' )
+        self.controlCodeEditor.setNodeCode ( self.editNode.control_code, 'python' )
 
         self.ui.code_tabs.addTab ( self.nodeCodeEditor, 'Node Code' )
-        self.ui.code_tabs.addTab ( self.paramCodeEditor, 'Control Code' )
+        self.ui.code_tabs.addTab ( self.controlCodeEditor, 'Control Code' )
 
         self.ui.code_tabs.setCurrentIndex ( 0 )
         self.ui.side_stackedWidget.addWidget ( self.ui.code_tabs )
@@ -551,14 +551,13 @@ class NodeEditorPanel ( QtGui.QDialog ) :
       #self.nodeCodeEditor.ui.textEdit
       self.editNode.code = str ( self.nodeCodeEditor.ui.textEdit.toPlainText () )
   #
-  # onEditParamCode
+  # onEditControlCode
   #
-  def onEditParamCode ( self ) :
+  def onEditControlCode ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onEditParamCode'
-    if self.paramCodeEditor is not None :
-      #self.paramCodeEditor.ui.textEdit
-      self.editNode.param_code = str ( self.paramCodeEditor.ui.textEdit.toPlainText () )
+    if DEBUG_MODE : print '>> NodeEditorPanel::onEditControlCode'
+    if self.controlCodeEditor is not None :
+      self.editNode.control_code = str ( self.controlCodeEditor.ui.textEdit.toPlainText () )
   #
   # Ignore default Enter press event
   #
