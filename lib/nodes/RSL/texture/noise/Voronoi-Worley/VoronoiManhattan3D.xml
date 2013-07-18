@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<node name="VoronoiManhattan3D" label="Voronoi3D" author="Pixar" icon="VoronoiManhattan3D.png">
+	<help>
+	Voronoi cell noise a.k.a. "Worley noise" with Manhattan distance, which gives more rectangular shapes. 
+	2-feature version, meaning it outputs data for two closest features.
+	</help>
+	
+	<input>
+		<property name="P" type="point"/>
+		<property name="jitter" type="float" default="0.75"
+		subtype="slider"
+		range="0 1 0.01">
+			<help>Controls the distortion of the cells.</help>
+		</property>
+	</input>
+	
+	<output>
+		<property name="F1" type="float"/>
+		<property name="F2" type="float"/>
+		<property name="P1" type="point"/>
+		<property name="P2" type="point"/>
+	</output>
+	
+	<internal>
+		<variable name="thiscell"/>
+		<variable name="testcell"/>
+		<variable name="i"/>
+		<variable name="j"/>
+		<variable name="k"/>
+		<variable name="offset"/>
+		<variable name="pos"/>
+		<variable name="dist"/>
+	</internal>
+	
+	<code><![CDATA[
+
+// code begin - VoronoiManhattan3D
+
+point $(thiscell) = point (
+	floor ( xcomp ( $(P) ) ) + 0.5,
+	floor ( ycomp ( $(P) ) ) + 0.5,
+	floor ( zcomp ( $(P) ) ) + 0.5
+);
+$(F1) = $(F2) = 1000;
+uniform float $(i), $(j), $(k);
+for ( $(i) = -1;  $(i) <= 1;  $(i) += 1 ) {
+	for ( $(j) = -1;  $(j) <= 1;  $(j) += 1 ) {
+		for ( $(k) = -1;  $(k) <= 1;  $(k) += 1 ) {
+			
+			point $(testcell) = $(thiscell) + vector ( $(i), $(j), $(k) );
+			point $(pos) =
+				$(testcell) +
+				$(jitter) * (
+					vector cellnoise ( $(testcell) ) - 0.5
+				)
+			;
+			vector $(offset) = $(pos) - $(P);
+			float $(dist) = /* "Manhattan" */
+				abs( xcomp ( $(offset) ) ) +
+				abs( ycomp ( $(offset) ) ) +
+				abs( zcomp ( $(offset) ) )
+			;
+			
+			if ( $(dist) < $(F1) ) {
+				$(F2) = $(F1);
+				$(F1) = $(dist);
+				$(P2) = $(P1);
+				$(P1) = $(pos);
+			} else if ( $(dist) < $(F2) ) {
+				$(F2) = $(dist);
+				$(P2) = $(pos);
+			}
+			
+		}
+	}
+}
+
+// code end - VoronoiManhattan3D
+]]></code>
+</node>

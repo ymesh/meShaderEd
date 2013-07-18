@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+
+<node name="VoronoiBoth3D" label="Voronoi3D" author="Pixar" icon="VoronoiBoth3D.png">
+	<help>
+	Voronoi cell noise a.k.a. "Worley noise" calculating both Euclidian and Manhattan distances. 
+	2-feature version, meaning it outputs data for two closest features.
+	</help>
+	
+	<input>
+		<property name="P" type="point"/>
+		<property name="jitter" type="float" default="0.75"
+		subtype="slider"
+		range="0 1 0.01">
+			<help>Controls the distortion of the cells.</help>
+		</property>
+	</input>
+	
+	<output>
+		<property name="eF1" type="float"/>
+		<property name="eF2" type="float"/>
+		<property name="eP1" type="point"/>
+		<property name="eP2" type="point"/>
+		<property name="mF1" type="float"/>
+		<property name="mF2" type="float"/>
+		<property name="mP1" type="point"/>
+		<property name="mP2" type="point"/>
+	</output>
+	
+	<internal>
+		<variable name="thiscell"/>
+		<variable name="testcell"/>
+		<variable name="i"/>
+		<variable name="j"/>
+		<variable name="k"/>
+		<variable name="offset"/>
+		<variable name="pos"/>
+		<variable name="eDist"/>
+		<variable name="mDist"/>
+	</internal>
+	
+	<code><![CDATA[
+
+// code begin - VoronoiBoth3D
+
+point $(thiscell) = point (
+	floor ( xcomp ( $(P) ) ) + 0.5,
+	floor ( ycomp ( $(P) ) ) + 0.5,
+	floor ( zcomp ( $(P) ) ) + 0.5
+);
+$(eF1) = $(eF2) = $(mF1) = $(mF2) = 1000;
+uniform float $(i), $(j), $(k);
+for ( $(i) = -1;  $(i) <= 1;  $(i) += 1 ) {
+	for ( $(j) = -1;  $(j) <= 1;  $(j) += 1 ) {
+		for ( $(k) = -1;  $(k) <= 1;  $(k) += 1 ) {
+			
+			point $(testcell) = $(thiscell) + vector ( $(i), $(j), $(k) );
+			point $(pos) =
+				$(testcell) +
+				$(jitter) * (
+					vector cellnoise ( $(testcell) ) - 0.5
+				)
+			;
+			vector $(offset) = $(pos) - $(P);
+			
+			float $(eDist) = $(offset).$(offset); /* "Euclidian", actually eDist^2 */
+			if ( $(eDist) < $(eF1) ) {
+				$(eF2) = $(eF1);
+				$(eF1) = $(eDist);
+				$(eP2) = $(eP1);
+				$(eP1) = $(pos);
+			} else if ( $(eDist) < $(eF2) ) {
+				$(eF2) = $(eDist);
+				$(eP2) = $(pos);
+			}
+			
+			float $(mDist) = /* "Manhattan" */
+				abs( xcomp ( $(offset) ) ) +
+				abs( ycomp ( $(offset) ) ) +
+				abs( zcomp ( $(offset) ) )
+			;
+			if ( $(mDist) < $(mF1) ) {
+				$(mF2) = $(mF1);
+				$(mF1) = $(mDist);
+				$(mP2) = $(mP1);
+				$(mP1) = $(pos);
+			} else if ( $(mDist) < $(mF2) ) {
+				$(mF2) = $(mDist);
+				$(mP2) = $(pos);
+			}
+			
+		}
+	}
+}
+/* "Euclidian": */  	
+$(eF1) = sqrt ( $(eF1) );
+$(eF2) = sqrt ( $(eF2) );
+
+// code end - VoronoiBoth3D
+]]></code>
+</node>

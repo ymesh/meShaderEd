@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<node name="marbleMaya" label="marble" author="3delight" icon="marbleMaya.png">
+	<help>Maya-style marble extracted from 3delight.</help>
+	
+	<include>
+		<file name="dl_utils_filteredpulsetrain.h"/>
+		<file name="dl_noiseUtils_vfBm.h"/>
+	</include>
+	
+	<input>
+	  <property name="P" type="point" default="point(0)"/>
+	  <property name="du" type="float" default="0"/>
+	  <property name="dv" type="float" default="0"/>
+		
+		<property name="veinWidth" type="float" default="0.1"/>
+		<property name="diffusion" type="float" default="0.5"
+			subtype="slider"
+			range="0 1 .01"/>
+		<property name="contrast" type="float" default="0.5"
+			subtype="slider"
+			range="0 1 .01"/>
+		
+		<property name="amplitude" type="float" default="1.5" detail="uniform"/>
+		<property name="ratio" type="float" default="0.707" detail="uniform"
+			subtype="slider"
+			range="0 1 .01"/>
+		<property name="ripples" type="vector" default="vector(1)" detail="uniform"/>
+		<property name="depthMin" type="float" default="0" detail="uniform"/>
+		<property name="depthMax" type="float" default="20" detail="uniform"/>
+	</input>
+	
+	<output>
+		<property name="result" type="float"/>
+	</output>
+	
+	<internal>
+		<variable name="PP"/>
+		<variable name="depth"/>
+		<variable name="ripplesArray"/>
+		
+		<variable name="y"/>
+		<variable name="dy"/>
+		<variable name="d"/>
+	</internal>
+	
+	<code><![CDATA[
+
+// code begin - marbleMaya
+
+// convert 2 variables to the format that 3delight functions expect:
+uniform float
+	$(depth)[2] = { $(depthMin), $(depthMax) },
+	$(ripplesArray)[3] = { xcomp( $(ripples) ), ycomp( $(ripples) ), zcomp( $(ripples) ) };
+
+// Perturb P's position:
+point $(PP) = $(P) + vfBm( $(P), $(depth), 2, $(ratio), $(ripplesArray) ) * $(amplitude); // uses vfBm() 3delight's function
+
+float $(y) = ycomp( $(PP) );
+float $(dy) = max(abs(Du( $(y) )* $(du) ) + abs(Dv( $(y) )* $(dv) ), 1e-6);
+
+// d = distance to vein center:
+float $(d) =
+	min(
+		1,
+		( $(y) - floor( $(y) )) / (1 - $(veinWidth) )
+	);
+if ( $(d) > 0.5)
+	$(d) = 1 - $(d);
+
+$(result) =
+	(
+		1- filteredpulsetrain(1 - $(veinWidth), 1, $(y), $(dy) ) / // uses filteredpulsetrain() 3delight's function
+		(1 - $(veinWidth) )
+	) * $(contrast)
+	+ 
+		(1 - $(contrast) ) * 
+		pow( 2*$(d), $(diffusion) ) *
+		(1 - $(diffusion) * .3)
+	;
+
+// code end - marbleMaya
+
+]]>
+	</code>
+</node>
