@@ -4,7 +4,8 @@
 	<help>Optimized version of point-based occlussion. 
 	The entire occlusion calculation is omitted for trace depths higher than the specified maximum.</help>
 	<input>
-		<property name="Ns" type="normal" default="normal(0,0,0)">
+	  <property name="P" type="point"/>
+		<property name="Ns" type="normal">
 			<help>Shading normal. 
 			It has to be normalized (of 1 unit length) and should be faceforwarded. 
 			You really want to plug ShadingNormal node here. Or normalized reflection vector (converted to normal).</help>
@@ -82,7 +83,7 @@ uniform float $(sampledAngle);
 
 if ( $(rayDepth) <= $(rayDepth_max) ) {
 	$(sampledAngle) = radians( $(ConeAngle) );
-	$(occlusion) = occlusion (P, $(Ns), 0,
+	$(occlusion) = occlusion ( $(P), $(Ns), 0,
 		"coneangle", $(sampledAngle),
 		"samplebase", $(SampleBase),
 		"maxdist", $(MaxDist),

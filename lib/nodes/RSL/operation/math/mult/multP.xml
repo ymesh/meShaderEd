@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<node name="multP" author="DRL">
+	<help>Multiply 2 points.</help>
+	<input>
+		<property name="inP1" type="point"/>
+		<property name="inP2" type="point"/>
+	</input>
+	<output>
+		<property name="outP" type="point" />
+	</output>
+	<code><![CDATA[
+$(outP) = $(inP1) * $(inP2);
+]]>
+	</code>
+</node>

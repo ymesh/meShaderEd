@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<node name="subF" author="DRL">
+	<help>Subtract two floats.</help>
+	<input>
+		<property name="F1" type="float" default="0"/>
+		<property name="F2" type="float" default="0"/>
+	</input>
+	<output>
+		<property name="outF" type="float"/>
+	</output>
+	<code>
+<![CDATA[
+ $(outF) = $(F1) - $(F2);
+]]>
+	</code>
+</node>

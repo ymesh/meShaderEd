@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+
+<node name="subC" author="DRL">
+	<help>Subtract two colors.</help>
+	<input>
+		<property name="C1" type="color" default="color(0)"/>		
+		<property name="C2" type="color" default="color(0)"/>		
+	</input>
+	<output>
+		<property name="outC" type="color"/>		
+	</output>
+	<code>
+<![CDATA[
+ $(outC) = $(C1) - $(C2);
+]]>
+	</code>
+</node>

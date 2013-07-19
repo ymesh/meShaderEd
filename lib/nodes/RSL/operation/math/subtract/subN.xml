@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<node name="subN" author="DRL">
+	<help>Subtract two normals.</help>
+	<input>
+		<property name="N1" type="normal" default="normal(0)"/>
+		<property name="N2" type="normal" default="normal(0)"/>
+	</input>
+	<output>
+		<property name="outN" type="normal"/>
+	</output>
+	<code>
+<![CDATA[
+ $(outN) = $(N1) - $(N2);
+]]>
+	</code>
+</node>
