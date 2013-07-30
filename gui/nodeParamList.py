@@ -86,6 +86,8 @@ class NodeParamListTab ( QtGui.QWidget ) :
     #
     if DEBUG_MODE : print ">> NodeParamViewTab.onRemoved node = %s param = %s" % ( self.gfxNode.node.label, param.name )
     self.gfxNode.node.removeParam ( param )
+    self.gfxNode.removeGfxNodeParam ( param )
+    self.gfxNode.onUpdateNodeParams ( True )
     #self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node
     self.nodeParamView.disconnectParamSignals ()
     self.updateGui ()

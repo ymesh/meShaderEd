@@ -635,7 +635,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onGxNodeParamChanged
   #
-  def onGfxNodeParamChanged ( self, gfxNode, param ) :
+  def onGfxNodeParamChanged ( self, gfxNode, param = None ) :
     #
     if DEBUG_MODE : print ">> MainWindow.onGxNodeParamChanged" 
     
@@ -657,6 +657,8 @@ class MainWindow ( QtGui.QMainWindow ) :
       print '>> MainWindow.updateNodeParamView'
       if gfxNode is not None :
         print '** gfxNode = "%s"' % gfxNode.node.label
+    self.ui.nodeParam_ctl.disconnectParamSignals ()
+    self.ui.nodeParam_ctl.connectParamSignals ()
     self.ui.nodeParam_ctl.updateGui ()
   #
   # onFitAll

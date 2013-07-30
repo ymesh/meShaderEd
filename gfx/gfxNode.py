@@ -79,6 +79,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
 
     if self.node is not None :
       QtCore.QObject.connect ( self.node, QtCore.SIGNAL ( 'nodeUpdated' ), self.onUpdateNode )
+      QtCore.QObject.connect ( self.node, QtCore.SIGNAL ( 'nodeParamsUpdated' ), self.onUpdateNodeParams )
       self.updateGfxNode ()
       ( x, y ) = self.node.offset
       self.setPos ( x, y )
@@ -101,28 +102,35 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   def onUpdateNode ( self ) :
     #
     if DEBUG_MODE : print '>> GfxNode( %s ).updateNode' % ( self.node.label )
-    # self.updateGfxNode ()
-    self.update ()
-    self.adjustLinks ()
+    self.updateGfxNodeParams ( True )
     self.scene().emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
   #
-  # onUpdateGfxNodeParams
+  # onUpdateNodeParams
   #
-  def onUpdateGfxNodeParams ( self, param ) :
+  def onUpdateNodeParams ( self, forceUpdate = False ) :
     #
-    if DEBUG_MODE : print '>> GfxNode( %s ).onUpdateGfxNodeParams' % ( self.node.label )
-    if param.isInput :
-      self.updateInputParams ()
-    else :
-      self.updateOutputParams ()
-    self.update ()
-    self.adjustLinks ()
-    self.scene().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self, param )
+    if DEBUG_MODE : print '>> GfxNode( %s ).onUpdateNodeParams' % ( self.node.label )
+    self.updateGfxNodeParams ( forceUpdate )
+    self.scene().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self )
+    
+  #
+  # updateGfxNodeParams
+  #
+  def updateGfxNodeParams ( self, forceUpdate = False  ) :
+    #
+    if DEBUG_MODE : print '>> GfxNode( %s ).updateGfxNodeParams' % ( self.node.label )
+    inpGeomChanged = self.updateInputParams ()
+    outGeomChanged = self.updateOutputParams ()
+    if forceUpdate or inpGeomChanged or outGeomChanged :
+      self.setupGeometry ()
+      self.update ()
+      self.adjustLinks ()
   #
   # updateGfxNode
   #
   def updateGfxNode ( self, removeLinks = True ) :
     #
+    if DEBUG_MODE : print '>> GfxNode( %s ).updateGfxNode' % ( self.node.label )
     if removeLinks :
       # remove all GfxLinks
       for connect in self.inputConnectors : connect.removeAllLinks ()
@@ -130,7 +138,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
       self.outputConnectors = []
       self.inputConnectors = []
     # remove all children
-    for item in self.childItems () : self.scene().removeItem ( item )
+    for item in self.childItems () : self.scene ().removeItem ( item )
     self.header = {}
     self.setupHeader ()
     self.outputParamLabels = []
@@ -184,31 +192,33 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   #
   # updateInputParams
   #
-  def updateInputParams ( self ) : self.updateParams ( self.node.inputParams, self.inputParamLabels )
+  def updateInputParams ( self ) : return self.updateParams ( self.node.inputParams, self.inputParamLabels )
   #
   # updateOutputParams
   #
-  def updateOutputParams ( self ) : self.updateParams ( self.node.outputParams, self.outputParamLabels )
+  def updateOutputParams ( self ) : return self.updateParams ( self.node.outputParams, self.outputParamLabels )
   #
   # updateParams
   #
   def updateParams ( self, params, labels ) :
     #
     if DEBUG_MODE : print '>> GfxNode.updateParams'
+    geomChanged = False
     i = 0
     for param in params : # for i in range( len( self.node.inputParams )) :
       if param.type != 'control' :
         if param.provider != 'attribute' :
-          label = labels [ i ]
-          if param.type in VALID_RSL_PARAM_TYPES :
-            label.setNormal ()
-            isVarying = ( param.detail == 'varying' )
-            isPrimitive = ( param.provider == 'primitive' )
-            label.setItalic ( isVarying ) 
-            label.setSelected ( param.shaderParam  ) 
-            label.setAlternate ( isPrimitive  ) 
-          label.update()
+          if i >= len ( labels ) :
+            label = self.addGfxNodeParam ( param )
+            geomChanged = True
+          else :
+            label = labels [ i ]
+            if param.label != label.text :
+              label.setText ( param.label )
+              geomChanged = True
+            self.updateGfxNodeParamLabel ( param, label )
           i += 1
+    return geomChanged
   #
   # setupGeometry
   #
@@ -260,6 +270,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
       self.header [ 'label' ].setBgColor ( self.bgColor )
       self.header [ 'label' ].setNormalColor ( self.normalColor )
       self.header [ 'label' ].setBold ()
+      self.header [ 'label' ].setSelected ( self.isSelected () )
       
       if self.node.help is not None :
         self.header [ 'label' ].setWhatsThis ( self.node.help )
@@ -366,6 +377,73 @@ class GfxNode ( QtGui.QGraphicsItem ) :
       hi += hi_label
       wi = max ( wi, wi_label )
     return ( wi, hi )
+  #
+  # updateGfxNodeParamLabel
+  #
+  def updateGfxNodeParamLabel ( self, param, label, forceUpdate = False ) :
+    #
+    if param.type in VALID_RSL_PARAM_TYPES :
+      label.setNormal ()
+      isVarying = ( param.detail == 'varying' )
+      isPrimitive = ( param.provider == 'primitive' )
+      label.setItalic ( isVarying ) 
+      label.setSelected ( param.shaderParam  ) 
+      label.setAlternate ( isPrimitive  ) 
+      # this allows to change param.shaderParam attribute by CTRL-click on label
+      # and switch param.provide to "primitive" by ALT-click
+      label.setProcessEvents ( True ) 
+      if forceUpdate :
+        self.update () 
+        self.scene().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self, param ) 
+  #
+  # addGfxNodeParam
+  #
+  def addGfxNodeParam ( self, param ) :
+    #
+    if param.isInput :
+      labels = self.inputParamLabels
+      connectors = self.inputConnectors
+    else :
+      labels = self.outputParamLabels
+      connectors = self.outputConnectors
+    label = GfxNodeLabel ( param.label, param )
+    label.setBgColor ( self.bgColor )
+    label.setNormalColor ( self.normalColor )
+    if not param.isInput : label.setBold ()
+      
+    if param.help is not None :
+      label.setWhatsThis ( self.node.help )
+    
+    self.updateGfxNodeParamLabel ( param, label )
+
+    labels.append ( label )
+
+    connector = GfxNodeConnector ( param, UI.CONNECTOR_RADIUS, node = None )
+    if not param.isInput : connector.singleLinkOnly = False
+    connectors.append ( connector )
+  #
+  # removeGfxNodeParam
+  #
+  def removeGfxNodeParam ( self, param ) :
+    #
+    if DEBUG_MODE : print ">> GfxNode.removeGfxNodeParam (%s)" % param.label
+    if param.isInput :
+      labels = self.inputParamLabels
+      connectors = self.inputConnectors
+    else :
+      labels = self.outputParamLabels
+      connectors = self.outputConnectors
+    i = 0
+    for label in list ( labels ) :
+      if label.param == param :
+        labels.pop ( i )
+        self.scene ().removeItem ( label )
+
+        connector = connectors.pop ( i )
+        connector.remove () 
+        self.scene ().removeItem ( connector )
+
+      i += 1
   #
   # setupParams
   #

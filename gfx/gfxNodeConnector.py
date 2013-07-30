@@ -190,7 +190,9 @@ class GfxNodeConnector ( QtGui.QGraphicsItem ) :
         srcConnector.adjustLinks ()
       else :
         self.removeAllLinks ()
-    self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+      self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+    else :
+      self.removeAllLinks ()
   #
   # isInput
   #

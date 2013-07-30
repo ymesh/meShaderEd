@@ -195,7 +195,7 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
           if modifiers == QtCore.Qt.ControlModifier :
             print '* CTRL+LMB (change in shaderParam)' 
             self.param.shaderParam = not self.param.shaderParam
-            parentNode.onUpdateGfxNodeParams ( self.param )
+            parentNode.updateGfxNodeParamLabel ( self.param, self, True )
             return
           elif modifiers == QtCore.Qt.AltModifier :
             print '* ALT+LMB ( change detail "uniform/varying")' 
@@ -203,7 +203,7 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
               self.param.detail = 'uniform'
             else :
               self.param.detail = 'varying' 
-            parentNode.onUpdateGfxNodeParams ( self.param )
+            parentNode.updateGfxNodeParamLabel ( self.param, self, True )
             #return
         elif button == QtCore.Qt.RightButton :
           if modifiers == QtCore.Qt.ControlModifier :
@@ -212,7 +212,7 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
               self.param.provider = ''
             else :
               self.param.provider = 'primitive' 
-            parentNode.onUpdateGfxNodeParams ( self.param )
+            parentNode.updateGfxNodeParamLabel ( self.param, self, True )
             return
       QtCore.QEvent.ignore ( event )
     QtGui.QGraphicsItem.mousePressEvent ( self, event )

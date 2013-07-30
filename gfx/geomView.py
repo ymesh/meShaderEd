@@ -6,7 +6,7 @@
 import os, sys
 import math
 
-from OpenGL.GL import *
+#from OpenGL.GL import *
 #from OpenGL.GLU import *
 
 from PyQt4 import QtCore, QtGui, QtOpenGL

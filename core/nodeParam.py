@@ -67,10 +67,10 @@ class NodeParam ( QtCore.QObject ) :
   #
   # setup
   #
-  def setup ( self, name, label, detail, provider = None ) :
+  def setup ( self, name, label = '', detail = None, provider = None ) :
     #
     self.name = name
-    if label == '' : self.label = name
+    if label == '' or label is None : self.label = name
     else: self.label = label
 
     self.detail = detail

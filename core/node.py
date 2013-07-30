@@ -92,6 +92,13 @@ class Node ( QtCore.QObject ) :
     if DEBUG_MODE : print '>> Node( %s ).updateNode' % self.label
     self.emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
   #
+  # updateNodeParams
+  #
+  def updateNodeParams ( self ) : 
+    #
+    if DEBUG_MODE : print '>> Node( %s ).updateNodeParams' % self.label
+    self.emit ( QtCore.SIGNAL ( 'nodeParamsUpdated' ), self )
+  #
   # addChild
   #
   def addChild ( self, node ) : self.childs.add ( node )
