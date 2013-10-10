@@ -6,5 +6,6 @@ node_global_vars = {
   ,'NODENAME':'name'
   ,'INSTANCENAME':'label' 
   ,'PARAMS':'' 
-  
+  ,'NODENETNAME':'' 
+  ,'OUTPUTNAME':'' 
 }

@@ -29,13 +29,13 @@
 		<property name="BG_surf" type="rib" default="Surface &quot;liquidchecker&quot;" />
 	</input>
 	<output>
-	  <property name="ImageFile" type="image" default="${TempPath}/${NODELABEL}.tif"/>
-	  <property name="__color" type="image" default="${TempPath}/${NODELABEL}.color.tif"/>
-	  <property name="__diff" type="image" default="${TempPath}/${NODELABEL}.diff.tif"/>
-	  <property name="__spec" type="image" default="${TempPath}/${NODELABEL}.spec.tif"/>
-	  <property name="__diff_ibi" type="image" default="${TempPath}/${NODELABEL}.diff_ibi.tif"/>
-	  <property name="__spec_ibi" type="image" default="${TempPath}/${NODELABEL}.spec_ibi.tif"/>
-	  <property name="__occ" type="image" default="${TempPath}/${NODELABEL}.occ.tif"/>
+	  <property name="ImageFile" type="image" default="${OUTPUTNAME}.tif"/>
+	  <property name="__color" type="image" default="${OUTPUTNAME}.color.tif"/>
+	  <property name="__diff" type="image" default="${OUTPUTNAME}.diff.tif"/>
+	  <property name="__spec" type="image" default="${OUTPUTNAME}.spec.tif"/>
+	  <property name="__diff_ibi" type="image" default="${OUTPUTNAME}.diff_ibi.tif"/>
+	  <property name="__spec_ibi" type="image" default="${OUTPUTNAME}.spec_ibi.tif"/>
+	  <property name="__occ" type="image" default="${OUTPUTNAME}.occ.tif"/>
 	</output>
 	<code>
   <![CDATA[

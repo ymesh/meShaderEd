@@ -8,7 +8,7 @@ from PyQt4 import QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
-from core.meCommon import getParsedLabel
+from core.meCommon import getParsedLabel, normPath
 #
 # Node
 #
@@ -325,16 +325,18 @@ class Node ( QtCore.QObject ) :
   #
   # getInputParamValueByName
   #
-  def getInputParamValueByName ( self, name ) :
+  def getInputParamValueByName ( self, name, compute = True ) :
     #
     result = None
     srcNode = srcParam = None
     param = self.getInputParamByName ( name )
     ( srcNode, srcParam ) = self.getLinkedSrcNode ( param )
     if srcNode is not None :
-      srcNode.computeNode ()
-      if self.computed_code is not None :
-        self.computed_code += srcNode.computed_code
+      # computation may be skipped if we need only value
+      if compute :
+        srcNode.computeNode ()
+        if self.computed_code is not None :
+          self.computed_code += srcNode.computed_code
       result = srcNode.parseGlobalVars ( srcParam.getValueToStr () )
     else :
       result = param.getValueToStr ()
@@ -438,6 +440,10 @@ class Node ( QtCore.QObject ) :
   # getName
   #
   def getName ( self ) : return self.label
+  #
+  # getNodenetName
+  #
+  def getNodenetName ( self ) : return self.nodenet.getName ()
   #
   # getInstanceName
   #
@@ -708,6 +714,8 @@ class Node ( QtCore.QObject ) :
             elif global_var_name == 'NODELABEL' : resultStr += self.getLabel ()
             elif global_var_name == 'NODENAME' : resultStr += self.getName ()
             elif global_var_name == 'PARAMS' : resultStr += self.getComputedParamList ()
+            elif global_var_name == 'NODENETNAME' : resultStr += self.getNodenetName ()
+            elif global_var_name == 'OUTPUTNAME' : resultStr += normPath ( os.path.join ( app_global_vars [ 'TempPath' ], self.getNodenetName () + '_' + self.getLabel () ) )
         else :
           # keep $ sign for otheer, non ${...} cases
           resultStr += '$'

@@ -51,6 +51,10 @@ class NodeNetwork ( QtCore.QObject ) :
   def __del__ ( self ) :
     if DEBUG_MODE : print '>> NodeNetwork( %s ).__del__ ' % self.name
   #
+  # getName
+  #
+  def getName ( self ) : return self.name
+  #
   # copy
   #
   def copy ( self ) :

@@ -34,7 +34,7 @@
 		<property name="PrimitiveCode" type="string" default="" provider="attribute" display="hidden"/>
 	</input>
 	<output>
-	  <property name="ImageFile" type="image" default="${TempPath}/${NODELABEL}.tif"/>
+	  <property name="ImageFile" type="image" default="${OUTPUTNAME}.tif"/>
 	</output>
 	<control_code>
 <![CDATA[

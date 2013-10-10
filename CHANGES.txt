@@ -1,12 +1,16 @@
 meShaderEd changes log
 
-version 0.3.3 (?? Aug 2013)
+version 0.3.3 (?? Oct 2013)
   - Shader parameters names exported as (NodeLabel)_(ParamLabel)
   - parameters names with provider == 'primitive' exported as (ParamLabel)
   - Parameters labels in NodeParamView can change provider, detail and enabled status by CTRL+RMB, ALT+LMB and ALT+RMB
   - For ControlParam, tag <control_code> changed to <code> (though <control_code> will work temporary)
   - For all nodes, tag <param_code> changed to <control_code> (though <param_code> will work temporary)
   - Service nodes (note, swatch, ...) moved to Node Library->utilites folder
+  - Added ${NODENETNAME} to node_global_vars.py
+  - Added ${OUTPUTNAME} to node_global_vars.py ( ${OUTPUTNAME} = ${TempPath}/${NODENETNAME}_${NODELABEL} )
+  - Generated .rib files and output images names now started with "NodenetName_" prefix  
+  - ImageViewer doesn't rerender images while switching between tabs 
 
 version 0.3.2 (16 Jul 2013)
   - "Fit All", "Fit Selected" actions implemented.

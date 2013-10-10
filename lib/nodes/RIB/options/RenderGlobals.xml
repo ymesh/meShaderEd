@@ -11,9 +11,16 @@
     <property name="Filter" type="string" default="catmull-rom" provider="attribute" subtype="selector"
       range="box:triangle:catmull-rom:gaussian:sinc:blackman-harris:mitchell:separable-catmull-rom:lanczos:bessel"/>
     <property name="FilterWidth" label="Filter width" type="float" default="2.0" provider="attribute"/>	
+    <property name="BucketSize" label="Bucket Size" type="int" default="16" provider="attribute"/>
+    <property name="GridSize" label="Grid Size" type="int" default="256" provider="attribute"/>
+    <property name="TextureMemory" label="Texture Memory" type="int" default="65536" provider="attribute"/>
+    <property name="RadiosityCacheMemory" label="Radiosity Cache" type="int" default="102400" provider="attribute"/>
+    <property name="EyeSplits" label="Eye Splits" type="int" default="10" provider="attribute"/>
     
     <property name="Options" label="Options" type="rib" default=""/>
     <property name="Channels" label="Channels" type="rib" default=""/>
+    
+    
 	</input>
     
 	<output>
@@ -25,10 +32,16 @@
 	</code_param>
 	<code>
   <![CDATA[
+  Option "limits" "bucketsize" [$(BucketSize) $(BucketSize)]
+  Option "limits" "gridsize" [$(GridSize)]
+  Option "limits" "texturememory" [$(TextureMemory)]
+  Option "limits" "int radiositycachememory" [$(RadiosityCacheMemory)]
+  Option "limits" "eyesplits" [$(EyeSplits)]
+
   ##Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
   ##Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
 
-  Hider "hidden" "int jitter" [1]
+  Hider "$(Hider)" "int jitter" [$(Jitter)]
 
   PixelSamples $(Samples) $(Samples)
   PixelFilter "$(Filter)" $(FilterWidth) $(FilterWidth)

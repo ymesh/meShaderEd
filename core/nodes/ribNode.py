@@ -6,6 +6,7 @@ from PyQt4 import QtCore
 
 from core.node import Node
 from core.nodeParam import NodeParam
+from core.meCommon import *
 
 from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
@@ -63,7 +64,7 @@ class RIBNode ( Node ) :
     #
     self.execControlCode ()
 
-    self.ribName = app_global_vars[ 'TempPath' ] + '/' + self.getInstanceName() + '.rib'
+    self.ribName = normPath ( os.path.join ( app_global_vars [ 'TempPath' ], self.getNodenetName () + '_' + self.getInstanceName () + '.rib' ) )
 
     ribCode = self.parseLocalVars ( self.code )
     ribCode = self.parseGlobalVars ( ribCode )

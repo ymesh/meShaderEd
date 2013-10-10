@@ -26,7 +26,7 @@
 #import core.imageNode
 #import code.nodeParam
 
-print ":: Hello from %s XML code !!!" % self.label
+print ":: Hello from (%s) XML code !!!" % self.label
 
 if self.getInputParamByName ( 'selector' ).value == 'image': self.imageName = self.getInputParamValueByName ( 'image' ) 
 if self.getInputParamByName ( 'selector' ).value == 'image1': self.imageName = self.getInputParamValueByName ( 'image1' ) 

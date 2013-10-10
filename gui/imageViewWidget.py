@@ -88,11 +88,11 @@ class ImageViewWidget ( QtGui.QWidget ) :
     if len ( self.imageNodes ) > 0 :
       print ">> ImageViewWidget.onViewerChanged to %s" % self.imageNodes [ idx ].node.label
       #QtCore.QObject.connect( self.imageNodes[ idx ].node, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.onNodeParamChanged )
-      self.updateViewer()
+      self.updateViewer ( compute = False )
   #
   # updateViewer
   #
-  def updateViewer ( self ) :
+  def updateViewer ( self, compute = True ) :
     #
     print ">> ImageViewWidget.updateViewer"
     RenderViewMode = False
@@ -111,7 +111,10 @@ class ImageViewWidget ( QtGui.QWidget ) :
             if displayParam.value != 'tiff' :
               RenderViewMode = True
 
-      imageName = gfxNode.node.computeNode ()
+      if compute :
+        imageName = gfxNode.node.computeNode ()
+      else :
+        imageName = gfxNode.node.imageName
 
       print ">> ImageViewWidget: imageName = %s" % imageName
 
@@ -129,7 +132,7 @@ class ImageViewWidget ( QtGui.QWidget ) :
   #
   # autoUpdate
   #
-  def autoUpdate ( self ) : return self.ui.chk_auto.isChecked()
+  def autoUpdate ( self ) : return self.ui.chk_auto.isChecked ()
   #
   # onNodeParamChanged
   #

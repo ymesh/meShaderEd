@@ -7,12 +7,12 @@
     
 	<output>
   <property name="rib" label="rib" type="rib" default=""/>
-    <property name="__color" type="image" default="${TempPath}/${NODELABEL}.color.tif"/>
-	  <property name="__diff" type="image" default="${TempPath}/${NODELABEL}.diff.tif"/>
-	  <property name="__spec" type="image" default="${TempPath}/${NODELABEL}.spec.tif"/>
-	  <property name="__diff_ibi" type="image" default="${TempPath}/${NODELABEL}.diff_ibi.tif"/>
-	  <property name="__spec_ibi" type="image" default="${TempPath}/${NODELABEL}.spec_ibi.tif"/>
-	  <property name="__occ" type="image" default="${TempPath}/${NODELABEL}.occ.tif"/>
+    <property name="__color" type="image" default="${OUTPUTNAME}.color.tif"/>
+	  <property name="__diff" type="image" default="${OUTPUTNAME}.diff.tif"/>
+	  <property name="__spec" type="image" default="${OUTPUTNAME}.spec.tif"/>
+	  <property name="__diff_ibi" type="image" default="${OUTPUTNAME}.diff_ibi.tif"/>
+	  <property name="__spec_ibi" type="image" default="${OUTPUTNAME}.spec_ibi.tif"/>
+	  <property name="__occ" type="image" default="${OUTPUTNAME}.occ.tif"/>
 	</output>
 	<code_param>
   <![CDATA[
@@ -20,7 +20,7 @@
 	</code_param>
 	<code>
   <![CDATA[
-  #Display Channels:
+  ### Secondary Displays:
   Display "+$(__color)" "tiff" "__color"
   Display "+$(__diff)" "tiff" "__diff"
   Display "+$(__spec)" "tiff" "__spec"

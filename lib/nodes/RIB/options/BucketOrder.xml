@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<node name="BucketOrder" author="mesh" type="rib_code">
+	<help>This option can be used to decrease memory footprint for scenes that have a wide aspect ratio by choosing the vertical order. </help>
+	<input>
+    <property name="Order" type="string" default="horizontal" provider="attribute" subtype="selector"
+      range="horizontal:vertical:zigzag-x:zigzag-y:spacefill:spiral:random"/>
+	  
+	  <property name="Options" label="Options" type="rib" default=""/>
+	</input>
+    
+	<output>
+  <property name="rib" label="rib" type="rib" default=""/>
+	</output>
+	<code_param>
+  <![CDATA[
+	]]>    
+	</code_param>
+	<code>
+  <![CDATA[
+  Option "bucket" "string order" [ "$(Order)" ]
+
+  $(Options)
+
+  ]]>
+	</code>		
+</node>
