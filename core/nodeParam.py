@@ -95,6 +95,7 @@ class NodeParam ( QtCore.QObject ) :
     newParam.isRibParam = self.isRibParam
     newParam.display = self.display
     newParam.enabled = self.enabled
+    newParam.removable = self.removable
     newParam.detail = self.detail
     newParam.provider = self.provider
     newParam.subtype = self.subtype
@@ -176,6 +177,47 @@ class NodeParam ( QtCore.QObject ) :
     if self.value != value :
       self.value = value
       self.paramChanged ()
+  #
+  # removeItemFromRange
+  #
+  def removeItemFromRange ( self, item_label ) :
+    #
+    newRangeList = []
+    if self.range != '' : # and self.subtype == 'selector':
+      tmp_list = str ( self.range ).split ( ':' )
+      for s in tmp_list :
+        pair = s.split ( '=' )
+        if len ( pair ) > 1 :
+          label = pair [0]
+          value = pair [1]
+        else :
+          label = s
+          value = s
+        #
+        if label != item_label :
+          newRangeList.append ( s )
+      self.range = ( ':' ).join ( newRangeList )  
+  #
+  # renameItemInRange
+  #
+  def renameItemInRange ( self, item_label, newLabel ) :
+    #
+    newRangeList = []
+    if self.range != '' : # and self.subtype == 'selector':
+      tmp_list = str ( self.range ).split ( ':' )
+      for s in tmp_list :
+        pair = s.split ( '=' )
+        if len ( pair ) > 1 :
+          label = pair [0]
+          value = pair [1]
+        else :
+          label = s
+          value = s
+        #
+        if label == item_label :
+          s = s.replace ( label, newLabel, 1 ) # replace only label
+        newRangeList.append ( s )
+      self.range = ( ':' ).join ( newRangeList )    
   #
   # parseFromXML
   #

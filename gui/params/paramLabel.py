@@ -86,15 +86,17 @@ class ParamLabel ( QtGui.QLabel ) :
   def onEditingFinished ( self ) :
     #
     if DEBUG_MODE : print ">> ParamLabel( %s ).onEditingFinished" % self.param.name
+    oldLabel = self.param.label
     newLabel = str ( self.editLabel.text () ).strip ()
-    if newLabel == '' : newLabel = self.param.name
-    self.param.label = newLabel
-    self.setText ( newLabel )
-    self.editLabel.adjustSize ()
-    self.adjustSize ()
+    if newLabel != oldLabel :
+      newLabel = self.widget.gfxNode.node.renameParamLabel ( self.param, newLabel )
+      self.setText ( newLabel )
+      self.editLabel.setText ( newLabel )
+      self.adjustSize ()
+      self.editLabel.adjustSize ()
+      self.param.paramChanged ()
     self.setVisible ( True )
     self.editLabel.setVisible ( False )
-    self.param.paramChanged ()
   #
   # mouseDoubleClickEvent
   #

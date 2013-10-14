@@ -96,7 +96,9 @@ class ControlParam ( NodeParam ) :
       # for temp. backward compatibility check 'control_code' also
       control_code_tag = xml_param.namedItem ( 'control_code' )
       if not control_code_tag.isNull () :
-        self.code = str ( control_code_tag.toElement ().text () )
+        code_str = str ( control_code_tag.toElement ().text () ).lstrip ()
+        if code_str == '' : code_str = None
+        self.code = code_str
       
     self.btext = str ( xml_param.attributes ().namedItem ( 'btext' ).nodeValue () )
   #
@@ -121,7 +123,5 @@ class ControlParam ( NodeParam ) :
   #
   def execControlCode ( self, node ) :
     #
-    if self.code != None :
-      control_code = self.code.lstrip ()
-      if control_code != '' :
-        exec ( control_code, { 'node' : node, 'self' : self } )
+    if self.code is not None :
+      exec (  self.code, { 'node' : node, 'self' : self } )

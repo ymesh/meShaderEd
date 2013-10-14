@@ -168,10 +168,11 @@ class ParamWidget ( QtGui.QWidget ) :
   def onShaderParamChanged ( self, value ) :
     #
     self.param.shaderParam = self.check.isChecked ()
-    if self.param.isInput : 
-      self.gfxNode.updateInputParams ()
-    else :
-      self.gfxNode.updateOutputParams ()
+    self.gfxNode.updateGfxNodeParams ( True )
+    #if self.param.isInput : 
+    #  self.gfxNode.updateInputParams ()
+    #else :
+    #  self.gfxNode.updateOutputParams ()
   #
   # buildGui -- virtual method
   # should be overriden in inherited classes

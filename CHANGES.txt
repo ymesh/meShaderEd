@@ -11,6 +11,8 @@ version 0.3.3 (?? Oct 2013)
   - Added ${OUTPUTNAME} to node_global_vars.py ( ${OUTPUTNAME} = ${TempPath}/${NODENETNAME}_${NODELABEL} )
   - Generated .rib files and output images names now started with "NodenetName_" prefix  
   - ImageViewer doesn't rerender images while switching between tabs 
+  - Nodes have new tag <event_code> with event handlers ( ParamLabelRenamed, ParamAdded, ParamRemoved ) 
+  - New ImageViewer node uses <event_code> handlers for dynamicaly adding, removing and renaming new image inputs
 
 version 0.3.2 (16 Jul 2013)
   - "Fit All", "Fit Selected" actions implemented.

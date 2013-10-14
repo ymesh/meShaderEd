@@ -33,9 +33,14 @@ class Node ( QtCore.QObject ) :
 
     self.master = None
 
-    self.code = None
-    self.control_code = None
-    self.computed_code = None
+    self.code = None            # Node code (RSL, RIB, ... )
+    self.control_code = None    # python code executed before node computation
+    self.computed_code = None   # code collected after compute on all connected nodes
+    
+    self.event_code = {}
+    #self.event_code [ 'ParamLabelRenamed' ] = None
+    #self.event_code [ 'ParamAdded' ] = None
+    #self.event_code [ 'ParamRemoved' ] = None
 
     self.display = True
 
@@ -69,6 +74,7 @@ class Node ( QtCore.QObject ) :
   # __del__
   #
   def __del__ ( self ) :
+    #
     if DEBUG_MODE : print '>> Node( %s ).__del__' % self.label
   #
   # build
@@ -141,6 +147,9 @@ class Node ( QtCore.QObject ) :
     if param.name in self.getParamsNames () : self.renameParamName ( param, param.name )
     if param.label in self.getParamsLabels () : self.renameParamLabel ( param, param.label )
     self.inputParams.append ( param )
+    if self.event_code :
+      if 'ParamAdded' in self.event_code.keys () :
+        exec ( self.event_code [ 'ParamAdded' ], { 'param' : param, 'self' : self } )
   #
   # addOutputParam
   #
@@ -151,6 +160,9 @@ class Node ( QtCore.QObject ) :
     if param.name in self.getParamsNames () : self.renameParamName ( param, param.name )
     if param.label in self.getParamsLabels () : self.renameParamLabel ( param, param.label )
     self.outputParams.append ( param )
+    if self.event_code :
+      if 'ParamAdded' in self.event_code.keys () :
+        exec ( self.event_code [ 'ParamAdded' ], { 'param' : param, 'self' : self } )
   #
   # addInternal
   #
@@ -299,6 +311,9 @@ class Node ( QtCore.QObject ) :
     else :
       removedLinks = self.detachOutputParam ( param )
       self.outputParams.remove ( param )
+    if self.event_code :
+      if 'ParamRemoved' in self.event_code.keys () :
+        exec ( self.event_code [ 'ParamRemoved' ], { 'param' : param, 'self' : self } )
     return removedLinks
   #
   # getInputParamByName
@@ -378,6 +393,7 @@ class Node ( QtCore.QObject ) :
   # getOutputLinks
   #
   def getOutputLinks ( self, param = None ) :
+    #
     outputLinks = []
     for link_list in self.outputLinks.values () :
       for link in link_list :
@@ -419,10 +435,18 @@ class Node ( QtCore.QObject ) :
   #
   # renameParamLabel
   #
-  def renameParamLabel ( self, param, newName ) :
+  def renameParamLabel ( self, param, newLabel ) :
+    #
+    oldLabel = param.label
+    if DEBUG_MODE : print ">> Node( %s ).renameParamLabel  oldLabel = %s newLabel = %s" % ( self.label, oldLabel, newLabel )
+    if newLabel == '' : newLabel = self.param.name
     # assign new unique label to param
     from meCommon import getUniqueName
-    param.label = getUniqueName ( newName, self.getParamsLabels() )
+    param.label = getUniqueName ( newLabel, self.getParamsLabels () )
+    if self.event_code :
+      if 'ParamLabelRenamed' in self.event_code.keys () :
+        exec ( self.event_code [ 'ParamLabelRenamed' ], { 'param' : param, 'self' : self, 'oldLabel' : oldLabel } )
+    
     return param.label
   #
   # onParamChanged
@@ -575,17 +599,36 @@ class Node ( QtCore.QObject ) :
       self.offset = ( x, y )
 
     control_code_tag = xml_node.namedItem ( 'control_code' )
-    if not control_code_tag.isNull() :
-      self.control_code = str ( control_code_tag.toElement ().text () )
+    if not control_code_tag.isNull () :
+      code_str = str ( control_code_tag.toElement ().text () ).lstrip ()
+      if code_str == '' : code_str = None
+      self.control_code = code_str
     else :
       # for temp. backward compatibility
       control_code_tag = xml_node.namedItem ( 'param_code' )
       if not control_code_tag.isNull() :
-        self.control_code = str ( control_code_tag.toElement ().text () )
+        code_str = str ( control_code_tag.toElement ().text () ).lstrip ()
+        if code_str == '' : code_str = None
+        self.control_code = code_str
         
     code_tag = xml_node.namedItem ( 'code' )
     if not code_tag.isNull () :
-      self.code = str ( code_tag.toElement ().text () )
+      code_str = str ( code_tag.toElement ().text () ).lstrip ()
+      if code_str == '' : code_str = None
+      self.code = code_str
+      
+    event_code_tag = xml_node.namedItem ( 'event_code' )
+    if not event_code_tag.isNull () :
+      xml_handlerList = event_code_tag.toElement ().elementsByTagName ( 'handler' )
+      for i in range ( 0, xml_handlerList.length () ) :
+        handler_tag = xml_handlerList.item ( i )
+        handler_name = str ( handler_tag.attributes ().namedItem ( 'name' ).nodeValue () )
+        code_str = str ( handler_tag.toElement ().text () ).lstrip ()
+        if code_str == '' : code_str = None
+        self.event_code [ handler_name ] = code_str
+        #print '** handler = %s' % handler_name
+        #print '** handler code :'
+        #print self.event_code [ handler_name ] 
   #
   # parseToXML
   #
@@ -646,6 +689,18 @@ class Node ( QtCore.QObject ) :
       code_data = dom.createCDATASection ( self.code )
       code_tag.appendChild ( code_data )
       xml_node.appendChild ( code_tag )
+      
+    if self.event_code :
+      event_code_tag = dom.createElement ( 'event_code' )
+      print '*** write event_code'
+      for key in self.event_code.keys () :
+        print '*** write handler "%s"' % key
+        handler_tag = dom.createElement( 'handler' )
+        handler_tag.setAttribute ( 'name', key )
+        event_code_tag.appendChild ( handler_tag )
+        handler_data = dom.createCDATASection ( self.event_code [ key ] )
+        handler_tag.appendChild ( handler_data )
+      xml_node.appendChild ( event_code_tag )
 
     if self.offset != None :
       ( x, y ) = self.offset
@@ -755,8 +810,9 @@ class Node ( QtCore.QObject ) :
     newNode.offset = self.offset
 
     import copy
-    newNode.code       = copy.copy ( self.code )
+    newNode.code         = copy.copy ( self.code )
     newNode.control_code = copy.copy ( self.control_code )
+    newNode.event_code   = copy.copy ( self.event_code )
     #self.computed_code = None
 
     newNode.internals = copy.copy ( self.internals )
