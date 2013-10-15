@@ -1,0 +1,87 @@
+  <node icon="HexagonalsF.png" type="rsl_code" author="Larry Gritz" name="HexTileF" label="HexTileF">
+   <help>This function generates a hexagonal pattern ST space.</help>
+   <input>
+    <property default="0.200" range="0.0 1 0.01" subtype="slider" type="float" value="0.200" name="RAD" label="Radius"/>
+    <property default="0.030" range=".001 .1 .001" subtype="slider" type="float" value="0.020" name="MW" label="Mortar"/>
+    <property detail="uniform" default="0.000" range="0 1.0 0.001" subtype="slider" type="float" value="0.500" name="fuz" label="Fuziness"/>
+    <property detail="uniform" default="0.000" subtype="switch" type="float" value="1.000" name="invert" label="invert"/>
+    <property default="10.000" type="float" value="2.000" name="step_idx" label="Index Step"/>
+    <property default="point(0.000,0.000,0.000)" type="point" value="point(0.000,0.000,0.000)" name="Q" label="Q"/>
+   </input>
+   <output>
+    <property default="0.000" type="float" value="0.000" name="mortar" label="mortar"/>
+    <property detail="varying" default="0.000" type="float" value="0.000" name="tileindex" label="tileindex"/>
+   </output>
+   <internal>
+    <variable name="SQRT3"/>
+    <variable name="fuzzy1"/>
+    <variable name="fuzzy2"/>
+    <variable name="hextile"/>
+    <variable name="S"/>
+    <variable name="T"/>
+    <variable name="sfuzz"/>
+    <variable name="tfuzz"/>
+   </internal>
+   <include>
+    <file name="filterwidth.h"/>
+   </include>
+   <code><![CDATA[#define $(SQRT3) 1.7320508
+#define $(fuzzy1)( a, b, fuzz, x ) ( smoothstep ( (a) - (fuzz), (a), (x) ) * ( 1 - smoothstep ( (b), (b) + (fuzz), (x) ) ) )
+#define $(fuzzy2)( a, b, fuzz, x ) ( smoothstep ( (a), (a) + (fuzz), (x) ) * ( 1 - smoothstep ( (b) - (fuzz), (b), (x) ) ) )
+    
+    float $(hextile) ( float S, T, radius, mortarwidth, sfuzz, tfuzz, step_idx; output float tileindex )
+    {
+      float width;
+      float ss, tt;
+      float ttile, stile;
+      float x, y;
+      float halfwidth;
+      float mixer;
+          
+      width = radius * $(SQRT3);
+
+      tt = mod ( T, 1.5 * radius);
+      ttile = floor ( T / ( 1.5 * radius ) );
+
+      ss = ( mod ( ttile / 2, 1 ) == 0.5 ) ? S + width / 2 : S;
+      stile = floor ( ss / width );
+      ss = mod ( ss, width );
+
+      mixer = 0;
+      halfwidth = mortarwidth / 2;
+      if ( tt < radius )
+        mixer = 1 - $(fuzzy2)( halfwidth, width - halfwidth, sfuzz, ss );
+      else
+      {
+        x = width / 2 - abs ( ss - width / 2 );
+        y = $(SQRT3) * ( tt - radius );
+        if ( y > x )
+        {
+          if ( mod ( ttile / 2, 1 ) == 0.5 ) 
+            stile -= 1;
+          ttile += 1;
+          if ( ss > width / 2 ) 
+            stile += 1;
+        }
+        mixer = $(fuzzy1)( x - $(SQRT3) * halfwidth, x + $(SQRT3) * halfwidth, tfuzz, y );
+      }
+      tileindex = stile + step_idx * ttile;
+      return ( 1 - mixer );
+    }
+
+    float $(S) = xcomp ( $(Q) );
+    float $(T) = ycomp ( $(Q) );
+
+    float $(sfuzz) = filterwidth ( $(S) );
+    float $(tfuzz) = filterwidth ( $(T) );
+      if ( $(fuz) > 0 )
+      {
+        $(sfuzz) *= $(fuz) * 10;
+        $(tfuzz) *= $(fuz) * 10;        
+      }
+    $(mortar) = $(hextile) ( $(S), $(T), $(RAD), $(MW), $(sfuzz), $(tfuzz), $(step_idx), $(tileindex) );
+    if ( $(invert) > 0 )
+      $(mortar) = 1 - $(mortar);
+  ]]></code>
+  </node>
+

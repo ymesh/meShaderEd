@@ -50,8 +50,9 @@ self.imageName = self.getInputParamValueByName ( selectedInput )
 <![CDATA[
 #print ":: Hello from ParamLabelRenamed handler"  
 #print ":: param.label = %s oldName = %s" % ( param.label, oldLabel )
-selector = self.getInputParamByName ( 'selector' ) 
-selector.renameItemInRange ( oldLabel, param.label )    
+if param.type == 'image' :
+  selector = self.getInputParamByName ( 'selector' ) 
+  selector.renameItemInRange ( oldLabel, param.label )    
 
 ]]>   
     </handler>  
