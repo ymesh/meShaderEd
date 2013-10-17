@@ -70,4 +70,4 @@ class Ui_NodeNamesEditor(object):
         self.removeButton.setToolTip(QtGui.QApplication.translate("NodeNamesEditor", "Remove", None, QtGui.QApplication.UnicodeUTF8))
         self.removeButton.setText(QtGui.QApplication.translate("NodeNamesEditor", "...", None, QtGui.QApplication.UnicodeUTF8))
 
-import resources_rc
+import gui.resources_rc

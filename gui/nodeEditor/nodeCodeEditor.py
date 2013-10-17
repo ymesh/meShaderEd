@@ -27,7 +27,7 @@ class NodeCodeEditor ( QtGui.QWidget ):
   #
   def __init__ ( self, parent, editNodeCode = None ) :
     #
-    QtGui.QDialog.__init__ ( self )
+    QtGui.QWidget.__init__ ( self, parent )
     
     self.editNodeCode = editNodeCode
      
@@ -48,21 +48,23 @@ class NodeCodeEditor ( QtGui.QWidget ):
     #
     self.editNodeCode = editNodeCode
     
-    doc = QtGui.QTextDocument ()
-    
-    font = QtGui.QFont( 'Monospace' )
-    font.setFixedPitch ( True )
-    font.setPointSize ( UI.FONT_HEIGHT )
-
-    codeSyntax = CodeSyntaxHighlighter ( doc, mode )
-    
-    self.ui.textEdit.setDocument ( doc )  
-    self.ui.textEdit.setTabStopWidth ( UI.TAB_SIZE )
-    self.ui.textEdit.setCurrentFont ( font )
-    self.ui.textEdit.setLineWrapMode ( QtGui.QTextEdit.NoWrap )
-
-    code = self.editNodeCode
-    if self.editNodeCode is None : code = ''
+    if self.editNodeCode is not None : 
+      code = self.editNodeCode
+      
+      doc = QtGui.QTextDocument ()
+      
+      font = QtGui.QFont( 'Monospace' )
+      font.setFixedPitch ( True )
+      font.setPointSize ( UI.FONT_HEIGHT )
+  
+      codeSyntax = CodeSyntaxHighlighter ( doc, mode )
+      
+      self.ui.textEdit.setDocument ( doc )  
+      self.ui.textEdit.setTabStopWidth ( UI.TAB_SIZE )
+      self.ui.textEdit.setCurrentFont ( font )
+      self.ui.textEdit.setLineWrapMode ( QtGui.QTextEdit.NoWrap )
+    else :
+      code = ''
     self.ui.textEdit.setPlainText ( code )
         
         

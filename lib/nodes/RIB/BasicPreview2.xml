@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<node name="BasicPrimitive2" author="mesh" type="rib">
-	<help>Basic primitive preview RIB with custom lights and volume shaders</help>
+<node name="BasicPreview2" author="mesh" type="rib">
+	<help>Basic preview RIB with geometry primitive, custom lights and volume shaders</help>
 	<input>
     <property name="Globals" label="Render Options" type="rib" default=""/>
 

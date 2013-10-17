@@ -23,7 +23,8 @@ class NodeNamesEditor ( QtGui.QWidget ) :
   # __init__
   #
   def __init__ ( self, parent ) :
-    QtGui.QDialog.__init__ ( self )
+    #
+    QtGui.QWidget.__init__ ( self, parent )
     self.saved_text = ''
     self.approvedNewName = ''
     self.buildGui ()

@@ -18,8 +18,8 @@ from gfx.gfxSwatchNode import GfxSwatchNode
 from meRendererSetup import meRendererSetup
 from ProjectSetup import ProjectSetup
 from SettingsSetup import SettingsSetup
-from NodeEditorPanel import NodeEditorPanel
-from ExportShaderPanel import ExportShaderPanel
+from nodeEditor.NodeEditorPanel import NodeEditorPanel
+from exportShader.ExportShaderPanel import ExportShaderPanel
 
 from nodeList import NodeList
 

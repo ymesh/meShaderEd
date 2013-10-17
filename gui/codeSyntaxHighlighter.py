@@ -1,12 +1,12 @@
-#===============================================================================
-# codeSyntaxHighlighter.py
-#
-# ver. 1.0.0
-# Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
-# 
-# Dialog for managing node code
-# 
-#===============================================================================
+"""
+ codeSyntaxHighlighter.py
+
+ ver. 1.0.0
+ Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
+ 
+ Dialog for managing node code
+ 
+"""
 
 import os, sys
 from PyQt4 import QtCore, QtGui
@@ -16,29 +16,31 @@ from global_vars import app_global_vars
 
 import gui.ui_settings as UI
 #
+# CodeSyntaxHighlighter
 #
-#
-class CodeSyntaxHighlighter( QtGui.QSyntaxHighlighter ):
+class CodeSyntaxHighlighter ( QtGui.QSyntaxHighlighter ):
   #
-  def __init__( self, textDocument, mode = 'SL' ):
-    QtGui.QSyntaxHighlighter.__init__( self, textDocument )
+  def __init__ ( self, textDocument, mode = 'SL' ):
+    #
+    QtGui.QSyntaxHighlighter.__init__ ( self, textDocument )
     
     self.mode = mode
     self.highlightingRules = []
     
     syntax_colors = {}
     
-    syntax_colors['types'] = QtCore.Qt.blue
-    syntax_colors['literal'] = QtCore.Qt.darkGreen
-    syntax_colors['comment'] = QtCore.Qt.darkCyan
-    syntax_colors['function'] = QtCore.Qt.darkMagenta
+    syntax_colors [ 'types' ] = QtCore.Qt.blue
+    syntax_colors [ 'literal' ] = QtCore.Qt.darkGreen
+    syntax_colors [ 'comment' ] = QtCore.Qt.darkGray
+    syntax_colors [ 'function' ] = QtCore.Qt.darkMagenta
+    syntax_colors [ 'params' ] = QtCore.Qt.red
+    syntax_colors [ 'globals' ] = QtCore.Qt.darkCyan 
     
     # types
-    self.typeFormat = QtGui.QTextCharFormat()
-    self.typeFormat.setForeground ( syntax_colors['types'] )
+    self.typeFormat = QtGui.QTextCharFormat ()
+    self.typeFormat.setForeground ( syntax_colors [ 'types' ] )
     
-    typePatterns = ['\\bfloat\\b', '\\bcolor\\b', '\\bmatrix\\b', '\\bvector\\b', '\\bstring\\b',
-                    '\\bpoint\\b', '\\bnormal\\b']
+    typePatterns = [ '\\bfloat\\b', '\\bcolor\\b', '\\bmatrix\\b', '\\bvector\\b', '\\bstring\\b', '\\bpoint\\b', '\\bnormal\\b' ]
     
     for typePattern in typePatterns:
       typeRule = ( QtCore.QRegExp ( typePattern ), self.typeFormat )
@@ -46,19 +48,19 @@ class CodeSyntaxHighlighter( QtGui.QSyntaxHighlighter ):
     
     # single line comment
     self.singleLineCommentFormat = QtGui.QTextCharFormat ()
-    self.singleLineCommentFormat.setForeground ( syntax_colors['comment'] )
+    self.singleLineCommentFormat.setForeground ( syntax_colors [ 'comment' ] )
     singleLineCommentRule = ( QtCore.QRegExp ( '//[^\n]*' ), self.singleLineCommentFormat ) 
     self.highlightingRules.append ( singleLineCommentRule )
 
     # multiline comment
     self.multiLineCommentFormat = QtGui.QTextCharFormat () 
-    self.multiLineCommentFormat.setForeground ( syntax_colors['comment'] )
+    self.multiLineCommentFormat.setForeground ( syntax_colors [ 'comment' ] )
     self.commentStartExpression = QtCore.QRegExp ( "/\\*" )
     self.commentEndExpression = QtCore.QRegExp ( "\\*/" )
     
     # literal
     self.literalFormat = QtGui.QTextCharFormat ()
-    self.literalFormat.setForeground ( syntax_colors['literal'] )
+    self.literalFormat.setForeground ( syntax_colors [ 'literal' ] )
     literalRule_1 = ( QtCore.QRegExp ( '\"[A-Za-z0-9_]+\"' ), self.literalFormat )
     literalRule_2 = ( QtCore.QRegExp ( "\'[A-Za-z0-9_]+\'" ), self.literalFormat ) 
     self.highlightingRules.append ( literalRule_1 )
@@ -66,11 +68,24 @@ class CodeSyntaxHighlighter( QtGui.QSyntaxHighlighter ):
 
     # function
     self.functionFormat = QtGui.QTextCharFormat ()
-    self.functionFormat.setForeground ( syntax_colors['function'] )
-    functionRule = ( QtCore.QRegExp ( '\\b[A-Za-z0-9_]+(?=\\()' ), self.functionFormat ) 
+    self.functionFormat.setForeground ( syntax_colors [ 'function' ] )
+    functionRule = ( QtCore.QRegExp ( '\\b[A-Za-z0-9_]+ ?(?=\\()' ), self.functionFormat ) 
     self.highlightingRules.append ( functionRule )
+    
+    # params
+    self.paramsFormat = QtGui.QTextCharFormat ()
+    self.paramsFormat.setForeground ( syntax_colors [ 'params' ] )
+    paramsRule = ( QtCore.QRegExp ( '\$\([A-Za-z0-9_]+\)' ), self.paramsFormat ) 
+    self.highlightingRules.append ( paramsRule )
+    
+    # globals
+    self.globalsFormat = QtGui.QTextCharFormat ()
+    self.globalsFormat.setForeground ( syntax_colors [ 'globals' ] )
+    globalsRule = ( QtCore.QRegExp ( '\$\{[A-Za-z0-9_]+\}' ), self.globalsFormat ) 
+    self.highlightingRules.append ( globalsRule )
+    
   #
-  #
+  # highlightBlock
   #  
   def highlightBlock ( self, text ):
     #print "DBG: highlightBlock %s" % ( text )
@@ -95,9 +110,9 @@ class CodeSyntaxHighlighter( QtGui.QSyntaxHighlighter ):
       commentLength = 0
       if endIndex == -1:
         self.setCurrentBlockState ( 1 )
-        commentLength = text.length() - startIndex
+        commentLength = text.length () - startIndex
       else:
-        commentLength = endIndex - startIndex + self.commentEndExpression.matchedLength()
+        commentLength = endIndex - startIndex + self.commentEndExpression.matchedLength ()
   
       self.setFormat ( startIndex, commentLength, self.multiLineCommentFormat )
       startIndex = self.commentStartExpression.indexIn ( text, startIndex + commentLength )  

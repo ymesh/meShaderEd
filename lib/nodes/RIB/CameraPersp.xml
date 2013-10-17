@@ -1,26 +1,39 @@
 <?xml version="1.0"?>
 
 <node name="CameraPersp" author="mesh" type="rib_code">
-	<help>Camera</help>
-	<input>
-    <property name="FOV" type="float" default="27.0" provider="attribute"/>
+  <help>Perspective Camera</help>
+  <input>
+    <property name="FOV" type="float" default="45.0" provider="attribute"/>
     <property name="ClipMin" label="Near Clip Plane" type="float" default="0.1" provider="attribute"/>
     <property name="ClipMax" label="Far Clip Plane" type="float" default="10000" provider="attribute"/>
-	</input>
     
-	<output>
+    <property name="LT" label="Screen Left" type="float" default="-1" provider="attribute"/>
+    <property name="RT" label="Screen Right" type="float" default="1" provider="attribute"/>
+    <property name="TOP" label="Screen Top" type="float" default="-1" provider="attribute"/>
+    <property name="BOT" label="Screen Bottom" type="float" default="1" provider="attribute"/>
+    
+    <property name="translate" type="transform" default="0 0 3"/>
+	  <property name="scale" type="transform" default="1 1 1"/>
+	  <property name="axis" type="transform" default="1 0 0"/>
+	  <property name="Angle" type="float" default="0"/>
+  </input>
+    
+  <output>
     <property name="rib" label="rib" type="rib" default=""/>
-	</output>
-	<code_param>
+  </output>
+  <code_param>
   <![CDATA[
-	]]>    
-	</code_param>
-	<code>
+  ]]>    
+  </code_param>
+  <code>
   <![CDATA[
   Projection "perspective" "fov" [$(FOV)]
-	ScreenWindow -1 1 -1 1
-	Clipping $(ClipMin) $(ClipMax)
-	Transform [ 1 0 0 0  0 0.992546 -0.121869 0  0 -0.121869 -0.992546 0  0 -4.66749 35.8359 1 ]
+  ScreenWindow $(LT) $(RT) $(TOP) $(BOT)
+  Clipping $(ClipMin) $(ClipMax)
+  
+  Translate $(translate)
+  Scale $(scale) 
+  Rotate $(Angle) $(axis)
   ]]>
-	</code>		
+  </code>   
 </node>

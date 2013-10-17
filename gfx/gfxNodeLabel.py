@@ -181,10 +181,10 @@ class GfxNodeLabel ( QtGui.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
   #
   def mousePressEvent ( self, event ) :
     if self.processEvents :
-      print ">> GfxNodeLabel.mousePressEvent"
+      #print ">> GfxNodeLabel.mousePressEvent"
       inWhatsThisMode = QtGui.QWhatsThis.inWhatsThisMode ()
-      if inWhatsThisMode :
-        print '** inWhatsThisMode active'
+      #if inWhatsThisMode :
+      #  print '** inWhatsThisMode active'
       from gfx.gfxNode import GfxNode
       parentNode = self.parentItem ()
       if isinstance ( parentNode, GfxNode ) :

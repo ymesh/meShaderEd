@@ -37,7 +37,7 @@ class NodeParamEditor ( QtGui.QWidget ) :
   #
   def __init__ ( self, parent ) :
     #
-    QtGui.QDialog.__init__ ( self )
+    QtGui.QWidget.__init__ ( self, parent )
     self.param = None
     self.param_default = None
     self.paramWidgets = {  'string'       : StringWidget

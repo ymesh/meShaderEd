@@ -3,7 +3,7 @@
  
  meShaderEd.py
 
- version 0.3.3b (?? Jul 2013)
+ version 0.3.4b (?? Oct 2013)
 
  Author: Yuri Meshalkin (aka mesh) (mesh@kpp.kiev.ua)
 
@@ -31,7 +31,7 @@ from core.meRendererPreset import meRendererPreset
 from global_vars import app_global_vars, DEBUG_MODE
 
 root = normPath ( sys.path [0] )
-version = '0.3.3b'
+version = '0.3.4b'
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
                                   QtCore.QSettings.UserScope,

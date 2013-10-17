@@ -1,5 +1,5 @@
 #===============================================================================
-# nodeEditor.py.py
+# nodePropertiesEditor.py.py
 #
 # ver. 1.0.0
 # Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
@@ -18,17 +18,17 @@ import gui.ui_settings as UI
 
 from core.node import Node
 
-from ui_nodeEditor import Ui_NodeEditor
+from ui_nodePropertiesEditor import Ui_NodePropertiesEditor
 #
 # NodeEditor
 #
-class NodeEditor ( QtGui.QWidget ) :
+class NodePropertiesEditor ( QtGui.QWidget ) :
   #
   # __init__
   #
   def __init__ ( self, parent, editNode = None ) :
     #
-    QtGui.QDialog.__init__ ( self )
+    QtGui.QWidget.__init__ ( self, parent )
 
     self.editNode = editNode
 
@@ -40,7 +40,7 @@ class NodeEditor ( QtGui.QWidget ) :
   #
   def buildGui ( self ) :
     # build the gui created with QtDesigner
-    self.ui = Ui_NodeEditor ()
+    self.ui = Ui_NodePropertiesEditor ()
     self.ui.setupUi ( self )
   #
   # setNode

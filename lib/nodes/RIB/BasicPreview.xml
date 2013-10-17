@@ -1,52 +1,45 @@
 <?xml version="1.0"?>
 
-<node name="swatchRib" author="mesh" type="rib">
-  <help>Basic primitive preview RIB for swatch node</help>
-  <input>
-    <property name="Raytrace" type="int" provider="attribute" default="0" subtype="switch"/>
-    <property name="Primitive" type="string" provider="attribute" default="Sphere" subtype="selector" range = "Sphere:Teapot:Cylinder:Torus:Plane"/>
-    <property name="Size" type="int" default="256" provider="attribute"/>
-    <property name="ShadingRate" label="Shading rate" type="float" default="1.0" provider="attribute"/>
+<node name="BasicPreview" author="mesh" type="rib">
+	<help>Basic preview RIB with geometry primitive, 2 distant and 1 environment light</help>
+	<input>
+    <property name="Globals" label="Render Options" type="rib" default=""/>
+
+    <property name="Primitive" label="Primitive" type="string" provider="attribute" default="Sphere" subtype="selector" range = "Sphere:Teapot:Cylinder:Torus:Plane"/>
+
+    <property name="DisplayDriver" label="Display Driver" type="string" default="tiff" provider="attribute"
+      subtype="selector" range="tiff:framebuffer:it" />
+
+    <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
+    <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>
+
+
+
     <property name="EnvIntensity" label="EnvLight Intensity" type="float" default="1.25" provider="attribute"/>
     <property name="EnvMap" label="Environment Map" type="string" default="kitchen_LL.hdr.${TEX}" provider="attribute"
       subtype="file" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" />
+
 
     <property name="Color" type="color" default="0 0 1" provider="attribute"/>
     <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>
 
     <property name="DisplaceBound" label="Displacement Bound" type="float" default="0.5" provider="attribute"/>
 
+
     <property name="FG_disp" label="Displace Shader" type="rib" default="Displacement &quot;null&quot;" />
+
     <property name="FG_surf" label="Surface Shader" type="rib" default="Surface &quot;defaultsurface&quot;" />
+		    <property name="BG_surf" label="Background Shader" type="rib" default="Surface &quot;liquidchecker&quot;"/>
 
-    <property name="BG_surf" label="Background Shader" type="string" provider="attribute" default="liquidchecker" subtype="selector" range = "null:liquidchecker:stTexture"/>
-    <property name="BG_surf_name" type="string" default="" provider="attribute" display="hidden"/>
-
-
-    <property name="PrimitiveCode" type="string" default="" provider="attribute" display="hidden"/>
-    <property name="RaytraceCode" type="string" default="" provider="attribute" display="hidden"/>
-  </input>
-  <output>
-    <property name="ImageFile" type="image" default="${OUTPUTNAME}.tif"/>
-  </output>
-  <control_code>
+		<property name="PrimitiveCode" type="string" default="" provider="attribute" display="hidden"/>
+	</input>
+	<output>
+	  <property name="ImageFile" type="image" default="${OUTPUTNAME}.tif"/>
+	</output>
+	<control_code>
 <![CDATA[
 print ":: Hello from %s XML code !!!" % self.label
 
-if self.getInputParamByName ( 'Raytrace' ).value == 1 :
-  self.getInputParamByName ( 'RaytraceCode' ).value = """
-  Option "trace" "int maxdepth" [4]
-  Attribute "visibility" "int trace" [1]
-  Attribute "visibility" "int transmission" [1]
-  Attribute "visibility" "int diffuse" [1]
-  Attribute "visibility" "int specular" [1]
-  Attribute "trace" "int displacements" [1]
-  Attribute "trace" "int maxdiffusedepth" [1]
-  Attribute "trace" "int maxspeculardepth" [4]
-  """
-else :
-  self.getInputParamByName ( 'RaytraceCode' ).value = ''
-  
 if self.getInputParamByName ( 'Primitive' ).value == 'Sphere':
   self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Sphere 1.0 -1.0 1.0 360"
 
@@ -63,7 +56,7 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Teapot':
       """
 
 if self.getInputParamByName ( 'Primitive' ).value == 'Cylinder':
-  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Cylinder 0.8 -0.8 0.8 360"
+  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Cylinder 1 -0.5 0.5 360"
 
 if self.getInputParamByName ( 'Primitive' ).value == 'Torus':
   self.getInputParamByName ( 'PrimitiveCode' ).value = """
@@ -74,27 +67,30 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Torus':
 if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
   self.getInputParamByName ( 'PrimitiveCode' ).value = 'Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]'
 
-if self.getInputParamByName ( 'BG_surf' ).value == 'null': self.getInputParamByName ( 'BG_surf_name' ).value = '"null"'
-if self.getInputParamByName ( 'BG_surf' ).value == 'liquidchecker': self.getInputParamByName ( 'BG_surf_name' ).value = '"liquidchecker"'
-if self.getInputParamByName ( 'BG_surf' ).value == 'stTexture': self.getInputParamByName ( 'BG_surf_name' ).value = '"sttexture" "texturename" "grid.tif"'
-
-
 
 ]]>
-  </control_code>
-  <code>
+	</control_code>
+	<code>
   <![CDATA[
   Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
   Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
   Option "searchpath" "archive" "&:@:.:~:${ArchiveSearchPath}:${ProjectSearchPath}"
-  $(RaytraceCode)
-  Display "$(ImageFile)" "tiff" "rgba"
-  Format $(Size) $(Size) 1.0
+
+  $(Globals)
+
+
+  ### Output image
+  Display "$(ImageFile)" "$(DisplayDriver)" "rgba"
+
+  Format $(Width) $(Height) 1.0
+
   Projection "perspective" "fov" 45
   Translate 0 0 3.0
 
+  Attribute "displacementbound" "float sphere" [$(DisplaceBound)]
+
   WorldBegin
-    ShadingRate $(ShadingRate)
+
     ReverseOrientation
 
     TransformBegin
@@ -109,6 +105,9 @@ if self.getInputParamByName ( 'BG_surf' ).value == 'stTexture': self.getInputPar
                                 "uniform string meEnvMap_Space" ["_environment"]
 
     AttributeBegin
+
+
+
       Color [$(Color)]
       Opacity [$(Opacity)]
 
@@ -122,12 +121,12 @@ if self.getInputParamByName ( 'BG_surf' ).value == 'stTexture': self.getInputPar
     AttributeBegin
       Scale 7 7 7
       Translate 0 0 2
-      Surface $(BG_surf_name)
+      $(BG_surf)
 
       Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
     AttributeEnd
 
   WorldEnd
   ]]>
-  </code>
+	</code>
 </node>
