@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui/nodeEditor\ui_nodeEditorPanel.ui'
+# Form implementation generated from reading ui file 'gui/nodeEditor\ui_NodeEditorDialog.ui'
 #
 # Created: Thu Oct 17 14:57:09 2013
 #      by: PyQt4 UI code generator 4.10.2-snapshot-a8a14dd99d1e
@@ -23,13 +23,13 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_NodeEditorPanel(object):
-    def setupUi(self, NodeEditorPanel):
-        NodeEditorPanel.setObjectName(_fromUtf8("NodeEditorPanel"))
-        NodeEditorPanel.resize(750, 658)
-        self.verticalLayout = QtGui.QVBoxLayout(NodeEditorPanel)
+class Ui_NodeEditorDialog(object):
+    def setupUi(self, NodeEditorDialog):
+        NodeEditorDialog.setObjectName(_fromUtf8("NodeEditorDialog"))
+        NodeEditorDialog.resize(750, 658)
+        self.verticalLayout = QtGui.QVBoxLayout(NodeEditorDialog)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.splitter = QtGui.QSplitter(NodeEditorPanel)
+        self.splitter = QtGui.QSplitter(NodeEditorDialog)
         self.splitter.setLineWidth(2)
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setHandleWidth(8)
@@ -219,51 +219,51 @@ class Ui_NodeEditorPanel(object):
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.btn_save = QtGui.QPushButton(NodeEditorPanel)
+        self.btn_save = QtGui.QPushButton(NodeEditorDialog)
         self.btn_save.setObjectName(_fromUtf8("btn_save"))
         self.horizontalLayout.addWidget(self.btn_save)
-        self.btn_close = QtGui.QPushButton(NodeEditorPanel)
+        self.btn_close = QtGui.QPushButton(NodeEditorDialog)
         self.btn_close.setObjectName(_fromUtf8("btn_close"))
         self.horizontalLayout.addWidget(self.btn_close)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.verticalLayout.setStretch(0, 1)
 
-        self.retranslateUi(NodeEditorPanel)
+        self.retranslateUi(NodeEditorDialog)
         self.toolBox.setCurrentIndex(0)
         self.toolBox.layout().setSpacing(6)
         self.tabs_code_list.setCurrentIndex(0)
         self.tabs_param_list.setCurrentIndex(0)
         self.tabs_links_list.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(self.toolBox, QtCore.SIGNAL(_fromUtf8("currentChanged(int)")), NodeEditorPanel.onToolBoxIndexChanged)
-        QtCore.QObject.connect(self.btn_save, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeEditorPanel.accept)
-        QtCore.QObject.connect(self.btn_close, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeEditorPanel.reject)
-        QtCore.QObject.connect(self.input_links_listWidget, QtCore.SIGNAL(_fromUtf8("itemSelectionChanged()")), NodeEditorPanel.updateGui)
-        QtCore.QObject.connect(self.output_links_listWidget, QtCore.SIGNAL(_fromUtf8("itemSelectionChanged()")), NodeEditorPanel.updateGui)
-        QtCore.QObject.connect(self.tabs_links_list, QtCore.SIGNAL(_fromUtf8("currentChanged(int)")), NodeEditorPanel.updateGui)
-        QtCore.QMetaObject.connectSlotsByName(NodeEditorPanel)
+        QtCore.QObject.connect(self.toolBox, QtCore.SIGNAL(_fromUtf8("currentChanged(int)")), NodeEditorDialog.onToolBoxIndexChanged)
+        QtCore.QObject.connect(self.btn_save, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeEditorDialog.accept)
+        QtCore.QObject.connect(self.btn_close, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeEditorDialog.reject)
+        QtCore.QObject.connect(self.input_links_listWidget, QtCore.SIGNAL(_fromUtf8("itemSelectionChanged()")), NodeEditorDialog.updateGui)
+        QtCore.QObject.connect(self.output_links_listWidget, QtCore.SIGNAL(_fromUtf8("itemSelectionChanged()")), NodeEditorDialog.updateGui)
+        QtCore.QObject.connect(self.tabs_links_list, QtCore.SIGNAL(_fromUtf8("currentChanged(int)")), NodeEditorDialog.updateGui)
+        QtCore.QMetaObject.connectSlotsByName(NodeEditorDialog)
 
-    def retranslateUi(self, NodeEditorPanel):
-        NodeEditorPanel.setWindowTitle(_translate("NodeEditorPanel", "NodeEditor", None))
-        self.tabs_code_list.setTabText(self.tabs_code_list.indexOf(self.internals_tab), _translate("NodeEditorPanel", "Local variables", None))
-        self.tabs_code_list.setTabText(self.tabs_code_list.indexOf(self.includes_tab), _translate("NodeEditorPanel", "Includes", None))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.internals), _translate("NodeEditorPanel", "Internals", None))
-        self.tabs_param_list.setTabText(self.tabs_param_list.indexOf(self.inputs_tab), _translate("NodeEditorPanel", "Input", None))
-        self.tabs_param_list.setTabText(self.tabs_param_list.indexOf(self.outputs_tab), _translate("NodeEditorPanel", "Output", None))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.parameters), _translate("NodeEditorPanel", "Parameters", None))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.handlers), _translate("NodeEditorPanel", "Event Handlers", None))
-        self.tabs_links_list.setTabText(self.tabs_links_list.indexOf(self.input_links_tab), _translate("NodeEditorPanel", "Input", None))
-        self.tabs_links_list.setTabText(self.tabs_links_list.indexOf(self.output_links_tab), _translate("NodeEditorPanel", "Output", None))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.links), _translate("NodeEditorPanel", "Links", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.node_tab), _translate("NodeEditorPanel", "Node", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.node_code_tab), _translate("NodeEditorPanel", "Node Code", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.control_code_tab), _translate("NodeEditorPanel", "Control Code", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.event_code_tab), _translate("NodeEditorPanel", "Event Code", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.param_code_tab), _translate("NodeEditorPanel", "Param Code", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.param_tab), _translate("NodeEditorPanel", "Parameter", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.link_tab), _translate("NodeEditorPanel", "Link Info", None))
-        self.btn_save.setText(_translate("NodeEditorPanel", "Save", None))
-        self.btn_close.setText(_translate("NodeEditorPanel", "Close", None))
+    def retranslateUi(self, NodeEditorDialog):
+        NodeEditorDialog.setWindowTitle(_translate("NodeEditorDialog", "NodeEditor", None))
+        self.tabs_code_list.setTabText(self.tabs_code_list.indexOf(self.internals_tab), _translate("NodeEditorDialog", "Local variables", None))
+        self.tabs_code_list.setTabText(self.tabs_code_list.indexOf(self.includes_tab), _translate("NodeEditorDialog", "Includes", None))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.internals), _translate("NodeEditorDialog", "Internals", None))
+        self.tabs_param_list.setTabText(self.tabs_param_list.indexOf(self.inputs_tab), _translate("NodeEditorDialog", "Input", None))
+        self.tabs_param_list.setTabText(self.tabs_param_list.indexOf(self.outputs_tab), _translate("NodeEditorDialog", "Output", None))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.parameters), _translate("NodeEditorDialog", "Parameters", None))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.handlers), _translate("NodeEditorDialog", "Event Handlers", None))
+        self.tabs_links_list.setTabText(self.tabs_links_list.indexOf(self.input_links_tab), _translate("NodeEditorDialog", "Input", None))
+        self.tabs_links_list.setTabText(self.tabs_links_list.indexOf(self.output_links_tab), _translate("NodeEditorDialog", "Output", None))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.links), _translate("NodeEditorDialog", "Links", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.node_tab), _translate("NodeEditorDialog", "Node", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.node_code_tab), _translate("NodeEditorDialog", "Node Code", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.control_code_tab), _translate("NodeEditorDialog", "Control Code", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.event_code_tab), _translate("NodeEditorDialog", "Event Code", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.param_code_tab), _translate("NodeEditorDialog", "Param Code", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.param_tab), _translate("NodeEditorDialog", "Parameter", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.link_tab), _translate("NodeEditorDialog", "Link Info", None))
+        self.btn_save.setText(_translate("NodeEditorDialog", "Save", None))
+        self.btn_close.setText(_translate("NodeEditorDialog", "Close", None))
 
 from nodeNamesEditor import NodeNamesEditor
 from nodePropertiesEditor import NodePropertiesEditor

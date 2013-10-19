@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui\ui_ExportShaderPanel.ui'
+# Form implementation generated from reading ui file 'gui\ui_ExportShaderDialog.ui'
 #
 # Created: Mon Apr 08 03:28:47 2013
 #      by: PyQt4 UI code generator 4.9.4
@@ -14,13 +14,13 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-class Ui_ExportShaderPanel(object):
-    def setupUi(self, ExportShaderPanel):
-        ExportShaderPanel.setObjectName(_fromUtf8("ExportShaderPanel"))
-        ExportShaderPanel.resize(938, 736)
-        self.verticalLayout = QtGui.QVBoxLayout(ExportShaderPanel)
+class Ui_ExportShaderDialog(object):
+    def setupUi(self, ExportShaderDialog):
+        ExportShaderDialog.setObjectName(_fromUtf8("ExportShaderDialog"))
+        ExportShaderDialog.resize(938, 736)
+        self.verticalLayout = QtGui.QVBoxLayout(ExportShaderDialog)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.splitter = QtGui.QSplitter(ExportShaderPanel)
+        self.splitter = QtGui.QSplitter(ExportShaderDialog)
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName(_fromUtf8("splitter"))
         self.nodes_toolBox = QtGui.QToolBox(self.splitter)
@@ -73,30 +73,30 @@ class Ui_ExportShaderPanel(object):
         self.hl_bottom.setObjectName(_fromUtf8("hl_bottom"))
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.hl_bottom.addItem(spacerItem)
-        self.btn_save = QtGui.QPushButton(ExportShaderPanel)
+        self.btn_save = QtGui.QPushButton(ExportShaderDialog)
         self.btn_save.setObjectName(_fromUtf8("btn_save"))
         self.hl_bottom.addWidget(self.btn_save)
-        self.btn_close = QtGui.QPushButton(ExportShaderPanel)
+        self.btn_close = QtGui.QPushButton(ExportShaderDialog)
         self.btn_close.setObjectName(_fromUtf8("btn_close"))
         self.hl_bottom.addWidget(self.btn_close)
         self.verticalLayout.addLayout(self.hl_bottom)
         self.verticalLayout.setStretch(0, 1)
 
-        self.retranslateUi(ExportShaderPanel)
+        self.retranslateUi(ExportShaderDialog)
         self.nodes_toolBox.setCurrentIndex(0)
         self.params_toolBox.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(1)
-        QtCore.QObject.connect(self.btn_save, QtCore.SIGNAL(_fromUtf8("clicked()")), ExportShaderPanel.accept)
-        QtCore.QObject.connect(self.btn_close, QtCore.SIGNAL(_fromUtf8("clicked()")), ExportShaderPanel.reject)
-        QtCore.QMetaObject.connectSlotsByName(ExportShaderPanel)
+        QtCore.QObject.connect(self.btn_save, QtCore.SIGNAL(_fromUtf8("clicked()")), ExportShaderDialog.accept)
+        QtCore.QObject.connect(self.btn_close, QtCore.SIGNAL(_fromUtf8("clicked()")), ExportShaderDialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(ExportShaderDialog)
 
-    def retranslateUi(self, ExportShaderPanel):
-        ExportShaderPanel.setWindowTitle(QtGui.QApplication.translate("ExportShaderPanel", "ExportShader", None, QtGui.QApplication.UnicodeUTF8))
-        self.nodes_toolBox.setItemText(self.nodes_toolBox.indexOf(self.page), QtGui.QApplication.translate("ExportShaderPanel", "Nodes", None, QtGui.QApplication.UnicodeUTF8))
-        self.params_toolBox.setItemText(self.params_toolBox.indexOf(self.inputs), QtGui.QApplication.translate("ExportShaderPanel", "Input Parameters", None, QtGui.QApplication.UnicodeUTF8))
-        self.params_toolBox.setItemText(self.params_toolBox.indexOf(self.outputs), QtGui.QApplication.translate("ExportShaderPanel", "Output Parameters", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_param), QtGui.QApplication.translate("ExportShaderPanel", "Parameter", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_code), QtGui.QApplication.translate("ExportShaderPanel", "Shader Code", None, QtGui.QApplication.UnicodeUTF8))
-        self.btn_save.setText(QtGui.QApplication.translate("ExportShaderPanel", "Save", None, QtGui.QApplication.UnicodeUTF8))
-        self.btn_close.setText(QtGui.QApplication.translate("ExportShaderPanel", "Close", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, ExportShaderDialog):
+        ExportShaderDialog.setWindowTitle(QtGui.QApplication.translate("ExportShaderDialog", "ExportShader", None, QtGui.QApplication.UnicodeUTF8))
+        self.nodes_toolBox.setItemText(self.nodes_toolBox.indexOf(self.page), QtGui.QApplication.translate("ExportShaderDialog", "Nodes", None, QtGui.QApplication.UnicodeUTF8))
+        self.params_toolBox.setItemText(self.params_toolBox.indexOf(self.inputs), QtGui.QApplication.translate("ExportShaderDialog", "Input Parameters", None, QtGui.QApplication.UnicodeUTF8))
+        self.params_toolBox.setItemText(self.params_toolBox.indexOf(self.outputs), QtGui.QApplication.translate("ExportShaderDialog", "Output Parameters", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_param), QtGui.QApplication.translate("ExportShaderDialog", "Parameter", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_code), QtGui.QApplication.translate("ExportShaderDialog", "Shader Code", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_save.setText(QtGui.QApplication.translate("ExportShaderDialog", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_close.setText(QtGui.QApplication.translate("ExportShaderDialog", "Close", None, QtGui.QApplication.UnicodeUTF8))
 

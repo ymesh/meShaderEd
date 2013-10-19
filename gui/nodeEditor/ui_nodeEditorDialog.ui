@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NodeEditorPanel</class>
- <widget class="QWidget" name="NodeEditorPanel">
+ <class>NodeEditorDialog</class>
+ <widget class="QWidget" name="NodeEditorDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -441,7 +441,7 @@
   <connection>
    <sender>toolBox</sender>
    <signal>currentChanged(int)</signal>
-   <receiver>NodeEditorPanel</receiver>
+   <receiver>NodeEditorDialog</receiver>
    <slot>onToolBoxIndexChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -457,7 +457,7 @@
   <connection>
    <sender>btn_save</sender>
    <signal>clicked()</signal>
-   <receiver>NodeEditorPanel</receiver>
+   <receiver>NodeEditorDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -473,7 +473,7 @@
   <connection>
    <sender>btn_close</sender>
    <signal>clicked()</signal>
-   <receiver>NodeEditorPanel</receiver>
+   <receiver>NodeEditorDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -489,7 +489,7 @@
   <connection>
    <sender>input_links_listWidget</sender>
    <signal>itemSelectionChanged()</signal>
-   <receiver>NodeEditorPanel</receiver>
+   <receiver>NodeEditorDialog</receiver>
    <slot>updateGui()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -505,7 +505,7 @@
   <connection>
    <sender>output_links_listWidget</sender>
    <signal>itemSelectionChanged()</signal>
-   <receiver>NodeEditorPanel</receiver>
+   <receiver>NodeEditorDialog</receiver>
    <slot>updateGui()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -521,7 +521,7 @@
   <connection>
    <sender>tabs_links_list</sender>
    <signal>currentChanged(int)</signal>
-   <receiver>NodeEditorPanel</receiver>
+   <receiver>NodeEditorDialog</receiver>
    <slot>updateGui()</slot>
    <hints>
     <hint type="sourcelabel">

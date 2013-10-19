@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Sun Jul 14 17:34:07 2013
+# Created: Sat Oct 19 22:54:00 2013
 #      by: PyQt4 UI code generator 4.10.2-snapshot-a8a14dd99d1e
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(874, 611)
+        MainWindow.resize(963, 894)
         MainWindow.setDockOptions(QtGui.QMainWindow.AllowTabbedDocks|QtGui.QMainWindow.AnimatedDocks)
         MainWindow.setUnifiedTitleAndToolBarOnMac(False)
         self.centralwidget = QtGui.QWidget(MainWindow)
@@ -51,7 +51,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.tabs, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 874, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 963, 21))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Lucida Sans"))
         font.setPointSize(9)
@@ -182,9 +182,9 @@ class Ui_MainWindow(object):
         self.actionSaveAs.setObjectName(_fromUtf8("actionSaveAs"))
         self.actionImport = QtGui.QAction(MainWindow)
         self.actionImport.setObjectName(_fromUtf8("actionImport"))
-        self.actionExport = QtGui.QAction(MainWindow)
-        self.actionExport.setEnabled(False)
-        self.actionExport.setObjectName(_fromUtf8("actionExport"))
+        self.actionSaveSelected = QtGui.QAction(MainWindow)
+        self.actionSaveSelected.setEnabled(False)
+        self.actionSaveSelected.setObjectName(_fromUtf8("actionSaveSelected"))
         self.actionCopy = QtGui.QAction(MainWindow)
         self.actionCopy.setEnabled(False)
         icon3 = QtGui.QIcon()
@@ -324,16 +324,19 @@ class Ui_MainWindow(object):
         self.actionHelpMode = QtGui.QAction(MainWindow)
         self.actionHelpMode.setCheckable(True)
         self.actionHelpMode.setObjectName(_fromUtf8("actionHelpMode"))
+        self.actionViewComputedCode = QtGui.QAction(MainWindow)
+        self.actionViewComputedCode.setObjectName(_fromUtf8("actionViewComputedCode"))
         self.menuRecent_Projects.addSeparator()
         self.menuRecent_Networks.addSeparator()
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSaveAs)
+        self.menuFile.addAction(self.actionSaveSelected)
+        self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionProjectSetup)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionImport)
-        self.menuFile.addAction(self.actionExport)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.menuRecent_Projects.menuAction())
         self.menuFile.addAction(self.menuRecent_Networks.menuAction())
@@ -359,7 +362,9 @@ class Ui_MainWindow(object):
         self.menuCreateNode.addSeparator()
         self.menuCommand.addAction(self.menuCreateNode.menuAction())
         self.menuCommand.addAction(self.actionEditNode)
+        self.menuCommand.addAction(self.actionViewComputedCode)
         self.menuCommand.addAction(self.actionExportShader)
+        self.menuCommand.addSeparator()
         self.menuCommand.addAction(self.actionRenderPreview)
         self.menuCommand.addAction(self.actionShowSwatch)
         self.menuCommand.addAction(self.actionHideSwatch)
@@ -437,6 +442,8 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.actionRenderPreview, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onRenderPreview)
         QtCore.QObject.connect(self.actionShowSwatch, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onShowSwatch)
         QtCore.QObject.connect(self.actionHideSwatch, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onHideSwatch)
+        QtCore.QObject.connect(self.actionSaveSelected, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onSaveSelected)
+        QtCore.QObject.connect(self.actionViewComputedCode, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onViewComputedCode)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -473,9 +480,10 @@ class Ui_MainWindow(object):
         self.actionSave.setShortcut(_translate("MainWindow", "Ctrl+S", None))
         self.actionExit.setText(_translate("MainWindow", "Quit", None))
         self.actionExit.setShortcut(_translate("MainWindow", "Ctrl+Q", None))
-        self.actionSaveAs.setText(_translate("MainWindow", "Save As", None))
+        self.actionSaveAs.setText(_translate("MainWindow", "Save As ...", None))
         self.actionImport.setText(_translate("MainWindow", "Import", None))
-        self.actionExport.setText(_translate("MainWindow", "Export", None))
+        self.actionSaveSelected.setText(_translate("MainWindow", "Save Selected As ...", None))
+        self.actionSaveSelected.setToolTip(_translate("MainWindow", "Save selected nodes", None))
         self.actionCopy.setText(_translate("MainWindow", "Copy", None))
         self.actionCopy.setShortcut(_translate("MainWindow", "Ctrl+C", None))
         self.actionCut.setText(_translate("MainWindow", "Cut", None))
@@ -529,7 +537,7 @@ class Ui_MainWindow(object):
         self.actionSelectAbove.setText(_translate("MainWindow", "Select above", None))
         self.actionSelectAbove.setToolTip(_translate("MainWindow", "Select hierarchy above", None))
         self.actionSelectAbove.setShortcut(_translate("MainWindow", "Ctrl+Up", None))
-        self.actionExportShader.setText(_translate("MainWindow", "Export Shader ...", None))
+        self.actionExportShader.setText(_translate("MainWindow", "Export As Shader ...", None))
         self.actionExportShader.setShortcut(_translate("MainWindow", "Ctrl+T", None))
         self.actionShowSwatch.setText(_translate("MainWindow", "Show Swatch", None))
         self.actionShowSwatch.setShortcut(_translate("MainWindow", "Ctrl+Shift+S", None))
@@ -537,6 +545,8 @@ class Ui_MainWindow(object):
         self.actionHideSwatch.setShortcut(_translate("MainWindow", "Ctrl+Shift+H", None))
         self.actionHelpMode.setText(_translate("MainWindow", "Help", None))
         self.actionHelpMode.setShortcut(_translate("MainWindow", "Shift+F1", None))
+        self.actionViewComputedCode.setText(_translate("MainWindow", "View Computed Code ...", None))
+        self.actionViewComputedCode.setShortcut(_translate("MainWindow", "Ctrl+Alt+V", None))
 
 from gfx.WorkArea import WorkArea
 from nodeSwatchParam import NodeSwatchParam

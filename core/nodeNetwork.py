@@ -1,6 +1,8 @@
-#===============================================================================
-# nodeNetwork.py
-#===============================================================================
+"""
+
+ nodeNetwork.py
+
+"""
 import os, sys
 
 from PyQt4 import QtCore, QtXml
@@ -412,6 +414,7 @@ class NodeNetwork ( QtCore.QObject ) :
     for link in links : self.addLink ( link )
     self.correct_id ( nodes, links )
     return ( nodes, links )
+  
   #
   # printInfo
   #

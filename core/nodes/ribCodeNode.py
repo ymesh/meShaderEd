@@ -1,6 +1,8 @@
-#===============================================================================
-# ribCodeNode.py
-#===============================================================================
+"""
+
+ ribCodeNode.py
+
+"""
 import os, sys
 from PyQt4 import QtCore
 
@@ -10,7 +12,7 @@ from core.nodeParam import NodeParam
 from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
 #
-# RIBNode
+# RIBCodeNode
 #
 class RIBCodeNode ( Node ) :
   #
@@ -24,6 +26,7 @@ class RIBCodeNode ( Node ) :
   # copy
   #
   def copy ( self ):
+    #
     if DEBUG_MODE : print '>> RIBCodeNode( %s ).copy' % self.label
     newNode = RIBCodeNode ()
     self.copySetup ( newNode )
@@ -55,46 +58,9 @@ class RIBCodeNode ( Node ) :
       result = shaderRiCall [ shader_type ]
     return result
   #
-  # getInputParamValueByName
-  #
-  def getInputParamValueByName ( self, name ) :
-    #
-    result = None
-    param = self.getInputParamByName ( name )
-
-    if self.isInputParamLinked ( param ) :
-      link = self.inputLinks [ param ]
-
-      link.printInfo ()
-      link.srcNode.computeNode ()
-
-      #if self.computed_code is not None :
-      #  self.computed_code += link.srcNode.computed_code
-
-      if link.srcNode.type in [ 'rib', 'rib_code' ] :
-        #result = '## start code from :' + link.srcNode.label
-        result = link.srcNode.parseLocalVars ( link.srcNode.code )
-        #result += '## end code from :' + link.srcNode.label
-      else :
-        result = link.srcNode.parseGlobalVars ( link.srcParam.getValueToStr () )
-    else :
-      result = param.getValueToStr ()
-
-    return result
-  #
-  # computeNode
-  #
-  def computeNode ( self ) :
-    #print '>> RIBCodeNode (%s).computeNode' % self.label
-    #
-    # inside code, imageName value can be assigned from different
-    # input parameters
-    #
-    self.execControlCode ()
-  #
   # parseLocalVars
   #
-  def parseLocalVars ( self, parsedStr ) :
+  def parseLocalVars ( self, parsedStr, CodeOnly = False ) :
     #print '-> parseLocalVars in %s' % parsedStr
     resultStr = ''
     parserStart = 0
@@ -117,7 +83,7 @@ class RIBCodeNode ( Node ) :
 
           param = self.getInputParamByName ( local_var_name )
           if param is not None :
-            value = self.getInputParamValueByName ( local_var_name )
+            value = self.getInputParamValueByName ( local_var_name, CodeOnly )
             resultStr += value
           else :
             param = self.getOutputParamByName ( local_var_name )
@@ -134,6 +100,63 @@ class RIBCodeNode ( Node ) :
         parserStart = parserPos + 1
 
     resultStr += parsedStr [ parserStart: ]
-
+    
+    if resultStr != '' :
+      resultStr = self.getHeader () + resultStr
+      
     return resultStr
+  #
+  # getInputParamValueByName
+  #
+  def getInputParamValueByName ( self, name, CodeOnly = False ) :
+    #
+    result = None
+    param = self.getInputParamByName ( name )
+
+    if self.isInputParamLinked ( param ) :
+      link = self.inputLinks [ param ]
+      #link.printInfo ()
+      link.srcNode.computeNode ( CodeOnly )
+      #if self.computed_code is not None :
+      #  self.computed_code += link.srcNode.computed_code
+      if link.srcNode.type in [ 'rib', 'rib_code' ] :
+        #result = '## start code from :' + link.srcNode.label
+        result = link.srcNode.parseLocalVars ( link.srcNode.code, CodeOnly )
+        #result += '## end code from :' + link.srcNode.label
+      else :
+        result = link.srcNode.parseGlobalVars ( link.srcParam.getValueToStr () )
+    else :
+      result = param.getValueToStr ()
+    
+    return result
+  #
+  # getHeader
+  #
+  def getHeader ( self ) :
+    #
+    rslHeader =  '\n'
+    rslHeader += '#\n'
+    rslHeader += '# RIB node: %s (%s)\n' % ( self.label,  self.name )
+    rslHeader += '#\n'
+    return rslHeader
+  #
+  # getComputedCode
+  #
+  def getComputedCode ( self, CodeOnly = False ) :
+    #
+    computedCode = ''
+    
+    self.execControlCode ()
+    
+    computedCode = self.parseLocalVars ( self.code, CodeOnly )
+    computedCode = self.parseGlobalVars ( computedCode )
+    
+    return computedCode
+  #
+  # computeNode
+  #
+  def computeNode ( self, CodeOnly = False ) :
+    #
+    self.execControlCode ()
+  
 

@@ -924,3 +924,43 @@ class WorkArea ( QtGui.QGraphicsView ) :
 
     for node in nodes : self.addGfxNode ( node, offsetPos )
     for link in links : self.addGfxLink ( link )
+  #
+  # newNodeNetFromList
+  #
+  def nodeNetFromSelected ( self, nodeNetName, preserveLinks = False ) :
+    #
+    if DEBUG_MODE : print '>> WorkArea.nodeNetFromSelected ( preserveLinks = %s )'  % str ( preserveLinks )
+    dupNodeNet = NodeNetwork ( nodeNetName )
+    
+    for gfxNode in self.selectedNodes :
+      dupNode = gfxNode.node.copy ()
+      dupNodeNet.addNode ( dupNode )
+      
+    
+    for gfxNode in self.selectedNodes :
+      for link in gfxNode.node.getInputLinks () :
+        #link.printInfo ()
+        dupLink = link.copy ()
+        dupDstNode = dupNodeNet.getNodeByID ( gfxNode.node.id )
+
+        if dupDstNode is not None :
+          dupDstParam = dupDstNode.getInputParamByName ( link.dstParam.name ) 
+          dupLink.setDst ( dupDstNode, dupDstParam )
+          
+          ( srcNode, srcParam ) = dupLink.getSrc ()
+          dupSrcNode = dupNodeNet.getNodeByID ( srcNode.id )
+          
+          if dupSrcNode is not None :
+            # if srcNode is inside dupNodeNet 
+            dupSrcParam = dupSrcNode.getOutputParamByName ( srcParam.name )
+            dupLink.setSrc ( dupSrcNode, dupSrcParam )
+            dupNodeNet.addLink ( dupLink ) 
+          else :
+            # if this is outside links
+            if preserveLinks :
+              dupNodeNet.addLink ( dupLink ) 
+            else :
+              dupLink.setSrc ( None, None )  
+              dupLink.setDst ( None, None )    
+              
+    return dupNodeNet          

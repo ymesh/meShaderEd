@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ExportShaderPanel</class>
- <widget class="QWidget" name="ExportShaderPanel">
+ <class>ExportShaderDialog</class>
+ <widget class="QWidget" name="ExportShaderDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -19,7 +19,22 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
+     <property name="handleWidth">
+      <number>8</number>
+     </property>
      <widget class="QToolBox" name="nodes_toolBox">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>300</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -28,7 +43,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>345</width>
+         <width>341</width>
          <height>660</height>
         </rect>
        </property>
@@ -49,6 +64,12 @@
       </widget>
      </widget>
      <widget class="QToolBox" name="params_toolBox">
+      <property name="baseSize">
+       <size>
+        <width>300</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -57,7 +78,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>346</width>
+         <width>342</width>
          <height>633</height>
         </rect>
        </property>
@@ -81,7 +102,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>346</width>
+         <width>342</width>
          <height>633</height>
         </rect>
        </property>
@@ -103,7 +124,7 @@
      </widget>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_param">
        <attribute name="title">
@@ -156,7 +177,7 @@
   <connection>
    <sender>btn_save</sender>
    <signal>clicked()</signal>
-   <receiver>ExportShaderPanel</receiver>
+   <receiver>ExportShaderDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -172,7 +193,7 @@
   <connection>
    <sender>btn_close</sender>
    <signal>clicked()</signal>
-   <receiver>ExportShaderPanel</receiver>
+   <receiver>ExportShaderDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

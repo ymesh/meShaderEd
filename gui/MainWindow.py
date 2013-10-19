@@ -7,7 +7,7 @@ import os, sys
 
 from PyQt4 import QtCore, QtGui, QtXml 
 #from PyQt4.QtGui import QWhatsThis 
-from global_vars import app_global_vars, DEBUG_MODE
+from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES, VALID_RSL_NODE_TYPES, VALID_RSL_SHADER_TYPES
 from core.meCommon import *
 from core.nodeNetwork import *
 
@@ -18,8 +18,9 @@ from gfx.gfxSwatchNode import GfxSwatchNode
 from meRendererSetup import meRendererSetup
 from ProjectSetup import ProjectSetup
 from SettingsSetup import SettingsSetup
-from nodeEditor.NodeEditorPanel import NodeEditorPanel
-from exportShader.ExportShaderPanel import ExportShaderPanel
+from nodeEditor.NodeEditorDialog import NodeEditorDialog
+from exportShader.ExportShaderDialog import ExportShaderDialog
+from ViewComputedCodeDialog import ViewComputedCodeDialog
 
 from nodeList import NodeList
 
@@ -257,10 +258,13 @@ class MainWindow ( QtGui.QMainWindow ) :
     numNodes = 0
     numSelectedNodes = 0
     numSelectedLinks = 0
+    selectedNodeType = None
     if self.workArea is not None :
       numNodes = len ( self.workArea.getAllGfxNodes () )
       numSelectedNodes = len ( self.workArea.selectedNodes )
       numSelectedLinks = len ( self.workArea.selectedLinks )
+      if numSelectedNodes == 1 :
+        selectedNodeType = self.getSelectedNode ().node.type
     enableForPaste = False
 
     if self.clipboard.ownsClipboard () or (sys.platform == 'darwin'):
@@ -270,6 +274,9 @@ class MainWindow ( QtGui.QMainWindow ) :
         if data.hasText () :
           enableForPaste = True
           
+    self.ui.actionExportShader.setEnabled ( selectedNodeType in VALID_RSL_SHADER_TYPES )
+    self.ui.actionViewComputedCode.setEnabled ( selectedNodeType in VALID_RSL_NODE_TYPES or selectedNodeType in VALID_RIB_NODE_TYPES )
+    self.ui.actionSaveSelected.setEnabled ( numSelectedNodes > 0 )
     self.ui.actionSelectAll.setEnabled ( numNodes > 0 )
     self.ui.actionSelectAbove.setEnabled ( numSelectedNodes == 1 )
     self.ui.actionSelectBelow.setEnabled ( numSelectedNodes == 1 )
@@ -453,32 +460,33 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def exportShader ( self, gfxNode ) :
     #
-    if DEBUG_MODE : print ">> MainWindow.exportShader (not implemented yet...)"
-    gfxNode = self.getSelectedNode ()
+    if DEBUG_MODE : print ">> MainWindow.exportShader"
 
-    exportShaderDlg = ExportShaderPanel ()
+    exportShaderDlg = ExportShaderDialog ( gfxNode.node )
     if exportShaderDlg.exec_ () == QtGui.QDialog.Accepted :
       if DEBUG_MODE : print '>> MainWindow.exportShaderDlg Accepted'
       #
       #
       return
   #
+  # onViewComputedCode
+  #
+  def onViewComputedCode ( self ) : 
+    #
+    if DEBUG_MODE : print ">> MainWindow.onViewComputedCode"
+    
+    node = self.getSelectedNode ().node
+    viewComputedCodeDlg = ViewComputedCodeDialog ( node )
+    viewComputedCodeDlg.exec_ ()
+    
+  #
   # onEditNode
   #
-  def onEditNode ( self ) : self.editGfxNode ( self.getSelectedNode () )
-  #
-  # editGfxNode
-  #
-  def editGfxNode ( self, gfxNode ) :
+  def onEditNode ( self ) : 
     #
-    if DEBUG_MODE : print ">> MainWindow.editGfxNode"
+    if DEBUG_MODE : print ">> MainWindow.onEditNode"
 
-    # reindex input params
-    #for i in range ( 0, len( gfxNode.node.inputParams ) ) : gfxNode.node.inputParams[ i ].id = i
-
-    # reindex output params
-    #for i in range ( 0, len( gfxNode.node.outputParams ) ) : gfxNode.node.outputParams[ i ].id = i
-
+    gfxNode = self.getSelectedNode ()
     editNode = gfxNode.node.copy ()
 
     dupNodeNet = NodeNetwork ( 'duplicate' )
@@ -506,7 +514,7 @@ class MainWindow ( QtGui.QMainWindow ) :
 
       newLink.printInfo ()
 
-    nodeEditDlg = NodeEditorPanel ( editNode )
+    nodeEditDlg = NodeEditorDialog ( editNode )
 
     if nodeEditDlg.exec_ () == QtGui.QDialog.Accepted :
       #
@@ -834,6 +842,35 @@ class MainWindow ( QtGui.QMainWindow ) :
       if DEBUG_MODE : print "-> import file %s" %  filename
       self.workArea.insertNodeNet ( normPath ( filename ) )
   #
+  # onSaveSelected
+  #
+  def onSaveSelected ( self ) :  
+    #
+    if DEBUG_MODE : print ">> MainWindow.onSaveSelected"
+    singleNode = ( len ( self.workArea.selectedNodes ) == 1 )
+    curDir = app_global_vars [ 'ProjectNetworks' ]
+    saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
+    typeFilter = 'Shader networks *.xml;;All files *.*;;'
+
+    filename = str( QtGui.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
+    if filename != '' :
+      if DEBUG_MODE : print '-> save file As %s' % filename
+      ( name, ext ) = os.path.splitext ( os.path.basename ( filename ) )
+      if singleNode :
+      # save single node
+        print '*** save as single Node'
+        gfxNode =  self.getSelectedNode ()
+        saveNode = gfxNode.node.copy ()
+        saveNode.name = name
+        saveNode.master = normPath ( filename )
+        saveNode.save ()
+      else :
+      # save selected as network
+        print '*** save as nodenet'
+        saveNodeNet = self.workArea.nodeNetFromSelected ( name )
+        saveNodeNet.fileName = normPath ( filename ) 
+        saveNodeNet.save ()
+  #
   # onSave
   #
   def onSave ( self ) :
@@ -847,6 +884,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     else :
       if DEBUG_MODE : print '-> save file %s' % self.workArea.nodeNet.fileName
       self.workArea.nodeNet.save ()
+  
   #
   # onSaveAs
   #

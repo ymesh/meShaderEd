@@ -1,10 +1,14 @@
 meShaderEd changes log
 
 version 0.3.4 (?? Oct 2013)
-  - NodeEditorPanel has changed. Source code collected to gui/nodeEditor.
+  - NodeEditorPanel renamed to NodeEditorDialog. Source code collected to gui/nodeEditor.
     -- added tabs for "Event Code", "Param Code", "Node", "Param", "Link Info"
     -- added "Event Handlers" list
-    
+  - ExportShaderPanel renamed ro ExportShaderDialog. Source code collected to gui/exportShader.
+  - MainWindow:
+    -- Action "Command->View Computed Code" displays RSL or RIB code for selected node
+    -- Action "File->Save Selected As" saves nodenet or single node from selection.
+  - RSL and RIB code includes comment block header for each node 
   
 version 0.3.3 (15 Oct 2013)
   - Shader parameters names exported as (NodeLabel)_(ParamLabel)

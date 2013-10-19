@@ -4,7 +4,8 @@
 
 """
 import os, sys
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtXml
+from PyQt4.QtCore import QDir, QFile, QVariant
 
 from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
@@ -340,7 +341,7 @@ class Node ( QtCore.QObject ) :
   #
   # getInputParamValueByName
   #
-  def getInputParamValueByName ( self, name, compute = True ) :
+  def getInputParamValueByName ( self, name, CodeOnly = False ) :
     #
     result = None
     srcNode = srcParam = None
@@ -348,10 +349,10 @@ class Node ( QtCore.QObject ) :
     ( srcNode, srcParam ) = self.getLinkedSrcNode ( param )
     if srcNode is not None :
       # computation may be skipped if we need only value
-      if compute :
-        srcNode.computeNode ()
-        if self.computed_code is not None :
-          self.computed_code += srcNode.computed_code
+      #if compute :
+      srcNode.computeNode ( CodeOnly )
+      if self.computed_code is not None :
+        self.computed_code += srcNode.computed_code
       result = srcNode.parseGlobalVars ( srcParam.getValueToStr () )
     else :
       result = param.getValueToStr ()
@@ -711,9 +712,26 @@ class Node ( QtCore.QObject ) :
 
     return xml_node
   #
+  # getHeader
+  #
+  def getHeader ( self ) :
+    #
+    rslHeader = '\n'
+    rslHeader +=  '/*\n'
+    rslHeader += ' * RSL code node: %s (%s)\n' % ( self.label,  self.name )
+    rslHeader += ' */\n'
+    return rslHeader
+  #
+  # getComputedCode
+  #
+  def getComputedCode ( self, CodeOnly = False ) :
+    #
+    computedCode = ''
+    return computedCode
+  #
   # computeNode
   #
-  def computeNode ( self ) :
+  def computeNode ( self, CodeOnly = False ) :
     #
     if DEBUG_MODE : print '>> Node (%s).computeNode' % self.label
     self.execControlCode ()
@@ -831,6 +849,23 @@ class Node ( QtCore.QObject ) :
     for param in self.outputParams : newNode.outputParams.append ( param.copy () )
 
     return newNode
+  #
+  # save Node to .xml document
+  #
+  def save ( self ) :
+    #
+    result = False
+  
+    dom = QtXml.QDomDocument ( self.name )
+    xml_code = self.parseToXML ( dom )
+    dom.appendChild ( xml_code )
+    
+    file = QFile ( self.master )
+    if file.open ( QtCore.QIODevice.WriteOnly ) :
+      if file.write ( dom.toByteArray () ) != -1 :
+        result = True
+    file.close()
+    return result
 #
 # createParamFromXml
 #
@@ -884,3 +919,4 @@ def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
   else :
     print '* Error: unknown param type !'
   return param
+

@@ -1,13 +1,12 @@
-#===============================================================================
-# exportShaderPanel.py
-#
-# ver. 1.0.0
-# Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
-# 
-# Dialog for managing node 
-# 
-#===============================================================================
+"""
+ ExportShaderDialog.py
 
+ ver. 1.0.0
+ Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
+ 
+ Dialog for export node as SL shader 
+
+""" 
 import os, sys
 from PyQt4 import QtCore, QtGui
 
@@ -18,17 +17,19 @@ import gui.ui_settings as UI
 
 from core.node import Node
 
-from ui_ExportShaderPanel import Ui_ExportShaderPanel
+from ui_exportShaderDialog import Ui_ExportShaderDialog
 #
-# ExportShaderPanel
+# ExportShaderDialog
 #
-class ExportShaderPanel ( QtGui.QDialog ) :
+class ExportShaderDialog ( QtGui.QDialog ) :
   #
   # __init__
   #
-  def __init__ ( self ) :
+  def __init__ ( self, node ) :
     #
     QtGui.QDialog.__init__ ( self )
+    
+    self.editNode = None
 
     self.buildGui ()
   #
@@ -36,7 +37,7 @@ class ExportShaderPanel ( QtGui.QDialog ) :
   #
   def buildGui ( self ) :
     # build the gui created with QtDesigner
-    self.ui = Ui_ExportShaderPanel ()
+    self.ui = Ui_ExportShaderDialog ()
     self.ui.setupUi ( self )
   #
   # connectSignals

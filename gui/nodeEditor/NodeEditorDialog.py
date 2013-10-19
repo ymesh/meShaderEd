@@ -1,5 +1,5 @@
 """
- NodeEditorPanel.py
+ NodeEditorDialog.py
 
  ver. 1.0.0
  Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
@@ -22,7 +22,7 @@ from nodeParamEditor import NodeParamEditor
 from nodeLinkEditor import NodeLinkEditor
 from nodeCodeEditor import NodeCodeEditor
 
-from ui_nodeEditorPanel import Ui_NodeEditorPanel
+from ui_nodeEditorDialog import Ui_NodeEditorDialog
 
 IDX_INTERNALS  = 0
 IDX_PARAM = 1
@@ -38,9 +38,9 @@ TAB_PARAM = 5
 TAB_LINK_INFO = 6
 
 #
-# NodeEditorPanel
+# NodeEditorDialog
 #
-class NodeEditorPanel ( QtGui.QDialog ) :
+class NodeEditorDialog ( QtGui.QDialog ) :
   #
   # __init__
   #
@@ -48,7 +48,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
     #
     QtGui.QDialog.__init__ ( self )
 
-    self.editNode = None
+    self.editNode = node
 
     # self.removedLinks = []
 
@@ -61,7 +61,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
     self.eventCodeEditor = None
     self.paramCodeEditor = None
 
-    self.setEditNode ( node )
+    #self.setEditNode ( node )
     self.buildGui ()
     self.connectSignals ()
 
@@ -161,14 +161,14 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def setEditNode ( self, editNode ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel: setEditNode'
+    if DEBUG_MODE : print '>> NodeEditorDialog: setEditNode'
     self.editNode = editNode
   #
   #  buildGui
   #
   def buildGui ( self ) :
     # build the gui created with QtDesigner
-    self.ui = Ui_NodeEditorPanel ( )
+    self.ui = Ui_NodeEditorDialog ()
     self.ui.setupUi ( self )
 
     if self.editNode is not None :
@@ -254,7 +254,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   def updateGui ( self ) :
     #
     if self.editNode is not None :
-      if DEBUG_MODE : print '>> NodeEditorPanel::updateGui'
+      if DEBUG_MODE : print '>> NodeEditorDialog::updateGui'
         
       self.disconnectSignals ()
       
@@ -333,7 +333,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   # onToolBoxIndexChanged
   #
   def onToolBoxIndexChanged ( self, idx ) :
-    if DEBUG_MODE : print '>> NodeEditorPanel::onToolBoxIndexChanged (idx = %d)' % idx
+    if DEBUG_MODE : print '>> NodeEditorDialog::onToolBoxIndexChanged (idx = %d)' % idx
     #
     #self.disconnectSignals ()
 
@@ -360,7 +360,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def onInputParamSelectionChanged ( self, paramName ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onInputParamSelectionChanged (%s)' % paramName
+    if DEBUG_MODE : print '>> NodeEditorDialog::onInputParamSelectionChanged (%s)' % paramName
     param = self.editNode.getInputParamByName ( str ( paramName ) )
     self.nodeParamEditor.setParam ( param )
   #
@@ -368,14 +368,14 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def onOutputParamSelectionChanged ( self, paramName ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onOutputParamSelectionChanged (%s)' % paramName
+    if DEBUG_MODE : print '>> NodeEditorDialog::onOutputParamSelectionChanged (%s)' % paramName
     param = self.editNode.getOutputParamByName ( str ( paramName ) )
     self.nodeParamEditor.setParam ( param )
   #
   # onCodeListIndexChanged
   #
   def onCodeListIndexChanged ( self, idx ) :
-    # if DEBUG_MODE : print '>> NodeEditorPanel: onCodeListIndexChanged idx = %d' % idx
+    # if DEBUG_MODE : print '>> NodeEditorDialog: onCodeListIndexChanged idx = %d' % idx
     self.updateGui ()
   #
   # onRemoveInternal
@@ -509,7 +509,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def onAddInternal ( self, newName ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onAddInternal (%s) ' % (newName)
+    if DEBUG_MODE : print '>> NodeEditorDialog::onAddInternal (%s) ' % (newName)
     # name can be changed to be unique
     newName = self.editNode.addInternal ( newName )
     internalsListWidget = self.ui.internals_list.ui.listWidget
@@ -520,7 +520,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def onAddInclude ( self, newName ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onAddInclude (%s) ' % (newName)
+    if DEBUG_MODE : print '>> NodeEditorDialog::onAddInclude (%s) ' % (newName)
     # name can be changed to be unique
     newName = self.editNode.addInclude ( newName )
     includesListWidget = self.ui.includes_list.ui.listWidget
@@ -531,7 +531,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def onAddParam ( self, newName ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onAddParam (%s) ' % (newName)
+    if DEBUG_MODE : print '>> NodeEditorDialog::onAddParam (%s) ' % (newName)
     isInputParam = False
     paramType = None
     isRibParam = ( self.editNode.type in VALID_RIB_NODE_TYPES )
@@ -568,7 +568,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
     if typeDialog.exec_() == QtGui.QDialog.Accepted  :
       paramType = str ( typeDialog.type_comboBox.currentText () )
 
-      if DEBUG_MODE : print '>> NodeEditorPanel::onAddParam typeDialog Accepted (%s)' % paramType
+      if DEBUG_MODE : print '>> NodeEditorDialog::onAddParam typeDialog Accepted (%s)' % paramType
       # create empty xml node parameter
       dom = QtXml.QDomDocument ( newName )
       xmlnode = dom.createElement( 'property' )
@@ -595,7 +595,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def onEditCode ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onEditCode'
+    if DEBUG_MODE : print '>> NodeEditorDialog::onEditCode'
     if self.nodeCodeEditor is not None :
       #self.nodeCodeEditor.ui.textEdit
       self.editNode.code = str ( self.nodeCodeEditor.ui.textEdit.toPlainText () )
@@ -604,7 +604,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def onEditControlCode ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onEditControlCode'
+    if DEBUG_MODE : print '>> NodeEditorDialog::onEditControlCode'
     if self.controlCodeEditor is not None :
       self.editNode.control_code = str ( self.controlCodeEditor.ui.textEdit.toPlainText () )
   #
@@ -612,7 +612,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def onEditParamCode ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onEditParamCode'
+    if DEBUG_MODE : print '>> NodeEditorDialog::onEditParamCode'
     if self.paramCodeEditor is not None :
       param = self.nodeParamEditor.param
       if param is not None and param.type == 'control' :
@@ -624,7 +624,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def onEditEventCode ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::onEditEventCode'
+    if DEBUG_MODE : print '>> NodeEditorDialog::onEditEventCode'
     if self.eventCodeEditor is not None :
       handler_item = self.ui.handlers_list.ui.listWidget.currentItem ()
       if handler_item is not None :
@@ -636,7 +636,7 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def keyPressEvent ( self, event  ) :
     #
-    #if DEBUG_MODE : print '>> NodeEditorPanel::keyPressEvent'
+    #if DEBUG_MODE : print '>> NodeEditorDialog::keyPressEvent'
     if  event.key () == QtCore.Qt.Key_Enter or event.key () == QtCore.Qt.Key_Return :
       event.ignore ()
     else:
@@ -646,5 +646,5 @@ class NodeEditorPanel ( QtGui.QDialog ) :
   #
   def accept ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeEditorPanel::accept'
+    if DEBUG_MODE : print '>> NodeEditorDialog::accept'
     self.done ( QtGui.QDialog.Accepted )
