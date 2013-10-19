@@ -6,7 +6,7 @@ Besides only RSL nodes, it allows to build networks with RIB nodes.
 
 meShaderEd supports all Renderman compliant renderers and shader compilers,
 that are accessible by PATH environment variable in your system. 
-Currently it was tested with PRMan, 3Delight, Air (partly wiyh Pixie and RenderDotC)
+Currently it was tested with PRMan, 3Delight, Air (partly with Pixie and RenderDotC)
 
 Main features:
 
