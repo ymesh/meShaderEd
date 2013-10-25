@@ -454,30 +454,22 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   # onExportShader
   #
-  def onExportShader ( self ) : self.exportShader ( self.getSelectedNode () )
-  #
-  # exportShader
-  #
-  def exportShader ( self, gfxNode ) :
+  def onExportShader ( self ) : 
     #
-    if DEBUG_MODE : print ">> MainWindow.exportShader"
-
+    if DEBUG_MODE : print ">> MainWindow.onExportShader"
+    gfxNode = self.getSelectedNode ()
     exportShaderDlg = ExportShaderDialog ( gfxNode.node )
-    if exportShaderDlg.exec_ () == QtGui.QDialog.Accepted :
-      if DEBUG_MODE : print '>> MainWindow.exportShaderDlg Accepted'
-      #
-      #
-      return
+    exportShaderDlg.exec_ ()
+    if exportShaderDlg.ui.chk_save_changes.isChecked () :
+      if DEBUG_MODE : print '>> MainWindow.exportShaderDlg save changes'
+      gfxNode.updateGfxNode ( removeLinks = False )
+      self.workArea.updateBelow ( gfxNode )
+      self.updateNodeParamView ()
+      self.workArea.scene().update ()
   #
   # onViewComputedCode
   #
-  def onViewComputedCode ( self ) : 
-    #
-    if DEBUG_MODE : print ">> MainWindow.onViewComputedCode"
-    
-    node = self.getSelectedNode ().node
-    viewComputedCodeDlg = ViewComputedCodeDialog ( node )
-    viewComputedCodeDlg.exec_ ()
+  def onViewComputedCode ( self ) : ViewComputedCodeDialog ( self.getSelectedNode ().node ).exec_ ()
     
   #
   # onEditNode

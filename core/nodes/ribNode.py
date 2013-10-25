@@ -131,6 +131,34 @@ class RIBNode ( Node ) :
     
     return computedCode
   #
+  # writeRIB
+  #
+  def writeRIB ( self, ribCode, ribName ) :
+    #
+    self.ribName = normPath ( ribName )
+    f = open ( self.ribName, 'w+t' )
+    f.write ( ribCode )
+    f.close ()
+  #
+  # renderRIB
+  #
+  def renderRIB ( self ) :
+    #
+    from meShaderEd import app_renderer
+  
+    renderer = app_global_vars [ 'Renderer' ]
+    flags = app_global_vars [ 'RendererFlags' ]
+    renderCmd = [ renderer ]
+    if  flags != '' :  renderCmd.append ( flags )
+    renderCmd.append ( self.ribName )
+
+    print '>> RIBNode renderCmd = %s' %  ' '.join ( renderCmd )
+
+    # call the process
+    from core.meCommon import launchProcess
+
+    launchProcess ( renderCmd )
+  #
   # computeNode
   #
   def computeNode ( self, CodeOnly = False ) :
@@ -139,28 +167,9 @@ class RIBNode ( Node ) :
 
     if ribCode != '' and not CodeOnly :
       
-      self.ribName = normPath ( os.path.join ( app_global_vars [ 'TempPath' ], self.getNodenetName () + '_' + self.getInstanceName () + '.rib' ) )
-  
-      print '>> RIBNode save file %s' % self.ribName
-  
-      f = open ( self.ribName, 'w+t' )
-      f.write ( ribCode )
-      f.close ()
-  
-      from meShaderEd import app_renderer
-  
-      renderer = app_global_vars [ 'Renderer' ]
-      flags = app_global_vars [ 'RendererFlags' ]
-      renderCmd = [ renderer ]
-      if  flags != '' :  renderCmd.append ( flags )
-      renderCmd.append ( self.ribName )
-  
-      print '>> RIBNode renderCmd = %s' %  ' '.join( renderCmd )
-  
-      # call the process
-      from core.meCommon import launchProcess
-  
-      launchProcess ( renderCmd )
+      ribName = os.path.join ( app_global_vars [ 'TempPath' ], self.getNodenetName () + '_' + self.getInstanceName () + '.rib' )
+      self.writeRIB ( ribCode, ribName )
+      self.renderRIB ()      
 
     return self.ribName
   

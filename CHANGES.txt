@@ -4,7 +4,9 @@ version 0.3.4 (?? Oct 2013)
   - NodeEditorPanel renamed to NodeEditorDialog. Source code collected to gui/nodeEditor.
     -- added tabs for "Event Code", "Param Code", "Node", "Param", "Link Info"
     -- added "Event Handlers" list
-  - ExportShaderPanel renamed ro ExportShaderDialog. Source code collected to gui/exportShader.
+  - ExportShaderPanel renamed to ExportShaderDialog. Source code collected to gui/exportShader.
+    -- it allows to rename/edit shader parameters
+    -- export computed code to .sl file
   - MainWindow:
     -- Action "Command->View Computed Code" displays RSL or RIB code for selected node
     -- Action "File->Save Selected As" saves nodenet or single node from selection.

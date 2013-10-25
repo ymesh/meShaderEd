@@ -1,13 +1,13 @@
-#===============================================================================
-# nodeNamesEditor.py.py
-#
-# ver. 1.0.0
-# Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
-# 
-# Widget for manage names in list
-# 
-#===============================================================================
+"""
 
+ nodeNamesEditor.py.py
+
+ ver. 1.0.0
+ Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
+ 
+ Widget for manage names in list
+ 
+"""
 import os, sys
 from PyQt4 import QtCore, QtGui
 
@@ -73,7 +73,7 @@ class NodeNamesEditor ( QtGui.QWidget ) :
   #
   def onRenameItem ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeNamesEditor::onRenameItem'
+    if DEBUG_MODE : print '>> NodeNamesEditor.onRenameItem'
     new_text = str ( self.ui.name_lineEdit.text () ).strip ()
     
     if new_text == '' :
@@ -95,10 +95,11 @@ class NodeNamesEditor ( QtGui.QWidget ) :
   #
   def onSelectionChanged ( self ) :
     #
-    if DEBUG_MODE : print '>> NodeNamesEditor::onSelectionChanged'
+    if DEBUG_MODE : print '>> NodeNamesEditor.onSelectionChanged'
     list_item = self.ui.listWidget.currentItem ()
     
     if list_item is not None :
       self.saved_text = str ( list_item.text() )
       self.ui.name_lineEdit.setText ( self.saved_text  )
-      self.emit ( QtCore.SIGNAL ( 'selectionChanged' ), self.saved_text  )   
+      self.emit ( QtCore.SIGNAL ( 'selectionChanged' ), self.saved_text  )  
+  

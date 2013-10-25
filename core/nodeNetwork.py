@@ -198,6 +198,8 @@ class NodeNetwork ( QtCore.QObject ) :
       linkPopped = self.links.pop ( link.id )
       dstNode = linkPopped.dstNode
       srcNode = linkPopped.srcNode
+      # detach nodes from link
+      linkPopped.remove ()
       # check if we can remove a child from destination node
       sourceNodeReferenceCount = 0
       for inputLink in dstNode.inputLinks.values () :
@@ -206,8 +208,7 @@ class NodeNetwork ( QtCore.QObject ) :
       if sourceNodeReferenceCount == 0 :
         if srcNode in dstNode.childs :
           dstNode.removeChild ( srcNode )
-      # detach nodes from link
-      linkPopped.remove ()
+      
   #
   # hasThisLink
   #

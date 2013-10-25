@@ -6,179 +6,204 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>938</width>
-    <height>736</height>
+    <width>967</width>
+    <height>735</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>ExportShader</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
-   <item>
-    <widget class="QSplitter" name="splitter">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="handleWidth">
-      <number>8</number>
-     </property>
-     <widget class="QToolBox" name="nodes_toolBox">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>16777215</height>
-       </size>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>9</y>
+     <width>951</width>
+     <height>721</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_6" rowstretch="1,0">
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
-      <property name="baseSize">
-       <size>
-        <width>300</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="page">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>341</width>
-         <height>660</height>
-        </rect>
+      <widget class="QTabWidget" name="node_tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-       <attribute name="label">
-        <string>Nodes</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QListView" name="listView"/>
-        </item>
-       </layout>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Nodes</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="margin">
+          <number>2</number>
+         </property>
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QListWidget" name="list_nodes">
+           <property name="modelColumn">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QTabWidget" name="params_tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab_inputs">
+        <attribute name="title">
+         <string>Inputs</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="margin">
+          <number>2</number>
+         </property>
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QListWidget" name="list_inputs"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_outputs">
+        <attribute name="title">
+         <string>Outputs</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <property name="margin">
+          <number>2</number>
+         </property>
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QListWidget" name="list_outputs"/>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QTabWidget" name="prop_tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab_prop_node">
+        <attribute name="title">
+         <string>Node</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <property name="margin">
+          <number>2</number>
+         </property>
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="NodePropertiesEditor" name="node" native="true"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_prop_param">
+        <attribute name="title">
+         <string>Parameter</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <property name="margin">
+          <number>2</number>
+         </property>
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="NodeParamEditor" name="param" native="true"/>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
-     <widget class="QToolBox" name="params_toolBox">
-      <property name="baseSize">
-       <size>
-        <width>300</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="inputs">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>342</width>
-         <height>633</height>
-        </rect>
-       </property>
-       <attribute name="label">
-        <string>Input Parameters</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <property name="spacing">
-         <number>0</number>
+    </item>
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QCheckBox" name="chk_save_changes">
+        <property name="text">
+         <string>Save changes</string>
         </property>
-        <property name="margin">
-         <number>0</number>
+        <property name="checked">
+         <bool>true</bool>
         </property>
-        <item>
-         <widget class="QTreeView" name="inputs_treeView"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="outputs">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>342</width>
-         <height>633</height>
-        </rect>
-       </property>
-       <attribute name="label">
-        <string>Output Parameters</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <property name="spacing">
-         <number>0</number>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="margin">
-         <number>0</number>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
         </property>
-        <item>
-         <widget class="QTreeView" name="outputs_treeView"/>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="tab_param">
-       <attribute name="title">
-        <string>Parameter</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_code">
-       <attribute name="title">
-        <string>Shader Code</string>
-       </attribute>
-      </widget>
-     </widget>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="hl_bottom">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_save">
-       <property name="text">
-        <string>Save</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_close">
-       <property name="text">
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-  </layout>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_view">
+        <property name="text">
+         <string>View Code ...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_export">
+        <property name="text">
+         <string>Export ...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_close">
+        <property name="text">
+         <string>Close</string>
+        </property>
+        <property name="default">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>NodeParamEditor</class>
+   <extends>QWidget</extends>
+   <header>gui.nodeEditor.nodeParamEditor</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>NodePropertiesEditor</class>
+   <extends>QWidget</extends>
+   <header>gui.nodeEditor.nodePropertiesEditor</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
-   <sender>btn_save</sender>
+   <sender>btn_export</sender>
    <signal>clicked()</signal>
    <receiver>ExportShaderDialog</receiver>
-   <slot>accept()</slot>
+   <slot>onExport()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>403</x>
@@ -206,12 +231,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_view</sender>
+   <signal>clicked()</signal>
+   <receiver>ExportShaderDialog</receiver>
+   <slot>onViewCode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>670</x>
+     <y>713</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>483</x>
+     <y>367</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>onToolBoxIndexChanged(int)</slot>
   <slot>updateGui()</slot>
-  <slot>onCodeListIndexChanged()</slot>
   <slot>accept()</slot>
   <slot>reject()</slot>
+  <slot>onViewCode()</slot>
+  <slot>onExport()</slot>
  </slots>
 </ui>

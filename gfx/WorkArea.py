@@ -176,6 +176,17 @@ class WorkArea ( QtGui.QGraphicsView ) :
         else :
           if DEBUG_MODE : print '!! invalid link ...'
   #
+  # updateBelow
+  #
+  def updateBelow ( self, upperGfxNode, removeLinks = False ) :
+    #
+    if DEBUG_MODE : print '>> WorkArea::updateBelow upperGfxNode.node (%s) children:' % upperGfxNode.node.label
+    for node in upperGfxNode.node.childs :
+      if DEBUG_MODE : print '* %s' % node.label
+      gfxNode = self.getGfxNodesByNode ( node )
+      gfxNode.updateGfxNode ( removeLinks )
+      self.updateBelow ( gfxNode, removeLinks )
+  #
   # selectBelow
   #
   def selectBelow ( self, upperGfxNode ) :
