@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="BackgroundShader" author="mesh" type="rib_code">
+<node name="DefaultBackground" author="mesh" type="rib_code">
   <help>Preset of surface shaders used for background in a preview RIB</help>
   <input>
 

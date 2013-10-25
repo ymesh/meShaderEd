@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<node name="DefaultLights" author="mesh" type="rib_code">
+  <help>DefaultLights RIB node for preview with 2 distant and 1 environment light</help>
+  <input>
+    <property name="DistIntensity1" label="Distant1 Intensity" type="float" default="1.0" provider="attribute"/> 
+    <property name="DistIntensity2" label="Distant2 Intensity" type="float" default="0.4" provider="attribute"/> 
+    <property name="EnvIntensity" label="EnvLight Intensity" type="float" default="1.25" provider="attribute"/> 
+    <property name="EnvMap" label="Environment Map" type="string" default="kitchen_LL.hdr.${TEX}" provider="attribute"
+      subtype="file" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" />    
+  
+  </input>
+  <output>
+    <property name="rib_out" label="rib" type="rib" default=""/>
+  </output>
+  <control_code>
+<![CDATA[
+#print ":: Hello from %s XML code !!!" % self.label
+
+]]>
+  </control_code>
+  <code>
+<![CDATA[
+  LightSource "distantlight" 1 "intensity" $(DistIntensity1) "from" [-2 2 -3] "to" [0 0 0]
+  LightSource "distantlight" 2 "intensity" $(DistIntensity2) "from" [6 -3 0] "to" [0 0 0]
+  LightSource "meEnvLight" 3  "uniform float Intensity" [$(EnvIntensity)] 
+                              "uniform string meEnvMap_EnvMap" ["$(EnvMap)"]
+                              "uniform string meEnvMap_Space" ["_environment"]
+]]>
+  </code>   
+</node>

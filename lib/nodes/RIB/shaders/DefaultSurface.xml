@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<node name="SurfaceShader" author="mesh" type="rib_code">
-  <help>Preset of surface shaders used for background in a preview RIB</help>
+<node name="DefaultSurface" author="mesh" type="rib_code">
+  <help>Preset of surface shaders used in a preview RIB</help>
   <input>
     <property name="Color" type="color" default="0 0 1" provider="attribute"/>  
     <property name="Opacity" type="color" default="1 1 1" provider="attribute"/> 
