@@ -1,0 +1,24 @@
+<?xml version="1.0"?> 
+
+<node name="else_end_C" label="else_end_C" author="mesh">
+	<help>Terminator '}' for color value.</help>
+	<input>
+		<property name="if_inC" type="color" default="color(0.0, 0.0, 0.0)" />
+		<property name="else_inC" type="color" default="color(0.0, 0.0, 0.0)" />
+	</input>
+	<output>
+	  <property name="outC" type="color" default="color(0.0, 0.0, 0.0)" />
+	</output>
+	<code>
+<![CDATA[
+
+$(outC) = $(if_inC);
+}
+else
+{
+$(outC) = $(else_inC);
+}
+
+]]>
+	</code>
+</node>

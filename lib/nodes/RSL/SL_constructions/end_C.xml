@@ -1,0 +1,19 @@
+<?xml version="1.0"?> 
+
+<node name="end_C" label="end_C" author="mesh">
+	<help>Terminator '}' for color value.</help>
+	<input>
+		<property name="inC" type="color" default="color(0.0, 0.0, 0.0)" />
+	</input>
+	<output>
+	  <property name="outC" type="color" default="color(0.0, 0.0, 0.0)" />
+	</output>
+	<code>
+<![CDATA[
+
+$(outC) = $(inC);
+}
+
+]]>
+	</code>
+</node>

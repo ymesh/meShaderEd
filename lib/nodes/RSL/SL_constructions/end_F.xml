@@ -1,0 +1,19 @@
+<?xml version="1.0"?> 
+
+<node name="end_F" label="end_F" author="mesh">
+	<help>Terminator '}' for float value.</help>
+	<input>
+		<property name="inF" type="float" default="0" />
+	</input>
+	<output>
+	  <property name="outF" type="float" default="0" />
+	</output>
+	<code>
+<![CDATA[
+
+$(outF) = $(inF);
+}
+
+]]>
+	</code>
+</node>

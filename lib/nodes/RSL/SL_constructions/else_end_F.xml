@@ -1,0 +1,24 @@
+<?xml version="1.0"?> 
+
+<node name="else_end_F" label="else_end_F" author="mesh">
+	<help>Terminator '} else {  }' for float value.</help>
+	<input>
+		<property name="if_inF" type="color" default="0" />
+		<property name="else_inF" type="color" default="0" />
+	</input>
+	<output>
+	  <property name="outF" type="float" default="0" />
+	</output>
+	<code>
+<![CDATA[
+
+$(outF) = $(if_inF);
+}
+else
+{
+$(outF) = $(else_inF);
+}
+
+]]>
+	</code>
+</node>
