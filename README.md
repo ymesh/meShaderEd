@@ -1,4 +1,4 @@
-meShaderEd
+meShaderEd ("construct" branch)
 ==========
 
 This is a node based shader editor. 
