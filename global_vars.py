@@ -32,6 +32,13 @@ app_global_vars = {
   ,'TEX':''
   ,'SLO':''
 }
+
+app_colors = {
+   'rsl_node_bg': QtGui.QColor ( 0, 128, 128 )
+  ,'rib_node_bg': QtGui.QColor ( 255, 150, 50 )
+  ,'image_node_bg': QtGui.QColor ( 128, 128, 128 )
+}
+
 DEBUG_MODE = True
 
 if QtCore.QT_VERSION < 50000 :
