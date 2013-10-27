@@ -1,5 +1,5 @@
 <?xml version="1.0"?> 
-<node name="displacement" label="disp" type="displacement" author="mesh">
+<node name="displacement" label="disp" format='rsl' type="displacement" author="mesh">
 	<help>Root displacement shader.</help>
 	<input>
 		<property name="P" type="point" default="point (0.0, 0.0, 0.0)" />

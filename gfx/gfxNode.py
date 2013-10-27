@@ -10,7 +10,7 @@ from gfx.gfxNodeLabel import GfxNodeLabel
 from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
 
-from global_vars import DEBUG_MODE, GFX_NODE_TYPE, VALID_RSL_PARAM_TYPES
+from global_vars import app_colors, DEBUG_MODE, GFX_NODE_TYPE, VALID_RSL_PARAM_TYPES
 from meShaderEd import app_settings
 import gui.ui_settings as UI
 #
@@ -26,6 +26,8 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     #
     QtGui.QGraphicsItem.__init__ ( self )
 
+    self.node = node
+    
     self.header = {}
 
     self.outputParamLabels = []
@@ -50,7 +52,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     self.normalColor = QtGui.QColor ( 0, 0, 0 )
     self.selectedColor = QtGui.QColor ( 250, 250, 250 )
     alternateColor = QtGui.QColor ( 240, 140, 0 )
-    self.bgColor = QtGui.QColor ( 128, 128, 128 )
+    self.bgColor = self.get_bg_color () 
     
     self.shadowColor = QtGui.QColor ( 0, 0, 0 )
     self.shadowColor.setAlphaF ( self.shadow_opacity )
@@ -73,7 +75,7 @@ class GfxNode ( QtGui.QGraphicsItem ) :
     self.BrushShadow = QtGui.QBrush ( self.shadowColor )
     self.PenShadow = QtGui.QPen ( self.shadowColor )
 
-    self.node = node
+    
 
     self.collapse = None # 'input' 'output' 'all'
 
@@ -96,6 +98,21 @@ class GfxNode ( QtGui.QGraphicsItem ) :
   # type
   #
   def type ( self ) : return GfxNode.Type
+  #
+  #
+  #
+  def get_bg_color ( self ) :
+    #
+    bg = QtGui.QColor ( 128, 128, 128 )
+    
+    if self.node.format == 'rsl' :
+      bg = app_colors [ 'rsl_node_bg' ] 
+    elif self.node.format == 'rib' :
+      bg = app_colors [ 'rib_node_bg' ] 
+    elif self.node.format == 'image' :
+      bg = app_colors [ 'image_node_bg' ]
+       
+    return bg
   #
   # onUpdateNode
   #

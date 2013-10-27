@@ -28,6 +28,11 @@ class Node ( QtCore.QObject ) :
     self.name = None
     self.label = None
     self.type = None
+    
+    self.version = None
+    self.format = None
+    self.parent = None
+    self.dirty = False
 
     self.author = None
     self.help = None
@@ -513,6 +518,10 @@ class Node ( QtCore.QObject ) :
     if self.label == '' : self.label = self.name
     #print '-> parsing from XML node name= %s label= %s' % ( self.name, self.label )
 
+    self.version = str ( xml_node.attributes ().namedItem ( 'version' ).nodeValue () )
+    self.parent = str ( xml_node.attributes ().namedItem ( 'parent' ).nodeValue () )
+    self.format = str ( xml_node.attributes ().namedItem ( 'format' ).nodeValue () )
+    
     self.author = str ( xml_node.attributes ().namedItem ( 'author' ).nodeValue () )
     self.type = str ( xml_node.attributes ().namedItem ( 'type' ).nodeValue () )
     #
@@ -647,6 +656,10 @@ class Node ( QtCore.QObject ) :
     if self.type != None : xml_node.setAttribute ( 'type', self.type )
     if self.author != None : xml_node.setAttribute ( 'author', self.author )
     if self.icon != None : xml_node.setAttribute ( 'icon', self.icon )
+      
+    if self.version != None : xml_node.setAttribute ( 'version', self.version )
+    if self.parent != None : xml_node.setAttribute ( 'parent', self.parent )
+    if self.format != None : xml_node.setAttribute ( 'format', self.format )
 
     if self.help != None :
       # append node help (short description)
@@ -805,6 +818,10 @@ class Node ( QtCore.QObject ) :
     newNode.icon   = self.icon
     newNode.master = self.master
     newNode.display = self.display
+    
+    newNode.format = self.format
+    newNode.parent = self.parent
+    newNode.dirty = self.dirty
 
     newNode.offset = self.offset
 

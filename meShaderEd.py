@@ -28,10 +28,10 @@ from core.meCommon import *
 from core.nodeLibrary import NodeLibrary
 from core.meRendererPreset import meRendererPreset
 
-from global_vars import app_global_vars, DEBUG_MODE
+from global_vars import app_global_vars, app_colors, DEBUG_MODE
 
 root = normPath ( sys.path [0] )
-version = '0.3.4b'
+version = '0.3.4b construct'
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
                                   QtCore.QSettings.UserScope,
@@ -47,19 +47,25 @@ def setDefaultValue ( key, def_value ) :
   if value.toString () == 'true' : value = True
   elif value.toString () == 'false' : value = False
   else :
-    value = str ( value.toString () )
+    if isinstance ( def_value, QtGui.QColor ) :
+      value = QtGui.QColor ( value )
+    else :  
+      value = str ( value.toString () )
   return value
 #
 # getDefaultValue
 #
-def getDefaultValue ( settings, group, key ) :
+def getDefaultValue ( settings, group, key, def_value = None ) :
   if group != '' : settings.beginGroup ( group )
   value = settings.value ( key )
   if group != '' : settings.endGroup ( )
   if value.toString () == 'true' : value = True
   elif value.toString () == 'false' : value = False
   else :
-    value = str ( value.toString () )
+    if def_value is not None and isinstance ( def_value, QtGui.QColor ) :
+      value = QtGui.QColor ( value )
+    else :  
+      value = str ( value.toString () )
   return value
 #
 #
@@ -158,6 +164,14 @@ def main () :
   reverse_flow   = setDefaultValue ( 'reverse_flow', False )
   straight_links = setDefaultValue ( 'straight_links', True )
 
+  app_settings.endGroup ()
+  
+  app_settings.beginGroup ( 'Colors' )
+  
+  app_colors [ 'rsl_node_bg' ] = setDefaultValue ( 'rsl_node_bg', app_colors [ 'rsl_node_bg' ] )
+  app_colors [ 'rib_node_bg' ] = setDefaultValue ( 'rib_node_bg', app_colors [ 'rib_node_bg' ] )
+  app_colors [ 'image_node_bg' ] = setDefaultValue ( 'image_node_bg', app_colors [ 'image_node_bg' ] )
+  
   app_settings.endGroup ()
 
   from gui.MainWindow import MainWindow

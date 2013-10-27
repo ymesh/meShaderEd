@@ -5,7 +5,7 @@
 """
 from PyQt4 import Qt, QtCore, QtGui
 
-from global_vars import DEBUG_MODE, GFX_NODE_LABEL_TYPE
+from global_vars import app_colors, DEBUG_MODE, GFX_NODE_LABEL_TYPE
 from meShaderEd import app_settings
 #
 # GfxNodeLabel
