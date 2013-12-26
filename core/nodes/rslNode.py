@@ -54,6 +54,7 @@ class RSLNode ( Node ) :
           self.computedLocalParamsList = srcNode.computedLocalParamsList + self.computedLocalParamsList
           self.computedOutputParamsList += srcNode.computedOutputParamsList
           self.computedIncludesList += srcNode.computedIncludesList
+
       else :
         if param.shaderParam :
           self.computedInputParamsList.append ( ( param, self ) ) # += declare
@@ -166,21 +167,31 @@ class RSLNode ( Node ) :
     return resultStr
   #
   # getComputedInputParams
+  # called from Node.parseGlobalVars
   #
   def getComputedInputParams ( self ) :
     #
+    params_set = set ()
     params_str = ''
     for ( param, node ) in self.computedInputParamsList :
-      params_str += node.getParamDeclaration ( param )
+      params_set.add ( node.getParamDeclaration ( param ) )
+    # getting rid from duplicates 
+    for param in params_set :
+      params_str += param  
     return params_str
   #
   # getComputedOutputParams
+  # called from Node.parseGlobalVars
   #
   def getComputedOutputParams ( self ) :
     #
+    params_set = set ()
     params_str = ''
     for ( param, node ) in self.computedOutputParamsList :
-      params_str += 'output ' + node.getParamDeclaration ( param )
+      params_set.add ( 'output ' + node.getParamDeclaration ( param ) )
+    # getting rid from duplicates 
+    for param in params_set :
+      params_str += param  
     return params_str
   #
   # getComputedLocals

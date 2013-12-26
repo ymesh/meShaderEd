@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui/exportShader\ui_exportShaderDialog.ui'
+# Form implementation generated from reading ui file 'gui\exportShader\ui_exportShaderDialog.ui'
 #
-# Created: Tue Oct 22 18:21:56 2013
+# Created: Thu Dec 26 12:44:50 2013
 #      by: PyQt4 UI code generator 4.10.2-snapshot-a8a14dd99d1e
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,14 +26,31 @@ except AttributeError:
 class Ui_ExportShaderDialog(object):
     def setupUi(self, ExportShaderDialog):
         ExportShaderDialog.setObjectName(_fromUtf8("ExportShaderDialog"))
-        ExportShaderDialog.resize(967, 735)
-        self.widget = QtGui.QWidget(ExportShaderDialog)
-        self.widget.setGeometry(QtCore.QRect(9, 9, 951, 721))
-        self.widget.setObjectName(_fromUtf8("widget"))
-        self.gridLayout_6 = QtGui.QGridLayout(self.widget)
-        self.gridLayout_6.setMargin(0)
+        ExportShaderDialog.resize(955, 711)
+        self.gridLayout_7 = QtGui.QGridLayout(ExportShaderDialog)
+        self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
+        self.gridLayout_6 = QtGui.QGridLayout()
         self.gridLayout_6.setObjectName(_fromUtf8("gridLayout_6"))
-        self.splitter = QtGui.QSplitter(self.widget)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.chk_save_changes = QtGui.QCheckBox(ExportShaderDialog)
+        self.chk_save_changes.setChecked(True)
+        self.chk_save_changes.setObjectName(_fromUtf8("chk_save_changes"))
+        self.horizontalLayout.addWidget(self.chk_save_changes)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.btn_view = QtGui.QPushButton(ExportShaderDialog)
+        self.btn_view.setObjectName(_fromUtf8("btn_view"))
+        self.horizontalLayout.addWidget(self.btn_view)
+        self.btn_export = QtGui.QPushButton(ExportShaderDialog)
+        self.btn_export.setObjectName(_fromUtf8("btn_export"))
+        self.horizontalLayout.addWidget(self.btn_export)
+        self.btn_close = QtGui.QPushButton(ExportShaderDialog)
+        self.btn_close.setDefault(False)
+        self.btn_close.setObjectName(_fromUtf8("btn_close"))
+        self.horizontalLayout.addWidget(self.btn_close)
+        self.gridLayout_6.addLayout(self.horizontalLayout, 1, 0, 1, 1)
+        self.splitter = QtGui.QSplitter(ExportShaderDialog)
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName(_fromUtf8("splitter"))
         self.node_tabWidget = QtGui.QTabWidget(self.splitter)
@@ -94,26 +111,8 @@ class Ui_ExportShaderDialog(object):
         self.gridLayout_5.addWidget(self.param, 0, 0, 1, 1)
         self.prop_tabWidget.addTab(self.tab_prop_param, _fromUtf8(""))
         self.gridLayout_6.addWidget(self.splitter, 0, 0, 1, 1)
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.chk_save_changes = QtGui.QCheckBox(self.widget)
-        self.chk_save_changes.setChecked(True)
-        self.chk_save_changes.setObjectName(_fromUtf8("chk_save_changes"))
-        self.horizontalLayout.addWidget(self.chk_save_changes)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
-        self.btn_view = QtGui.QPushButton(self.widget)
-        self.btn_view.setObjectName(_fromUtf8("btn_view"))
-        self.horizontalLayout.addWidget(self.btn_view)
-        self.btn_export = QtGui.QPushButton(self.widget)
-        self.btn_export.setObjectName(_fromUtf8("btn_export"))
-        self.horizontalLayout.addWidget(self.btn_export)
-        self.btn_close = QtGui.QPushButton(self.widget)
-        self.btn_close.setDefault(False)
-        self.btn_close.setObjectName(_fromUtf8("btn_close"))
-        self.horizontalLayout.addWidget(self.btn_close)
-        self.gridLayout_6.addLayout(self.horizontalLayout, 1, 0, 1, 1)
         self.gridLayout_6.setRowStretch(0, 1)
+        self.gridLayout_7.addLayout(self.gridLayout_6, 0, 0, 1, 1)
 
         self.retranslateUi(ExportShaderDialog)
         self.node_tabWidget.setCurrentIndex(0)
@@ -126,15 +125,15 @@ class Ui_ExportShaderDialog(object):
 
     def retranslateUi(self, ExportShaderDialog):
         ExportShaderDialog.setWindowTitle(_translate("ExportShaderDialog", "ExportShader", None))
+        self.chk_save_changes.setText(_translate("ExportShaderDialog", "Save changes", None))
+        self.btn_view.setText(_translate("ExportShaderDialog", "View Code ...", None))
+        self.btn_export.setText(_translate("ExportShaderDialog", "Export ...", None))
+        self.btn_close.setText(_translate("ExportShaderDialog", "Close", None))
         self.node_tabWidget.setTabText(self.node_tabWidget.indexOf(self.tab), _translate("ExportShaderDialog", "Nodes", None))
         self.params_tabWidget.setTabText(self.params_tabWidget.indexOf(self.tab_inputs), _translate("ExportShaderDialog", "Inputs", None))
         self.params_tabWidget.setTabText(self.params_tabWidget.indexOf(self.tab_outputs), _translate("ExportShaderDialog", "Outputs", None))
         self.prop_tabWidget.setTabText(self.prop_tabWidget.indexOf(self.tab_prop_node), _translate("ExportShaderDialog", "Node", None))
         self.prop_tabWidget.setTabText(self.prop_tabWidget.indexOf(self.tab_prop_param), _translate("ExportShaderDialog", "Parameter", None))
-        self.chk_save_changes.setText(_translate("ExportShaderDialog", "Save changes", None))
-        self.btn_view.setText(_translate("ExportShaderDialog", "View Code ...", None))
-        self.btn_export.setText(_translate("ExportShaderDialog", "Export ...", None))
-        self.btn_close.setText(_translate("ExportShaderDialog", "Close", None))
 
 from gui.nodeEditor.nodeParamEditor import NodeParamEditor
 from gui.nodeEditor.nodePropertiesEditor import NodePropertiesEditor
