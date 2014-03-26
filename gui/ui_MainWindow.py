@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui\ui_MainWindow.ui'
 #
-# Created: Sat Oct 19 22:54:00 2013
+# Created: Wed Mar 26 23:15:59 2014
 #      by: PyQt4 UI code generator 4.10.2-snapshot-a8a14dd99d1e
 #
 # WARNING! All changes made in this file will be lost!
@@ -137,12 +137,6 @@ class Ui_MainWindow(object):
         self.nodeParam_ctl.setObjectName(_fromUtf8("nodeParam_ctl"))
         self.dockParam.setWidget(self.nodeParam_ctl)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dockParam)
-        self.dockGeom = QtGui.QDockWidget(MainWindow)
-        self.dockGeom.setObjectName(_fromUtf8("dockGeom"))
-        self.geomView_ctl = GeomViewWidget()
-        self.geomView_ctl.setObjectName(_fromUtf8("geomView_ctl"))
-        self.dockGeom.setWidget(self.geomView_ctl)
-        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dockGeom)
         self.dockProject = QtGui.QDockWidget(MainWindow)
         self.dockProject.setObjectName(_fromUtf8("dockProject"))
         self.project_ctl = NodeLibraryView()
@@ -253,10 +247,6 @@ class Ui_MainWindow(object):
         icon9.addPixmap(QtGui.QPixmap(_fromUtf8(":/edit_icons/resources/delete.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionDelete.setIcon(icon9)
         self.actionDelete.setObjectName(_fromUtf8("actionDelete"))
-        self.actionShowGeometry = QtGui.QAction(MainWindow)
-        self.actionShowGeometry.setCheckable(True)
-        self.actionShowGeometry.setChecked(True)
-        self.actionShowGeometry.setObjectName(_fromUtf8("actionShowGeometry"))
         self.actionProjectSetup = QtGui.QAction(MainWindow)
         self.actionProjectSetup.setObjectName(_fromUtf8("actionProjectSetup"))
         self.actionSettings = QtGui.QAction(MainWindow)
@@ -326,6 +316,8 @@ class Ui_MainWindow(object):
         self.actionHelpMode.setObjectName(_fromUtf8("actionHelpMode"))
         self.actionViewComputedCode = QtGui.QAction(MainWindow)
         self.actionViewComputedCode.setObjectName(_fromUtf8("actionViewComputedCode"))
+        self.actionCompileShader = QtGui.QAction(MainWindow)
+        self.actionCompileShader.setObjectName(_fromUtf8("actionCompileShader"))
         self.menuRecent_Projects.addSeparator()
         self.menuRecent_Networks.addSeparator()
         self.menuFile.addAction(self.actionNew)
@@ -365,6 +357,7 @@ class Ui_MainWindow(object):
         self.menuCommand.addAction(self.actionViewComputedCode)
         self.menuCommand.addAction(self.actionExportShader)
         self.menuCommand.addSeparator()
+        self.menuCommand.addAction(self.actionCompileShader)
         self.menuCommand.addAction(self.actionRenderPreview)
         self.menuCommand.addAction(self.actionShowSwatch)
         self.menuCommand.addAction(self.actionHideSwatch)
@@ -372,7 +365,6 @@ class Ui_MainWindow(object):
         self.menuWindow.addAction(self.actionShowNodes)
         self.menuWindow.addAction(self.actionShowParameters)
         self.menuWindow.addAction(self.actionShowPreview)
-        self.menuWindow.addAction(self.actionShowGeometry)
         self.menuWindow.addSeparator()
         self.menuWindow.addAction(self.actionNewParamView)
         self.menuWindow.addAction(self.actionNewImageView)
@@ -444,6 +436,7 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.actionHideSwatch, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onHideSwatch)
         QtCore.QObject.connect(self.actionSaveSelected, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onSaveSelected)
         QtCore.QObject.connect(self.actionViewComputedCode, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onViewComputedCode)
+        QtCore.QObject.connect(self.actionCompileShader, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onCompileShader)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -463,7 +456,6 @@ class Ui_MainWindow(object):
         self.toolBar.setToolTip(_translate("MainWindow", "Enter to Help Mode", None))
         self.dockPreview.setWindowTitle(_translate("MainWindow", "Image View", None))
         self.dockParam.setWindowTitle(_translate("MainWindow", "Node Parameters", None))
-        self.dockGeom.setWindowTitle(_translate("MainWindow", "Geometry View", None))
         self.dockProject.setWindowTitle(_translate("MainWindow", "Project", None))
         self.dockSwatch.setWindowTitle(_translate("MainWindow", "Node Preview", None))
         self.actionRendererOptions.setText(_translate("MainWindow", "Renderer ...", None))
@@ -509,7 +501,6 @@ class Ui_MainWindow(object):
         self.actionShowPreview.setToolTip(_translate("MainWindow", "Show Preview", None))
         self.actionDelete.setText(_translate("MainWindow", "Delete", None))
         self.actionDelete.setShortcut(_translate("MainWindow", "Del", None))
-        self.actionShowGeometry.setText(_translate("MainWindow", "Geometry View", None))
         self.actionProjectSetup.setText(_translate("MainWindow", "Project Setup ...", None))
         self.actionSettings.setText(_translate("MainWindow", "Settings ...", None))
         self.actionReverseFlow.setText(_translate("MainWindow", "Reverse Flow", None))
@@ -547,11 +538,12 @@ class Ui_MainWindow(object):
         self.actionHelpMode.setShortcut(_translate("MainWindow", "Shift+F1", None))
         self.actionViewComputedCode.setText(_translate("MainWindow", "View Computed Code ...", None))
         self.actionViewComputedCode.setShortcut(_translate("MainWindow", "Ctrl+Alt+V", None))
+        self.actionCompileShader.setText(_translate("MainWindow", "Compile Shader", None))
+        self.actionCompileShader.setShortcut(_translate("MainWindow", "Ctrl+L", None))
 
-from gfx.WorkArea import WorkArea
-from nodeSwatchParam import NodeSwatchParam
 from nodeLibraryView import NodeLibraryView
-from nodeParamView import NodeParamView
-from geomViewWidget import GeomViewWidget
 from imageViewWidget import ImageViewWidget
+from nodeSwatchParam import NodeSwatchParam
+from nodeParamView import NodeParamView
+from gfx.WorkArea import WorkArea
 import resources_rc

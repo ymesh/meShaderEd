@@ -172,6 +172,7 @@
     <addaction name="actionViewComputedCode"/>
     <addaction name="actionExportShader"/>
     <addaction name="separator"/>
+    <addaction name="actionCompileShader"/>
     <addaction name="actionRenderPreview"/>
     <addaction name="actionShowSwatch"/>
     <addaction name="actionHideSwatch"/>
@@ -190,7 +191,6 @@
     <addaction name="actionShowNodes"/>
     <addaction name="actionShowParameters"/>
     <addaction name="actionShowPreview"/>
-    <addaction name="actionShowGeometry"/>
     <addaction name="separator"/>
     <addaction name="actionNewParamView"/>
     <addaction name="actionNewImageView"/>
@@ -348,15 +348,6 @@
     <number>2</number>
    </attribute>
    <widget class="NodeParamView" name="nodeParam_ctl"/>
-  </widget>
-  <widget class="QDockWidget" name="dockGeom">
-   <property name="windowTitle">
-    <string>Geometry View</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="GeomViewWidget" name="geomView_ctl"/>
   </widget>
   <widget class="QDockWidget" name="dockProject">
    <property name="windowTitle">
@@ -651,17 +642,6 @@
     <string>Del</string>
    </property>
   </action>
-  <action name="actionShowGeometry">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Geometry View</string>
-   </property>
-  </action>
   <action name="actionProjectSetup">
    <property name="text">
     <string>Project Setup ...</string>
@@ -864,6 +844,14 @@
     <string>Ctrl+Alt+V</string>
    </property>
   </action>
+  <action name="actionCompileShader">
+   <property name="text">
+    <string>Compile Shader</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
   <zorder>dockNodes</zorder>
   <zorder>dockPreview</zorder>
   <zorder>dockParam</zorder>
@@ -893,12 +881,6 @@
    <class>NodeLibraryView</class>
    <extends>QWidget</extends>
    <header>nodeLibraryView</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>GeomViewWidget</class>
-   <extends>QWidget</extends>
-   <header>geomViewWidget</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1440,6 +1422,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionCompileShader</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onCompileShader()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>481</x>
+     <y>446</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onProjectSetup()</slot>
@@ -1476,5 +1474,6 @@
   <slot>onHelpMode(bool)</slot>
   <slot>onSaveSelected()</slot>
   <slot>onViewComputedCode()</slot>
+  <slot>onCompileShader()</slot>
  </slots>
 </ui>

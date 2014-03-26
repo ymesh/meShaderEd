@@ -202,13 +202,13 @@ class MainWindow ( QtGui.QMainWindow ) :
     #
     self.tabifyDockWidget ( self.ui.dockNodes, self.ui.dockProject )
 
-    self.tabifyDockWidget ( self.ui.dockPreview, self.ui.dockGeom  )
+    #self.tabifyDockWidget ( self.ui.dockPreview, self.ui.dockGeom  )
     self.tabifyDockWidget ( self.ui.dockParam, self.ui.dockSwatch )
 
     # temporary hide unused panels
     #self.removeDockWidget ( self.ui.dockGeom )
     #self.removeDockWidget ( self.ui.dockSwatch )
-    self.ui.dockGeom.hide ()
+    #self.ui.dockGeom.hide ()
     self.ui.dockSwatch.hide ()
 
     self.ui.dockNodes.raise_ ()
@@ -876,7 +876,6 @@ class MainWindow ( QtGui.QMainWindow ) :
     else :
       if DEBUG_MODE : print '-> save file %s' % self.workArea.nodeNet.fileName
       self.workArea.nodeNet.save ()
-  
   #
   # onSaveAs
   #
@@ -908,3 +907,10 @@ class MainWindow ( QtGui.QMainWindow ) :
     QtGui.QWhatsThis.enterWhatsThisMode ()
     #else :
     #  QtGui.QWhatsThis.leaveWhatsThisMode ()
+  #
+  # onCompileShader
+  #
+  def onCompileShader ( self ) :
+    #
+    if DEBUG_MODE : print ">> MainWindow.onCompileShader"
+    pass    
