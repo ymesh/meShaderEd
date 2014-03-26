@@ -8,7 +8,7 @@ import os, sys, copy
 from PyQt4 import QtCore, QtXml
 from PyQt4.QtCore import QDir, QFile, QVariant
 
-from global_vars import app_global_vars, DEBUG_MODE
+from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES
 from core.node_global_vars import node_global_vars
 from core.meCommon import getParsedLabel, normPath
 #
@@ -564,7 +564,7 @@ class Node ( QtCore.QObject ) :
         # some parameters (String, Color, Point, Vector, Normal, Matrix ...)
         # have different string interpretation in RIB
         #
-        isRibParam = ( self.type == 'rib' or self.type == 'rib_code' )
+        isRibParam = ( self.format == 'rib' )
         param = createParamFromXml ( xml_param, isRibParam, True ) # #param.isInput = True
         #param = createParamTable[ param_type ]( xml_param, isRibParam )
         #param.isInput = True
@@ -581,7 +581,7 @@ class Node ( QtCore.QObject ) :
         # some parameters (Color, Point, Vector, Normal, Matrix ...)
         # have different string interpretation in RIB
         #
-        isRibParam = ( self.type == 'rib' or self.type == 'rib_code' )
+        isRibParam = ( self.format == 'rib' )
         param = createParamFromXml ( xml_param, isRibParam, False ) # #param.isInput = False
         #param = createParamTable[ param_type ]( xml_param, isRibParam )
         #param.isInput = False

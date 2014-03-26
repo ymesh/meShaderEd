@@ -9,7 +9,7 @@ import copy
 from PyQt4 import QtCore
 
 from core.node import Node
-from global_vars import app_global_vars, DEBUG_MODE
+from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES
 from core.meCommon import parseGlobalVars
 #
 # Abstract Node Parameter Class
@@ -299,12 +299,12 @@ class NodeParam ( QtCore.QObject ) :
 
     if self.default != None :
       value = self.getDefaultToStr ()
-      if not self.type in [ 'rib', 'rib_code' ] : value = value.strip ( '\"' )
+      if not self.type in VALID_RIB_NODE_TYPES : value = value.strip ( '\"' )
       xmlnode.setAttribute ( 'default', value )
 
     if self.value != None :
       value = self.getValueToStr ()
-      if not self.type in [ 'rib', 'rib_code' ] : value = value.strip ( '\"' )
+      if not self.type in VALID_RIB_NODE_TYPES : value = value.strip ( '\"' )
       xmlnode.setAttribute ( 'value', value )
 
     if self.help != None :

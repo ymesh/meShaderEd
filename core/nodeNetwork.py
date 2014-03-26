@@ -443,7 +443,7 @@ def createNodeFromXML ( xml_node ) :
                      ,'swatch'      : SwatchNode
                     }
 
-  node_type = str ( xml_node.attributes ().namedItem ( 'type' ).nodeValue () )
+  node_type = str ( xml_node.attributes ().namedItem ( 'format' ).nodeValue () )
   createNode = RSLNode # Node
   if node_type in createNodeTable.keys () : createNode = createNodeTable [ node_type ]
   node = createNode ( xml_node )

@@ -31,11 +31,12 @@ from core.meRendererPreset import meRendererPreset
 from global_vars import app_global_vars, app_colors, DEBUG_MODE
 
 root = normPath ( sys.path [0] )
-version = '0.3.4b construct'
+branchName = 'construct'
+version = '0.3.4b ' + branchName
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
                                   QtCore.QSettings.UserScope,
-                                  'mesh', 'meShaderEd' )
+                                  'mesh', 'meShaderEd_' + branchName )
 #
 # setDefaultValue
 #

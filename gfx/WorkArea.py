@@ -137,6 +137,20 @@ class WorkArea ( QtGui.QGraphicsView ) :
           resultList.append ( item )
     return resultList
   #
+  # Returns a list of GfxNodes in the scene for given format
+  # or all nodes if type == None
+  #
+  def getGfxNodesByFormat ( self, format = None ) :
+    #
+    resultList = []
+    for item in self.scene ().items () :
+      if ( isinstance ( item, GfxNode ) or
+           isinstance ( item, GfxSwatchNode ) or 
+           ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
+        if format is None or item.node.format == format :
+          resultList.append ( item )
+    return resultList
+  #
   # Returns GfxNodes for given Node
   #
   def getGfxNodesByNode ( self, node = None ) :

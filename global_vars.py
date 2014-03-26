@@ -35,7 +35,7 @@ app_global_vars = {
 
 app_colors = {
    'rsl_node_bg': QtGui.QColor ( 0, 128, 128 )
-  ,'rib_node_bg': QtGui.QColor ( 255, 128, 0 )
+  ,'rib_node_bg': QtGui.QColor ( 255, 150, 50 )
   ,'image_node_bg': QtGui.QColor ( 128, 128, 128 )
 }
 

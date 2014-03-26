@@ -416,7 +416,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   def onAddGfxNode ( self, gfxNode ) :
     #
     #print ">> MainWindow: onAddGfxNode = %s" % gfxNode.node.label
-    if gfxNode.node.type == 'image' : self.ui.imageView_ctl.addViewer ( gfxNode )
+    if gfxNode.node.format == 'image' : self.ui.imageView_ctl.addViewer ( gfxNode )
 
       #if self.ui.nodeParam_ctl.receivers( QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ) ) == 0 :
       #  QtCore.QObject.connect( self.ui.nodeParam_ctl, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.ui.imageView_ctl.onNodeParamChanged )
@@ -428,7 +428,7 @@ class MainWindow ( QtGui.QMainWindow ) :
   def onRemoveGfxNode ( self, gfxNode ) :
     #
     if DEBUG_MODE : print '>> MainWindow.onRemoveGfxNode = %s' % gfxNode.node.label
-    if gfxNode.node.type == 'image' :
+    if gfxNode.node.format == 'image' :
       self.ui.imageView_ctl.removeViewer ( gfxNode )
       #QtCore.QObject.disconnect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'onNodeParamChanged(QObject,QObject)' ), self.ui.imageView_ctl.onNodeParamChanged )
   #
@@ -686,7 +686,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     self.ui.imageView_ctl.removeAllViewers ()
     self.workArea = self.ui.tabs.currentWidget ()
 
-    imageNodes = self.workArea.getGfxNodesByType ( 'image' )
+    imageNodes = self.workArea.getGfxNodesByFormat ( 'image' )
     # setup imageView menu for image nodes in new tab
     for gfxNode in imageNodes : self.ui.imageView_ctl.addViewer ( gfxNode )
 
