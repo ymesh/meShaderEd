@@ -24,13 +24,16 @@ app_global_vars = {
   ,'ShaderSearchPath':''
   ,'ArchiveSearchPath':''
   ,'RendererPreset':''
-  ,'Renderer':''
+  ,'RendererName':''
   ,'RendererFlags':''
   ,'ShaderCompiler':''
   ,'ShaderDefines':''
-  ,'ShaderInfo':''  
-  ,'TEX':''
+  ,'ShaderInfo':''
   ,'SLO':''
+  ,'TextureMake':''
+  ,'TextureInfo':''
+  ,'TextureViewer':''  
+  ,'TEX':''
 }
 
 app_colors = {

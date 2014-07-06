@@ -54,7 +54,7 @@ class ShaderInfo () :
       ,'renderdc' : self.parseValueLine_prman
     }
 
-    self.renderer = app_global_vars [ 'Renderer' ]
+    self.renderer = app_global_vars [ 'RendererName' ]
     
     if self.renderer in parseParamLineProcTable.keys () : self.parseParamLineProc = parseParamLineProcTable [ self.renderer ]
     if self.renderer in parseValueLineProcTable.keys () : self.parseValueLineProc = parseValueLineProcTable [ self.renderer ]
@@ -73,8 +73,6 @@ class ShaderInfo () :
     #
     inputLines = []
     if DEBUG_MODE : print '>> ShaderInfo.get ( %s ) by "%s"' % ( self.fileName, app_global_vars [ 'ShaderInfo' ] )
-    # app_global_vars [ 'ShaderCompiler' ]
-    # app_global_vars [ 'SLO' ]
     from core.meCommon import launchProcess
     curDir =  os.getcwd ()
     

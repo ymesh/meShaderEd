@@ -1,192 +1,205 @@
-#===============================================================================
-# meRendererPreset.py
-#
-# 
-#
-#===============================================================================
+"""
+
+  meRendererPreset.py
+
+"""
 import os, sys
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtXml
+from PyQt4.QtCore import QDir, QFile, QVariant
 #
+# meRendererInfo
 #
-#
-class meRendererPreset ():
+class meRendererInfo () :
   #
+  # __init__
   #
-  def __init__ ( self, presetsFileName = None, defaultPresetName = '' ):
-        
-    self.presets = {}
+  def __init__ ( self, presetName = None ) :
+    #
+    self.PresetName = presetName
     
-    self.key_list = {}
-    self.key_list[ 'renderer' ] = [ 'name', 'flags' ]
-    self.key_list[ 'shader' ] = [ 'compiler', 'sloinfo', 'defines', 'extension'  ]
-    self.key_list[ 'texture' ] = [ 'texmake', 'texinfo', 'viewer', 'extension'  ]
+    self.RendererName = ''
+    self.RendererFlags = ''
     
-    self.presetName = ''
-    self.file = None
+    self.ShaderCompiler = ''
+    self.ShaderDefines = ''
+    self.ShaderInfo = ''
+    self.ShaderExt = ''
     
+    self.TextureMake = ''
+    self.TextureInfo = ''
+    self.TextureViewer = ''
+    self.TextureExt = ''
+  #
+  # parseFromXML
+  #
+  def parseFromXML ( self, xml_preset ) :
+    #
+    self.PresetName = str ( xml_preset.attributes ().namedItem ( 'name' ).nodeValue () )
+    
+    renderer = xml_preset.namedItem ( 'renderer' )
+    shader = xml_preset.namedItem ( 'shader' )
+    texture = xml_preset.namedItem ( 'texture' )
+    
+    self.RendererName = str ( renderer.attributes ().namedItem ( 'name' ).nodeValue () )
+    self.RendererFlags = str ( renderer.attributes ().namedItem ( 'flags' ).nodeValue () )
+    
+    self.ShaderCompiler = str ( shader.attributes ().namedItem ( 'compiler' ).nodeValue () )
+    self.ShaderDefines = str ( shader.attributes ().namedItem ( 'defines' ).nodeValue () )
+    self.ShaderInfo = str ( shader.attributes ().namedItem ( 'sloinfo' ).nodeValue () )
+    self.ShaderExt = str ( shader.attributes ().namedItem ( 'extension' ).nodeValue () )
+    
+    self.TextureMake = str ( texture.attributes ().namedItem ( 'texmake' ).nodeValue () )
+    self.TextureInfo = str ( texture.attributes ().namedItem ( 'texinfo' ).nodeValue () )
+    self.TextureViewer = str ( texture.attributes ().namedItem ( 'viewer' ).nodeValue () )
+    self.TextureExt = str ( texture.attributes ().namedItem ( 'extension' ).nodeValue () )
+    
+    print ( '* %s' % self.PresetName )
+  #
+  # parseToXML
+  #
+  def parseToXML ( self, dom ) :
+    #
+    xml_preset = dom.createElement ( 'preset' )
+    xml_preset.setAttribute ( 'name', self.PresetName )
+    
+    renderer_tag = dom.createElement ( 'renderer' )
+    renderer_tag.setAttribute ( 'name', self.RendererName )
+    renderer_tag.setAttribute ( 'flags', self.RendererFlags )
+    xml_preset.appendChild ( renderer_tag )
+    
+    shader_tag = dom.createElement ( 'shader' )
+    shader_tag.setAttribute ( 'compiler', self.ShaderCompiler )
+    shader_tag.setAttribute ( 'defines', self.ShaderDefines )
+    shader_tag.setAttribute ( 'sloinfo', self.ShaderInfo )
+    shader_tag.setAttribute ( 'extension', self.ShaderExt )
+    xml_preset.appendChild ( shader_tag )
+    
+    texture_tag = dom.createElement ( 'texture' )
+    texture_tag.setAttribute ( 'texmake', self.TextureMake )
+    texture_tag.setAttribute ( 'texinfo', self.TextureInfo )
+    texture_tag.setAttribute ( 'viewer', self.TextureViewer )
+    texture_tag.setAttribute ( 'extension', self.TextureExt )
+    xml_preset.appendChild ( texture_tag )
+    
+    return xml_preset
+#
+# meRendererPreset
+#
+class meRendererPreset () :
+  #
+  # __init__
+  #
+  def __init__ ( self, presetsFileName = None, defaultPresetName = '' ) :
+    #
+    self.presetsList = []
+    self.currentPreset = None
+    self.fileName = None
     self.setPresetFile ( presetsFileName, defaultPresetName )
-    
   #  
+  # setPresetFile
   #
   def setPresetFile ( self, presetsFileName = '', defaultPresetName = ''  ) :
     #
-    if presetsFileName != '' :
-      self.file = QtCore.QFile ( presetsFileName )
-      if self.file.exists() :
-        print ">> meRenderPreset:: preset file = %s" % self.file.fileName() 
-        self.readSettings()
-      else :
-        # create preset file
-        if self.file.open( QtCore.QIODevice.ReadWrite | QtCore.QIODevice.Text  ) :
-          self.file.close()
-        else :
-          print ">> meRenderPreset:: Error can't create preset file = %s" % self.file.fileName() 
-          
-      #labels = self.getLabels()
-      if len ( self.presets ) :
-        if defaultPresetName not in self.presets.keys() :
-          self.presetName = self.getLabels()[0]
-        else :
-          self.presetName = defaultPresetName
-      
-      print ">> meRenderPreset:: defaultRenderer = %s" % self.presetName 
-  #   
+    self.readSettings ( presetsFileName )
+    if len ( self.presetsList ) :
+      print ( '>> meRenderPreset::setPresetFile defaultPresetName = %s' % defaultPresetName )
+      self.currentPreset = self.getPresetByName ( defaultPresetName ) 
+      if self.currentPreset is None :
+        self.currentPreset = self.presetsList [ 0 ]
+    print ( '>> meRenderPreset::setPresetFile defaultRenderer = %s' % self.currentPreset.PresetName )
   #
-  def getCurrentValue ( self, section, name ):
-    #print self.presetName
-    return str( self.getValue( self.presetName, section, name ) )
+  # getPresetNames
   #
-  #
-  def setCurrentValue ( self, section, name, value ):
-    return str( self.setValue( self.presetName, section, name, value ) )
-  #
-  #  
-  def getValue ( self, label, section, name ):
-    #print self.presets.keys()
-    return self.presets[label][section].get( name, '' ) 
-  #
-  #  
-  def setValue ( self, label, section, name, value ):
-    #print self.presets.keys()
-    self.presets[label][section][name] = value
-  #
-  #  
-  def size( self ): return len ( self.presets )
-  #
-  #  
-  def getLabels ( self ):
-    labels = self.presets.keys()
-    labels.sort()
-    #print labels
+  def getPresetNames ( self ) :
+    #
+    #print ( '>> meRenderPreset::getPresetNames ...' )
+    labels = []
+    for preset in self.presetsList :
+      #print ( ':: PresetName = %s' % str ( preset.PresetName ) )
+      labels.append ( str ( preset.PresetName ) )
+    labels.sort ()
     return labels
   #
-  #  
-  def getPreset ( self, label ): return self.presets[ label ].copy()
+  # getCurrentPresetName 
   #
-  #  
-  def getSections ( self ): return self.key_list.keys() 
+  def getCurrentPresetName ( self ) : 
+    #
+    return self.currentPreset.PresetName
   #
-  #  
-  def getNames ( self, section ): return self.key_list[section]
+  # setCurrentPresetName
   #
-  #  
-  def getCurrentPresetName ( self ): return self.presetName
+  def setCurrentPresetByName ( self, presetName ) : 
+    #
+    self.currentPreset = self.getPresetByName ( presetName )
   #
+  # getPresetByName
   #
-  def setCurrentPresetName ( self, presetName ): self.presetName = presetName
+  def getPresetByName ( self, presetName ) : 
+    #
+    currentPreset = None
+    for preset in self.presetsList :
+      if preset.PresetName == presetName :
+        currentPreset = preset
+    return currentPreset
   #
-  #  
-  def addPreset( self, presetName ):
-    self.presetName = presetName
-    self.presets[ presetName ] = { 'renderer':{}, 'shader':{}, 'texture':{} } 
+  # addPreset
   #
-  #  
-  def deleteCurrentPreset ( self ): self.presets.pop( self.presetName )
+  def addPreset ( self, presetName ) :
+    #
+    print ( '>> adding preset %s ...' % presetName )
+    preset = meRendererInfo ( presetName )
+    self.presetsList.append ( preset )
   #
-  #  
-  def renameCurrentPreset ( self, newLabel ):
-    # remove and store data for current key
-    preset = self.presets.pop( self.presetName )
-    # replace current key with new label
-    self.presets.setdefault( newLabel, preset )
-    self.presetName = newLabel
+  # deleteCurrentPreset
+  #
+  def deleteCurrentPreset ( self ) : 
+    #
+    print ( '>> deleting preset %s ...' % self.currentPreset.PresetName )
+    self.presetsList.remove ( self.currentPreset )
+  #
+  # renameCurrentPreset
+  #
+  def renameCurrentPreset ( self, newLabel ) :
+    # 
+    self.currentPreset.PresetName = newLabel
   #
   # Read Settings from preset file
   #
-  def readSettings ( self ):
-    # read XML by QXmlStreamReader 
-    # fix changed locations between versions
-    try:
-      from PyQt4.QtCore import QXmlStreamReader 
-    except:
-      from PyQt4.QtXml import QXmlStreamReader 
-      
-    from PyQt4.QtCore import QXmlStreamReader 
-      
-    if ( self.file.open( QtCore.QIODevice.ReadWrite | QtCore.QIODevice.Text ) ) : 
-      xml = QXmlStreamReader( self.file ) 
-      label = ''
-      while not xml.atEnd():
-        token = xml.readNext()
-        if token == QXmlStreamReader.StartElement:
-          name = xml.name()
-          attr = xml.attributes()
-          if name == 'preset' :
-            label = str( "%s" % attr.value('name').toString() ) 
-            #print "label = %s" % label
-            self.presets[ label ] = {}
-          elif name in self.key_list.keys() :
-            section = str( name.toString() )
-            #print "section = %s" % section
-            item_list = {}
-            for key in self.key_list[ section ] :
-              value = str( "%s" % attr.value( key ).toString() )
-              item_list[key] = value
-              #print "%s = %s" % (key, value)
-            
-            self.presets[ label ].setdefault( section, item_list.copy() )  
-         
-      self.file.close()
+  def readSettings ( self, fileName ) :
+    #
+    dom = QtXml.QDomDocument ( 'renderers' )
+
+    file = QFile ( fileName )
+    if file.open ( QtCore.QIODevice.ReadOnly ) :
+      if dom.setContent ( file ) :
+        self.fileName = fileName
+        root = dom.documentElement ()
+        if root.nodeName () == 'renderers' :
+          print ( ':: Read Settings from preset file %s ...' % fileName )
+          xml_presetList = root.elementsByTagName ( 'preset' )
+          for i in range ( 0, xml_presetList.length () ) :
+            preset = meRendererInfo ()
+            preset.parseFromXML ( xml_presetList.item ( i ) )
+            self.presetsList.append ( preset )
+        else :
+          print '!! unknown Renderer Preset XML document format'
+      file.close()
   #
   # Write Settings to preset file
   # 
-  def saveSettings ( self ):
-    # write XML by QXmlStreamWriter 
-    # fix changed locations between versions
-    
-    try:
-      from PyQt4.QtCore import QXmlStreamWriter
-    except:
-      from PyQt4.QtXml import QXmlStreamWriter
+  def saveSettings ( self ) :
+    # 
+    result = False
+    dom = QtXml.QDomDocument ( 'renderers' )
+    root = dom.createElement ( 'renderers' )
+    for preset in self.presetsList :
+      xml_preset = preset.parseToXML ( dom )
+      root.appendChild ( xml_preset )
+    dom.appendChild ( root )
       
-    #from PyQt4.QtCore import QXmlStreamWriter
-    #from PyQt4.QtXml import QXmlStreamWriter
-    
-    if ( self.file.open ( QtCore.QIODevice.ReadWrite | QtCore.QIODevice.Text ) ) :
-    #if self.file.exists() :
-      print ">> meRenderPreset:: saveSettings to %s ...." % self.file.fileName() 
-      xml = QXmlStreamWriter ( self.file ) 
-      xml.setAutoFormatting( True )
-      xml.writeStartDocument()
-      xml.writeStartElement( 'renderers' )
-      
-      for label in self.presets.keys() :
-        xml.writeStartElement( "preset" )
-        xml.writeAttribute( "name", label )
-        preset = self.presets[ label ] 
-        
-        for section in self.key_list.keys() :
-          xml.writeStartElement( section )
-          item_list = preset[ section ]
-          
-          for key in item_list.keys() :
-            xml.writeAttribute( key, item_list[key] )
-          xml.writeEndElement() 
-          
-        xml.writeEndElement() 
-        
-      xml.writeEndElement() 
-      xml.writeEndDocument()
-      self.file.close()
-      print ">> meRenderPreset:: saveSettings finished" 
-      
+    file = QFile ( self.fileName )
+    if file.open ( QtCore.QIODevice.WriteOnly | QtCore.QIODevice.Text ) :
+      if file.write ( dom.toByteArray () ) != -1 :
+        result = True
+      file.close ()
+    return result

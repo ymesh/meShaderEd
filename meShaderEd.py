@@ -68,11 +68,7 @@ def getDefaultValue ( settings, group, key, def_value = None ) :
     else :  
       value = str ( value.toString () )
   return value
-#
-#
-defRenderer = setDefaultValue ( 'defRenderer','3Delight' )
-app_renderer = meRendererPreset ( os.path.join ( root, 'renderers.xml' ), defRenderer )
-#app_renderer.setPresetFile ( os.path.join( root, 'renderers.xml' ), defRenderer )
+
 #
 # main routine
 #
@@ -137,15 +133,23 @@ def main () :
   app_global_vars [ 'ProjectSearchShaders' ]  = sanitizeSearchPath ( project_shaders )
   app_global_vars [ 'ProjectSearchTextures' ] = sanitizeSearchPath ( project_textures )
 
-  app_global_vars [ 'RendererPreset' ] = app_renderer.getCurrentPresetName ()
-  app_global_vars [ 'Renderer' ]       = app_renderer.getCurrentValue ( 'renderer', 'name' )
-  app_global_vars [ 'RendererFlags' ]  = app_renderer.getCurrentValue ( 'renderer', 'flags' )
-  app_global_vars [ 'ShaderCompiler' ] = app_renderer.getCurrentValue ( 'shader', 'compiler' )
-  app_global_vars [ 'ShaderDefines' ]  = app_renderer.getCurrentValue ( 'shader', 'defines' )
-  app_global_vars [ 'ShaderInfo' ]     = app_renderer.getCurrentValue ( 'shader', 'sloinfo' )
-  app_global_vars [ 'TEX' ]            = app_renderer.getCurrentValue ( 'texture', 'extension' )
-  app_global_vars [ 'SLO' ]            = app_renderer.getCurrentValue ( 'shader', 'extension' )
-  app_global_vars [ 'TexMake' ]        = app_renderer.getCurrentValue ( 'texture', 'texmake' )
+  #
+  # Setup current renderer preset
+  #
+  defRenderer = setDefaultValue ( 'defRenderer', '3Delight' )
+  preset = meRendererPreset ( os.path.join ( root, 'renderers.xml' ), defRenderer )
+  
+  app_global_vars [ 'RendererPreset' ] = preset
+  app_global_vars [ 'RendererName' ]   = preset.currentPreset.RendererName
+  app_global_vars [ 'RendererFlags' ]  = preset.currentPreset.RendererFlags
+  app_global_vars [ 'ShaderCompiler' ] = preset.currentPreset.ShaderCompiler
+  app_global_vars [ 'ShaderDefines' ]  = preset.currentPreset.ShaderDefines
+  app_global_vars [ 'ShaderInfo' ]     = preset.currentPreset.ShaderInfo
+  app_global_vars [ 'SLO' ]            = preset.currentPreset.ShaderExt
+  app_global_vars [ 'TextureMake' ]    = preset.currentPreset.TextureMake
+  app_global_vars [ 'TextureInfo' ]    = preset.currentPreset.TextureInfo
+  app_global_vars [ 'TextureViewer' ]  = preset.currentPreset.TextureViewer
+  app_global_vars [ 'TEX' ]            = preset.currentPreset.TextureExt
 
   createDefaultProject ( app_settings, True ) # check_if_exist = True
 
@@ -153,7 +157,7 @@ def main () :
     print 'TextureSearchPath = %s' % app_global_vars [ 'TextureSearchPath' ]
     print 'ShaderSearchPath = %s' % app_global_vars [ 'ShaderSearchPath' ]
     print 'ArchiveSearchPath = %s' % app_global_vars [ 'ArchiveSearchPath' ]
-    print 'Renderer = %s' % app_global_vars [ 'Renderer' ]
+    print 'Renderer = %s' % app_global_vars [ 'RendererName' ]
 
   #app_global_vars[ 'RibPath' ] = ''
   #app_global_vars[ 'DisplayPath' ] = ''
