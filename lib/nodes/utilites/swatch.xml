@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="swatchNode" author="mesh" type="swatch">
+<node name="swatchNode" author="mesh" format="image" type="swatch">
 	<help>Swatch node viewer </help>
 	<input>
     <property name="image" type="image" default="" subtype="file" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"/>		

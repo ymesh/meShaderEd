@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore
 
 qt_resource_data = "\
 \x00\x00\x03\x54\

@@ -1,33 +1,48 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE renderers>
 <renderers>
-    <preset name="Aqsis">
-        <renderer flags="-progress" name="aqsis"/>
-        <texture viewer="" texinfo="" texmake="teqser" extension="teq"/>
-        <shader compiler="aqsl" sloinfo="aqsltell" extension="slx" defines="AQSIS"/>
-    </preset>
-    <preset name="3Delight">
-        <renderer flags="-progress" name="renderdl"/>
-        <texture viewer="" texinfo="" texmake="tdlmake" extension="tdl"/>
-        <shader compiler="shaderdl" sloinfo="shaderinfo" extension="sdl" defines="DELIGHT"/>
-    </preset>
-    <preset name="PRMan">
-        <renderer flags="-progress" name="prman"/>
-        <texture viewer="sho" texinfo="txinfo" texmake="txmake" extension="tex"/>
-        <shader compiler="shader" sloinfo="sloinfo" extension="slo" defines="PRMAN"/>
-    </preset>
-    <preset name="Air">
-        <renderer flags="" name="air"/>
-        <texture viewer="airshow" texinfo="" texmake="mktex" extension="tx"/>
-        <shader compiler="shaded" sloinfo="slbtell" extension="slb" defines=""/>
-    </preset>
-    <preset name="Pixie">
-        <renderer flags="" name="rndr"/>
-        <texture viewer="show" texinfo="" texmake="texmake" extension="tex"/>
-        <shader compiler="sdrc" sloinfo="sdrinfo" extension="sdr" defines="PIXIE"/>
-    </preset>
-    <preset name="RenderDotC">
-        <renderer flags="" name="renderdc"/>
-        <texture viewer="" texinfo="" texmake="texdc" extension="map"/>
-        <shader compiler="shaderdc" sloinfo="soinfo" extension="dll" defines="RDC"/>
-    </preset>
+ <preset name="Aqsis">
+  <renderer flags="-progress" name="aqsis"/>
+  <shader compiler="aqsl" defines="AQSIS" extension="slx" sloinfo="aqsltell"/>
+  <texture viewer="" texmake="teqser" extension="teq" texinfo=""/>
+ </preset>
+ <preset name="3Delight">
+  <renderer flags="-progress" name="renderdl"/>
+  <shader compiler="shaderdl" defines="DELIGHT" extension="sdl" sloinfo="shaderinfo"/>
+  <texture viewer="" texmake="tdlmake" extension="tdl" texinfo=""/>
+ </preset>
+ <preset name="PRMan">
+  <renderer flags="-progress" name="prman"/>
+  <shader compiler="shader" defines="PRMAN" extension="slo" sloinfo="sloinfo"/>
+  <texture viewer="sho" texmake="txmake" extension="tex" texinfo="txinfo"/>
+ </preset>
+ <preset name="Air">
+  <renderer flags="" name="air"/>
+  <shader compiler="shaded" defines="" extension="slb" sloinfo="slbtell"/>
+  <texture viewer="airshow" texmake="mktex" extension="tx" texinfo=""/>
+ </preset>
+ <preset name="Pixie">
+  <renderer flags="" name="rndr"/>
+  <shader compiler="sdrc" defines="PIXIE" extension="sdr" sloinfo="sdrinfo"/>
+  <texture viewer="show" texmake="texmake" extension="tex" texinfo=""/>
+ </preset>
+ <preset name="RenderDotC">
+  <renderer flags="" name="renderdc"/>
+  <shader compiler="shaderdc" defines="RDC" extension="dll" sloinfo="soinfo"/>
+  <texture viewer="" texmake="texdc" extension="map" texinfo=""/>
+ </preset>
+ <preset name="VRay">
+  <renderer flags="-debug" name="vray"/>
+  <shader compiler="" defines="" extension="" sloinfo=""/>
+  <texture viewer="" texmake="" extension="" texinfo=""/>
+ </preset>
+ <preset name="Arnold">
+  <renderer flags="-verbose" name="kick"/>
+  <shader compiler="" defines="" extension="" sloinfo=""/>
+  <texture viewer="" texmake="" extension="" texinfo=""/>
+ </preset>
+ <preset name="MentalRay">
+  <renderer flags="" name="ray"/>
+  <shader compiler="" defines="" extension="" sloinfo=""/>
+  <texture viewer="" texmake="" extension="" texinfo=""/>
+ </preset>
 </renderers>

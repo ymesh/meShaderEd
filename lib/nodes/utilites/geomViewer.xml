@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<node name="geomViewer" author="mesh" type="geom">
+	<help>GL geometry viewer </help>
+	<input>
+    <property name="geom" type="geom" default=""/>		
+	</input>
+	<output>
+	</output>
+	<control_code>
+<![CDATA[
+#$(output) = $(input)
+#import core.imageNode
+#import code.nodeParam
+
+print ":: Hello from %s XML code !!!" % self.label
+#self.imageName = self.getInputParamValueByName ( 'image' ) 
+
+
+]]>
+	</control_code>
+</node>

@@ -1,0 +1,210 @@
+<!DOCTYPE startup>
+<nodenet author="meShaderEd" name="startup">
+ <help>Short NodeNetwork description</help>
+ <nodes>
+  <node type="image" icon="" author="mesh" name="imageViewer" label="imageViewer" id="1">
+   <help>Image viewer with dynamicaly added inputs</help>
+   <input>
+    <property btext="Add" type="control" provider="attribute" default="" subtype="button" name="add_image" label="Image input" value="">
+     <code>
+#print ":: Hello from (%s) XML control param code !!!" % self.label
+from core.params.imageNodeParam import ImageNodeParam
+lastNonremovableParam = node.getInputParamByName ( 'selector' )
+lastNonremovableParamIdx = node.inputParams.index ( lastNonremovableParam )
+lastParamIdx = len ( node.inputParams ) 
+suffixIdx = lastParamIdx - lastNonremovableParamIdx
+
+newParam = ImageNodeParam ()
+newParam.setup ( 'image' + str ( suffixIdx ), '', '', '' )
+newParam.value = ''
+newParam.default = ''
+newParam.subtype="file"
+newParam.range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"
+newParam.removable = True
+node.addInputParam ( newParam )
+node.updateNodeParams ()
+
+
+</code>
+    </property>
+    <property type="image" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg" default="" subtype="file" name="image" label="Image" value=""/>
+    <property type="string" range="Image=image" provider="attribute" default="image" subtype="selector" name="selector" label="Select input" value="image"/>
+   </input>
+   <output/>
+   <internal/>
+   <include/>
+   <control_code><![CDATA[
+#print ":: Hello from (%s) XML control_code !!!" % self.label
+selectedInput = self.getInputParamByName ( 'selector' ).value
+print '* selectedInput = %s' % selectedInput 
+self.imageName = self.getInputParamValueByName ( selectedInput )
+
+]]></control_code>
+   <event_code>
+    <handler name="ParamAdded"><![CDATA[#print ":: Hello from ParamAdded handler" 
+#print ":: param.label = %s type = %s" % ( param.label, param.type )
+selector = self.getInputParamByName ( 'selector' )
+selector.range += ':%s=%s' % ( param.label, param.name ) 
+
+]]></handler>
+    <handler name="ParamLabelRenamed"><![CDATA[#print ":: Hello from ParamLabelRenamed handler"  
+#print ":: param.label = %s oldName = %s" % ( param.label, oldLabel )
+if param.type == 'image' :
+  selector = self.getInputParamByName ( 'selector' ) 
+  selector.renameItemInRange ( oldLabel, param.label )    
+
+]]></handler>
+    <handler name="ParamRemoved"><![CDATA[#print ":: Hello from ParamRemoved handler" 
+#print ":: param.label = %s type = %s" % ( param.label, param.type ) 
+selector = self.getInputParamByName ( 'selector' ) 
+selector.removeItemFromRange ( param.label )    
+
+]]></handler>
+   </event_code>
+   <offset x="110" y="-100"/>
+  </node>
+  <node type="rib" icon="" author="mesh" name="BasicPreview" label="BasicPreview" id="2">
+   <help>Basic preview RIB with geometry primitive, 2 distant and 1 environment light</help>
+   <input>
+    <property type="rib" default="" name="Globals" label="Render Options" value=""/>
+    <property type="string" range="Sphere:Teapot:Cylinder:Torus:Plane" provider="attribute" default="Sphere" subtype="selector" name="Primitive" label="Primitive" value="Teapot"/>
+    <property type="string" range="tiff:framebuffer:it" provider="attribute" default="tiff" subtype="selector" name="DisplayDriver" label="Display Driver" value="tiff"/>
+    <property type="int" provider="attribute" default="256" name="Width" label="Image width" value="256"/>
+    <property type="int" provider="attribute" default="256" name="Height" label="Image height" value="256"/>
+    <property type="float" provider="attribute" default="1.250" name="EnvIntensity" label="EnvLight Intensity" value="1.250"/>
+    <property type="string" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" provider="attribute" default="kitchen_LL.hdr.tex" subtype="file" name="EnvMap" label="Environment Map" value="kitchen_LL.hdr.tex"/>
+    <property type="color" provider="attribute" default="0.000 0.000 1.000" name="Color" label="Color" value="0.000 0.000 1.000"/>
+    <property type="color" provider="attribute" default="1.000 1.000 1.000" name="Opacity" label="Opacity" value="1.000 1.000 1.000"/>
+    <property type="float" provider="attribute" default="0.500" name="DisplaceBound" label="Displacement Bound" value="0.500"/>
+    <property type="rib" default="Displacement &quot;null&quot;" name="FG_disp" label="Displace Shader" value="Displacement &quot;null&quot;"/>
+    <property type="rib" default="Surface &quot;defaultsurface&quot;" name="FG_surf" label="Surface Shader" value="Surface &quot;defaultsurface&quot;"/>
+    <property type="rib" default="Surface &quot;liquidchecker&quot;" name="BG_surf" label="Background Shader" value="Surface &quot;liquidchecker&quot;"/>
+    <property display="0" type="string" provider="attribute" default="" name="PrimitiveCode" label="PrimitiveCode" value="&#xa;      Rotate 0 0 1 0&#xa;      AttributeBegin&#xa;        Scale 0.35 0.35 0.35&#xa;        Translate -0.6 -1 0&#xa;        Rotate 120 -1 0 0&#xa;        Rotate 30 0 0 1&#xa;        Geometry &quot;teapot&quot;&#xa;      AttributeEnd&#xa;      "/>
+   </input>
+   <output>
+    <property type="image" default="${OUTPUTNAME}.tif" name="ImageFile" label="ImageFile" value="${OUTPUTNAME}.tif"/>
+   </output>
+   <internal/>
+   <include/>
+   <control_code><![CDATA[
+print ":: Hello from %s XML code !!!" % self.label
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Sphere':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Sphere 1.0 -1.0 1.0 360"
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Teapot':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = """
+      Rotate 0 0 1 0
+      AttributeBegin
+        Scale 0.35 0.35 0.35
+        Translate -0.6 -1 0
+        Rotate 120 -1 0 0
+        Rotate 30 0 0 1
+        Geometry \"teapot\"
+      AttributeEnd
+      """
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Cylinder':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Cylinder 1 -0.5 0.5 360"
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Torus':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = """
+  Rotate 0 1 0 0
+  Torus 0.7 0.4 0.0 360 360
+  """
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = 'Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]'
+
+
+]]></control_code>
+   <code><![CDATA[
+  Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
+  Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
+  Option "searchpath" "archive" "&:@:.:~:${ArchiveSearchPath}:${ProjectSearchPath}"
+
+  $(Globals)
+
+
+  ### Output image
+  Display "$(ImageFile)" "$(DisplayDriver)" "rgba"
+
+  Format $(Width) $(Height) 1.0
+
+  Projection "perspective" "fov" 45
+  Translate 0 0 3.0
+
+  Attribute "displacementbound" "float sphere" [$(DisplaceBound)]
+
+  WorldBegin
+
+    ReverseOrientation
+
+    TransformBegin
+      Rotate -90 1 0 0
+      CoordinateSystem "_environment"
+    TransformEnd
+
+    LightSource "distantlight" 1 "intensity" 1.0 "from" [-2 2 -3] "to" [0 0 0]
+    LightSource "distantlight" 2 "intensity" 0.4 "from" [6 -3 0] "to" [0 0 0]
+    LightSource "meEnvLight" 3  "uniform float Intensity" [$(EnvIntensity)]
+                                "uniform string meEnvMap_EnvMap" ["$(EnvMap)"]
+                                "uniform string meEnvMap_Space" ["_environment"]
+
+    AttributeBegin
+
+
+
+      Color [$(Color)]
+      Opacity [$(Opacity)]
+
+      $(FG_disp)
+      $(FG_surf)
+
+      $(PrimitiveCode)
+
+    AttributeEnd
+
+    AttributeBegin
+      Scale 7 7 7
+      Translate 0 0 2
+      $(BG_surf)
+
+      Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
+    AttributeEnd
+
+  WorldEnd
+  ]]></code>
+   <offset x="-60" y="-130"/>
+  </node>
+  <node type="surface" icon="" author="mesh" name="surface" label="surf" id="3">
+   <help>Basic surface shader.</help>
+   <input>
+    <property type="color" default="color(0.000,0.000,0.000)" name="Ci" label="Ci" value="color(0.000,0.333,1.000)" shaderParam="1"/>
+    <property type="color" default="color(1.000,1.000,1.000)" name="Oi" label="Oi" value="color(1.000,1.000,1.000)"/>
+   </input>
+   <output>
+    <property type="rib" default="Surface &quot;${NODELABEL}&quot;" name="surface" label="surface" value="Surface &quot;${NODELABEL}&quot;"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+#define SURFACE_SHADER ${INSTANCENAME}
+surface ${INSTANCENAME} ( 
+${PARAMS} 
+)
+{
+  /* CODE BEGIN ${INSTANCENAME} */
+  Ci = $(Ci) * $(Oi); 
+  Oi = $(Oi);
+  /* CODE END ${INSTANCENAME} */
+}
+	]]></code>
+   <offset x="-200" y="-110"/>
+  </node>
+ </nodes>
+ <links>
+  <link srcNode_id="2" dstNode_id="1" dstParam="image" srcParam="ImageFile" id="1"/>
+  <link srcNode_id="3" dstNode_id="2" dstParam="FG_surf" srcParam="surface" id="2"/>
+ </links>
+</nodenet>

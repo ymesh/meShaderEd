@@ -172,6 +172,7 @@
     <addaction name="actionViewComputedCode"/>
     <addaction name="actionExportShader"/>
     <addaction name="separator"/>
+    <addaction name="actionCompileShader"/>
     <addaction name="actionRenderPreview"/>
     <addaction name="actionShowSwatch"/>
     <addaction name="actionHideSwatch"/>
@@ -864,6 +865,14 @@
     <string>Ctrl+Alt+V</string>
    </property>
   </action>
+  <action name="actionCompileShader">
+   <property name="text">
+    <string>Compile Shader</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
   <zorder>dockNodes</zorder>
   <zorder>dockPreview</zorder>
   <zorder>dockParam</zorder>
@@ -1440,6 +1449,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionCompileShader</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onCompileShader()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>481</x>
+     <y>446</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onProjectSetup()</slot>
@@ -1476,5 +1501,6 @@
   <slot>onHelpMode(bool)</slot>
   <slot>onSaveSelected()</slot>
   <slot>onViewComputedCode()</slot>
+  <slot>onCompileShader()</slot>
  </slots>
 </ui>
