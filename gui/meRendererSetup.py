@@ -24,7 +24,7 @@ class meRendererSetup ( QtGui.QDialog ) :
   #
   def __init__ ( self, rendererPreset ) :
     #
-    QtGui.QDialog.__init__(self)
+    QtGui.QDialog.__init__ ( self )
 
     self.rendererPreset = rendererPreset
     self.labelsReady = False
@@ -71,9 +71,10 @@ class meRendererSetup ( QtGui.QDialog ) :
     
     self.labelsReady = True
     
-    idx = self.ui.listPreset.findText ( self.rendererPreset.getCurrentPresetName () ) 
-    #print ">> buildGui:: set current renderer to: %s (%d)" % ( self.current_renderer, index )
-    self.ui.listPreset.setCurrentIndex ( -1 )
+    presetName = self.rendererPreset.getCurrentPresetName ()
+    idx = self.ui.listPreset.findText ( presetName ) 
+    print ">> buildGui:: set current renderer to: %s (%d)" % ( presetName, idx )
+    #self.ui.listPreset.setCurrentIndex ( -1 )
     self.ui.listPreset.setCurrentIndex ( idx ) 
   #
   # getDataFromGui
@@ -97,9 +98,9 @@ class meRendererSetup ( QtGui.QDialog ) :
   #    
   def onIndexChanged ( self, name ) : 
     #print ">> onIndexChanged:: self.labelsReady == %d" % self.labelsReady
-    #if ( self.labelsReady and name != '' ) :
-    #  # change current renderer
-    self.rendererPreset.setCurrentPresetByName ( str ( name ) )
+    if ( self.labelsReady and name != '' ) :
+      # change current renderer
+      self.rendererPreset.setCurrentPresetByName ( str ( name ) )
     self.updateGui ()
   #
   # updateGui
@@ -108,21 +109,22 @@ class meRendererSetup ( QtGui.QDialog ) :
     # redraw gui elements
     #print ">> updateGui:: current renderer: %s" % self.rendererPreset.getCurrentPresetName() 
     if len ( self.rendererPreset.presetsList ) > 0 :
-      self.ui.lineName.setText ( self.rendererPreset.getCurrentPresetName () )
-      self.ui.lineCmd.setText ( self.rendererPreset.currentPreset.RendererName )
-      self.ui.lineFlags.setText ( self.rendererPreset.currentPreset.RendererFlags )
-      self.ui.lineCompiler.setText ( self.rendererPreset.currentPreset.ShaderCompiler )
-      self.ui.lineShaderInfo.setText ( self.rendererPreset.currentPreset.ShaderInfo )
-      self.ui.lineDefines.setText ( self.rendererPreset.currentPreset.ShaderDefines )
-      self.ui.lineShaderExt.setText ( self.rendererPreset.currentPreset.ShaderExt )
-      self.ui.lineTexMake.setText ( self.rendererPreset.currentPreset.TextureMake )
-      self.ui.lineTexInfo.setText ( self.rendererPreset.currentPreset.TextureInfo )
-      self.ui.lineTexViewer.setText ( self.rendererPreset.currentPreset.TextureViewer )
-      self.ui.lineTexExt.setText ( self.rendererPreset.currentPreset.TextureExt )
-      self.ui.deleteButton.setEnabled ( True )
-      self.ui.tab1.setEnabled ( True )
-      self.ui.tab2.setEnabled ( True)
-      self.ui.tab3.setEnabled ( True )
+      if self.rendererPreset.currentPreset is not None :
+        self.ui.lineName.setText ( self.rendererPreset.getCurrentPresetName () )
+        self.ui.lineCmd.setText ( self.rendererPreset.currentPreset.RendererName )
+        self.ui.lineFlags.setText ( self.rendererPreset.currentPreset.RendererFlags )
+        self.ui.lineCompiler.setText ( self.rendererPreset.currentPreset.ShaderCompiler )
+        self.ui.lineShaderInfo.setText ( self.rendererPreset.currentPreset.ShaderInfo )
+        self.ui.lineDefines.setText ( self.rendererPreset.currentPreset.ShaderDefines )
+        self.ui.lineShaderExt.setText ( self.rendererPreset.currentPreset.ShaderExt )
+        self.ui.lineTexMake.setText ( self.rendererPreset.currentPreset.TextureMake )
+        self.ui.lineTexInfo.setText ( self.rendererPreset.currentPreset.TextureInfo )
+        self.ui.lineTexViewer.setText ( self.rendererPreset.currentPreset.TextureViewer )
+        self.ui.lineTexExt.setText ( self.rendererPreset.currentPreset.TextureExt )
+        self.ui.deleteButton.setEnabled ( True )
+        self.ui.tab1.setEnabled ( True )
+        self.ui.tab2.setEnabled ( True)
+        self.ui.tab3.setEnabled ( True )
     else :
       self.ui.deleteButton.setEnabled ( False )
       self.ui.tab1.setEnabled ( False )

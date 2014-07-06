@@ -318,6 +318,7 @@ class MainWindow ( QtGui.QMainWindow ) :
     if DEBUG_MODE : print ( '>> MainWindow::onRenderSettings' )
     import copy
     self.RendererPreset = copy.deepcopy ( app_global_vars [ 'RendererPreset' ] )
+    if DEBUG_MODE : print ( ':: self.RendererPreset.getCurrentPresetName = %s' % self.RendererPreset.getCurrentPresetName () )
     renderSettingsDlg = meRendererSetup ( self.RendererPreset )
     QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'presetChanged' ), self.onRenderPresetChanged )
     QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'savePreset' ), self.onRenderPresetSave )
