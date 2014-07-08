@@ -24,19 +24,23 @@ app_global_vars = {
   ,'ShaderSearchPath':''
   ,'ArchiveSearchPath':''
   ,'RendererPreset':''
-  ,'Renderer':''
+  ,'RendererName':''
   ,'RendererFlags':''
   ,'ShaderCompiler':''
   ,'ShaderDefines':''
-  ,'ShaderInfo':''  
-  ,'TEX':''
+  ,'ShaderInfo':''
   ,'SLO':''
+  ,'TextureMake':''
+  ,'TextureInfo':''
+  ,'TextureViewer':''  
+  ,'TEX':''
 }
 
 app_colors = {
    'rsl_node_bg': QtGui.QColor ( 0, 128, 128 )
   ,'rib_node_bg': QtGui.QColor ( 255, 150, 50 )
   ,'image_node_bg': QtGui.QColor ( 128, 128, 128 )
+  ,'group_node_bg': QtGui.QColor ( 0, 0, 128 )
 }
 
 DEBUG_MODE = True

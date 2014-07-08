@@ -27,7 +27,7 @@ from nodeList import NodeList
 from gfx.WorkArea import WorkArea
 
 from meShaderEd import app_settings
-from meShaderEd import app_renderer
+#from meShaderEd import app_renderer
 from meShaderEd import getDefaultValue
 
 from ui_MainWindow import Ui_MainWindow
@@ -133,11 +133,11 @@ class MainWindow ( QtGui.QMainWindow ) :
       QtCore.QObject.disconnect ( self.workArea.scene(), QtCore.SIGNAL ( 'nodeUpdated' ), self.updateNodeParamView )
       QtCore.QObject.disconnect ( self.workArea.scene(), QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self.onGfxNodeParamChanged  )
   #
-  #
+  # setupWindowTitle
   #
   def setupWindowTitle ( self ) :
     #
-    self.setWindowTitle ( 'meShaderEd %s (%s) %s' % ( app_global_vars [ 'version' ], app_renderer.getCurrentPresetName(), app_global_vars [ 'ProjectPath' ]  ) )
+    self.setWindowTitle ( 'meShaderEd %s (%s) %s' % ( app_global_vars [ 'version' ], app_global_vars [ 'RendererPreset' ].getCurrentPresetName (), app_global_vars [ 'ProjectPath' ]  ) )
     self.ui.dockNodes.setToolTip ( app_global_vars [ 'NodesPath' ] )
     self.ui.dockNodes.setStatusTip ( app_global_vars [ 'NodesPath' ] )
     self.ui.dockProject.setToolTip ( app_global_vars [ 'ProjectNetworks' ] )
@@ -315,38 +315,42 @@ class MainWindow ( QtGui.QMainWindow ) :
   #
   def onRenderSettings ( self ) :
     #
-    if DEBUG_MODE : print '>> MainWindow.onRenderSettings'
-    renderSettingsDlg = meRendererSetup ( app_renderer )
+    if DEBUG_MODE : print ( '>> MainWindow::onRenderSettings' )
+    import copy
+    self.RendererPreset = copy.deepcopy ( app_global_vars [ 'RendererPreset' ] )
+    if DEBUG_MODE : print ( ':: self.RendererPreset.getCurrentPresetName = %s' % self.RendererPreset.getCurrentPresetName () )
+    renderSettingsDlg = meRendererSetup ( self.RendererPreset )
     QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'presetChanged' ), self.onRenderPresetChanged )
-    QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'savePreset' ), self.onRenderSavePreset )
+    QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'savePreset' ), self.onRenderPresetSave )
     renderSettingsDlg.exec_ ()
   #
   # onRenderPresetChanged
   #
   def onRenderPresetChanged ( self ) :
     #
-    presetName = app_renderer.getCurrentPresetName ()
-    if DEBUG_MODE : print '>> MainWindow.onRenderPresetChanged preset = %s' % presetName
-    #self.setWindowTitle ( 'meShaderEd %s (%s) %s' % ( app_global_vars [ 'version' ], presetName, app_global_vars [ 'ProjectNetworks' ] ) )
-    app_settings.setValue ( 'defRenderer', presetName )
-
-    app_global_vars [ 'RendererPreset' ] = presetName
-    app_global_vars [ 'Renderer' ]       = app_renderer.getCurrentValue ( 'renderer', 'name' )
-    app_global_vars [ 'RendererFlags' ]  = app_renderer.getCurrentValue ( 'renderer', 'flags' )
-    app_global_vars [ 'ShaderCompiler' ] = app_renderer.getCurrentValue ( 'shader', 'compiler' )
-    app_global_vars [ 'ShaderDefines' ]  = app_renderer.getCurrentValue ( 'shader', 'defines' )
-    app_global_vars [ 'ShaderInfo' ]     = app_renderer.getCurrentValue ( 'shader', 'sloinfo' )
-    app_global_vars [ 'TEX' ]            = app_renderer.getCurrentValue ( 'texture', 'extension' )
-    app_global_vars [ 'SLO' ]            = app_renderer.getCurrentValue ( 'shader', 'extension' )
-    app_global_vars [ 'TexMake' ]        = app_renderer.getCurrentValue ( 'texture', 'texmake' )
+    if DEBUG_MODE : print ( '>> MainWindow::onRenderPresetChanged preset = %s' % self.RendererPreset.getCurrentPresetName () )
+    app_settings.setValue ( 'defRenderer', self.RendererPreset.getCurrentPresetName () )
+ 
+    app_global_vars [ 'RendererName' ]   = self.RendererPreset.currentPreset.RendererName
+    app_global_vars [ 'RendererFlags' ]  = self.RendererPreset.currentPreset.RendererFlags
+    app_global_vars [ 'ShaderCompiler' ] = self.RendererPreset.currentPreset.ShaderCompiler
+    app_global_vars [ 'ShaderDefines' ]  = self.RendererPreset.currentPreset.ShaderDefines
+    app_global_vars [ 'ShaderInfo' ]     = self.RendererPreset.currentPreset.ShaderInfo
+    app_global_vars [ 'SLO' ]            = self.RendererPreset.currentPreset.ShaderExt
+    app_global_vars [ 'TextureMake' ]    = self.RendererPreset.currentPreset.TextureMake
+    app_global_vars [ 'TextureInfo' ]    = self.RendererPreset.currentPreset.TextureInfo
+    app_global_vars [ 'TextureViewer' ]  = self.RendererPreset.currentPreset.TextureViewer
+    app_global_vars [ 'TEX' ]            = self.RendererPreset.currentPreset.TextureExt
+    app_global_vars [ 'RendererPreset' ] = self.RendererPreset
     self.setupWindowTitle ()
   #
-  # onRenderSavePreset
+  # onRenderPresetSave
   #
-  def onRenderSavePreset ( self ) :
+  def onRenderPresetSave ( self ) :
     #
-    if DEBUG_MODE : print '>> MainWindow.onRenderSavePreset  preset = %s' % app_renderer.getCurrentPresetName()
-    app_renderer.saveSettings ()
+    if DEBUG_MODE : print ( '>> MainWindow::onRenderPresetSave  preset = %s' % self.RendererPreset.getCurrentPresetName () )
+    self.RendererPreset.saveSettings ()
+    app_global_vars [ 'RendererPreset' ] = self.RendererPreset 
   #
   # onShowGrid
   #

@@ -144,9 +144,9 @@ class RIBNode ( Node ) :
   #
   def renderRIB ( self ) :
     #
-    from meShaderEd import app_renderer
+    #from meShaderEd import app_renderer
   
-    renderer = app_global_vars [ 'Renderer' ]
+    renderer = app_global_vars [ 'RendererName' ]
     flags = app_global_vars [ 'RendererFlags' ]
     renderCmd = [ renderer ]
     if  flags != '' :  renderCmd.append ( flags )

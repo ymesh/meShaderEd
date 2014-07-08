@@ -251,7 +251,7 @@ class RSLNode ( Node ) :
   #
   def compileShader ( self, compileDir = '' ) :
     #
-    from meShaderEd import app_renderer
+    #from meShaderEd import app_renderer
   
     compiler =  app_global_vars [ 'ShaderCompiler' ]
     defines_str = app_global_vars [ 'ShaderDefines' ]
