@@ -4,8 +4,8 @@
 
 """
 import os, sys
-from PyQt4 import QtCore, QtXml
-from PyQt4.QtCore import QDir, QFile, QVariant
+from core.mePyQt import QtCore, QtXml
+#from core.mePyQt.QtCore import QDir, QFile, QVariant
 #
 # meRendererInfo
 #
@@ -169,7 +169,7 @@ class meRendererPreset () :
     #
     dom = QtXml.QDomDocument ( 'renderers' )
 
-    file = QFile ( fileName )
+    file = QtCore.QFile ( fileName )
     if file.open ( QtCore.QIODevice.ReadOnly ) :
       if dom.setContent ( file ) :
         self.fileName = fileName
@@ -197,7 +197,7 @@ class meRendererPreset () :
       root.appendChild ( xml_preset )
     dom.appendChild ( root )
       
-    file = QFile ( self.fileName )
+    file = QtCore.QFile ( self.fileName )
     if file.open ( QtCore.QIODevice.WriteOnly | QtCore.QIODevice.Text ) :
       if file.write ( dom.toByteArray () ) != -1 :
         result = True

@@ -5,8 +5,8 @@
 """
 import os, sys
 
-from PyQt4 import QtCore, QtXml
-from PyQt4.QtCore import QDir, QFile, QVariant
+from core.mePyQt import QtCore, QtXml
+#from PyQt4.QtCore import QDir, QFile, QVariant
 
 from node import *
 from nodes.rslNode import RSLNode

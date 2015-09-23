@@ -9,7 +9,7 @@
 """
 
 import os, sys
-from PyQt4 import QtCore, QtGui
+from core.mePyQt import QtCore, QtGui
 
 from core.meCommon import *
 from global_vars import app_global_vars

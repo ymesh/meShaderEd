@@ -6,7 +6,7 @@
 import os, sys
 import re
 import copy
-from PyQt4 import QtCore
+from core.mePyQt import QtCore
 
 from core.node import Node
 from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES

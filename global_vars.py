@@ -1,7 +1,7 @@
 #
 # global_vars.py
 #
-from PyQt4 import QtCore, QtGui
+from core.mePyQt import QtCore, QtGui
 app_global_vars = {
    'TempPath':''
   ,'RootPath':''

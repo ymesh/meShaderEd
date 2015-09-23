@@ -5,8 +5,8 @@
 
 """
 import os, sys, copy
-from PyQt4 import QtCore, QtXml
-from PyQt4.QtCore import QDir, QFile, QVariant
+from core.mePyQt import QtCore, QtXml
+#from PyQt4.QtCore import QDir, QFile, QVariant
 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES
 from core.node_global_vars import node_global_vars

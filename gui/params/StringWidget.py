@@ -3,7 +3,7 @@
  StringWidget.py
 
 """
-from PyQt4 import QtGui, QtCore
+from core.mePyQt import QtGui, QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE
 import gui.ui_settings as UI 

@@ -6,7 +6,7 @@
 import math
 from decimal import *
 
-from PyQt4 import QtGui, QtCore
+from core.mePyQt import QtGui, QtCore
 
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
