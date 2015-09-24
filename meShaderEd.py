@@ -18,10 +18,7 @@
  The RenderMan Shader Editor
 
 """
-import sys
-import os
-
-
+import os, sys
 from core.mePyQt import QtCore, QtGui
 
 from core.meCommon import *
@@ -33,6 +30,7 @@ from global_vars import app_global_vars, app_colors, DEBUG_MODE
 root = normPath ( sys.path [0] )
 branchName = 'QT5'
 version = '0.3.4b ' + branchName
+__version__  = version
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
 																	QtCore.QSettings.UserScope,
@@ -225,7 +223,7 @@ if __name__ == "__main__":
 		print '* QT_VERSION = %0X' % QtCore.QT_VERSION
 		print '* PYQT_VERSION = %0X' % QtCore.PYQT_VERSION
 
-	if sys.platform == 'win32' :
+	if sys.platform.startswith ( 'win') :
 		if QtCore.QT_VERSION < 50000 :
 			QtModule.QApplication.setStyle ( QtModule.QStyleFactory.create ( 'Cleanlooks' ) )
 			QtModule.QApplication.setPalette ( QtModule.QApplication.style ().standardPalette () )
