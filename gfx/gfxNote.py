@@ -72,13 +72,13 @@ class GfxNote ( QtModule.QGraphicsItem ):
 		self.BrushNodeNormal = QtGui.QBrush ( self.bgColor )
 
 		# flag (new from QT 4.6...)
-		self.setFlag ( QtGui.QGraphicsItem.ItemSendsScenePositionChanges )
-		self.setFlag ( QtGui.QGraphicsItem.ItemSendsGeometryChanges )
-		#self.setFlag ( QtGui.QGraphicsItem.ItemIsFocusable )
+		self.setFlag ( QtModule.QGraphicsItem.ItemSendsScenePositionChanges )
+		self.setFlag ( QtModule.QGraphicsItem.ItemSendsGeometryChanges )
+		#self.setFlag ( QtModule.QGraphicsItem.ItemIsFocusable )
 
 		# qt graphics stuff
-		self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable )
-		self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable )
+		self.setFlag ( QtModule.QGraphicsItem.ItemIsMovable )
+		self.setFlag ( QtModule.QGraphicsItem.ItemIsSelectable )
 		self.setZValue ( 1 )  
 	#
 	# type
@@ -202,16 +202,16 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	#
 	def itemChange ( self, change, value ) :
 		#
-		if change == QtGui.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
-			self.label_widget.setSelected ( value.toBool () )
-			if value.toBool () :
+		if change == QtModule.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
+			self.label_widget.setSelected ( value == 1 )
+			if value == 1 :
 				items = self.scene ().items ()
 				for i in range ( len ( items ) - 1, -1, -1 ) :
 					if items [ i ].parentItem() is None :
 						if items [ i ] != self :
 							items [ i ].stackBefore ( self )
 				#scene.setFocusItem ( self )
-		elif change == QtGui.QGraphicsItem.ItemPositionHasChanged:
+		elif change == QtModule.QGraphicsItem.ItemPositionHasChanged:
 			from meShaderEd import getDefaultValue
 			grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
 			grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
@@ -225,7 +225,7 @@ class GfxNote ( QtModule.QGraphicsItem ):
 			#if DEBUG_MODE : print '* GfxNode.itemChange = ItemPositionHasChanged (%f, %f)' % ( x, y )
 			self.node.offset = ( x, y )
 			#self.adjustLinks ()
-		return QtGui.QGraphicsItem.itemChange ( self, change, value )
+		return QtModule.QGraphicsItem.itemChange ( self, change, value )
 	#
 	# paint
 	#

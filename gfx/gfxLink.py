@@ -25,22 +25,22 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 	#
 	@staticmethod
 	def createFromPoints ( srcP, dstP ) :
+		#
 		gfxLink = GfxLink ()
 		gfxLink.srcPoint = gfxLink.mapToItem ( gfxLink, srcP )
 		gfxLink.dstPoint = gfxLink.mapToItem ( gfxLink, dstP )
 		gfxLink.adjust ()
-
 		return gfxLink
 	#
 	# createFromLink
 	#
 	@staticmethod
 	def createFromLink ( link ):
+		#
 		gfxLink = GfxLink ()
 		gfxLink.link = link
 		gfxLink.path = QtGui.QPainterPath ()
 		gfxLink.adjust ()
-
 		return gfxLink
 	#
 	# __init__
@@ -55,7 +55,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 		# qt graphics stuff
 		self.brushSelected = QtGui.QBrush ( QtGui.QColor ( 250, 250, 250 ) )
 		self.brushNormal = QtGui.QBrush ( QtGui.QColor ( 20, 20, 20 ) )
-		self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable )
+		self.setFlag ( QtModule.QGraphicsItem.ItemIsSelectable )
 		self.setZValue( 0 )
 
 		self.link = link
@@ -77,6 +77,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 	# remove
 	#
 	def remove ( self ) :
+		#
 		if DEBUG_MODE : print ">> GfxLink::remove"
 
 		if self.srcConnector is not None :
@@ -89,7 +90,10 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 		scene = self.scene ()
 		if scene != None :
 			if DEBUG_MODE : print ">> GfxLink::remove emit( onGfxLinkRemoved )"
-			scene.emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self )
+			if QtCore.QT_VERSION < 50000 :
+				scene.emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self )
+			else :
+				scene.onGfxLinkRemoved.emit ( self )
 	#
 	# type
 	#
@@ -114,6 +118,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 	# isDstConnectedTo
 	#
 	def isDstConnectedTo ( self, connector ) :
+		#
 		connected = False
 		if connector == self.dstConnector :
 			connected = True
@@ -140,6 +145,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 	# setDstConnector
 	#
 	def setDstConnector ( self, dstConnector ) :
+		#
 		if dstConnector is not None :
 			self.dstPoint = dstConnector.getCenterPoint ()
 			self.dstConnector = dstConnector
@@ -148,13 +154,15 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 	# itemChange
 	#
 	def itemChange ( self, change, value ) :
-		if change == QtGui.QGraphicsItem.ItemSelectedChange :
-			self.isLinkSelected = value.toBool ()
-		return QtGui.QGraphicsItem.itemChange ( self, change, value )
+		#
+		if change == QtModule.QGraphicsItem.ItemSelectedChange :
+			self.isLinkSelected = ( value == 1 ) #value.toBool ()
+		return QtModule.QGraphicsItem.itemChange ( self, change, value )
 	#
 	# setPoints
 	#
 	def setPoints ( self, srcP, dstP ) :
+		#
 		self.srcPoint = self.mapToItem ( self, srcP )
 		self.dstPoint = self.mapToItem ( self, dstP )
 		self.adjust ()
@@ -162,18 +170,21 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 	# setSrcPoint
 	#
 	def setSrcPoint ( self, p ) :
+		#
 		self.srcPoint = self.mapToItem ( self, p )
 		self.adjust ()
 	#
 	# setDstPoint
 	#
 	def setDstPoint ( self, p ) :
+		#
 		self.dstPoint = self.mapToItem ( self, p )
 		self.adjust ()
 	#
 	# adjust
 	#
 	def adjust ( self ) :
+		#
 		from meShaderEd import getDefaultValue
 		self.isStraight = getDefaultValue ( app_settings, 'WorkArea', 'straight_links' )
 
@@ -203,7 +214,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 				p1 = self.srcPoint + QtCore.QPointF ( offsetVX, offsetVY )
 				self.points.append ( p1 )
 				# third point
-				p2 =   QtCore.QPointF ( centerX, self.srcPoint.y() )
+				p2 = QtCore.QPointF ( centerX, self.srcPoint.y() )
 				self.points.append ( p2 )
 				# fourth point
 				p3 = QtCore.QPointF ( centerX, centerY )

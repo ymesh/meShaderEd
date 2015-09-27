@@ -9,6 +9,12 @@
 
 from core.mePyQt import QtCore, QtGui
 
+if QtCore.QT_VERSION < 50000 :
+	QtModule = QtGui
+else :
+	from core.mePyQt import QtWidgets
+	QtModule = QtWidgets
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -19,11 +25,11 @@ class Ui_workArea(object):
         workArea.setObjectName(_fromUtf8("workArea"))
         workArea.resize(668, 594)
         workArea.setAcceptDrops(True)
-        self.gridLayout = QtGui.QGridLayout(workArea)
+        self.gridLayout = QtModule.QGridLayout(workArea)
         self.gridLayout.setMargin(0)
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.graphicsView = QtGui.QGraphicsView(workArea)
+        self.graphicsView = QtModule.QGraphicsView(workArea)
         self.graphicsView.setObjectName(_fromUtf8("graphicsView"))
         self.gridLayout.addWidget(self.graphicsView, 0, 0, 1, 1)
 
@@ -31,5 +37,5 @@ class Ui_workArea(object):
         QtCore.QMetaObject.connectSlotsByName(workArea)
 
     def retranslateUi(self, workArea):
-        workArea.setWindowTitle(QtGui.QApplication.translate("workArea", "network", None, QtGui.QApplication.UnicodeUTF8))
+        workArea.setWindowTitle(QtModule.QApplication.translate("workArea", "network", None ))
 

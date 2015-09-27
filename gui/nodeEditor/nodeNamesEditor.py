@@ -9,6 +9,7 @@
  
 """
 from core.mePyQt import QtCore, QtGui
+from core.signal import Signal
 
 #from core.meCommon import *
 from global_vars import app_global_vars, DEBUG_MODE
@@ -25,6 +26,15 @@ else :
 # NodeNamesEditor
 #
 class NodeNamesEditor ( QtModule.QWidget ) :
+	#
+	# Define signals for PyQt5
+	#
+	if QtCore.QT_VERSION >= 50000 :
+		#
+		selectionChanged = Signal ()
+		addItem = Signal ()
+		removeItem = Signal ()
+		renameItem = Signal ()
 	#
 	# __init__
 	#
@@ -60,7 +70,10 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 		if DEBUG_MODE : print '>> NodeNamesEditor: onAddItem'
 		new_text = str ( self.ui.name_lineEdit.text () ).strip ()
 		if new_text != '' :
-			self.emit ( QtCore.SIGNAL ( 'addItem' ), new_text ) 
+			if QtCore.QT_VERSION < 50000 :
+				self.emit ( QtCore.SIGNAL ( 'addItem' ), new_text )
+			else :
+				self.addItem.emit ( new_text ) 
 	#  
 	# onRemoveItem
 	#
@@ -73,7 +86,10 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 			item_text = str ( list_item.text () )
 			#self.ui.listWidget.takeItem ( self.ui.listWidget.currentRow () )
 			#self.ui.listWidget.removeItemWidget ( list_item )
-			self.emit ( QtCore.SIGNAL ( 'removeItem' ), item_text )
+			if QtCore.QT_VERSION < 50000 :
+				self.emit ( QtCore.SIGNAL ( 'removeItem' ), item_text )
+			else :
+				self.removeItem.emit ( item_text )
 	#
 	# onRenameItem
 	#
@@ -92,7 +108,10 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 		if list_item is not None : # e.g. listWidget is not empty
 			old_text = list_item.text ()
 			if new_text != old_text :
-				self.emit ( QtCore.SIGNAL( 'renameItem' ), old_text, new_text )
+				if QtCore.QT_VERSION < 50000 :
+					self.emit ( QtCore.SIGNAL( 'renameItem' ), old_text, new_text )
+				else :
+					self.renameItem.emit ( old_text, new_text )
 			else :  
 				self.ui.listWidget.clearSelection ()
 				self.ui.listWidget.setCurrentItem ( None )
@@ -107,5 +126,8 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 		if list_item is not None :
 			self.saved_text = str ( list_item.text() )
 			self.ui.name_lineEdit.setText ( self.saved_text  )
-			self.emit ( QtCore.SIGNAL ( 'selectionChanged' ), self.saved_text  )  
+			if QtCore.QT_VERSION < 50000 :
+				self.emit ( QtCore.SIGNAL ( 'selectionChanged' ), self.saved_text  ) 
+			else :
+				self.selectionChanged.emit ( self.saved_text  ) 
 	

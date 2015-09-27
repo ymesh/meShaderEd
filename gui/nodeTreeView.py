@@ -59,5 +59,8 @@ class  NodeTreeView ( QtModule.QTreeView ) :
 		drag = QtGui.QDrag ( self )
 		drag.setMimeData ( mimeData )
 		#drag.setPixmap ( QtGui.QPixmap(':/node.png') )
-		drag.start ( QtCore.Qt.CopyAction )
+		if QtCore.QT_VERSION < 50000 :
+			drag.start ( QtCore.Qt.CopyAction )
+		else :
+			drag.exec_ ( QtCore.Qt.CopyAction )
 

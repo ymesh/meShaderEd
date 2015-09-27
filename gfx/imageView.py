@@ -4,6 +4,7 @@
 
 """
 from core.mePyQt import QtCore, QtGui
+from core.signal import Signal
 
 if QtCore.QT_VERSION < 50000 :
 	QtModule = QtGui
@@ -21,6 +22,12 @@ class ImageView ( QtModule.QGraphicsView ) :
 	def __init__ ( self, parent ) :
 		#
 		QtModule.QGraphicsView.__init__ ( self, parent )
+		#
+		# Define signals for PyQt5
+		#
+		if QtCore.QT_VERSION >= 50000 :
+			#
+			self.mouseDoubleClickSignal = Signal ()
 		
 		self.state = 'idle' 
 		self.panStartPos = None
@@ -86,7 +93,10 @@ class ImageView ( QtModule.QGraphicsView ) :
 	def mouseDoubleClickEvent ( self, event ) :
 		#
 		#print ">> ImageView.mouseDoubleClickEvent"
-		self.emit ( QtCore.SIGNAL ( 'mouseDoubleClickEvent' ) ) 
+		if QtCore.QT_VERSION < 50000 :
+			self.emit ( QtCore.SIGNAL ( 'mouseDoubleClickEvent' ) )
+		else :
+			self.mouseDoubleClickSignal.emit ()
 		QtModule.QGraphicsView.mouseDoubleClickEvent ( self, event )
 	#
 	# mouseMoveEvent

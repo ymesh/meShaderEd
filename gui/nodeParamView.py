@@ -4,7 +4,7 @@
 
 """
 from core.mePyQt import QtCore, QtGui
-
+from core.signal import Signal
 #from PyQt4.QtCore import QDir, QString, QModelIndex
 #from PyQt4.QtGui  import QFileSystemModel
 #from PyQt4.QtGui  import QFileIconProvider
@@ -24,7 +24,6 @@ if QtCore.QT_VERSION < 50000 :
 else :
 	from core.mePyQt import QtWidgets
 	QtModule = QtWidgets
-	
 #
 # NodeParamView
 #
@@ -35,6 +34,13 @@ class NodeParamView ( QtModule.QWidget ) :
 	def __init__ ( self ) :
 		#
 		QtModule.QWidget.__init__ ( self )
+		#
+		# Define signals for PyQt5
+		#
+		if QtCore.QT_VERSION >= 50000 :
+			#
+			self.nodeParamChangedSignal = Signal ()
+			self.nodeLabelChangedSignal = Signal ()
 
 		self.gfxNode = None
 		
@@ -66,6 +72,9 @@ class NodeParamView ( QtModule.QWidget ) :
 		if QtCore.QT_VERSION < 50000 :
 			self.connect ( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
 			self.connect ( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
+		else :
+			self.nameEdit.editingFinished.connect ( self.nodeLabelChanged )
+			self.showConnectButton.toggled.connect ( self.showConnections )
 	#
 	# disconnectSignals
 	#
@@ -74,6 +83,9 @@ class NodeParamView ( QtModule.QWidget ) :
 		if QtCore.QT_VERSION < 50000 :
 			self.disconnect ( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
 			self.disconnect ( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
+		else :
+			self.nameEdit.editingFinished.disconnect ( self.nodeLabelChanged )
+			self.showConnectButton.toggled.disconnect ( self.showConnections )
 	#
 	# connectParamSignals
 	#
@@ -81,9 +93,15 @@ class NodeParamView ( QtModule.QWidget ) :
 		#print ">> NodeParamView.connectParamSignals"
 		if self.gfxNode is not None :
 			for inputParam in self.gfxNode.node.inputParams :
-				self.connect ( inputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
+				if QtCore.QT_VERSION < 50000 :
+					self.connect ( inputParam, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamChanged )
+				else :
+					inputParam.paramChangedSignal.connect ( self.onParamChanged )
 			for outputParam in self.gfxNode.node.outputParams :
-				self.connect ( outputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
+				if QtCore.QT_VERSION < 50000 :
+					self.connect ( outputParam, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamChanged )
+				else :
+					outputParam.paramChangedSignal.connect ( self.onParamChanged )
 	#
 	# disconnectParamSignals
 	#
@@ -91,9 +109,15 @@ class NodeParamView ( QtModule.QWidget ) :
 		#print ">> NodeParamView.disconnectParamSignals"
 		if self.gfxNode is not None :
 			for inputParam in self.gfxNode.node.inputParams :
-				self.disconnect ( inputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
+				if QtCore.QT_VERSION < 50000 :
+					self.disconnect ( inputParam, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamChanged )
+				else :
+					inputParam.paramChangedSignal.disconnect ( self.onParamChanged )
 			for outputParam in self.gfxNode.node.outputParams :
-				self.disconnect ( outputParam, QtCore.SIGNAL ( 'paramChanged(QObject)' ), self.onParamChanged )
+				if QtCore.QT_VERSION < 50000 :
+					self.disconnect ( outputParam, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamChanged )
+				else :
+					outputParam.paramChangedSignal.disconnect ( self.onParamChanged )
 	#
 	# showConnections
 	#
@@ -111,8 +135,10 @@ class NodeParamView ( QtModule.QWidget ) :
 	def onParamChanged ( self, param ) :
 		#
 		if DEBUG_MODE : print ">> NodeParamView.onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )
-		self.emit ( QtCore.SIGNAL ( 'nodeParamChanged' ), self.gfxNode, param ) # .node
-	
+		if QtCore.QT_VERSION < 50000 :
+			self.emit ( QtCore.SIGNAL ( 'nodeParamChangedSignal' ), self.gfxNode, param ) # .node
+		else :
+			self.nodeParamChangedSignal.emit ( self.gfxNode, param ) # .node
 	#
 	# nodeLabelChanged
 	#
@@ -127,7 +153,10 @@ class NodeParamView ( QtModule.QWidget ) :
 				# update label only if realy changed
 				if newLabel != self.gfxNode.node.label :
 					# rename node label if same name exists in NodeNet
-					self.emit ( QtCore.SIGNAL ( 'nodeLabelChanged' ), self.gfxNode, newLabel )
+					if QtCore.QT_VERSION < 50000 :
+						self.emit ( QtCore.SIGNAL ( 'nodeLabelChangedSignal' ), self.gfxNode, newLabel )
+					else :
+						self.nodeLabelChangedSignal.emit ( self.gfxNode, newLabel )
 					self.nameEdit.clear ()
 			self.nameEdit.setText ( self.gfxNode.node.label )
 	#
@@ -167,7 +196,8 @@ class NodeParamView ( QtModule.QWidget ) :
 
 		headerLayout = QtModule.QHBoxLayout ()
 		headerLayout.setSpacing ( UI.SPACING )
-		#headerLayout.setMargin ( UI.SPACING )
+		if QtCore.QT_VERSION < 50000 :
+			headerLayout.setMargin ( UI.SPACING )
 		headerLayout.setStretch ( 1, 1 )
 
 		headerLayout.addWidget ( label )

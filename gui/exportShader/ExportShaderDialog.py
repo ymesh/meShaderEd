@@ -8,6 +8,7 @@
 
 """ 
 from core.mePyQt import QtCore, QtGui
+from core.signal import Signal
 #from PyQt4.QtCore import QVariant
 
 from core.meCommon import *
@@ -56,31 +57,55 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 	#
 	def connectSignals ( self ) :
 		# QtCore.QObject
-		QtCore.QObject.connect ( self.ui.list_nodes, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onNodeChanged ) 
-		QtCore.QObject.connect ( self.ui.list_inputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onInputParamChanged )
-		QtCore.QObject.connect ( self.ui.list_outputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onOutputParamChanged )
-		QtCore.QObject.connect ( self.ui.node, QtCore.SIGNAL ( 'changeNodeLabel' ), self.onRenameNodeLabel )
-		
-		QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamLabel' ), self.onParamChange )
-		QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamIsShader' ), self.onParamChange )
-		QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamDetail' ), self.onParamChange )
-		QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamProvider' ), self.onParamChange )
-		QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamValue' ), self.onParamChange )
+		if QtCore.QT_VERSION < 50000 :
+			QtCore.QObject.connect ( self.ui.list_nodes, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onNodeChanged ) 
+			QtCore.QObject.connect ( self.ui.list_inputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onInputParamChanged )
+			QtCore.QObject.connect ( self.ui.list_outputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onOutputParamChanged )
+			QtCore.QObject.connect ( self.ui.node, QtCore.SIGNAL ( 'changeNodeLabel' ), self.onRenameNodeLabel )
+			
+			QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamLabel' ), self.onParamChange )
+			QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamIsShader' ), self.onParamChange )
+			QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamDetail' ), self.onParamChange )
+			QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamProvider' ), self.onParamChange )
+			QtCore.QObject.connect ( self.ui.param, QtCore.SIGNAL ( 'changeParamValue' ), self.onParamChange )
+		else :
+			self.ui.list_nodes.temSelectionChanged.connect ( self.onNodeChanged ) 
+			self.ui.list_inputs,temSelectionChanged.connect ( self.onInputParamChanged )
+			self.ui.list_outputs.temSelectionChanged.connect ( self.onOutputParamChanged )
+			
+			self.ui.node.changeNodeLabel.connect ( self.onRenameNodeLabel )
+			self.ui.param.changeParamLabel.connect ( self.onParamChange )
+			self.ui.param.changeParamIsShader.connect ( self.onParamChange )
+			self.ui.param.changeParamDetail.connect ( self.onParamChange )
+			self.ui.param.changeParamProvider.connect ( self.onParamChange )
+			self.ui.param.changeParamValue.connect ( self.onParamChange )
 	#
 	# disconnectSignals
 	#
 	def disconnectSignals ( self ) :
 		#
-		QtCore.QObject.disconnect ( self.ui.list_nodes, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onNodeChanged )
-		QtCore.QObject.disconnect ( self.ui.list_inputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onInputParamChanged )
-		QtCore.QObject.disconnect ( self.ui.list_outputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onOutputParamChanged )
-		QtCore.QObject.disconnect ( self.ui.node, QtCore.SIGNAL ( 'changeNodeLabel' ), self.onRenameNodeLabel )
-		
-		QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamLabel' ), self.onParamChange )
-		QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamIsShader' ), self.onParamChange )
-		QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamDetail' ), self.onParamChange )
-		QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamProvider' ), self.onParamChange ) 
-		QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamValue' ), self.onParamChange )
+		if QtCore.QT_VERSION < 50000 :
+			QtCore.QObject.disconnect ( self.ui.list_nodes, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onNodeChanged )
+			QtCore.QObject.disconnect ( self.ui.list_inputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onInputParamChanged )
+			QtCore.QObject.disconnect ( self.ui.list_outputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onOutputParamChanged )
+			
+			QtCore.QObject.disconnect ( self.ui.node, QtCore.SIGNAL ( 'changeNodeLabel' ), self.onRenameNodeLabel )
+			QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamLabel' ), self.onParamChange )
+			QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamIsShader' ), self.onParamChange )
+			QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamDetail' ), self.onParamChange )
+			QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamProvider' ), self.onParamChange ) 
+			QtCore.QObject.disconnect ( self.ui.param, QtCore.SIGNAL ( 'changeParamValue' ), self.onParamChange )
+		else :
+			self.ui.list_nodes.temSelectionChanged.disconnect ( self.onNodeChanged ) 
+			self.ui.list_inputs,temSelectionChanged.disconnect ( self.onInputParamChanged )
+			self.ui.list_outputs.temSelectionChanged.disconnect ( self.onOutputParamChanged )
+			
+			self.ui.node.changeNodeLabel.disconnect ( self.onRenameNodeLabel )
+			self.ui.param.changeParamLabel.disconnect ( self.onParamChange )
+			self.ui.param.changeParamIsShader.disconnect ( self.onParamChange )
+			self.ui.param.changeParamDetail.disconnect ( self.onParamChange )
+			self.ui.param.changeParamProvider.disconnect ( self.onParamChange )
+			self.ui.param.changeParamValue.disconnect ( self.onParamChange )
 	#
 	# buildGui
 	#
@@ -111,7 +136,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 			print '*** (%s) children list: ' % self.editNode.label
 			for node in self.editNode.visitedNodes : #childrenList :
 				print '* (%s)' % node.label
-				item = QtGui.QListWidgetItem ( node.label )
+				item = QtModule.QListWidgetItem ( node.label )
 				item.setData ( QtCore.Qt.UserRole + 1, QVariant ( node ) )
 				self.ui.list_nodes.addItem ( item )
 	#
@@ -124,13 +149,13 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 		self.computed_code = self.editNode.getComputedCode ( CodeOnly = True )
 		# setup input params list
 		for ( param, node ) in self.editNode.computedInputParamsList :
-			item = QtGui.QListWidgetItem ( ( node.getParamDeclaration ( param )).rstrip ( ';\n' ) )
+			item = QtModule.QListWidgetItem ( ( node.getParamDeclaration ( param )).rstrip ( ';\n' ) )
 			item.setData ( QtCore.Qt.UserRole + 1, QVariant ( param ) )
 			item.setData ( QtCore.Qt.UserRole + 2, QVariant ( node ) )
 			self.ui.list_inputs.addItem ( item )
 		# setup output params list
 		for ( param, node ) in self.editNode.computedOutputParamsList :
-			item = QtGui.QListWidgetItem ( ( 'output ' + node.getParamDeclaration ( param ) ).rstrip ( ';\n' ) )
+			item = QtModule.QListWidgetItem ( ( 'output ' + node.getParamDeclaration ( param ) ).rstrip ( ';\n' ) )
 			item.setData ( QtCore.Qt.UserRole + 1, QVariant ( param ) )
 			item.setData ( QtCore.Qt.UserRole + 2, QVariant ( node ) )
 			self.ui.list_outputs.addItem ( item )
@@ -148,7 +173,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 		linkedBrush.setColor ( QtCore.Qt.blue )
 		# setup input params list
 		for param in node.inputParams :
-			item = QtGui.QListWidgetItem ( param.label )
+			item = QtModule.QListWidgetItem ( param.label )
 			item.setData ( QtCore.Qt.UserRole + 1, QVariant ( param ) )
 			item.setData ( QtCore.Qt.UserRole + 2, QVariant ( node ) )
 			if node.isInputParamLinked ( param ) :
@@ -284,7 +309,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 		saveName = os.path.join ( app_global_vars [ 'ProjectSources' ], self.editNode.getInstanceName () + '.sl' )
 		typeFilter = 'Shader source files *.sl;;All files *.*;;'
 
-		filename = str( QtGui.QFileDialog.getSaveFileName ( self, "Export shader code as", saveName, typeFilter ) )
+		filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Export shader code as", saveName, typeFilter ) )
 		if filename != '' :
 			if DEBUG_MODE : print '-> Export shader code as %s' % filename
 			shaderCode = self.editNode.getComputedCode ()

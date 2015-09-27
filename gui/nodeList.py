@@ -26,28 +26,38 @@ else :
 #
 class NodeList ( QtModule.QWidget ) :
 	#
+	# Define signals for PyQt5
+	#
+	if QtCore.QT_VERSION >= 50000 :
+		setActiveNodeList = QtCore.pyqtSignal ( [QtModule.QWidget] )
+		addNode = QtCore.pyqtSignal ( [str] )
+	#
 	# __init__
 	#
 	def __init__ ( self, parent ) :
 		#
 		QtModule.QWidget.__init__ ( self, parent )
-		
+
 		self.nodesLib = ''
 		self.nodesDir = ''
 		# This is always the same
-		self.ui=Ui_nodeList () 
+		self.ui = Ui_nodeList () 
 		self.ui.setupUi ( self )
-		
 		self.ui.treeView.setDragEnabled ( True )
 		#self.ui.treeView.setRootIsDecorated( True )
-		
+		self.connectSignals ()
+		self.updateGui ()
+	#
+	# connectSignals
+	#
+	def connectSignals ( self ) :
+		#
 		if QtCore.QT_VERSION < 50000 :
 			QtCore.QObject.connect ( self.ui.treeView, QtCore.SIGNAL ( "pressed(QModelIndex)" ), self.clicked )
 			QtCore.QObject.connect ( self.ui.treeView, QtCore.SIGNAL ( "doubleClicked(QModelIndex)" ), self.doubleClicked )
 		else :
-			print ( '!!! NodeList connect!!!! solve it ' )
-			
-		self.updateGui ()
+			self.ui.treeView.pressed.connect ( self.clicked )
+			self.ui.treeView.doubleClicked.connect ( self.doubleClicked )
 	#
 	# updateGui
 	#
@@ -88,7 +98,10 @@ class NodeList ( QtModule.QWidget ) :
 		# send signal to MainWindow to help distinguish which nodeList
 		# is active for addNode getNode events
 		#
-		self.emit ( QtCore.SIGNAL ( "setActiveNodeList" ), self )
+		if QtCore.QT_VERSION < 50000 :
+			self.emit ( QtCore.SIGNAL ( "setActiveNodeList" ), self )
+		else :
+			self.setActiveNodeList.emit ( self )
 	#      
 	# doubleClicked
 	#
@@ -98,8 +111,12 @@ class NodeList ( QtModule.QWidget ) :
 		nodeKind = item.whatsThis ()
 		
 		if nodeKind != 'folder' :
-			nodeFilename = item.data ( QtCore.Qt.UserRole + 4 ).toString ()
-			self.emit ( QtCore.SIGNAL ( 'addNode' ), nodeFilename )
+			if QtCore.QT_VERSION < 50000 :
+				nodeFilename = item.data ( QtCore.Qt.UserRole + 4 ).toString ()
+				self.emit ( QtCore.SIGNAL ( 'addNode' ), nodeFilename )
+			else :
+				nodeFilename = item.data ( QtCore.Qt.UserRole + 4 )
+				self.addNode.emit ( nodeFilename )
 	#    
 	# showDescription
 	#
@@ -109,11 +126,18 @@ class NodeList ( QtModule.QWidget ) :
 		
 		nodeName     = item.text ()
 		nodeKind     = item.whatsThis ()
-		nodeAuthor   = item.data ( QtCore.Qt.UserRole + 1 ).toString ()
-		nodeType     = item.data ( QtCore.Qt.UserRole + 2 ).toString ()
-		nodeHelp     = item.data ( QtCore.Qt.UserRole + 3 ).toString ()
-		nodeFilename = item.data ( QtCore.Qt.UserRole + 4 ).toString ()
-		nodeIcon     = item.data ( QtCore.Qt.UserRole + 5 ).toString ()
+		if QtCore.QT_VERSION < 50000 :
+			nodeAuthor   = item.data ( QtCore.Qt.UserRole + 1 ).toString ()
+			nodeType     = item.data ( QtCore.Qt.UserRole + 2 ).toString ()
+			nodeHelp     = item.data ( QtCore.Qt.UserRole + 3 ).toString ()
+			nodeFilename = item.data ( QtCore.Qt.UserRole + 4 ).toString ()
+			nodeIcon     = item.data ( QtCore.Qt.UserRole + 5 ).toString ()
+		else :
+			nodeAuthor   = item.data ( QtCore.Qt.UserRole + 1 )
+			nodeType     = item.data ( QtCore.Qt.UserRole + 2 )
+			nodeHelp     = item.data ( QtCore.Qt.UserRole + 3 )
+			nodeFilename = item.data ( QtCore.Qt.UserRole + 4 )
+			nodeIcon     = item.data ( QtCore.Qt.UserRole + 5 )
 		
 		self.ui.infoText.clear ()
 		

@@ -26,6 +26,12 @@ else :
 #
 class meRendererSetup ( QtModule.QDialog ) :
 	#
+	# Define signals for PyQt5
+	#
+	if QtCore.QT_VERSION >= 50000 :
+		presetChanged = QtCore.pyqtSignal ()
+		savePreset = QtCore.pyqtSignal ()
+	#
 	# __init__
 	#
 	def __init__ ( self, rendererPreset ) :
@@ -207,8 +213,12 @@ class meRendererSetup ( QtModule.QDialog ) :
 	def onSave ( self ) :
 		# get data from Gui for current renderer before saving
 		self.getDataFromGui ()
-		self.emit ( QtCore.SIGNAL ( 'presetChanged' ) )
-		self.emit ( QtCore.SIGNAL ( 'savePreset' ) )
+		if QtCore.QT_VERSION < 50000 :
+			self.emit ( QtCore.SIGNAL ( 'presetChanged' ) )
+			self.emit ( QtCore.SIGNAL ( 'savePreset' ) )
+		else :
+			self.presetChanged.emit ()
+			self.savePreset.emit ()
 		#self.done ( 0 ) 
 	#
 	# onSelect
@@ -216,5 +226,8 @@ class meRendererSetup ( QtModule.QDialog ) :
 	def onSelect ( self ) :
 		# get data from Gui for current renderer before saving
 		self.getDataFromGui ()
-		self.emit( QtCore.SIGNAL ( 'presetChanged' ) )
+		if QtCore.QT_VERSION < 50000 :
+			self.emit( QtCore.SIGNAL ( 'presetChanged' ) )
+		else :
+			self.presetChanged.emit ()
 		self.done ( 0 ) 

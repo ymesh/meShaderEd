@@ -35,7 +35,6 @@ class ViewComputedCodeDialog ( QtModule.QDialog ) :
 		self.node = node
 		self.code = self.getComputedCode ( node )
 		self.buildGui ()
-		
 	#
 	#  buildGui
 	#

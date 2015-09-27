@@ -4,6 +4,7 @@
 
 """
 from core.mePyQt import QtCore, QtGui
+from core.signal import Signal
 
 #from PyQt4.QtCore import QDir, QString, QModelIndex
 #from PyQt4.QtGui  import QFileSystemModel
@@ -20,7 +21,6 @@ if QtCore.QT_VERSION < 50000 :
 else :
 	from core.mePyQt import QtWidgets
 	QtModule = QtWidgets
-	
 #
 # ImageViewWidget
 #
@@ -45,8 +45,11 @@ class ImageViewWidget ( QtModule.QWidget ) :
 		#self.ui.treeView.setRootIsDecorated( True )
 
 		if QtCore.QT_VERSION < 50000 :
-			QtCore.QObject.connect ( self.ui.imageArea, QtCore.SIGNAL ( 'mouseDoubleClickEvent' ), self.updateViewer )
+			QtCore.QObject.connect ( self.ui.imageArea, QtCore.SIGNAL ( 'mouseDoubleClickSignal' ), self.updateViewer )
 			QtCore.QObject.connect ( self.ui.selector, QtCore.SIGNAL ( 'currentIndexChanged(int)' ), self.onViewerChanged )
+		else :
+			self.ui.imageArea.mouseDoubleClickSignal.connect ( self.updateViewer )
+			self.ui.selector.currentIndexChanged.connect ( self.onViewerChanged )
 		#QtCore.QObject.connect( self.ui, QtCore.SIGNAL( 'paramChanged()' ), self.onParamChanged )
 
 		#self.updateGui()
@@ -55,6 +58,7 @@ class ImageViewWidget ( QtModule.QWidget ) :
 	# currentImageNode
 	#
 	def currentImageNode ( self ) :
+		#
 		gfxNode = None
 		idx = self.ui.selector.currentIndex ()
 		if len ( self.imageNodes ) > 0 :

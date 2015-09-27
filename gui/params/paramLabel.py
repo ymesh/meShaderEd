@@ -4,6 +4,7 @@
 
 """
 from core.mePyQt import QtGui, QtCore
+from core.signal import Signal
 
 from global_vars import app_global_vars, DEBUG_MODE
 import gui.ui_settings as UI
@@ -71,13 +72,19 @@ class ParamLabel ( QtModule.QLabel ) :
 	#
 	def connectSignals ( self ) :
 		#
-		self.connect ( self.editLabel, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditingFinished )
+		if QtCore.QT_VERSION < 50000 :
+			self.connect ( self.editLabel, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditingFinished )
+		else :
+			self.editLabel.editingFinished.connect ( self.onEditingFinished )
 	#
 	# disconnectSignals
 	#
 	def disconnectSignals ( self ) :
 		#
-		self.disconnect ( self.editLabel, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditingFinished )
+		if QtCore.QT_VERSION < 50000 :
+			self.disconnect ( self.editLabel, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditingFinished )
+		else :
+			self.editLabel.editingFinished.disconnect ( self.onEditingFinished )
 	"""
 	#
 	# mouseMoveEvent  
@@ -119,7 +126,7 @@ class ParamLabel ( QtModule.QLabel ) :
 			self.editLabel.setVisible ( True )
 			
 			return
-		QtGui.QWidget.mouseDoubleClickEvent ( self, event )
+		QtModule.QWidget.mouseDoubleClickEvent ( self, event )
 	#
 	# mousePressEvent
 	#
@@ -155,4 +162,4 @@ class ParamLabel ( QtModule.QLabel ) :
 				if DEBUG_MODE : print '* ALT+RMB "enable"/"disable" parameter'
 				self.param.enabled = not self.param.enabled
 				self.param.paramChanged ()
-		QtGui.QWidget.mousePressEvent ( self, event )    
+		QtModule.QWidget.mousePressEvent ( self, event )    

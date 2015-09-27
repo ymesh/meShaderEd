@@ -54,8 +54,8 @@ class GfxNodeLabel ( QtModule.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 		
 		self.editable = False
 		self.processEvents = False
-		self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable, False )     # QGraphicsItem QGraphicsWidget
-		self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable, False )
+		self.setFlag ( QtModule.QGraphicsItem.ItemIsMovable, False )
+		self.setFlag ( QtModule.QGraphicsItem.ItemIsSelectable, False )
 		
 		self.rect = QtCore.QRectF ()
 	#
@@ -165,8 +165,7 @@ class GfxNodeLabel ( QtModule.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 		#
 		self.processEvents = process
 		#self.setFlag ( QtGui.QGraphicsItem.ItemIsMovable, process )
-		self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable, process )
-		#self.setFlag ( QtGui.QGraphicsWidget.ItemIsSelectable, process )
+		self.setFlag ( QtModule.QGraphicsItem.ItemIsSelectable, process )
 	#
 	# mouseDoubleClickEvent
 	#
@@ -188,7 +187,7 @@ class GfxNodeLabel ( QtModule.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 	def mousePressEvent ( self, event ) :
 		if self.processEvents :
 			#print ">> GfxNodeLabel.mousePressEvent"
-			inWhatsThisMode = QtGui.QWhatsThis.inWhatsThisMode ()
+			inWhatsThisMode = QtModule.QWhatsThis.inWhatsThisMode ()
 			#if inWhatsThisMode :
 			#  print '** inWhatsThisMode active'
 			from gfx.gfxNode import GfxNode
@@ -221,8 +220,7 @@ class GfxNodeLabel ( QtModule.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 						parentNode.updateGfxNodeParamLabel ( self.param, self, True )
 						return
 			QtCore.QEvent.ignore ( event )
-		QtGui.QGraphicsItem.mousePressEvent ( self, event )
-		#QtGui.QGraphicsWidget.mousePressEvent ( self, event )
+		QtModule.QGraphicsItem.mousePressEvent ( self, event )
 	"""
 	#
 	# mouseMoveEvent

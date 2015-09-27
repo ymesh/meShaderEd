@@ -74,7 +74,10 @@ class Ui_imageViewWidget(object):
 				if QtCore.QT_VERSION < 50000 :
 					QtCore.QObject.connect(self.btn_render, QtCore.SIGNAL(_fromUtf8("clicked()")), imageViewWidget.updateViewer)
 					QtCore.QObject.connect(self.btn_reset, QtCore.SIGNAL(_fromUtf8("clicked()")), self.imageArea.resetZoom)
-					QtCore.QMetaObject.connectSlotsByName(imageViewWidget)
+				else :
+					self.btn_render.clicked.connect( imageViewWidget.updateViewer)
+					self.btn_reset.clicked.connect( self.imageArea.resetZoom)
+				QtCore.QMetaObject.connectSlotsByName(imageViewWidget)
 
 		def retranslateUi(self, imageViewWidget):
 				imageViewWidget.setWindowTitle(_translate("imageViewWidget", "ImageView", None))

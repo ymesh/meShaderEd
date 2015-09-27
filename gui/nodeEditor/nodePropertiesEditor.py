@@ -9,6 +9,7 @@
 
 """
 from core.mePyQt import QtCore, QtGui
+from core.signal import Signal
 
 from core.meCommon import *
 from global_vars import app_global_vars, DEBUG_MODE, VALID_NODE_TYPES
@@ -85,7 +86,7 @@ class NodePropertiesEditor ( QtModule.QWidget ) :
 				help_text = self.editNode.help
 
 			doc.setPlainText ( help_text )
-			layout = QtGui.QPlainTextDocumentLayout( doc )
+			layout = QtModule.QPlainTextDocumentLayout( doc )
 			doc.setDocumentLayout( layout )
 
 			self.ui.help_plainTextEdit.setDocument ( doc )
@@ -115,26 +116,46 @@ class NodePropertiesEditor ( QtModule.QWidget ) :
 	#
 	def connectSignals ( self ) :
 		# QtCore.QObject.
-		self.connect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrName )
-		self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
-		self.connect ( self.ui.master_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrMaster )
-		self.connect ( self.ui.author_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrAuthor )
-		self.connect ( self.ui.icon_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrIcon )
-		self.connect ( self.ui.type_comboBox, QtCore.SIGNAL ( 'activated(int)' ), self.onEditNodeType )
-		self.connect ( self.ui.help_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditNodeTxtAttr )
+		if QtCore.QT_VERSION < 50000 :
+			self.connect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrName )
+			self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
+			self.connect ( self.ui.master_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrMaster )
+			self.connect ( self.ui.author_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrAuthor )
+			self.connect ( self.ui.icon_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrIcon )
+			self.connect ( self.ui.type_comboBox, QtCore.SIGNAL ( 'activated(int)' ), self.onEditNodeType )
+			self.connect ( self.ui.help_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditNodeTxtAttr )
+		else :
+			self.ui.name_lineEdit.editingFinished.connect ( self.onEditNodeStrAttrName )
+			self.ui.label_lineEdit.editingFinished.connect ( self.onEditNodeStrAttrLabel )
+			self.ui.master_lineEdit.editingFinished.connect ( self.onEditNodeStrAttrMaster )
+			self.ui.author_lineEdit.editingFinished.connect ( self.onEditNodeStrAttrAuthor )
+			self.ui.icon_lineEdit.editingFinished.connect ( self.onEditNodeStrAttrIcon )
+			self.ui.type_comboBox.activated.connect ( self.onEditNodeType )
+			self.ui.help_plainTextEdit.textChanged.connect ( self.onEditNodeTxtAttr )
 	#
 	# disconnectSignals
 	#
 	def disconnectSignals ( self ) :
 		#
-		if self.editNode is not None :
-			self.disconnect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrName )
-			self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
-			self.disconnect ( self.ui.master_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrMaster )
-			self.disconnect ( self.ui.author_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrAuthor )
-			self.disconnect ( self.ui.icon_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrIcon )
-			self.disconnect ( self.ui.type_comboBox, QtCore.SIGNAL ( 'activated(int)' ), self.onEditNodeType )
-			self.disconnect ( self.ui.help_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditNodeTxtAttr )
+		if QtCore.QT_VERSION < 50000 :
+			if self.editNode is not None :
+				self.disconnect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrName )
+				self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
+				self.disconnect ( self.ui.master_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrMaster )
+				self.disconnect ( self.ui.author_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrAuthor )
+				self.disconnect ( self.ui.icon_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrIcon )
+				self.disconnect ( self.ui.type_comboBox, QtCore.SIGNAL ( 'activated(int)' ), self.onEditNodeType )
+				self.disconnect ( self.ui.help_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onEditNodeTxtAttr )
+		else :
+			if self.editNode is not None :
+				self.ui.name_lineEdit.editingFinished.disconnect ( self.onEditNodeStrAttrName )
+				self.ui.label_lineEdit.editingFinished.disconnect ( self.onEditNodeStrAttrLabel )
+				self.ui.master_lineEdit.editingFinished.disconnect ( self.onEditNodeStrAttrMaster )
+				self.ui.author_lineEdit.editingFinished.disconnect ( self.onEditNodeStrAttrAuthor )
+				self.ui.icon_lineEdit.editingFinished.disconnect ( self.onEditNodeStrAttrIcon )
+				self.ui.type_comboBox.activated.disconnect ( self.onEditNodeType )
+				self.ui.help_plainTextEdit.textChanged.disconnect ( self.onEditNodeTxtAttr )
+	#
 	#
 	# doesn't work ...
 	#

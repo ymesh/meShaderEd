@@ -4,6 +4,7 @@
 
 """
 from core.mePyQt import QtCore, QtGui, QtXml 
+from core.signal import Signal
 #from PyQt4.QtGui import QWhatsThis 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES, VALID_RSL_NODE_TYPES, VALID_RSL_SHADER_TYPES
 from core.meCommon import *
@@ -95,6 +96,15 @@ class MainWindow ( QtModule.QMainWindow ) :
 		#self.ui.dockNodes.setWindowTitle ( 'Library: %s' % app_global_vars [ 'NodesPath' ] )
 		#self.ui.dockProject.setWindowTitle ( 'Project: %s' % app_global_vars [ 'ProjectNetworks' ] )
 
+		self.connectSignals ()
+		
+		self.setupActions ()
+		self.setupWindowTitle ()
+	#
+	# connectSignals
+	#
+	def connectSignals ( self ) :
+		#
 		if QtCore.QT_VERSION < 50000 :
 			QtCore.QObject.connect ( self.ui.actionHelpMode, QtCore.SIGNAL ( 'toggled(bool)' ), self.onHelpMode )
 			QtCore.QObject.connect ( self.ui.nodeList_ctl.ui.nodeList, QtCore.SIGNAL ( 'setActiveNodeList' ), self.setActiveNodeList )
@@ -103,11 +113,20 @@ class MainWindow ( QtModule.QMainWindow ) :
 			QtCore.QObject.connect ( self.ui.tabs, QtCore.SIGNAL ( 'currentChanged(int)' ), self.onTabSelected )
 			QtCore.QObject.connect ( self.ui.tabs, QtCore.SIGNAL ( 'tabCloseRequested(int)' ), self.onTabCloseRequested )
 	
-			QtCore.QObject.connect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'nodeLabelChanged' ), self.onNodeLabelChanged  )
-			QtCore.QObject.connect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'nodeParamChanged' ), self.onNodeParamChanged  )
-
-		self.setupActions ()
-		self.setupWindowTitle ()
+			QtCore.QObject.connect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'nodeLabelChangedSignal' ), self.onNodeLabelChanged  )
+			QtCore.QObject.connect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'nodeParamChangedSignal' ), self.onNodeParamChanged  )
+		else :
+			self.ui.actionHelpMode.toggled.connect ( self.onHelpMode )
+			
+			self.ui.nodeList_ctl.ui.nodeList.setActiveNodeList.connect ( self.setActiveNodeList )
+			self.ui.project_ctl.ui.nodeList.setActiveNodeList.connect ( self.setActiveNodeList )
+	
+			self.ui.tabs.currentChanged.connect ( self.onTabSelected )
+			self.ui.tabs.tabCloseRequested.connect ( self.onTabCloseRequested )
+	
+			self.ui.nodeParam_ctl.nodeLabelChangedSignal.connect ( self.onNodeLabelChanged  )
+			self.ui.nodeParam_ctl.nodeParamChangedSignal.connect ( self.onNodeParamChanged  )
+			
 	#
 	# connectWorkAreaSignals
 	#
@@ -116,14 +135,26 @@ class MainWindow ( QtModule.QMainWindow ) :
 		if QtCore.QT_VERSION < 50000 :
 			if self.workArea != None :
 				if self.activeNodeList != None :
-					QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
-				QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'selectNodes' ), self.onSelectGfxNodes  )
-				QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onGfxNodeParamChanged  )
+					QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet )
+				QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'selectNodes' ), self.onSelectGfxNodes )
+				QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.onGfxNodeParamChanged )
 				QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeAdded' ), self.onAddGfxNode )
 				QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'gfxNodeRemoved' ), self.onRemoveGfxNode )
 				#QtCore.QObject.connect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
 				QtCore.QObject.connect ( self.workArea.scene(), QtCore.SIGNAL ( 'nodeUpdated' ), self.updateNodeParamView )
-				QtCore.QObject.connect ( self.workArea.scene(), QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self.onGfxNodeParamChanged  )
+				QtCore.QObject.connect ( self.workArea.scene(), QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self.onGfxNodeParamChanged )
+		else :
+			if self.workArea != None :
+				if self.activeNodeList != None :
+					self.activeNodeList.addNode.connect( self.workArea.insertNodeNet )
+				self.workArea.selectNodes.connect ( self.onSelectGfxNodes )
+				self.workArea.nodeConnectionChanged.connect ( self.onGfxNodeParamChanged  )
+				self.workArea.gfxNodeAdded.connect ( self.onAddGfxNode )
+				self.workArea.gfxNodeRemoved.connect ( self.onRemoveGfxNode )
+				#self.workArea.editGfxNode.connect ( self.editGfxNode )
+				self.workArea.scene().nodeUpdated.connect ( self.updateNodeParamView )
+				self.workArea.scene().gfxNodeParamChanged.connect ( self.onGfxNodeParamChanged  )
+			
 		#
 	# disconnectWorkAreaSignals
 	#
@@ -374,7 +405,6 @@ class MainWindow ( QtModule.QMainWindow ) :
 		app_settings.beginGroup ( 'WorkArea' )
 		app_settings.setValue ( 'grid_enabled', bool ( check ) )
 		app_settings.endGroup ()
-
 		self.workArea.resetCachedContent ()
 		#self.ui.workArea.update()
 	#
@@ -395,7 +425,6 @@ class MainWindow ( QtModule.QMainWindow ) :
 		app_settings.beginGroup ( 'WorkArea' )
 		app_settings.setValue ( 'reverse_flow', bool ( check ) )
 		app_settings.endGroup ()
-
 		#self.ui.workArea.resetCachedContent()
 	#
 	# onStraightLinks
@@ -414,10 +443,16 @@ class MainWindow ( QtModule.QMainWindow ) :
 	def setActiveNodeList ( self, nodeList ) :
 		#
 		if DEBUG_MODE : print '>> MainWindow.setActiveNodeList'
-		if self.activeNodeList != None :
-			QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
-		self.activeNodeList = nodeList
-		QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
+		if QtCore.QT_VERSION < 50000 :
+			if self.activeNodeList != None :
+				QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
+			self.activeNodeList = nodeList
+			QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
+		else :
+			if self.activeNodeList != None :
+				self.activeNodeList.addNode.disconnect ( self.workArea.insertNodeNet  )
+			self.activeNodeList = nodeList
+			self.activeNodeList.addNode.connect( self.workArea.insertNodeNet )
 	#
 	# onGetNode
 	#
@@ -434,7 +469,8 @@ class MainWindow ( QtModule.QMainWindow ) :
 	def onAddGfxNode ( self, gfxNode ) :
 		#
 		#print ">> MainWindow: onAddGfxNode = %s" % gfxNode.node.label
-		if gfxNode.node.type == 'image' : self.ui.imageView_ctl.addViewer ( gfxNode )
+		if gfxNode.node.type == 'image' : 
+			self.ui.imageView_ctl.addViewer ( gfxNode )
 
 			#if self.ui.nodeParam_ctl.receivers( QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ) ) == 0 :
 			#  QtCore.QObject.connect( self.ui.nodeParam_ctl, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.ui.imageView_ctl.onNodeParamChanged )
@@ -722,7 +758,8 @@ class MainWindow ( QtModule.QMainWindow ) :
 			self.ui.tabs.removeTab ( idx )
 	#
 	# onNew
-	#
+	# 
+	@QtCore.pyqtSlot ()
 	def onNew ( self, tabName = 'untitled' ) :
 		#
 		def tabNameExists ( self, name ) :
@@ -732,7 +769,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 					ret = True
 					break
 			return ret
-
+		#
 		newName = tabName
 		if DEBUG_MODE : print '->  self.ui.tabs.count() = %d ' % self.ui.tabs.count ()
 
@@ -743,11 +780,13 @@ class MainWindow ( QtModule.QMainWindow ) :
 			i = 0
 			while True :
 				if tabNameExists ( self, name ) :
-					name = newName + str ( i )
+					name = newName +  str ( i )
+					print name
 					i += 1
 					continue
 				else :
 					break
+			
 			newName = name
 			workArea = WorkArea ()  # create new WorkArea instance
 			newTab = self.ui.tabs.addTab ( workArea, newName )
@@ -848,7 +887,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-		filename = str ( QtGui.QFileDialog.getOpenFileName ( self, "Import file", curDir, typeFilter ) )
+		filename = str ( QtModule.QFileDialog.getOpenFileName ( self, "Import file", curDir, typeFilter ) )
 		if filename != '' :
 			if DEBUG_MODE : print "-> import file %s" %  filename
 			self.workArea.insertNodeNet ( normPath ( filename ) )
@@ -864,7 +903,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-		filename = str( QtGui.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
+		filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
 		if filename != '' :
 			if DEBUG_MODE : print '-> save file As %s' % filename
 			( name, ext ) = os.path.splitext ( os.path.basename ( filename ) )
@@ -908,7 +947,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-		filename = str( QtGui.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
+		filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
 		if filename != '' :
 			if DEBUG_MODE : print '-> save file As %s' % filename
 			( name, ext ) = os.path.splitext ( os.path.basename ( filename ) )
@@ -925,7 +964,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	def onHelpMode ( self, showWhatsThis ) :
 		#
 		#if showWhatsThis :
-		QtGui.QWhatsThis.enterWhatsThisMode ()
+		QtModule.QWhatsThis.enterWhatsThisMode ()
 		#else :
 		#  QtGui.QWhatsThis.leaveWhatsThisMode ()
 	#

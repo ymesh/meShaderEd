@@ -51,10 +51,16 @@ class ProjectSetup( QtModule.QDialog ):
 		
 		self.ui.lineEdit_project.setText ( self.rootDir )
 
-		self.ui.lineEdit_network.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_networks' ).toString () ) ) )
-		self.ui.lineEdit_sources.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_sources' ).toString () ) ) )
-		self.ui.lineEdit_shaders.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'project_shaders' ).toString () ) ) )
-		self.ui.lineEdit_textures.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'project_textures' ).toString () ) ) )
+		if QtCore.QT_VERSION < 50000 :
+			self.ui.lineEdit_network.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_networks' ).toString () ) ) )
+			self.ui.lineEdit_sources.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_sources' ).toString () ) ) )
+			self.ui.lineEdit_shaders.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'project_shaders' ).toString () ) ) )
+			self.ui.lineEdit_textures.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'project_textures' ).toString () ) ) )
+		else :
+			self.ui.lineEdit_network.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_networks' ) ) ) )
+			self.ui.lineEdit_sources.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_sources' ) ) ) )
+			self.ui.lineEdit_shaders.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'project_shaders' ) ) ) )
+			self.ui.lineEdit_textures.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'project_textures' ) ) ) )
 	#
 	# setupProject
 	#

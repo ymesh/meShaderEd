@@ -4,6 +4,7 @@
 
 """
 from core.mePyQt import QtGui, QtCore
+from core.signal import Signal
 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, VALID_RSL_NODE_TYPES, VALID_RSL_PARAM_TYPES
 import gui.ui_settings as UI
@@ -15,7 +16,6 @@ if QtCore.QT_VERSION < 50000 :
 else :
 	from core.mePyQt import QtWidgets
 	QtModule = QtWidgets
-	
 #
 # ParamWidget general class for parameter widgets
 #
@@ -26,6 +26,13 @@ class ParamWidget ( QtModule.QWidget ) :
 	def __init__ ( self, param, gfxNode, ignoreSubtype = False ) :
 		#
 		super ( QtModule.QWidget, self ).__init__ ( None )
+		#
+		# Define signals for PyQt5
+		#
+		if QtCore.QT_VERSION >= 50000 :
+			#
+			self.nodeParamRemoved = Signal ()
+			#
 		self.param = param
 		self.gfxNode = gfxNode
 		self.ignoreSubtype = ignoreSubtype # if widget is used in NodeEditor, then ignoreSubtype = True
@@ -76,20 +83,23 @@ class ParamWidget ( QtModule.QWidget ) :
 		
 		self.label_vl = QtModule.QVBoxLayout ()
 		self.label_vl.setSpacing ( UI.SPACING )
-		self.label_vl.setMargin ( 0 )
+		if QtCore.QT_VERSION < 50000 :
+			self.label_vl.setMargin ( 0 )
 		self.label_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 
 		#self.gui = QtGui.QWidget ( self )
 
 		self.hl = QtModule.QHBoxLayout ()
 		self.hl.setSpacing ( UI.SPACING )
-		self.hl.setMargin ( 0 )
+		if QtCore.QT_VERSION < 50000 :
+			self.hl.setMargin ( 0 )
 		self.hl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		
 		# vertical layout for parametrs values (e.g. output links or matrix rows)
 		self.param_vl = QtModule.QVBoxLayout ()
 		self.param_vl.setSpacing ( UI.SPACING )
-		self.param_vl.setMargin ( 0 )
+		if QtCore.QT_VERSION < 50000 :
+			self.param_vl.setMargin ( 0 )
 		self.param_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		#
 		# add 'isShaderParam' check box only for RSL nodes
@@ -107,7 +117,7 @@ class ParamWidget ( QtModule.QWidget ) :
 				self.connect ( self.check, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onShaderParamChanged )
 				self.hl.addWidget ( self.check )
 			else :
-				spacer = QtModule.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
+				spacer = QtModule.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtModule.QSizePolicy.Minimum, QtModule.QSizePolicy.Minimum )
 				self.hl.addItem ( spacer )
 			#
 			# add 'remove' button for removable parameters
@@ -167,7 +177,8 @@ class ParamWidget ( QtModule.QWidget ) :
 		self.hl.addWidget ( self.label )
 		self.hl.addWidget ( self.helpMark )
 		#self.hl.addLayout ( self.param_vl )
-		self.label_vl.addItem ( QtGui.QSpacerItem ( 20, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum ) )
+		spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
+		self.label_vl.addItem ( spacer )
 		self.label_vl.addLayout ( self.hl )
 	#
 	# onShaderParamChanged
@@ -187,13 +198,16 @@ class ParamWidget ( QtModule.QWidget ) :
 	def buildGui ( self ) :
 		#
 		pass
-		spacer = QtModule.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum )
+		spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
 		self.hl.addItem ( spacer )
 	#
 	# onRemoveItem
 	#
 	def onRemoveItem ( self ) : 
 		#
-		if DEBUG_MODE : print '>> ParamWidget( %s ).onRemoveItem ' % self.param.name   
-		self.emit ( QtCore.SIGNAL ( 'nodeParamRemoved' ), self.param ) 
+		if DEBUG_MODE : print '>> ParamWidget( %s ).onRemoveItem ' % self.param.name
+		if QtCore.QT_VERSION >= 50000 :   
+			self.emit ( QtCore.SIGNAL ( 'nodeParamRemoved' ), self.param ) 
+		else :
+			self.nodeParamRemoved.emit ( self.param ) 
 

@@ -50,7 +50,9 @@ class Ui_nodeLibraryView(object):
 				
 				if QtCore.QT_VERSION < 50000 :
 					QtCore.QObject.connect(self.btn_reload, QtCore.SIGNAL(_fromUtf8("clicked()")), nodeLibraryView.onReload)
-					QtCore.QMetaObject.connectSlotsByName(nodeLibraryView)
+				else :
+					self.btn_reload.clicked.connect( nodeLibraryView.onReload)
+				QtCore.QMetaObject.connectSlotsByName(nodeLibraryView)
 
 		def retranslateUi(self, nodeLibraryView):
 				nodeLibraryView.setWindowTitle(QtModule.QApplication.translate("nodeLibraryView", "Form", None))

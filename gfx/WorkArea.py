@@ -4,6 +4,7 @@
 
 """
 from core.mePyQt import QtCore, QtGui
+from core.signal import Signal
 
 from core.meCommon import *
 
@@ -25,18 +26,96 @@ if QtCore.QT_VERSION < 50000 :
 else :
 	from core.mePyQt import QtWidgets
 	QtModule = QtWidgets
+
+#
+# WorkAreaScene
+#
+# Translates user signals from graphics objects 
+# to work area
+#
+class WorkAreaScene ( QtModule.QGraphicsScene ) :
 	
+	#
+	# __init__
+	#
+	def __init__ ( self, view ) :
+		#
+		QtModule.QGraphicsScene.__init__ ( self )
+		#
+		# Define signals for PyQt5
+		#
+		if QtCore.QT_VERSION >= 50000 :
+			#
+			self.startNodeConnector = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
+			self.traceNodeConnector = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
+			self.endNodeConnector = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
+			
+			self.startNodeLink = Signal () #( QtModule.QGraphicsObject ) # QtModule.QGraphicsItem
+			self.traceNodeLink = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
+			self.endNodeLink = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
+	
+			self.onGfxNodeRemoved = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject )
+			self.onGfxLinkRemoved = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject )
+			
+			self.nodeUpdated = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem )
+			self.gfxNodeParamChanged = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem, QtCore.QObject )
+
+		self.view = view
+		self.connectSignals ()
+	#
+	# connectSignals
+	#
+	def connectSignals ( self ) :
+		if QtCore.QT_VERSION < 50000 :
+			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'selectionChanged()' ), self.view.onSelectionChanged )
+			
+			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'startNodeLink' ), self.view.onStartNodeLink )
+			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'traceNodeLink' ), self.view.onTraceNodeLink )
+			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'endNodeLink' ), self.view.onEndNodeLink )
+	
+			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'startNodeConnector' ), self.view.onStartNodeConnector )
+			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'traceNodeConnector' ), self.view.onTraceNodeConnector )
+			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'endNodeConnector' ), self.view.onEndNodeConnector )
+	
+			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self.view.onRemoveNode )
+			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self.view.onRemoveLink )
+			
+		else :
+			self.selectionChanged.connect ( self.view.onSelectionChanged )
+			
+			self.startNodeLink.connect ( self.view.onStartNodeLink )
+			self.traceNodeLink.connect ( self.view.onTraceNodeLink )
+			self.endNodeLink.connect ( self.view.onEndNodeLink )
+	
+			self.startNodeConnector.connect ( self.view.onStartNodeConnector )
+			self.traceNodeConnector.connect ( self.view.onTraceNodeConnector )
+			self.endNodeConnector.connect ( self.view.onEndNodeConnector )
+	
+			self.onGfxNodeRemoved.connect ( self.view.onRemoveNode )
+			self.onGfxLinkRemoved.connect ( self.view.onRemoveLink )
 #
 # WorkArea
 #
 class WorkArea ( QtModule.QGraphicsView ) :
+	
 	#
 	# __init__
 	#
 	def __init__ ( self ) :
 		#
 		QtModule.QGraphicsView.__init__ ( self )
-
+		
+		#
+		# Define signals for PyQt5
+		#
+		if QtCore.QT_VERSION >= 50000 :
+			#
+			self.selectNodes = Signal () #( list, list )
+			self.nodeConnectionChanged = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QObject )
+		
+			self.gfxNodeAdded = Signal () #( QtModule.QGraphicsObject )
+			self.gfxNodeRemoved = Signal () #( QtModule.QGraphicsObject )
+		#
 		self.drawGrid = True
 		self.gridSnap = False
 		self.straightLinks = False
@@ -60,8 +139,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		self.selectedLinks = []
 
 		# set scene
-		scene = QtModule.QGraphicsScene ( self )
-
+		scene = WorkAreaScene ( self )
 		scene.setSceneRect ( -10000, -10000, 20000, 20000 )
 		#scene.setItemIndexMethod ( QtGui.QGraphicsScene.NoIndex )
 		self.setScene ( scene )
@@ -93,21 +171,15 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		self.viewBrush = QtGui.QBrush ( QtGui.QColor ( 148, 148, 148 ) )
 		self.setBackgroundBrush ( self.viewBrush )
 
-		if QtCore.QT_VERSION < 50000 :
-			QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'selectionChanged()' ), self.onSelectionChanged )
-	
-			QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'startNodeLink' ), self.onStartNodeLink )
-			QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'traceNodeLink' ), self.onTraceNodeLink )
-			QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'endNodeLink' ), self.onEndNodeLink )
-	
-			QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'startNodeConnector' ), self.onStartNodeConnector )
-			QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'traceNodeConnector' ), self.onTraceNodeConnector )
-			QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'endNodeConnector' ), self.onEndNodeConnector )
-	
-			QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self.onRemoveNode )
-			QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self.onRemoveLink )
+		# self.connectSignals ()
 
 		if DEBUG_MODE : print ">> WorkArea. __init__"
+	#
+	# connectSignals
+	#
+	def connectSignals ( self ) :
+		#
+		pass
 	#
 	# drawBackground
 	#
@@ -265,7 +337,10 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		#for item in scene.selectedItems (): item.setSelected ( False )
 		scene.addItem ( gfxNode )
 		gfxNode.setSelected ( True )
-		self.emit ( QtCore.SIGNAL ( 'gfxNodeAdded' ), gfxNode )
+		if QtCore.QT_VERSION < 50000 :
+			self.emit ( QtCore.SIGNAL ( 'gfxNodeAdded' ), gfxNode )
+		else :
+			self.gfxNodeAdded.emit ( gfxNode )
 	#
 	# adjustLinks
 	#
@@ -303,7 +378,10 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			elif isinstance ( item, GfxSwatchNode ) : self.selectedNodes.append ( item )
 			elif isinstance ( item, GfxLink ) : self.selectedLinks.append ( item )
 
-		self.emit ( QtCore.SIGNAL ( 'selectNodes' ), self.selectedNodes, self.selectedLinks )
+		if QtCore.QT_VERSION < 50000 :
+			self.emit ( QtCore.SIGNAL ( 'selectNodes' ), self.selectedNodes, self.selectedLinks )
+		else :
+			self.selectNodes.emit ( self.selectedNodes, self.selectedLinks )
 	#
 	# lastConnectCandidateReset
 	#
@@ -339,8 +417,12 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	# onStartNodeLink
 	#
+	#@QtCore.pyqtSlot( GfxNodeConnector )
 	def onStartNodeLink ( self, connector ):
 		#
+		#if DEBUG_MODE : print '>> WorkArea::onStartNodeLink'
+		#if DEBUG_MODE : print connector	
+			
 		srcNode = connector.getNode ()
 		srcParam = connector.param
 		if DEBUG_MODE : print '>> WorkArea::onStartNodeLink from %s (%s)' % ( srcNode.label, srcParam.label )
@@ -364,7 +446,10 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def onTraceNodeLink ( self, connector, scenePos ) :
 		# node = connector.parentItem().node
 		# print ">> WorkArea: onDrawNodeLink from %s (%d %d)" % ( node.label, scenePos.x(), scenePos.y() )
-		connectCandidate = self.scene ().itemAt ( scenePos )
+		if QtCore.QT_VERSION < 50000 :
+			connectCandidate = self.scene ().itemAt ( scenePos )
+		else :
+			connectCandidate = self.scene ().itemAt ( scenePos, self.transform () )
 		srcConnector = self.currentGfxLink.srcConnector
 		swappedLink = False
 		if srcConnector is None : # link has swapped connectors
@@ -449,8 +534,10 @@ class WorkArea ( QtModule.QGraphicsView ) :
 
 			self.currentGfxLink.link = link
 			self.nodeNet.addLink ( link )
-			#self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.currentGfxLink.srcConnector.getGfxNode (), self.currentGfxLink.srcConnector.param )
-			self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.currentGfxLink.dstConnector.getGfxNode (), self.currentGfxLink.dstConnector.param )
+			if QtCore.QT_VERSION < 50000 :
+				self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.currentGfxLink.dstConnector.getGfxNode (), self.currentGfxLink.dstConnector.param )
+			else :
+				self.nodeConnectionChanged.emit ( self.currentGfxLink.dstConnector.getGfxNode (), self.currentGfxLink.dstConnector.param )
 
 		self.lastConnectCandidateReset ()
 		self.currentGfxLink = None
@@ -576,7 +663,10 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def onRemoveNode ( self, gfxNode ) :
 		#
 		print ">> WorkArea.onRemoveNode %s (id = %d)" % ( gfxNode.node.label, gfxNode.node.id )
-		self.emit ( QtCore.SIGNAL ( 'gfxNodeRemoved' ), gfxNode )
+		if QtCore.QT_VERSION < 50000 :
+			self.emit ( QtCore.SIGNAL ( 'gfxNodeRemoved' ), gfxNode )
+		else :
+			self.gfxNodeRemoved.emit ( gfxNode )
 		self.scene ().removeItem ( gfxNode )
 		self.nodeNet.removeNode ( gfxNode.node )
 
@@ -599,8 +689,10 @@ class WorkArea ( QtModule.QGraphicsView ) :
 				#self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), srcConnector.parentItem(), srcConnector.param )
 			if dstConnector is not None :
 				if DEBUG_MODE : print '*** dstConnector.parentItem().node.label = %s ' % dstConnector.getNode ().label
-				self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), dstConnector.getGfxNode (), dstConnector.param )
-		
+				if QtCore.QT_VERSION < 50000 :
+					self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), dstConnector.getGfxNode (), dstConnector.param )
+				else :
+					self.nodeConnectionChanged.emit ( dstConnector.getGfxNode (), dstConnector.param )
 	#
 	# removeSelected
 	#
@@ -658,8 +750,13 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			# decode drop stuff
 			data = mimedata.data ( 'application/x-text' )
 			stream = QtCore.QDataStream ( data, QtCore.QIODevice.ReadOnly )
-			filename = QtCore.QString ()
-			stream >> filename
+			
+			if QtCore.QT_VERSION < 50000 :
+				filename = QtCore.QString ()
+				stream >> filename
+			else :
+				filename = ''
+				filename = stream.readBytes ()
 
 			if DEBUG_MODE : print 'itemFilename = %s' % ( filename )
 
@@ -696,8 +793,16 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		scale = -1.0
 		if 'linux' in sys.platform: scale = 1.0
 		import math
-		scaleFactor = math.pow( 2.0, scale * event.delta() / 600.0 )
-		factor = self.matrix().scale( scaleFactor, scaleFactor ).mapRect( QtCore.QRectF( -1, -1, 2, 2 ) ).width ()
+		if QtCore.QT_VERSION < 50000 :
+			scaleFactor = math.pow( 2.0, scale * event.delta () / 600.0 )
+		else :
+			delta = event.angleDelta ()
+			#print ( '>> delta rx = %d ry = %d' % ( delta.x (), delta.y () ) )
+			scaleFactor = math.pow( 2.0, scale * delta.y () / 600.0 )
+		
+		# self.matrix () is depicated
+		factor = self.transform ().scale ( scaleFactor, scaleFactor ).mapRect ( QtCore.QRectF ( -1, -1, 2, 2 ) ).width ()
+		
 		if factor < 0.07 or factor > 100: return
 		self.scale ( scaleFactor, scaleFactor )
 	#
@@ -748,7 +853,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			if 'linux' in sys.platform: scale = 1.0
 			import math
 			scaleFactor = math.pow ( 2.0, scale * max ( deltaPos.x (), deltaPos.y () ) / 200.0  ) #
-			factor = self.matrix().scale( scaleFactor, scaleFactor ).mapRect( QtCore.QRectF( -1, -1, 2, 2 ) ).width()
+			factor = self.transform ().scale ( scaleFactor, scaleFactor ).mapRect ( QtCore.QRectF( -1, -1, 2, 2 ) ).width ()
 
 			if factor < 0.07 or factor > 100: return
 			# update view matrix
@@ -806,9 +911,11 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	# insertNodeNet
 	#
+	# Called by signal 'addNode'
 	def insertNodeNet ( self, filename, pos = None ) :
 		#
-		if DEBUG_MODE : print ">> WorkArea.insertNodeNet (before) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) )
+		if DEBUG_MODE : print ( '>> WorkArea.insertNodeNet filename = ' + filename )
+		if DEBUG_MODE : print ( ">> WorkArea.insertNodeNet (before) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) ) )
 
 		( nodes, links ) = self.nodeNet.insert ( normPath ( filename ) )
 

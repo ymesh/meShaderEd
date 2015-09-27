@@ -49,13 +49,22 @@ class SettingsSetup ( QtModule.QDialog ):
 		##else :
 		##  font.setPointSize(10)
 		
-		self.ui.lineEdit_temp.setText( self.app_settings.value('temp').toString() )
-		self.ui.lineEdit_inc.setText( self.app_settings.value('include').toString() )
-		self.ui.lineEdit_lib.setText( self.app_settings.value('lib').toString() )
-		self.ui.lineEdit_nodes.setText( self.app_settings.value('nodes').toString() )
-		self.ui.lineEdit_shaders.setText( self.app_settings.value('shaders').toString() )
-		self.ui.lineEdit_textures.setText( self.app_settings.value('texture').toString() )
-		self.ui.lineEdit_archives.setText( self.app_settings.value('archive').toString() )
+		if QtCore.QT_VERSION < 50000 :
+			self.ui.lineEdit_temp.setText( self.app_settings.value('temp').toString() )
+			self.ui.lineEdit_inc.setText( self.app_settings.value('include').toString() )
+			self.ui.lineEdit_lib.setText( self.app_settings.value('lib').toString() )
+			self.ui.lineEdit_nodes.setText( self.app_settings.value('nodes').toString() )
+			self.ui.lineEdit_shaders.setText( self.app_settings.value('shaders').toString() )
+			self.ui.lineEdit_textures.setText( self.app_settings.value('texture').toString() )
+			self.ui.lineEdit_archives.setText( self.app_settings.value('archive').toString() )
+		else :
+			self.ui.lineEdit_temp.setText( self.app_settings.value('temp') )
+			self.ui.lineEdit_inc.setText( self.app_settings.value('include') )
+			self.ui.lineEdit_lib.setText( self.app_settings.value('lib') )
+			self.ui.lineEdit_nodes.setText( self.app_settings.value('nodes') )
+			self.ui.lineEdit_shaders.setText( self.app_settings.value('shaders') )
+			self.ui.lineEdit_textures.setText( self.app_settings.value('texture') )
+			self.ui.lineEdit_archives.setText( self.app_settings.value('archive') )
 	#
 	#  
 	def onBrowseTempDir ( self ):

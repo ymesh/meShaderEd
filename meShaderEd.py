@@ -75,8 +75,8 @@ def getDefaultValue ( settings, group, key, def_value = None ) :
 			else :  
 				value = str ( value.toString () )
 	else :
-		if value == 'true' : value = True
-		elif value == 'false' : value = False
+		if value == 'true' or value is True : value = True
+		elif value == 'false' or value is False : value = False
 		else :
 			if def_value is not None and isinstance ( def_value, QtGui.QColor ) :
 				value = QtGui.QColor ( value )

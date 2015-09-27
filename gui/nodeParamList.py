@@ -4,7 +4,7 @@
 
 """
 from core.mePyQt import QtCore, QtGui
-
+from core.signal import Signal
 #from PyQt4.QtCore import QDir, QString, QModelIndex
 #from PyQt4.QtGui  import QFileSystemModel
 #from PyQt4.QtGui  import QFileIconProvider
@@ -39,6 +39,12 @@ else :
 #
 class NodeParamListTab ( QtModule.QWidget ) :
 	#
+	# Define signals for PyQt5
+	#
+	if QtCore.QT_VERSION >= 50000 :
+		#
+		sectionResized = QtCore.pyqtSignal ( int,int,int )
+	#
 	# __init__
 	#
 	def __init__ ( self, parent, gfxNode = None, isInput = True, showConnected = False ) :
@@ -65,6 +71,8 @@ class NodeParamListTab ( QtModule.QWidget ) :
 		#
 		if QtCore.QT_VERSION < 50000 :
 			self.connect ( self.paramHeader, QtCore.SIGNAL ( 'sectionResized(int,int,int)' ), self.onSectionResized )
+		else :
+			self.paramHeader.sectionResized.connect ( self.onSectionResized )
 	#
 	# onSectionResized
 	#
@@ -231,9 +239,10 @@ class NodeParamList ( QtModule.QWidget ) :
 		#if DEBUG_MODE : print '>> NodeParamList.buildGui'
 			
 		self.paramListLayout = QtModule.QGridLayout ()
-		self.paramListLayout.setSizeConstraint ( QtGui.QLayout.SetNoConstraint )
+		self.paramListLayout.setSizeConstraint ( QtModule.QLayout.SetNoConstraint )
 		self.paramListLayout.setSpacing ( UI.SPACING )
-		self.paramListLayout.setMargin ( UI.SPACING )
+		if QtCore.QT_VERSION < 50000 :
+			self.paramListLayout.setMargin ( UI.SPACING )
 		self.paramListLayout.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		self.paramListLayout.setColumnMinimumWidth ( 0, self.labelWidth )
 		self.paramListLayout.setColumnStretch ( 1, 1 )
@@ -283,9 +292,12 @@ class NodeParamList ( QtModule.QWidget ) :
 								paramWidget.setEnabled ( False )
 							
 							if param.removable :
-								QtCore.QObject.connect ( paramWidget, QtCore.SIGNAL ( 'nodeParamRemoved' ), self.nodeParamViewTab.onParamRemoved )
+								if QtCore.QT_VERSION < 50000 :
+									QtCore.QObject.connect ( paramWidget, QtCore.SIGNAL ( 'nodeParamRemoved' ), self.nodeParamViewTab.onParamRemoved )
+								else :
+									paramWidget.nodeParamRemoved.connect ( self.nodeParamViewTab.onParamRemoved )
 					paramRows += 1
 			
-			spacer = QtModule.QSpacerItem ( 20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding )
+			spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Minimum, QtModule.QSizePolicy.Expanding )
 			self.paramListLayout.addItem ( spacer, paramRows, 0, 1, 1 ) 
 			self.paramListLayout.setRowStretch ( paramRows, 1 )
