@@ -13,6 +13,8 @@
 """
 from core.mePyQt import QtCore, QtGui, QtXml
 
+from global_vars import app_global_vars, DEBUG_MODE
+
 from ui_meRendererSetup import Ui_meRendererSetup
 
 if QtCore.QT_VERSION < 50000 :
@@ -110,7 +112,9 @@ class meRendererSetup ( QtModule.QDialog ) :
 	# onIndexChanged
 	#    
 	def onIndexChanged ( self, name ) : 
-		#print ">> onIndexChanged:: self.labelsReady == %d" % self.labelsReady
+		if DEBUG_MODE : print ">> onIndexChanged:: nam = %s self.labelsReady == %d" % ( name, self.labelsReady )
+		#if DEBUG_MODE : print self.ui.listPreset.currentText ()
+		name = self.ui.listPreset.currentText ()
 		if ( self.labelsReady and name != '' ) :
 			# change current renderer
 			self.rendererPreset.setCurrentPresetByName ( str ( name ) )

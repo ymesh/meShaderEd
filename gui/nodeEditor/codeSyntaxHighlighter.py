@@ -90,7 +90,6 @@ class CodeSyntaxHighlighter ( QtGui.QSyntaxHighlighter ):
 		self.globalsFormat.setForeground ( syntax_colors [ 'globals' ] )
 		globalsRule = ( QtCore.QRegExp ( '\$\{[A-Za-z0-9_]+\}' ), self.globalsFormat ) 
 		self.highlightingRules.append ( globalsRule )
-		
 	#
 	# highlightBlock
 	#  
@@ -117,7 +116,10 @@ class CodeSyntaxHighlighter ( QtGui.QSyntaxHighlighter ):
 			commentLength = 0
 			if endIndex == -1:
 				self.setCurrentBlockState ( 1 )
-				commentLength = text.length () - startIndex
+				if QtCore.QT_VERSION < 50000 :
+					commentLength = text.length () - startIndex
+				else :
+					commentLength = len ( text ) - startIndex
 			else:
 				commentLength = endIndex - startIndex + self.commentEndExpression.matchedLength ()
 	

@@ -5,6 +5,7 @@
 """
 import os, sys, copy
 from core.mePyQt import QtCore, QtXml
+from core.signal import Signal
 #from PyQt4.QtCore import QDir, QFile, QVariant
 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES
@@ -15,13 +16,6 @@ from core.meCommon import getParsedLabel, normPath
 #
 class Node ( QtCore.QObject ) :
 	#
-	# Define signals for PyQt5
-	#
-	if QtCore.QT_VERSION >= 50000 :
-		#
-		nodeUpdated = QtCore.pyqtSignal ( [QtCore.QObject] )
-		nodeParamsUpdated = QtCore.pyqtSignal ( [QtCore.QObject] )
-	#
 	id = 0
 	#
 	# __init__
@@ -29,7 +23,14 @@ class Node ( QtCore.QObject ) :
 	def __init__ ( self, xml_node = None, nodenet = None ) :
 		#
 		QtCore.QObject.__init__ ( self )
-
+		#
+		# Define signals for PyQt5
+		#
+		if QtCore.QT_VERSION >= 50000 :
+			#
+			self.nodeUpdated = Signal () # QtCore.pyqtSignal ( [QtCore.QObject] )
+			self.nodeParamsUpdated = Signal () #QtCore.pyqtSignal ( [QtCore.QObject] )
+			#
 		self.id = None
 		self.name = None
 		self.label = None

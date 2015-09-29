@@ -117,14 +117,14 @@ class Ui_FloatWidget_switch ( object ) :
 		
 		self.checkBox.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
 		self.checkBox.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
-		spacer = QtGui.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
+		spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
 		
 		hl.addWidget ( self.checkBox )
 		hl.addItem ( spacer )
 		self.widget.param_vl.addLayout ( hl )
-		
-		QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
+
 		self.connectSignals ( FloatWidget )
+		QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
 	#
 	# connectSignals
 	#
@@ -314,7 +314,10 @@ class Ui_FloatWidget_slider ( object ) :
 	def onFloatEditEditingFinished ( self ) :
 		#
 		floatStr = self.floatEdit.text ()
-		floatValue = floatStr.toFloat () [ 0 ] 
+		if QtCore.QT_VERSION < 50000 :
+			floatValue = floatStr.toFloat () [ 0 ] 
+		else :
+			floatValue = float ( floatStr )
 		self.widget.param.setValue ( floatValue )       
 		
 		floatMinVal = 0

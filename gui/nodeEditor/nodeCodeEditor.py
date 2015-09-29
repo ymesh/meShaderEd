@@ -68,12 +68,9 @@ class NodeCodeEditor ( QtModule.QWidget ):
 			self.ui.textEdit.setDocument ( doc )  
 			self.ui.textEdit.setTabStopWidth ( UI.TAB_SIZE )
 			self.ui.textEdit.setFont ( font )
-			self.ui.textEdit.setLineWrapMode ( QtGui.QTextEdit.NoWrap )
+			self.ui.textEdit.setLineWrapMode ( QtModule.QTextEdit.NoWrap )
 			self.ui.textEdit.setReadOnly ( readOnly )
 		else :
 			code = ''
 		self.ui.textEdit.setPlainText ( code )
-				
-				
-				
-		
+

@@ -67,8 +67,8 @@ class Ui_VectorWidget_field ( object ) :
 		hl.addItem ( spacer )
 		self.widget.param_vl.addLayout ( hl )
 		
-		QtCore.QMetaObject.connectSlotsByName ( VectorWidget )
 		self.connectSignals ( VectorWidget )
+		QtCore.QMetaObject.connectSlotsByName ( VectorWidget )
 	#
 	# connectSignals
 	#
@@ -126,6 +126,11 @@ class Ui_VectorWidget_field ( object ) :
 	#
 	def updateGui ( self, value ) :
 		# 
-		self.floatEdit0.setText ( QtCore.QString.number ( value [0], 'f', 3 ) )
-		self.floatEdit1.setText ( QtCore.QString.number ( value [1], 'f', 3 ) )
-		self.floatEdit2.setText ( QtCore.QString.number ( value [2], 'f', 3 ) )
+		if QtCore.QT_VERSION < 50000 :
+			self.floatEdit0.setText ( QtCore.QString.number( value [0], 'f', 3 ) )
+			self.floatEdit1.setText ( QtCore.QString.number( value [1], 'f', 3 ) )
+			self.floatEdit2.setText ( QtCore.QString.number( value [2], 'f', 3 ) )
+		else :
+			self.floatEdit0.setText ( str ( value [0] ) )
+			self.floatEdit1.setText ( str ( value [1] ) )
+			self.floatEdit2.setText ( str ( value [2] ) )

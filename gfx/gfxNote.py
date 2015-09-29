@@ -90,7 +90,10 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	def remove ( self ) :
 		#
 		if DEBUG_MODE : print '>> GfxNote remove gfxNode (temp)'
-		self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+		if QtCore.QT_VERSION < 50000 :
+			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+		else :
+			self.scene().onGfxNodeRemoved.emit ( self )
 	#
 	# updateNodeLabel
 	#

@@ -22,5 +22,6 @@ class Signal :
 		try:  
 			self.__subscribers.remove ( func )  
 		except ValueError:  
-			print ( 'Warning: function %s not removed from signal %s'  ( func,self  ))
+			#print ( 'Warning: function %s not removed from signal %s'  ( func,self  ))
+			print ( 'Warning: function not removed from signal' )
 			

@@ -82,7 +82,7 @@ class Ui_PointWidget_field ( object ) :
 			PointWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
 			self.floatEdit0.editingFinished.connect ( self.onFloatEditEditingFinished )
-			self.floatEdit1,editingFinished.connect ( self.onFloatEditEditingFinished )
+			self.floatEdit1.editingFinished.connect ( self.onFloatEditEditingFinished )
 			self.floatEdit2.editingFinished.connect ( self.onFloatEditEditingFinished )
 			self.selector.activated.connect ( self.onCurrentIndexChanged ) 
 	#
@@ -97,7 +97,7 @@ class Ui_PointWidget_field ( object ) :
 			PointWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
 			self.floatEdit0.editingFinished.disconnect ( self.onFloatEditEditingFinished )
-			self.floatEdit1,editingFinished.disconnect ( self.onFloatEditEditingFinished )
+			self.floatEdit1.editingFinished.disconnect ( self.onFloatEditEditingFinished )
 			self.floatEdit2.editingFinished.disconnect ( self.onFloatEditEditingFinished )
 			self.selector.activated.disconnect ( self.onCurrentIndexChanged )  
 	#
@@ -126,6 +126,11 @@ class Ui_PointWidget_field ( object ) :
 	#
 	def updateGui ( self, value ) : 
 		#
-		self.floatEdit0.setText ( QtCore.QString.number( value [0], 'f', 3 ) )
-		self.floatEdit1.setText ( QtCore.QString.number( value [1], 'f', 3 ) )
-		self.floatEdit2.setText ( QtCore.QString.number( value [2], 'f', 3 ) )
+		if QtCore.QT_VERSION < 50000 :
+			self.floatEdit0.setText ( QtCore.QString.number( value [0], 'f', 3 ) )
+			self.floatEdit1.setText ( QtCore.QString.number( value [1], 'f', 3 ) )
+			self.floatEdit2.setText ( QtCore.QString.number( value [2], 'f', 3 ) )
+		else :
+			self.floatEdit0.setText ( str ( value [0] ) )
+			self.floatEdit1.setText ( str ( value [1] ) )
+			self.floatEdit2.setText ( str ( value [2] ) )

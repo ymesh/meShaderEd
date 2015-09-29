@@ -36,9 +36,9 @@ class Ui_NormalWidget_field ( object ) :
 		hl = QtModule.QHBoxLayout ()
 		self.widget = NormalWidget
 		
-		self.floatEdit0 = QtGui.QLineEdit( NormalWidget )
-		self.floatEdit1 = QtGui.QLineEdit( NormalWidget )
-		self.floatEdit2 = QtGui.QLineEdit( NormalWidget )
+		self.floatEdit0 = QtModule.QLineEdit( NormalWidget )
+		self.floatEdit1 = QtModule.QLineEdit( NormalWidget )
+		self.floatEdit2 = QtModule.QLineEdit( NormalWidget )
 		
 		self.floatEdit0.setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
 		self.floatEdit1.setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
@@ -68,8 +68,8 @@ class Ui_NormalWidget_field ( object ) :
 		
 		self.widget.param_vl.addLayout ( hl )
 		
-		QtCore.QMetaObject.connectSlotsByName ( NormalWidget )
 		self.connectSignals ( NormalWidget )
+		QtCore.QMetaObject.connectSlotsByName ( NormalWidget )
 	#
 	# connectSignals
 	#
@@ -126,6 +126,11 @@ class Ui_NormalWidget_field ( object ) :
 	#      
 	def updateGui ( self, value ) :
 		# 
-		self.floatEdit0.setText ( QtCore.QString.number ( value [0], 'f', 3 ) )
-		self.floatEdit1.setText ( QtCore.QString.number ( value [1], 'f', 3 ) )
-		self.floatEdit2.setText ( QtCore.QString.number ( value [2], 'f', 3 ) )
+		if QtCore.QT_VERSION < 50000 :
+			self.floatEdit0.setText ( QtCore.QString.number( value [0], 'f', 3 ) )
+			self.floatEdit1.setText ( QtCore.QString.number( value [1], 'f', 3 ) )
+			self.floatEdit2.setText ( QtCore.QString.number( value [2], 'f', 3 ) )
+		else :
+			self.floatEdit0.setText ( str ( value [0] ) )
+			self.floatEdit1.setText ( str ( value [1] ) )
+			self.floatEdit2.setText ( str ( value [2] ) )

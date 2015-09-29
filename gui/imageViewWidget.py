@@ -101,9 +101,10 @@ class ImageViewWidget ( QtModule.QWidget ) :
 	#
 	# updateViewer
 	#
+	@QtCore.pyqtSlot ()
 	def updateViewer ( self, compute = True ) :
 		#
-		print ">> ImageViewWidget.updateViewer"
+		print ">> ImageViewWidget.updateViewer compute = %d" % compute
 		RenderViewMode = False
 		idx = self.ui.selector.currentIndex ()
 		if len ( self.imageNodes ) > 0 :
@@ -121,8 +122,10 @@ class ImageViewWidget ( QtModule.QWidget ) :
 							RenderViewMode = True
 
 			if compute :
+				print '* compute '
 				imageName = gfxNode.node.computeNode ()
 			else :
+				print '* use image '
 				imageName = gfxNode.node.imageName
 
 			print ">> ImageViewWidget: imageName = %s" % imageName

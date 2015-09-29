@@ -36,7 +36,13 @@ class NodePropertiesEditor ( QtModule.QWidget ) :
 	def __init__ ( self, parent, editNode = None ) :
 		#
 		QtModule.QWidget.__init__ ( self, parent )
-
+		#
+		# Define signals for PyQt5
+		#
+		if QtCore.QT_VERSION >= 50000 :
+			#
+			self.changeNodeLabel = Signal ()
+		#
 		self.editNode = editNode
 
 		#self.debugPrint()
@@ -181,25 +187,52 @@ class NodePropertiesEditor ( QtModule.QWidget ) :
 		oldLabel = self.editNode.label
 		newLabel = str ( self.ui.label_lineEdit.text () ).strip ()
 		if newLabel == '' :
-			self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
+			if QtCore.QT_VERSION < 50000 :
+				self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
+			else :
+				self.ui.label_lineEdit.editingFinished.disconnect ( self.onEditNodeStrAttrLabel )
 			newLabel = oldLabel
 			self.ui.label_lineEdit.setText ( newLabel )
-			self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
+			if QtCore.QT_VERSION < 50000 :
+				self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
+			else :
+				self.ui.label_lineEdit.editingFinished.connect ( self.onEditNodeStrAttrLabel )
 		if newLabel != oldLabel :
 			self.editNode.label = newLabel
-			self.emit ( QtCore.SIGNAL ( 'changeNodeLabel' ), oldLabel, newLabel )
-			
-	def onEditNodeStrAttrMaster ( self ) : self.editNode.master = str ( self.ui.master_lineEdit.text () )
-	def onEditNodeStrAttrAuthor ( self ) : self.editNode.author = str ( self.ui.author_lineEdit.text () )
-	def onEditNodeStrAttrIcon ( self ) : self.editNode.icon = str ( self.ui.icon_lineEdit.text () )
+			if QtCore.QT_VERSION < 50000 :
+				self.emit ( QtCore.SIGNAL ( 'changeNodeLabel' ), oldLabel, newLabel )
+			else :
+				self.changeNodeLabel.emit ( oldLabel, newLabel )
+	#
+	# onEditNodeStrAttrMaster
+	#		
+	def onEditNodeStrAttrMaster ( self ) : 
+		#
+		self.editNode.master = str ( self.ui.master_lineEdit.text () )
+	#
+	# onEditNodeStrAttrAuthor
+	#	
+	def onEditNodeStrAttrAuthor ( self ) : 
+		#
+		self.editNode.author = str ( self.ui.author_lineEdit.text () )
+	#
+	# onEditNodeStrAttrIcon
+	#	
+	def onEditNodeStrAttrIcon ( self ) : 
+		#
+		self.editNode.icon = str ( self.ui.icon_lineEdit.text () )
 	#
 	# onEditNodeTxtAttr
 	#
-	def onEditNodeTxtAttr ( self ) : self.editNode.help = str ( self.ui.help_plainTextEdit.toPlainText () )
+	def onEditNodeTxtAttr ( self ) : 
+		#
+		self.editNode.help = str ( self.ui.help_plainTextEdit.toPlainText () )
 	#
 	# onEditNodeType
 	#
-	def onEditNodeType ( self, idx ) : self.editNode.type = str ( self.ui.type_comboBox.itemText ( idx ) )
+	def onEditNodeType ( self, idx ) : 
+		#
+		self.editNode.type = str ( self.ui.type_comboBox.itemText ( idx ) )
 
 
 

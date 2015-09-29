@@ -26,7 +26,8 @@ class Ui_NodeNamesEditor(object):
 				NodeNamesEditor.resize(417, 393)
 				self.verticalLayout = QtModule.QVBoxLayout(NodeNamesEditor)
 				self.verticalLayout.setSpacing(0)
-				self.verticalLayout.setMargin(0)
+				if QtCore.QT_VERSION < 50000 :
+					self.verticalLayout.setMargin(0)
 				self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
 				self.horizontalLayout = QtModule.QHBoxLayout()
 				self.horizontalLayout.setSpacing(2)
@@ -58,7 +59,7 @@ class Ui_NodeNamesEditor(object):
 				self.listWidget = QtModule.QListWidget(NodeNamesEditor)
 				self.listWidget.setAcceptDrops(True)
 				self.listWidget.setDragEnabled(True)
-				self.listWidget.setDragDropMode(QtGui.QAbstractItemView.InternalMove)
+				self.listWidget.setDragDropMode(QtModule.QAbstractItemView.InternalMove)
 				self.listWidget.setObjectName(_fromUtf8("listWidget"))
 				self.verticalLayout.addWidget(self.listWidget)
 
@@ -76,10 +77,10 @@ class Ui_NodeNamesEditor(object):
 				QtCore.QMetaObject.connectSlotsByName(NodeNamesEditor)
 
 		def retranslateUi(self, NodeNamesEditor):
-				NodeNamesEditor.setWindowTitle(QtGui.QApplication.translate("NodeNamesEditor", "Form", None))
-				self.addButton.setToolTip(QtGui.QApplication.translate("NodeNamesEditor", "Add", None))
-				self.addButton.setText(QtGui.QApplication.translate("NodeNamesEditor", "...", None))
-				self.removeButton.setToolTip(QtGui.QApplication.translate("NodeNamesEditor", "Remove", None))
-				self.removeButton.setText(QtGui.QApplication.translate("NodeNamesEditor", "...", None))
+				NodeNamesEditor.setWindowTitle(QtModule.QApplication.translate("NodeNamesEditor", "Form", None))
+				self.addButton.setToolTip(QtModule.QApplication.translate("NodeNamesEditor", "Add", None))
+				self.addButton.setText(QtModule.QApplication.translate("NodeNamesEditor", "...", None))
+				self.removeButton.setToolTip(QtModule.QApplication.translate("NodeNamesEditor", "Remove", None))
+				self.removeButton.setText(QtModule.QApplication.translate("NodeNamesEditor", "...", None))
 
 import gui.resources_rc

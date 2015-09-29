@@ -154,8 +154,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 				#self.workArea.editGfxNode.connect ( self.editGfxNode )
 				self.workArea.scene().nodeUpdated.connect ( self.updateNodeParamView )
 				self.workArea.scene().gfxNodeParamChanged.connect ( self.onGfxNodeParamChanged  )
-			
-		#
+	#
 	# disconnectWorkAreaSignals
 	#
 	def disconnectWorkAreaSignals ( self ) :
@@ -171,6 +170,17 @@ class MainWindow ( QtModule.QMainWindow ) :
 				#QtCore.QObject.disconnect ( self.workArea, QtCore.SIGNAL ( 'editGfxNode' ), self.editGfxNode )
 				QtCore.QObject.disconnect ( self.workArea.scene(), QtCore.SIGNAL ( 'nodeUpdated' ), self.updateNodeParamView )
 				QtCore.QObject.disconnect ( self.workArea.scene(), QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self.onGfxNodeParamChanged  )
+		else :
+			if self.workArea != None :
+				if self.activeNodeList != None :
+					self.activeNodeList.addNode.disconnect( self.workArea.insertNodeNet )
+				self.workArea.selectNodes.disconnect ( self.onSelectGfxNodes )
+				self.workArea.nodeConnectionChanged.disconnect ( self.onGfxNodeParamChanged  )
+				self.workArea.gfxNodeAdded.disconnect ( self.onAddGfxNode )
+				self.workArea.gfxNodeRemoved.disconnect ( self.onRemoveGfxNode )
+				#self.workArea.editGfxNode.disconnect ( self.editGfxNode )
+				self.workArea.scene().nodeUpdated.disconnect ( self.updateNodeParamView )
+				self.workArea.scene().gfxNodeParamChanged.disconnect ( self.onGfxNodeParamChanged  )
 	#
 	# setupWindowTitle
 	#
@@ -365,8 +375,12 @@ class MainWindow ( QtModule.QMainWindow ) :
 		self.RendererPreset = copy.deepcopy ( app_global_vars [ 'RendererPreset' ] )
 		if DEBUG_MODE : print ( ':: self.RendererPreset.getCurrentPresetName = %s' % self.RendererPreset.getCurrentPresetName () )
 		renderSettingsDlg = meRendererSetup ( self.RendererPreset )
-		QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'presetChanged' ), self.onRenderPresetChanged )
-		QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'savePreset' ), self.onRenderPresetSave )
+		if QtCore.QT_VERSION < 50000 :
+			QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'presetChanged' ), self.onRenderPresetChanged )
+			QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'savePreset' ), self.onRenderPresetSave )
+		else :
+			renderSettingsDlg.presetChanged.connect ( self.onRenderPresetChanged )
+			renderSettingsDlg.savePreset.connect ( self.onRenderPresetSave )
 		renderSettingsDlg.exec_ ()
 	#
 	# onRenderPresetChanged
@@ -468,7 +482,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def onAddGfxNode ( self, gfxNode ) :
 		#
-		#print ">> MainWindow: onAddGfxNode = %s" % gfxNode.node.label
+		print ">> MainWindow: onAddGfxNode = %s" % gfxNode.node.label
 		if gfxNode.node.type == 'image' : 
 			self.ui.imageView_ctl.addViewer ( gfxNode )
 
@@ -562,7 +576,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 
 		nodeEditDlg = NodeEditorDialog ( editNode )
 
-		if nodeEditDlg.exec_ () == QtGui.QDialog.Accepted :
+		if nodeEditDlg.exec_ () == QtModule.QDialog.Accepted :
 			#
 			if DEBUG_MODE : print '>> MainWindow.nodeEditDlg Accepted'
 			#
@@ -701,7 +715,8 @@ class MainWindow ( QtModule.QMainWindow ) :
 			self.updateNodeParamView ()
 			self.workArea.scene ().update ()
 
-		if self.ui.imageView_ctl.autoUpdate () : self.ui.imageView_ctl.updateViewer()
+		if self.ui.imageView_ctl.autoUpdate () : 
+			self.ui.imageView_ctl.updateViewer()
 	#
 	# updateNodeParamView
 	#
@@ -741,8 +756,10 @@ class MainWindow ( QtModule.QMainWindow ) :
 		self.workArea = self.ui.tabs.currentWidget ()
 
 		imageNodes = self.workArea.getGfxNodesByType ( 'image' )
+		
 		# setup imageView menu for image nodes in new tab
-		for gfxNode in imageNodes : self.ui.imageView_ctl.addViewer ( gfxNode )
+		for gfxNode in imageNodes : 
+			self.ui.imageView_ctl.addViewer ( gfxNode )
 
 		self.connectWorkAreaSignals ()
 		self.ui.nodeParam_ctl.setNode ( self.workArea.inspectedNode )
@@ -810,8 +827,10 @@ class MainWindow ( QtModule.QMainWindow ) :
 		#
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
-
-		filename = str ( QtGui.QFileDialog.getOpenFileName ( self, "Open file", curDir, typeFilter ) )
+		if QtCore.QT_VERSION < 50000 :
+			filename = str ( QtGui.QFileDialog.getOpenFileName ( self, "Open file", curDir, typeFilter ) )
+		else :
+			(filename, filter) = QtModule.QFileDialog.getOpenFileName ( self, "Open file", curDir, typeFilter )	
 		if filename != '' :
 			if self.openNetwork ( filename ) :
 				self.addRecentNetwork ( normPath ( filename ) )
@@ -887,7 +906,10 @@ class MainWindow ( QtModule.QMainWindow ) :
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-		filename = str ( QtModule.QFileDialog.getOpenFileName ( self, "Import file", curDir, typeFilter ) )
+		if QtCore.QT_VERSION < 50000 :
+			filename = str ( QtModule.QFileDialog.getOpenFileName ( self, "Import file", curDir, typeFilter ) )
+		else :
+			(filename, filter) = QtModule.QFileDialog.getOpenFileName ( self, "Import file", curDir, typeFilter )
 		if filename != '' :
 			if DEBUG_MODE : print "-> import file %s" %  filename
 			self.workArea.insertNodeNet ( normPath ( filename ) )
@@ -903,7 +925,10 @@ class MainWindow ( QtModule.QMainWindow ) :
 		saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-		filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
+		if QtCore.QT_VERSION < 50000 :
+			filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
+		else :
+			(filename, filter) = QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter )
 		if filename != '' :
 			if DEBUG_MODE : print '-> save file As %s' % filename
 			( name, ext ) = os.path.splitext ( os.path.basename ( filename ) )
@@ -946,8 +971,10 @@ class MainWindow ( QtModule.QMainWindow ) :
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
-
-		filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
+		if QtCore.QT_VERSION < 50000 :
+			filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
+		else :
+			(filename, filter) = QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter )
 		if filename != '' :
 			if DEBUG_MODE : print '-> save file As %s' % filename
 			( name, ext ) = os.path.splitext ( os.path.basename ( filename ) )

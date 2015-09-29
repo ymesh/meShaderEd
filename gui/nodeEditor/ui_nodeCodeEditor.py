@@ -34,7 +34,8 @@ class Ui_NodeCodeEditor(object):
 				NodeCodeEditor.setObjectName(_fromUtf8("NodeCodeEditor"))
 				NodeCodeEditor.resize(683, 838)
 				self.gridLayout = QtModule.QGridLayout(NodeCodeEditor)
-				self.gridLayout.setMargin(0)
+				if QtCore.QT_VERSION < 50000 :
+					self.gridLayout.setMargin(0)
 				self.gridLayout.setSpacing(0)
 				self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
 				self.textEdit = QtModule.QTextEdit(NodeCodeEditor)

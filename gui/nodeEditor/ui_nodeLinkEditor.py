@@ -120,13 +120,13 @@ class Ui_NodeLinkEditor(object):
 				QtCore.QMetaObject.connectSlotsByName(NodeLinkEditor)
 
 		def retranslateUi(self, NodeLinkEditor):
-				NodeLinkEditor.setWindowTitle(QtGui.QApplication.translate("NodeLinkEditor", "NodeLinkEditor", None))
-				self.srcGroup.setTitle(QtGui.QApplication.translate("NodeLinkEditor", "Source Node", None))
-				self.name_label.setText(QtGui.QApplication.translate("NodeLinkEditor", "Name", None))
-				self.label_label.setText(QtGui.QApplication.translate("NodeLinkEditor", "Parameter", None))
-				self.name_label_2.setText(QtGui.QApplication.translate("NodeLinkEditor", "id", None))
-				self.dstGroup.setTitle(QtGui.QApplication.translate("NodeLinkEditor", "Destination Node", None))
-				self.name_label_3.setText(QtGui.QApplication.translate("NodeLinkEditor", "Name", None))
-				self.label_label_2.setText(QtGui.QApplication.translate("NodeLinkEditor", "Parameter", None))
-				self.name_label_4.setText(QtGui.QApplication.translate("NodeLinkEditor", "id", None))
+				NodeLinkEditor.setWindowTitle(QtModule.QApplication.translate("NodeLinkEditor", "NodeLinkEditor", None))
+				self.srcGroup.setTitle(QtModule.QApplication.translate("NodeLinkEditor", "Source Node", None))
+				self.name_label.setText(QtModule.QApplication.translate("NodeLinkEditor", "Name", None))
+				self.label_label.setText(QtModule.QApplication.translate("NodeLinkEditor", "Parameter", None))
+				self.name_label_2.setText(QtModule.QApplication.translate("NodeLinkEditor", "id", None))
+				self.dstGroup.setTitle(QtModule.QApplication.translate("NodeLinkEditor", "Destination Node", None))
+				self.name_label_3.setText(QtModule.QApplication.translate("NodeLinkEditor", "Name", None))
+				self.label_label_2.setText(QtModule.QApplication.translate("NodeLinkEditor", "Parameter", None))
+				self.name_label_4.setText(QtModule.QApplication.translate("NodeLinkEditor", "id", None))
 

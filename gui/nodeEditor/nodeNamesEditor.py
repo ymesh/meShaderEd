@@ -27,20 +27,21 @@ else :
 #
 class NodeNamesEditor ( QtModule.QWidget ) :
 	#
-	# Define signals for PyQt5
-	#
-	if QtCore.QT_VERSION >= 50000 :
-		#
-		selectionChanged = Signal ()
-		addItem = Signal ()
-		removeItem = Signal ()
-		renameItem = Signal ()
-	#
 	# __init__
 	#
 	def __init__ ( self, parent ) :
 		#
 		QtModule.QWidget.__init__ ( self, parent )
+		#
+		# Define signals for PyQt5
+		#
+		if QtCore.QT_VERSION >= 50000 :
+			#
+			self.selectionChangedSignal = Signal ()
+			self.addItem = Signal ()
+			self.removeItem = Signal ()
+			self.renameItem = Signal ()
+		#
 		self.saved_text = ''
 		self.approvedNewName = ''
 		self.buildGui ()
@@ -127,7 +128,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 			self.saved_text = str ( list_item.text() )
 			self.ui.name_lineEdit.setText ( self.saved_text  )
 			if QtCore.QT_VERSION < 50000 :
-				self.emit ( QtCore.SIGNAL ( 'selectionChanged' ), self.saved_text  ) 
+				self.emit ( QtCore.SIGNAL ( 'selectionChangedSignal' ), self.saved_text  ) 
 			else :
-				self.selectionChanged.emit ( self.saved_text  ) 
+				self.selectionChangedSignal.emit ( self.saved_text  ) 
 	

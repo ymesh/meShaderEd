@@ -54,9 +54,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 		QtModule.QDialog.__init__ ( self )
 
 		self.editNode = node
-
 		# self.removedLinks = []
-
 		self.nodePropertiesEditor = None
 		self.nodeParamEditor = None
 		self.nodeLinkEditor = None
@@ -79,13 +77,15 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 	def connectSignals ( self ) :
 		#
 		if QtCore.QT_VERSION < 50000 :
-			QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui ) # onInputParamSelectionChanged )
-			QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui ) # onOutputParamSelectionChanged  )
+			QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onInputParamSelectionChanged )
+			QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onOutputParamSelectionChanged  )
 	
 			QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'addItem' ), self.onAddParam )
 			QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'addItem' ), self.onAddParam )
+			
 			QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameParam )
 			QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameParam )
+			
 			QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveParam )
 			QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveParam )
 	
@@ -116,7 +116,48 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 			QtCore.QObject.connect ( self.ui.internals_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveInternal )
 			QtCore.QObject.connect ( self.ui.includes_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveInclude )
 			
-			QtCore.QObject.connect ( self.ui.handlers_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui )
+			QtCore.QObject.connect ( self.ui.handlers_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui )
+		else :
+			self.ui.input_list.selectionChangedSignal.connect ( self.updateGui ) # onInputParamSelectionChanged )
+			self.ui.output_list.selectionChangedSignal.connect ( self.updateGui ) # onOutputParamSelectionChanged  )
+	
+			self.ui.input_list.addItem.connect ( self.onAddParam )
+			self.ui.output_list.addItem.connect ( self.onAddParam )
+			
+			self.ui.input_list.renameItem.connect ( self.onRenameParam )
+			self.ui.output_list.renameItem.connect ( self.onRenameParam )
+			
+			self.ui.input_list.removeItem.connect ( self.onRemoveParam )
+			self.ui.output_list.removeItem.connect ( self.onRemoveParam )
+	
+			self.ui.tabs_param_list.currentChanged.connect ( self.updateGui )
+	
+			if self.nodeParamEditor is not None :
+				self.nodeParamEditor.changeParamName.connect ( self.onRenameParam )
+				self.nodeParamEditor.changeParamName.connect ( self.onRenameParamLabel )
+	
+			if self.nodeCodeEditor is not None :
+				self.nodeCodeEditor.ui.textEdit.textChanged.connect ( self.onEditCode )
+	
+			if self.controlCodeEditor is not None :
+				self.controlCodeEditor.ui.textEdit.textChanged.connect ( self.onEditControlCode )
+				
+			if self.paramCodeEditor is not None :
+				self.paramCodeEditor.ui.textEdit.textChanged.connect ( self.onEditParamCode )
+				
+			if self.eventCodeEditor is not None :
+				self.eventCodeEditor.ui.textEdit.textChanged.connect ( self.onEditEventCode )
+	
+			self.ui.internals_list.addItem.connect ( self.onAddInternal )
+			self.ui.includes_list.addItem.connect ( self.onAddInclude )
+	
+			self.ui.internals_list.renameItem.connect ( self.onRenameInternal )
+			self.ui.includes_list.renameItem.connect ( self.onRenameInclude )
+	
+			self.ui.internals_list.removeItem.connect ( self.onRemoveInternal )
+			self.ui.includes_list.removeItem.connect ( self.onRemoveInclude )
+			
+			self.ui.handlers_list.selectionChangedSignal.connect ( self.updateGui )
 
 	#
 	# disconnectSignals
@@ -124,13 +165,15 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 	def disconnectSignals ( self ) :
 		#
 		if QtCore.QT_VERSION < 50000 :
-			QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui ) # onInputParamSelectionChanged )
-			QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui ) # onOutputParamSelectionChanged  )
+			QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onInputParamSelectionChanged )
+			QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onOutputParamSelectionChanged  )
 	
 			QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'addItem' ), self.onAddParam )
 			QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'addItem' ), self.onAddParam )
+			
 			QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameParam )
 			QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'renameItem' ), self.onRenameParam )
+			
 			QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveParam )
 			QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveParam )
 	
@@ -161,8 +204,48 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 			QtCore.QObject.disconnect ( self.ui.internals_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveInternal )
 			QtCore.QObject.disconnect ( self.ui.includes_list, QtCore.SIGNAL ( 'removeItem' ), self.onRemoveInclude )
 			
-			QtCore.QObject.disconnect ( self.ui.handlers_list, QtCore.SIGNAL ( 'selectionChanged' ), self.updateGui )
-
+			QtCore.QObject.disconnect ( self.ui.handlers_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui )
+		else :
+			self.ui.input_list.selectionChangedSignal.disconnect ( self.updateGui ) # onInputParamSelectionChanged )
+			self.ui.output_list.selectionChangedSignal.disconnect ( self.updateGui ) # onOutputParamSelectionChanged  )
+	
+			self.ui.input_list.addItem.disconnect ( self.onAddParam )
+			self.ui.output_list.addItem.disconnect ( self.onAddParam )
+			
+			self.ui.input_list.renameItem.disconnect ( self.onRenameParam )
+			self.ui.output_list.renameItem.disconnect ( self.onRenameParam )
+			
+			self.ui.input_list.removeItem.disconnect ( self.onRemoveParam )
+			self.ui.output_list.removeItem.disconnect ( self.onRemoveParam )
+	
+			self.ui.tabs_param_list.currentChanged.disconnect ( self.updateGui )
+	
+			if self.nodeParamEditor is not None :
+				self.nodeParamEditor.changeParamName.disconnect ( self.onRenameParam )
+				self.nodeParamEditor.changeParamName.disconnect ( self.onRenameParamLabel )
+	
+			if self.nodeCodeEditor is not None :
+				self.nodeCodeEditor.ui.textEdit.textChanged.disconnect ( self.onEditCode )
+	
+			if self.controlCodeEditor is not None :
+				self.controlCodeEditor.ui.textEdit.textChanged.disconnect ( self.onEditControlCode )
+				
+			if self.paramCodeEditor is not None :
+				self.paramCodeEditor.ui.textEdit.textChanged.disconnect ( self.onEditParamCode )
+				
+			if self.eventCodeEditor is not None :
+				self.eventCodeEditor.ui.textEdit.textChanged.disconnect ( self.onEditEventCode )
+	
+			self.ui.internals_list.addItem.disconnect ( self.onAddInternal )
+			self.ui.includes_list.addItem.disconnect ( self.onAddInclude )
+	
+			self.ui.internals_list.renameItem.disconnect ( self.onRenameInternal )
+			self.ui.includes_list.renameItem.disconnect ( self.onRenameInclude )
+	
+			self.ui.internals_list.removeItem.disconnect ( self.onRemoveInternal )
+			self.ui.includes_list.removeItem.disconnect ( self.onRemoveInclude )
+			
+			self.ui.handlers_list.selectionChangedSignal.disconnect ( self.updateGui )
 	#
 	# setEditNode
 	#
@@ -216,13 +299,13 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 			# setup input links list
 			for link in self.editNode.getInputLinks () :
 				item = QtModule.QListWidgetItem ( 'id=%d' % link.id  )
-				item.setData ( QtCore.Qt.UserRole, QVariant ( int ( link.id ) ) )
+				item.setData ( QtCore.Qt.UserRole, QtCore.QVariant ( int ( link.id ) ) )
 				self.ui.input_links_listWidget.addItem ( item )
 	
 			# setup output links list
 			for link in self.editNode.getOutputLinks () :
 				item = QtModule.QListWidgetItem ( 'id=%d' % link.id  )
-				item.setData ( QtCore.Qt.UserRole, QVariant ( int ( link.id ) ) )
+				item.setData ( QtCore.Qt.UserRole, QtCore.QVariant ( int ( link.id ) ) )
 				self.ui.output_links_listWidget.addItem ( item )
 				
 			# setup event handlers list
@@ -254,11 +337,10 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 			self.ui.tabWidget.setCurrentIndex ( TAB_NODE_CODE )
 			self.ui.toolBox.setCurrentIndex ( IDX_INTERNALS )
 			self.ui.tabs_param_list.setCurrentIndex ( 0 ) # input param tab
-
 	#
 	# updateGui
 	#
-	def updateGui ( self ) :
+	def updateGui ( self, foo_param = None ) :
 		#
 		if self.editNode is not None :
 			if DEBUG_MODE : print '>> NodeEditorDialog::updateGui'
@@ -313,12 +395,20 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 					# input links
 					inputLinkSelected = True
 					links_item = self.ui.input_links_listWidget.currentItem ()
-					if links_item is not None : ( link_id, ok ) = links_item.data ( QtCore.Qt.UserRole ).toInt ()
+					if links_item is not None : 
+						if QtCore.QT_VERSION < 50000 :
+							( link_id, ok ) = links_item.data ( QtCore.Qt.UserRole ).toInt ()
+						else :
+							link_id = links_item.data ( QtCore.Qt.UserRole )
 
 				else :
 					# output links
 					links_item = self.ui.output_links_listWidget.currentItem ()
-					if links_item is not None : ( link_id, ok ) = links_item.data ( QtCore.Qt.UserRole ).toInt ()
+					if links_item is not None :
+						if QtCore.QT_VERSION < 50000 : 
+							( link_id, ok ) = links_item.data ( QtCore.Qt.UserRole ).toInt ()
+						else:
+							link_id = links_item.data ( QtCore.Qt.UserRole )
 
 				if link_id is not None :
 					link = None

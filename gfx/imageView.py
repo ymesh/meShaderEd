@@ -58,7 +58,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 	def keyPressEvent ( self, event ) : 
 		#
 		print ">> ImageView.keyPressEvent"
-		QtGui.QGraphicsView.keyPressEvent ( self, event)
+		QtModule.QGraphicsView.keyPressEvent ( self, event)
 	#
 	# wheelEvent
 	#  
@@ -70,8 +70,14 @@ class ImageView ( QtModule.QGraphicsView ) :
 		scale = -1.0
 		if 'linux' in sys.platform: scale = 1.0     
 		import math
-		scaleFactor = math.pow( 2.0, scale * event.delta() / 600.0 )
-		factor = self.matrix ().scale ( scaleFactor, scaleFactor ).mapRect ( QtCore.QRectF ( -1, -1, 2, 2 ) ).width ()
+		if QtCore.QT_VERSION < 50000 :
+			scaleFactor = math.pow( 2.0, scale * event.delta() / 600.0 )
+		else :
+			delta = event.angleDelta ()
+			#print ( '>> delta rx = %d ry = %d' % ( delta.x (), delta.y () ) )
+			scaleFactor = math.pow( 2.0, scale * delta.y () / 600.0 )
+		# self.matrix () is depicated
+		factor = self.transform ().scale ( scaleFactor, scaleFactor ).mapRect ( QtCore.QRectF ( -1, -1, 2, 2 ) ).width ()
 		if factor < 0.07 or factor > 100: return
 		self.scale ( scaleFactor, scaleFactor )      
 	#
@@ -94,7 +100,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 		#
 		#print ">> ImageView.mouseDoubleClickEvent"
 		if QtCore.QT_VERSION < 50000 :
-			self.emit ( QtCore.SIGNAL ( 'mouseDoubleClickEvent' ) )
+			self.emit ( QtCore.SIGNAL ( 'mouseDoubleClickSignal' ) )
 		else :
 			self.mouseDoubleClickSignal.emit ()
 		QtModule.QGraphicsView.mouseDoubleClickEvent ( self, event )

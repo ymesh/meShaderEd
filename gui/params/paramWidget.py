@@ -114,7 +114,10 @@ class ParamWidget ( QtModule.QWidget ) :
 				self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
 				self.check.setToolTip ( 'Use as Shader parameter' )
 				self.check.setChecked ( self.param.shaderParam )
-				self.connect ( self.check, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onShaderParamChanged )
+				if QtCore.QT_VERSION < 50000 :
+					self.connect ( self.check, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onShaderParamChanged )
+				else :
+					self.check.stateChanged.connect ( self.onShaderParamChanged )
 				self.hl.addWidget ( self.check )
 			else :
 				spacer = QtModule.QSpacerItem ( UI.LT_SPACE, UI.HEIGHT, QtModule.QSizePolicy.Minimum, QtModule.QSizePolicy.Minimum )
@@ -138,8 +141,10 @@ class ParamWidget ( QtModule.QWidget ) :
 				self.removeButton.setIconSize ( QtCore.QSize ( 16, 16 ) )
 				self.removeButton.setObjectName ( 'removeButton' )
 				self.hl.addWidget ( self.removeButton )
-				QtCore.QObject.connect ( self.removeButton, QtCore.SIGNAL ( 'clicked()' ), self.onRemoveItem )
-		
+				if QtCore.QT_VERSION < 50000 :
+					QtCore.QObject.connect ( self.removeButton, QtCore.SIGNAL ( 'clicked()' ), self.onRemoveItem )
+				else :
+					self.removeButton.clicked.connect ( self.onRemoveItem )
 		#self.label = QtGui.QLabel ( self )
 		self.label = ParamLabel ( self, self.param )
 		#font = QtGui.QFont ()

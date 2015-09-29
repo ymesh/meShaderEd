@@ -40,7 +40,7 @@ class Ui_ViewComputedCodeDialog(object):
 				self.gridLayout.addWidget(self.codeEdit, 0, 0, 1, 1)
 				self.buttonBox = QtModule.QDialogButtonBox(ViewComputedCodeDialog)
 				self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-				self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
+				self.buttonBox.setStandardButtons(QtModule.QDialogButtonBox.Close)
 				self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
 				self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
 
