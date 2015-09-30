@@ -21,7 +21,7 @@ from core.node import Node
 
 from ui_exportShaderDialog import Ui_ExportShaderDialog
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -57,7 +57,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 	#
 	def connectSignals ( self ) :
 		# QtCore.QObject
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.connect ( self.ui.list_nodes, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onNodeChanged ) 
 			QtCore.QObject.connect ( self.ui.list_inputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onInputParamChanged )
 			QtCore.QObject.connect ( self.ui.list_outputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onOutputParamChanged )
@@ -84,7 +84,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 	#
 	def disconnectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.disconnect ( self.ui.list_nodes, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onNodeChanged )
 			QtCore.QObject.disconnect ( self.ui.list_inputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onInputParamChanged )
 			QtCore.QObject.disconnect ( self.ui.list_outputs, QtCore.SIGNAL ( 'itemSelectionChanged()' ), self.onOutputParamChanged )
@@ -197,7 +197,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 		if DEBUG_MODE : print '>> ExportShaderDialog.onNodeChanged'
 		self.disconnectSignals ()
 		item = self.ui.list_nodes.currentItem ()
-		if QtCore.QT_VERSION < 50000 : 
+		if QtCore.QT_VERSION < 0x50000 : 
 			node = item.data ( QtCore.Qt.UserRole + 1 ).toPyObject ()
 		else :
 			node = item.data ( QtCore.Qt.UserRole + 1 )
@@ -244,7 +244,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 		#  
 		if DEBUG_MODE : print '>> ExportShaderDialog.onInputParamChanged'
 		item = self.ui.list_inputs.currentItem ()
-		if QtCore.QT_VERSION < 50000 :  
+		if QtCore.QT_VERSION < 0x50000 :  
 			param = item.data ( QtCore.Qt.UserRole + 1 ).toPyObject ()
 			node = item.data ( QtCore.Qt.UserRole + 2 ).toPyObject ()
 		else :
@@ -261,7 +261,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 		#  
 		if DEBUG_MODE : print '>> ExportShaderDialog.onOutputParamChanged'
 		item = self.ui.list_outputs.currentItem ()
-		if QtCore.QT_VERSION < 50000 : 
+		if QtCore.QT_VERSION < 0x50000 : 
 			param = item.data ( QtCore.Qt.UserRole + 1 ).toPyObject ()
 			node = item.data ( QtCore.Qt.UserRole + 2 ).toPyObject ()
 		else :
@@ -288,7 +288,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 		editNode = self.ui.node.editNode
 		for i in range ( self.ui.list_nodes.count () ) :
 			item = self.ui.list_nodes.item ( i )
-			if QtCore.QT_VERSION < 50000 : 
+			if QtCore.QT_VERSION < 0x50000 : 
 				node = item.data ( QtCore.Qt.UserRole + 1 ).toPyObject ()
 			else :
 				node = item.data ( QtCore.Qt.UserRole + 1 )
@@ -321,7 +321,7 @@ class ExportShaderDialog ( QtModule.QDialog ) :
 		import os
 		saveName = os.path.join ( app_global_vars [ 'ProjectSources' ], self.editNode.getInstanceName () + '.sl' )
 		typeFilter = 'Shader source files *.sl;;All files *.*;;'
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Export shader code as", saveName, typeFilter ) )
 		else :
 			( filename, filter ) = QtModule.QFileDialog.getSaveFileName ( self, "Export shader code as", saveName, typeFilter )

@@ -8,7 +8,7 @@ from core.mePyQt import QtCore, QtGui
 from global_vars import DEBUG_MODE, GFX_LINK_TYPE
 from meShaderEd import app_settings
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -90,7 +90,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 		scene = self.scene ()
 		if scene != None :
 			if DEBUG_MODE : print ">> GfxLink::remove emit( onGfxLinkRemoved )"
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				scene.emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self )
 			else :
 				scene.onGfxLinkRemoved.emit ( self )

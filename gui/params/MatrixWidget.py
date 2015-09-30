@@ -8,7 +8,7 @@ from core.mePyQt import QtGui, QtCore
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -169,7 +169,7 @@ class Ui_MatrixWidget_field ( object ) :
 	#
 	def connectSignals ( self, MatrixWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			MatrixWidget.connect ( self.floatEdit0, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			MatrixWidget.connect ( self.floatEdit1, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			MatrixWidget.connect ( self.floatEdit2, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
@@ -218,7 +218,7 @@ class Ui_MatrixWidget_field ( object ) :
 	#
 	def disconnectSignals ( self, MatrixWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			MatrixWidget.disconnect ( self.floatEdit0, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			MatrixWidget.disconnect ( self.floatEdit1, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			MatrixWidget.disconnect ( self.floatEdit2, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )

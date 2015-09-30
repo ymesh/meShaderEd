@@ -14,7 +14,7 @@ from global_vars import app_colors, DEBUG_MODE, GFX_NODE_TYPE, VALID_RSL_PARAM_T
 from meShaderEd import app_settings
 import gui.ui_settings as UI
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -35,7 +35,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			pass
 			#self.nodeUpdated = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem )
@@ -111,7 +111,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.connect ( self.node, QtCore.SIGNAL ( 'nodeUpdated' ), self.onUpdateNode )
 			QtCore.QObject.connect ( self.node, QtCore.SIGNAL ( 'nodeParamsUpdated' ), self.onUpdateNodeParams )
 		else :
@@ -122,7 +122,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 	#
 	def disconnectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.disconnect ( self.node, QtCore.SIGNAL ( 'nodeUpdated' ), self.onUpdateNode )
 			QtCore.QObject.disconnect ( self.node, QtCore.SIGNAL ( 'nodeParamsUpdated' ), self.onUpdateNodeParams )
 		else :
@@ -153,7 +153,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		#
 		if DEBUG_MODE : print '>> GfxNode( %s ).updateNode' % ( self.node.label )
 		self.updateGfxNodeParams ( True )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.scene().emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
 		else :
 			self.scene().nodeUpdated.emit ( self )
@@ -164,7 +164,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		#
 		if DEBUG_MODE : print '>> GfxNode( %s ).onUpdateNodeParams' % ( self.node.label )
 		self.updateGfxNodeParams ( forceUpdate )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.scene().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self )
 		else :
 			self.scene().gfxNodeParamChanged.emit ( self )
@@ -235,7 +235,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		self.disconnectSignals ()
 		for connect in self.inputConnectors : connect.removeAllLinks ()
 		for connect in self.outputConnectors : connect.removeAllLinks ()
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
 		else :
 			self.scene().onGfxNodeRemoved.emit ( self )
@@ -454,7 +454,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 			label.setProcessEvents ( True ) 
 			if forceUpdate :
 				self.update () 
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					self.scene().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self, param ) 
 				else :
 					self.gfxNodeParamChanged.emit ( self, param )
@@ -556,7 +556,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		if change == QtModule.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange: QGraphicsItem
 			if self.node.type != 'variable' :
 				# variable node has not header
-				#if QtCore.QT_VERSION < 50000 :
+				#if QtCore.QT_VERSION < 0x50000 :
 				#	self.header [ 'label' ].setSelected ( value.toBool () )
 				#else :
 				self.header [ 'label' ].setSelected ( value )

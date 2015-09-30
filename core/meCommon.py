@@ -162,7 +162,8 @@ def getParsedLabel ( text ) :
 # getSettingsStrValue 
 #
 def getSettingsStrValue ( settings, key ) :  
-	if QtCore.QT_VERSION < 50000 :
+	#
+	if QtCore.QT_VERSION < 0x50000 :
 		return str ( settings.value ( key ).toString () )	
 	else :
 		return str ( settings.value ( key ) )	 

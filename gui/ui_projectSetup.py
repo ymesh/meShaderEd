@@ -9,7 +9,7 @@
 
 from core.mePyQt import QtCore, QtGui
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -138,7 +138,7 @@ class Ui_ProjectSetup(object):
 				self.verticalLayout_3.addWidget(self.buttonBox)
 
 				self.retranslateUi(ProjectSetup)
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), ProjectSetup.accept)
 					QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), ProjectSetup.reject)
 					QtCore.QObject.connect(self.btn_project_dir, QtCore.SIGNAL(_fromUtf8("clicked()")), ProjectSetup.onBrowseProjectDir)

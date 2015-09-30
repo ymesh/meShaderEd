@@ -8,7 +8,7 @@ from core.mePyQt import QtGui, QtCore
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -57,7 +57,7 @@ class Ui_TextWidget_field ( object ) :
 	#
 	def connectSignals ( self, TextWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			TextWidget.connect ( self.text_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onTextEditEditingFinished )
 		else :
 			self.text_plainTextEdit.textChanged.connect ( self.onTextEditEditingFinished )
@@ -66,7 +66,7 @@ class Ui_TextWidget_field ( object ) :
 	#
 	def disconnectSignals ( self, TextWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			TextWidget.disconnect ( self.text_plainTextEdit, QtCore.SIGNAL ( 'textChanged()' ), self.onTextEditEditingFinished )
 		else :
 			self.text_plainTextEdit.textChanged.connect ( self.onTextEditEditingFinished )

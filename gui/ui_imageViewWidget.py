@@ -9,7 +9,7 @@
 
 from core.mePyQt import QtCore, QtGui
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -71,7 +71,7 @@ class Ui_imageViewWidget(object):
 				self.gridLayout.setRowStretch(1, 1)
 
 				self.retranslateUi(imageViewWidget)
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					QtCore.QObject.connect(self.btn_render, QtCore.SIGNAL(_fromUtf8("clicked()")), imageViewWidget.updateViewer)
 					QtCore.QObject.connect(self.btn_reset, QtCore.SIGNAL(_fromUtf8("clicked()")), self.imageArea.resetZoom)
 				else :

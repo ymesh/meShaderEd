@@ -15,7 +15,7 @@ from global_vars import app_global_vars
 
 from ui_projectSetup import Ui_ProjectSetup
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -51,7 +51,7 @@ class ProjectSetup( QtModule.QDialog ):
 		
 		self.ui.lineEdit_project.setText ( self.rootDir )
 
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.ui.lineEdit_network.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_networks' ).toString () ) ) )
 			self.ui.lineEdit_sources.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_sources' ).toString () ) ) )
 			self.ui.lineEdit_shaders.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'project_shaders' ).toString () ) ) )

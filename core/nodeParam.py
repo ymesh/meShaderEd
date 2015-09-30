@@ -29,7 +29,7 @@ class NodeParam ( QtCore.QObject ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			self.paramChangedSignal = Signal ()
 			
@@ -92,7 +92,7 @@ class NodeParam ( QtCore.QObject ) :
 	def copySetup ( self, newParam ) :
 		#
 		#if DEBUG_MODE : print '>> NodeParam( %s ).copySetup' % self.label
-		#if QtCore.QT_VERSION >= 50000 :
+		#if QtCore.QT_VERSION >= 0x50000 :
 		#	newParam.paramChangedSignal = self.paramChangedSignal # Signal ()
 		newParam.id = self.id
 		newParam.name = self.name
@@ -170,7 +170,7 @@ class NodeParam ( QtCore.QObject ) :
 	def paramChanged ( self ) :
 		#
 		if DEBUG_MODE : print '>> NodeParam.paramChanged (name = %s)' % self.name
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self )
 		else :
 			self.paramChangedSignal.emit ( self )

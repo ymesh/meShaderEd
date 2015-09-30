@@ -15,7 +15,7 @@ from global_vars import app_global_vars
 
 from ui_settingsSetup import Ui_SettingsSetup
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -49,7 +49,7 @@ class SettingsSetup ( QtModule.QDialog ):
 		##else :
 		##  font.setPointSize(10)
 		
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.ui.lineEdit_temp.setText( self.app_settings.value('temp').toString() )
 			self.ui.lineEdit_inc.setText( self.app_settings.value('include').toString() )
 			self.ui.lineEdit_lib.setText( self.app_settings.value('lib').toString() )

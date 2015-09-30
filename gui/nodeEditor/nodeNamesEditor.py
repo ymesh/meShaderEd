@@ -16,7 +16,7 @@ from global_vars import app_global_vars, DEBUG_MODE
 
 from ui_nodeNamesEditor import Ui_NodeNamesEditor
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -35,7 +35,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			self.selectionChangedSignal = Signal ()
 			self.addItem = Signal ()
@@ -71,7 +71,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 		if DEBUG_MODE : print '>> NodeNamesEditor: onAddItem'
 		new_text = str ( self.ui.name_lineEdit.text () ).strip ()
 		if new_text != '' :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.emit ( QtCore.SIGNAL ( 'addItem' ), new_text )
 			else :
 				self.addItem.emit ( new_text ) 
@@ -87,7 +87,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 			item_text = str ( list_item.text () )
 			#self.ui.listWidget.takeItem ( self.ui.listWidget.currentRow () )
 			#self.ui.listWidget.removeItemWidget ( list_item )
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.emit ( QtCore.SIGNAL ( 'removeItem' ), item_text )
 			else :
 				self.removeItem.emit ( item_text )
@@ -109,7 +109,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 		if list_item is not None : # e.g. listWidget is not empty
 			old_text = list_item.text ()
 			if new_text != old_text :
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					self.emit ( QtCore.SIGNAL( 'renameItem' ), old_text, new_text )
 				else :
 					self.renameItem.emit ( old_text, new_text )
@@ -127,7 +127,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 		if list_item is not None :
 			self.saved_text = str ( list_item.text() )
 			self.ui.name_lineEdit.setText ( self.saved_text  )
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.emit ( QtCore.SIGNAL ( 'selectionChangedSignal' ), self.saved_text  ) 
 			else :
 				self.selectionChangedSignal.emit ( self.saved_text  ) 

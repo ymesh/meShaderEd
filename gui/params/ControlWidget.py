@@ -9,7 +9,7 @@ from global_vars import app_global_vars, DEBUG_MODE
 import gui.ui_settings as UI
 from paramWidget import ParamWidget
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -62,7 +62,7 @@ class Ui_ControlWidget_field ( object ) :
 	#
 	def connectSignals ( self, ControlWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			ControlWidget.connect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
 		else :
 			self.stringEdit.editingFinished.connect (  self.onStringEditEditingFinished )
@@ -71,7 +71,7 @@ class Ui_ControlWidget_field ( object ) :
 	#
 	def disconnectSignals ( self, ControlWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			ControlWidget.disconnect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
 		else :
 			self.stringEdit.editingFinished.disconnect (  self.onStringEditEditingFinished )
@@ -119,7 +119,7 @@ class Ui_ControlWidget_button ( object ) :
 	#
 	def connectSignals ( self, ControlWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			ControlWidget.connect ( self.button, QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
 		else :
 			self.button.clicked.connect ( self.onClicked )
@@ -128,7 +128,7 @@ class Ui_ControlWidget_button ( object ) :
 	#
 	def disconnectSignals ( self, ControlWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			ControlWidget.disconnect ( self.button, QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
 		else :
 			self.button.clicked.disconnect ( self.onClicked )

@@ -8,7 +8,7 @@ from core.mePyQt import Qt, QtCore, QtGui
 from global_vars import app_colors, DEBUG_MODE, GFX_NODE_LABEL_TYPE
 from meShaderEd import app_settings
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets

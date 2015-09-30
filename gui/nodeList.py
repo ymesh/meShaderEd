@@ -15,7 +15,7 @@ from ui_nodeList import Ui_nodeList
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -28,7 +28,7 @@ class NodeList ( QtModule.QWidget ) :
 	#
 	# Define signals for PyQt5
 	#
-	if QtCore.QT_VERSION >= 50000 :
+	if QtCore.QT_VERSION >= 0x50000 :
 		setActiveNodeList = QtCore.pyqtSignal ( [QtModule.QWidget] )
 		addNode = QtCore.pyqtSignal ( [str] )
 	#
@@ -52,7 +52,7 @@ class NodeList ( QtModule.QWidget ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.connect ( self.ui.treeView, QtCore.SIGNAL ( "pressed(QModelIndex)" ), self.clicked )
 			QtCore.QObject.connect ( self.ui.treeView, QtCore.SIGNAL ( "doubleClicked(QModelIndex)" ), self.doubleClicked )
 		else :
@@ -98,7 +98,7 @@ class NodeList ( QtModule.QWidget ) :
 		# send signal to MainWindow to help distinguish which nodeList
 		# is active for addNode getNode events
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( "setActiveNodeList" ), self )
 		else :
 			self.setActiveNodeList.emit ( self )
@@ -111,7 +111,7 @@ class NodeList ( QtModule.QWidget ) :
 		nodeKind = item.whatsThis ()
 		
 		if nodeKind != 'folder' :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				nodeFilename = item.data ( QtCore.Qt.UserRole + 4 ).toString ()
 				self.emit ( QtCore.SIGNAL ( 'addNode' ), nodeFilename )
 			else :
@@ -126,7 +126,7 @@ class NodeList ( QtModule.QWidget ) :
 		
 		nodeName     = item.text ()
 		nodeKind     = item.whatsThis ()
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			nodeAuthor   = item.data ( QtCore.Qt.UserRole + 1 ).toString ()
 			nodeType     = item.data ( QtCore.Qt.UserRole + 2 ).toString ()
 			nodeHelp     = item.data ( QtCore.Qt.UserRole + 3 ).toString ()

@@ -9,7 +9,7 @@
 
 from core.mePyQt import QtCore, QtGui
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -409,7 +409,7 @@ class Ui_MainWindow(object):
 
 				self.retranslateUi(MainWindow)
 				self.tabs.setCurrentIndex(0)
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.close)
 					QtCore.QObject.connect(self.actionProjectSetup, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onProjectSetup)
 					QtCore.QObject.connect(self.actionShowGrid, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), MainWindow.onShowGrid)

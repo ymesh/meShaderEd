@@ -37,7 +37,7 @@ TAB_PARAM_CODE = 4
 TAB_PARAM = 5
 TAB_LINK_INFO = 6
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -76,7 +76,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onInputParamSelectionChanged )
 			QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onOutputParamSelectionChanged  )
 	
@@ -164,7 +164,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 	#
 	def disconnectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onInputParamSelectionChanged )
 			QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onOutputParamSelectionChanged  )
 	
@@ -396,7 +396,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 					inputLinkSelected = True
 					links_item = self.ui.input_links_listWidget.currentItem ()
 					if links_item is not None : 
-						if QtCore.QT_VERSION < 50000 :
+						if QtCore.QT_VERSION < 0x50000 :
 							( link_id, ok ) = links_item.data ( QtCore.Qt.UserRole ).toInt ()
 						else :
 							link_id = links_item.data ( QtCore.Qt.UserRole )
@@ -405,7 +405,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 					# output links
 					links_item = self.ui.output_links_listWidget.currentItem ()
 					if links_item is not None :
-						if QtCore.QT_VERSION < 50000 : 
+						if QtCore.QT_VERSION < 0x50000 : 
 							( link_id, ok ) = links_item.data ( QtCore.Qt.UserRole ).toInt ()
 						else:
 							link_id = links_item.data ( QtCore.Qt.UserRole )
@@ -659,7 +659,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 		typeDialog.btnBox.setCenterButtons ( True )
 		typeDialog.verticalLayout.addWidget ( typeDialog.btnBox )
 
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.connect ( typeDialog.btnBox, QtCore.SIGNAL ( 'accepted()' ), typeDialog.accept )
 			QtCore.QObject.connect ( typeDialog.btnBox, QtCore.SIGNAL ( 'rejected()' ), typeDialog.reject )
 		else :

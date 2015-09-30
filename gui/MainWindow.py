@@ -31,12 +31,11 @@ from meShaderEd import getDefaultValue
 
 from ui_MainWindow import Ui_MainWindow
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
 	QtModule = QtWidgets
-	
 #
 # Create a class for our main window
 #
@@ -61,10 +60,13 @@ class MainWindow ( QtModule.QMainWindow ) :
 		
 		self.clipboard = QtModule.QApplication.clipboard ()
 
-		self.recentProjects = getSettingsStrValue ( app_settings, 'RecentProjects' )
-		self.recentNetworks = getSettingsStrValue ( app_settings, 'RecentNetworks' )
-
-		self.addRecentProject ( app_global_vars [ 'ProjectPath' ] )
+		if QtCore.QT_VERSION < 0x50000 :
+			self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
+			self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
+			self.addRecentProject ( app_global_vars [ 'ProjectPath' ] )
+		else :
+			# should be fixed !!!
+			pass
 
 		self.setupMenuBar ()
 		self.setupPanels ()
@@ -105,7 +107,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.connect ( self.ui.actionHelpMode, QtCore.SIGNAL ( 'toggled(bool)' ), self.onHelpMode )
 			QtCore.QObject.connect ( self.ui.nodeList_ctl.ui.nodeList, QtCore.SIGNAL ( 'setActiveNodeList' ), self.setActiveNodeList )
 			QtCore.QObject.connect ( self.ui.project_ctl.ui.nodeList, QtCore.SIGNAL ( 'setActiveNodeList' ), self.setActiveNodeList )
@@ -132,7 +134,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def connectWorkAreaSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			if self.workArea != None :
 				if self.activeNodeList != None :
 					QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet )
@@ -159,7 +161,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def disconnectWorkAreaSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			if self.workArea != None :
 				if self.activeNodeList != None :
 					QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
@@ -217,11 +219,12 @@ class MainWindow ( QtModule.QMainWindow ) :
 	# buildRecentProjectsMenu
 	#
 	def buildRecentProjectsMenu ( self ) :
-		#self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
-		#self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
-		self.ui.menuRecent_Projects.clear ()
-
-		if QtCore.QT_VERSION < 50000 :
+		#
+		if QtCore.QT_VERSION < 0x50000 :
+			self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
+			print '>> self.recentProjects:'
+			print self.recentProjects
+			self.ui.menuRecent_Projects.clear ()
 			if len ( self.recentProjects ) :
 				icon =  QtGui.QIcon.fromTheme ( 'folder', QtGui.QIcon ( ':/file_icons/resources/open.png' ) )
 				# QtGui.QIcon ( ':/file_icons/resources/recentFile.png' ) 'folder'
@@ -231,14 +234,17 @@ class MainWindow ( QtModule.QMainWindow ) :
 					action.setData ( QtCore.QVariant ( fname ) )
 					self.connect ( action, QtCore.SIGNAL ( 'triggered()' ), self.onOpenRecentProject )
 					self.ui.menuRecent_Projects.addAction ( action )
+		else :
+			# should be fixed !!!
+			pass
 	#
 	# buildRecentNetworksMenu
 	#
 	def buildRecentNetworksMenu ( self ) :
 		#
-		self.ui.menuRecent_Networks.clear ()
-
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
+			self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
+			self.ui.menuRecent_Networks.clear ()
 			if len ( self.recentNetworks ) :
 				for i, fname in enumerate ( self.recentNetworks ) :
 					icon =  QtGui.QIcon.fromTheme ( 'document-new', QtGui.QIcon ( ':/file_icons/resources/new.png' ) )
@@ -247,6 +253,9 @@ class MainWindow ( QtModule.QMainWindow ) :
 					action.setData ( QtCore.QVariant ( fname ) )
 					self.connect ( action, QtCore.SIGNAL ( 'triggered()' ), self.onOpenRecentNetwork )
 					self.ui.menuRecent_Networks.addAction ( action )
+		else :
+			# should be fixed !!!
+			pass
 	#
 	# setupPanels
 	#
@@ -275,7 +284,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	def addRecentProject ( self, project ) :
 		#
 		if project is not None :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				recent_projects_max = getDefaultValue ( app_settings, '', 'recent_projects_max' )
 	
 				if project not in self.recentProjects :
@@ -286,13 +295,16 @@ class MainWindow ( QtModule.QMainWindow ) :
 	
 				recentProjects = QtCore.QVariant ( self.recentProjects ) if self.recentProjects else QtCore.QVariant ()
 				app_settings.setValue ( 'RecentProjects', recentProjects )
+			else :
+				# should be fixed !!!
+				pass
 	#
 	# addRecentNetwork
 	#
 	def addRecentNetwork ( self, network ) :
 		#
 		if network is not None :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				recent_networks_max = getDefaultValue ( app_settings, '', 'recent_networks_max' )
 	
 				if network not in self.recentNetworks :
@@ -303,6 +315,9 @@ class MainWindow ( QtModule.QMainWindow ) :
 	
 				recentNetworks = QtCore.QVariant ( self.recentNetworks ) if self.recentNetworks else QtCore.QVariant ()
 				app_settings.setValue ( 'RecentNetworks', recentNetworks )
+			else :
+				# should be fixed !!!
+				pass
 	#
 	# setupActions
 	#
@@ -375,7 +390,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		self.RendererPreset = copy.deepcopy ( app_global_vars [ 'RendererPreset' ] )
 		if DEBUG_MODE : print ( ':: self.RendererPreset.getCurrentPresetName = %s' % self.RendererPreset.getCurrentPresetName () )
 		renderSettingsDlg = meRendererSetup ( self.RendererPreset )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'presetChanged' ), self.onRenderPresetChanged )
 			QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'savePreset' ), self.onRenderPresetSave )
 		else :
@@ -457,7 +472,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	def setActiveNodeList ( self, nodeList ) :
 		#
 		if DEBUG_MODE : print '>> MainWindow.setActiveNodeList'
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			if self.activeNodeList != None :
 				QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
 			self.activeNodeList = nodeList
@@ -827,7 +842,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		#
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			filename = str ( QtGui.QFileDialog.getOpenFileName ( self, "Open file", curDir, typeFilter ) )
 		else :
 			(filename, filter) = QtModule.QFileDialog.getOpenFileName ( self, "Open file", curDir, typeFilter )	
@@ -906,7 +921,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			filename = str ( QtModule.QFileDialog.getOpenFileName ( self, "Import file", curDir, typeFilter ) )
 		else :
 			(filename, filter) = QtModule.QFileDialog.getOpenFileName ( self, "Import file", curDir, typeFilter )
@@ -925,7 +940,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
 		else :
 			(filename, filter) = QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter )
@@ -971,7 +986,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
 		else :
 			(filename, filter) = QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter )

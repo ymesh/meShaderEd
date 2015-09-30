@@ -6,7 +6,7 @@
 from core.mePyQt import QtCore, QtGui
 from core.signal import Signal
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -25,7 +25,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			self.mouseDoubleClickSignal = Signal ()
 		
@@ -70,7 +70,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 		scale = -1.0
 		if 'linux' in sys.platform: scale = 1.0     
 		import math
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			scaleFactor = math.pow( 2.0, scale * event.delta() / 600.0 )
 		else :
 			delta = event.angleDelta ()
@@ -99,7 +99,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 	def mouseDoubleClickEvent ( self, event ) :
 		#
 		#print ">> ImageView.mouseDoubleClickEvent"
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'mouseDoubleClickSignal' ) )
 		else :
 			self.mouseDoubleClickSignal.emit ()

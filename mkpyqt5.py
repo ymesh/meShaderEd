@@ -24,7 +24,7 @@ import stat
 import sys
 from core.mePyQt import QtCore, PythonQtType
 
-if QtCore.QT_VERSION < 50000 : pass
+if QtCore.QT_VERSION < 0x50000 : pass
 
 __version__ = "1.0.4"
 

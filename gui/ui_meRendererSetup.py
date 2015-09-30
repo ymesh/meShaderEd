@@ -9,7 +9,7 @@
 
 from core.mePyQt import QtCore, QtGui
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -359,7 +359,7 @@ class Ui_meRendererSetup(object):
 				self.retranslateUi(meRendererSetup)
 				self.tabs.setCurrentIndex(0)
 				
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL("clicked()"), meRendererSetup.close)
 					QtCore.QObject.connect(self.okButton, QtCore.SIGNAL("clicked()"), meRendererSetup.onSelect)
 					QtCore.QObject.connect(self.listPreset, QtCore.SIGNAL("currentIndexChanged(QString)"), meRendererSetup.onIndexChanged)

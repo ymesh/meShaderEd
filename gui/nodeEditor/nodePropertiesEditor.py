@@ -20,7 +20,7 @@ from core.node import Node
 
 from ui_nodePropertiesEditor import Ui_NodePropertiesEditor
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -39,7 +39,7 @@ class NodePropertiesEditor ( QtModule.QWidget ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			self.changeNodeLabel = Signal ()
 		#
@@ -122,7 +122,7 @@ class NodePropertiesEditor ( QtModule.QWidget ) :
 	#
 	def connectSignals ( self ) :
 		# QtCore.QObject.
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.connect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrName )
 			self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
 			self.connect ( self.ui.master_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrMaster )
@@ -143,7 +143,7 @@ class NodePropertiesEditor ( QtModule.QWidget ) :
 	#
 	def disconnectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			if self.editNode is not None :
 				self.disconnect ( self.ui.name_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrName )
 				self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
@@ -187,19 +187,19 @@ class NodePropertiesEditor ( QtModule.QWidget ) :
 		oldLabel = self.editNode.label
 		newLabel = str ( self.ui.label_lineEdit.text () ).strip ()
 		if newLabel == '' :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.disconnect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
 			else :
 				self.ui.label_lineEdit.editingFinished.disconnect ( self.onEditNodeStrAttrLabel )
 			newLabel = oldLabel
 			self.ui.label_lineEdit.setText ( newLabel )
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.connect ( self.ui.label_lineEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditNodeStrAttrLabel )
 			else :
 				self.ui.label_lineEdit.editingFinished.connect ( self.onEditNodeStrAttrLabel )
 		if newLabel != oldLabel :
 			self.editNode.label = newLabel
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.emit ( QtCore.SIGNAL ( 'changeNodeLabel' ), oldLabel, newLabel )
 			else :
 				self.changeNodeLabel.emit ( oldLabel, newLabel )

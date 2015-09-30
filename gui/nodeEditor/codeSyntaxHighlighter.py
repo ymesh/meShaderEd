@@ -16,7 +16,7 @@ from global_vars import app_global_vars
 
 import gui.ui_settings as UI
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -116,7 +116,7 @@ class CodeSyntaxHighlighter ( QtGui.QSyntaxHighlighter ):
 			commentLength = 0
 			if endIndex == -1:
 				self.setCurrentBlockState ( 1 )
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					commentLength = text.length () - startIndex
 				else :
 					commentLength = len ( text ) - startIndex

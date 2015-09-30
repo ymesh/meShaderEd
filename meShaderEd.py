@@ -42,7 +42,7 @@ def setDefaultValue ( key, def_value ) :
 	if not app_settings.contains ( key ):
 		app_settings.setValue ( key, def_value )
 	value = app_settings.value ( key )
-	if QtCore.QT_VERSION < 50000 :
+	if QtCore.QT_VERSION < 0x50000 :
 		if value.toString () == 'true' : value = True
 		elif value.toString () == 'false' : value = False
 		else :
@@ -66,7 +66,7 @@ def getDefaultValue ( settings, group, key, def_value = None ) :
 	if group != '' : settings.beginGroup ( group )
 	value = settings.value ( key )
 	if group != '' : settings.endGroup ( )
-	if QtCore.QT_VERSION < 50000 :
+	if QtCore.QT_VERSION < 0x50000 :
 		if value.toString () == 'true' : value = True
 		elif value.toString () == 'false' : value = False
 		else :
@@ -84,7 +84,7 @@ def getDefaultValue ( settings, group, key, def_value = None ) :
 				value = str ( value )
 	return value
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -95,9 +95,7 @@ else :
 def main () :
 	# 
 	app = QtModule.QApplication ( sys.argv )
-
 	
-			
 	app_settings.setValue ( 'version', version )
 	app_settings.setValue ( 'root', normPath ( root ) )
 	project_filename = setDefaultValue ( 'project_filename', 'meshadered.prj' )
@@ -198,9 +196,10 @@ def main () :
 	app_colors [ 'image_node_bg' ] = setDefaultValue ( 'image_node_bg', app_colors [ 'image_node_bg' ] )
 	app_colors [ 'group_node_bg' ] = setDefaultValue ( 'group_node_bg', app_colors [ 'group_node_bg' ] )
 	app_settings.endGroup ()
+	
 	from gui.MainWindow import MainWindow
 
-	window = MainWindow () #, rendererPreset )
+	window = MainWindow ()
 	window.show ()
 
 	# It's exec_ because exec is a reserved word in Python
@@ -224,8 +223,9 @@ if __name__ == "__main__":
 		print '* PYQT_VERSION = %0X' % QtCore.PYQT_VERSION
 
 	if sys.platform.startswith ( 'win') :
-		if QtCore.QT_VERSION < 50000 :
-			QtModule.QApplication.setStyle ( QtModule.QStyleFactory.create ( 'Cleanlooks' ) )
-			QtModule.QApplication.setPalette ( QtModule.QApplication.style ().standardPalette () )
+		if QtCore.QT_VERSION < 0x50000 :
+			pass
+			#QtModule.QApplication.setStyle ( QtModule.QStyleFactory.create ( 'Cleanlooks' ) )
+			#QtModule.QApplication.setPalette ( QtModule.QApplication.style ().standardPalette () )
 	
 	main ()

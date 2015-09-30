@@ -9,7 +9,7 @@ from core.signal import Signal
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -28,7 +28,7 @@ class ColorWidget ( ParamWidget ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			self.clicked = Signal ()
 	"""
@@ -40,7 +40,7 @@ class ColorWidget ( ParamWidget ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			self.clicked = Signal ()
 			
@@ -65,7 +65,7 @@ class ColorEditEventFilter ( QtCore.QObject ) :
 		# check for single click
 		if event.type () == QtCore.QEvent.MouseButtonPress:
 			#print "eventFilter = MouseButtonPress" 
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.ColorWidget.emit ( QtCore.SIGNAL ( 'clicked()' ) )
 			else :
 				self.ColorWidget.clicked.emit ()
@@ -121,7 +121,7 @@ class Ui_ColorWidget_field ( object ) :
 	def connectSignals ( self, ColorWidget ) :
 		# register signal propertyChanged for updating the gui
 		#self.connect( self.colorProperty, QtCore.SIGNAL('propertyChanged()'), self.onPropertyChanged )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			ColorWidget.connect ( ColorWidget, QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
 			ColorWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged ) 
 		else :
@@ -133,7 +133,7 @@ class Ui_ColorWidget_field ( object ) :
 	def disconnectSignals ( self, ColorWidget ) :
 		# register signal propertyChanged for updating the gui
 		#self.disconnect( self.colorProperty, QtCore.SIGNAL('propertyChanged()'), self.onPropertyChanged )
-		if QtCore.QT_VERSION < 50000 : 
+		if QtCore.QT_VERSION < 0x50000 : 
 			ColorWidget.disconnect ( ColorWidget, QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
 			ColorWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :

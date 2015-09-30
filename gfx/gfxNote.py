@@ -10,7 +10,7 @@ from gfx.gfxNodeLabel import GfxNodeLabel
 from global_vars import DEBUG_MODE, GFX_NOTE_TYPE
 from meShaderEd import app_settings
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -90,7 +90,7 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	def remove ( self ) :
 		#
 		if DEBUG_MODE : print '>> GfxNote remove gfxNode (temp)'
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
 		else :
 			self.scene().onGfxNodeRemoved.emit ( self )

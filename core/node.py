@@ -26,7 +26,7 @@ class Node ( QtCore.QObject ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			self.nodeUpdated = Signal () # QtCore.pyqtSignal ( [QtCore.QObject] )
 			self.nodeParamsUpdated = Signal () #QtCore.pyqtSignal ( [QtCore.QObject] )
@@ -105,7 +105,7 @@ class Node ( QtCore.QObject ) :
 	def updateNode ( self ) : 
 		#
 		if DEBUG_MODE : print '>> Node( %s ).updateNode' % self.label
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
 		else :
 			self.nodeUpdated.emit ( self )
@@ -115,7 +115,7 @@ class Node ( QtCore.QObject ) :
 	def updateNodeParams ( self ) : 
 		#
 		if DEBUG_MODE : print '>> Node( %s ).updateNodeParams' % self.label
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'nodeParamsUpdated' ), self )
 		else :
 			self.nodeParamsUpdated.emit ( self )

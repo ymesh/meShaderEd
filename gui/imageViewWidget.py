@@ -16,7 +16,7 @@ import gui.ui_settings as UI
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -44,7 +44,7 @@ class ImageViewWidget ( QtModule.QWidget ) :
 		#self.ui.treeView.setDragEnabled ( True )
 		#self.ui.treeView.setRootIsDecorated( True )
 
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			QtCore.QObject.connect ( self.ui.imageArea, QtCore.SIGNAL ( 'mouseDoubleClickSignal' ), self.updateViewer )
 			QtCore.QObject.connect ( self.ui.selector, QtCore.SIGNAL ( 'currentIndexChanged(int)' ), self.onViewerChanged )
 		else :

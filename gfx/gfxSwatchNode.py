@@ -13,7 +13,7 @@ from global_vars import DEBUG_MODE, GFX_SWATCH_NODE_TYPE
 from meShaderEd import app_settings
 import gui.ui_settings as UI
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -85,7 +85,7 @@ class GfxSwatchNode ( QtModule.QGraphicsItem ) :
 	def connectSignals ( self ) :
 		#
 		if  self.scene () is not None :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'updateSwatch' ), self.updateSwatch )
 			else :
 				self.scene ().updateSwatch.connect (  self.updateSwatch )
@@ -95,7 +95,7 @@ class GfxSwatchNode ( QtModule.QGraphicsItem ) :
 	def disconnectSignals ( self ) :
 		#
 		if  self.scene () is not None :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				QtCore.QObject.disconnect ( self.scene (), QtCore.SIGNAL ( 'updateSwatch' ), self.updateSwatch )
 			else :
 				self.scene ().updateSwatch.disconnect (  self.updateSwatch )
@@ -110,7 +110,7 @@ class GfxSwatchNode ( QtModule.QGraphicsItem ) :
 		#
 		if DEBUG_MODE : print '>> GfxSwatchNode.remove'
 		for connect in self.inputConnectors : connect.removeAllLinks ()
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
 		else :
 			self.scene().onGfxNodeRemoved.emit ( self )

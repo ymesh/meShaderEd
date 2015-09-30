@@ -15,7 +15,7 @@ from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES, VALID
 from nodeEditor.nodeCodeEditor import NodeCodeEditor
 from ui_viewComputedCodeDialog import Ui_ViewComputedCodeDialog
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets

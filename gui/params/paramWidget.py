@@ -11,7 +11,7 @@ import gui.ui_settings as UI
 
 from paramLabel import ParamLabel
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -29,7 +29,7 @@ class ParamWidget ( QtModule.QWidget ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			self.nodeParamRemoved = Signal ()
 			#
@@ -83,7 +83,7 @@ class ParamWidget ( QtModule.QWidget ) :
 		
 		self.label_vl = QtModule.QVBoxLayout ()
 		self.label_vl.setSpacing ( UI.SPACING )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.label_vl.setMargin ( 0 )
 		self.label_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 
@@ -91,14 +91,14 @@ class ParamWidget ( QtModule.QWidget ) :
 
 		self.hl = QtModule.QHBoxLayout ()
 		self.hl.setSpacing ( UI.SPACING )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.hl.setMargin ( 0 )
 		self.hl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		
 		# vertical layout for parametrs values (e.g. output links or matrix rows)
 		self.param_vl = QtModule.QVBoxLayout ()
 		self.param_vl.setSpacing ( UI.SPACING )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.param_vl.setMargin ( 0 )
 		self.param_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		#
@@ -114,7 +114,7 @@ class ParamWidget ( QtModule.QWidget ) :
 				self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
 				self.check.setToolTip ( 'Use as Shader parameter' )
 				self.check.setChecked ( self.param.shaderParam )
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					self.connect ( self.check, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onShaderParamChanged )
 				else :
 					self.check.stateChanged.connect ( self.onShaderParamChanged )
@@ -141,7 +141,7 @@ class ParamWidget ( QtModule.QWidget ) :
 				self.removeButton.setIconSize ( QtCore.QSize ( 16, 16 ) )
 				self.removeButton.setObjectName ( 'removeButton' )
 				self.hl.addWidget ( self.removeButton )
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					QtCore.QObject.connect ( self.removeButton, QtCore.SIGNAL ( 'clicked()' ), self.onRemoveItem )
 				else :
 					self.removeButton.clicked.connect ( self.onRemoveItem )
@@ -211,7 +211,7 @@ class ParamWidget ( QtModule.QWidget ) :
 	def onRemoveItem ( self ) : 
 		#
 		if DEBUG_MODE : print '>> ParamWidget( %s ).onRemoveItem ' % self.param.name
-		if QtCore.QT_VERSION >= 50000 :   
+		if QtCore.QT_VERSION >= 0x50000 :   
 			self.emit ( QtCore.SIGNAL ( 'nodeParamRemoved' ), self.param ) 
 		else :
 			self.nodeParamRemoved.emit ( self.param ) 

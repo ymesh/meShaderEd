@@ -29,7 +29,7 @@ from gui.params.ControlWidget import ControlWidget
 
 from ui_nodeParamEditor import Ui_NodeParamEditor
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -47,7 +47,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 50000 :
+		if QtCore.QT_VERSION >= 0x50000 :
 			#
 			self.changeParamName = Signal ()
 			self.changeParamLabel = Signal ()
@@ -142,7 +142,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 		#
 		if DEBUG_MODE : print '* onParamDefValueChanged'
 		self.param.default = self.param_default.value
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamDefValue' ), self.param )
 		else :
 			self.changeParamDefValue.emit ( self.param )
@@ -153,7 +153,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 		#
 		if DEBUG_MODE : print '* onParamValueChanged'
 		self.param.value = param.value
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamValue' ), self.param )
 		else :
 			self.changeParamValue.emit ( self.param )
@@ -162,7 +162,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.connect ( self.param_default, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamDefValueChanged )
 			self.connect ( self.param, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamValueChanged )
 			
@@ -197,7 +197,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	#
 	def disconnectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			if self.param_default is not None :
 				self.disconnect ( self.param_default, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamDefValueChanged )
 			if self.param is not None :
@@ -352,7 +352,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 			self.ui.name_lineEdit.setText ( newName )
 		if newName != oldName :
 			self.param.name = newName
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.emit( QtCore.SIGNAL ( 'changeParamName' ), oldName, newName )
 			else :
 				self.changeParamName.emit ( oldName, newName )
@@ -368,7 +368,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 			self.ui.label_lineEdit.setText ( newName )
 		if newName != oldName :
 			self.param.label = newName
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.emit ( QtCore.SIGNAL ( 'changeParamLabel' ), oldName, newName )
 			else :
 				self.changeParamLabel.emit ( oldName, newName )
@@ -390,7 +390,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	def onEditParamShader ( self, value )  : 
 		#
 		self.param.shaderParam = self.ui.check_shader.isChecked ()
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamIsShader' ), self.param )
 		else :
 			self.changeParamIsShader.emit ( self.param )
@@ -402,7 +402,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 		# !!! UI for param.value and param.default also should be changed
 		#
 		self.param.type = str ( self.ui.type_comboBox.itemText ( idx ) )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamType' ), self.param )
 		else :
 			self.changeParamType.emit ( self.param )
@@ -412,7 +412,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	def onEditParamDetail ( self, idx ) :
 		#
 		self.param.detail = str ( self.ui.detail_comboBox.itemText ( idx ) )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamDetail' ), self.param )
 		else :
 			self.changeParamDetail.emit ( self.param )
@@ -422,7 +422,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	def onEditParamProvider ( self, idx ) : 
 		#
 		self.param.provider = str ( self.ui.provider_comboBox.itemText ( idx ) )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamProvider' ), self.param )
 		else :
 			self.changeParamProvider.emit ( self.param )
@@ -432,7 +432,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	def onEditParamSubtype ( self, idx ) : 
 		#
 		self.param.subtype = str ( self.ui.subtype_comboBox.itemText ( idx ) )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamSubtype' ), self.param )
 		else :
 			self.changeParamSubtype.emit ( self.param )
@@ -442,7 +442,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	def onEditParamRange ( self ) : 
 		#
 		self.param.range = str ( self.ui.range_lineEdit.text () )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamRange' ), self.param )
 		else :
 			self.changeParamRange.emit ( self.param )

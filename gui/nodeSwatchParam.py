@@ -9,7 +9,7 @@ from ui_nodeSwatchParam import Ui_NodeSwatchParam
 
 import ui_settings as UI
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets

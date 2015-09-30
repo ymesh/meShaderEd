@@ -11,7 +11,7 @@ from meShaderEd import app_settings
 from global_vars import DEBUG_MODE, GFX_NODE_CONNECTOR_TYPE
 import gui.ui_settings as UI
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -402,7 +402,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 		if event.modifiers () == QtCore.Qt.ControlModifier :
 			# start new ConnectorNode
 			self.state = 'traceNodeConnector'
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'startNodeConnector' ), self, event.scenePos () )
 			else :
 				self.getScene ().startNodeConnector.emit ( self, event.scenePos () )
@@ -410,7 +410,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 			if not self.isNode () :
 				# start new link
 				self.state = 'traceNodeLink'
-				if QtCore.QT_VERSION < 50000 :
+				if QtCore.QT_VERSION < 0x50000 :
 					self.getScene ().emit ( QtCore.SIGNAL ( 'startNodeLink' ), self )
 				else :
 					#if DEBUG_MODE : print '* startNodeLink.emit '
@@ -427,12 +427,12 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	def mouseMoveEvent ( self, event ) :
 		#print ">> mouseMoveEvent at %d %d" % ( event.scenePos().x(), event.scenePos().y() )
 		if self.state == 'traceNodeLink' :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'traceNodeLink' ), self, event.scenePos () )
 			else :
 				self.getScene ().traceNodeLink.emit ( self, event.scenePos () )
 		elif self.state == 'traceNodeConnector' :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'traceNodeConnector' ), self, event.scenePos () )
 			else :
 				self.getScene ().traceNodeConnector.emit (  self, event.scenePos () )
@@ -446,12 +446,12 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	def mouseReleaseEvent ( self, event ) :
 		#print ">> mouseReleaseEvent"
 		if self.state == 'traceNodeLink' :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'endNodeLink' ), self, event.scenePos () )
 			else :
 				self.getScene ().endNodeLink.emit ( self, event.scenePos () )
 		elif self.state == 'traceNodeConnector' :
-			if QtCore.QT_VERSION < 50000 :
+			if QtCore.QT_VERSION < 0x50000 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'endNodeConnector' ), self, event.scenePos () )
 			else :
 				self.getScene ().endNodeConnector.emit ( self, event.scenePos () )

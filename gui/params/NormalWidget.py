@@ -8,7 +8,7 @@ from core.mePyQt import QtGui, QtCore
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -75,7 +75,7 @@ class Ui_NormalWidget_field ( object ) :
 	#
 	def connectSignals ( self, NormalWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			NormalWidget.connect ( self.floatEdit0, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			NormalWidget.connect ( self.floatEdit1, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			NormalWidget.connect ( self.floatEdit2, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
@@ -90,7 +90,7 @@ class Ui_NormalWidget_field ( object ) :
 	#
 	def disconnectSignals ( self, NormalWidget ) :
 		#
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			NormalWidget.disconnect ( self.floatEdit0, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			NormalWidget.disconnect ( self.floatEdit1, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			NormalWidget.disconnect ( self.floatEdit2, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
@@ -126,7 +126,7 @@ class Ui_NormalWidget_field ( object ) :
 	#      
 	def updateGui ( self, value ) :
 		# 
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			self.floatEdit0.setText ( QtCore.QString.number( value [0], 'f', 3 ) )
 			self.floatEdit1.setText ( QtCore.QString.number( value [1], 'f', 3 ) )
 			self.floatEdit2.setText ( QtCore.QString.number( value [2], 'f', 3 ) )

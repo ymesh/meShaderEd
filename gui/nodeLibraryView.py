@@ -18,7 +18,7 @@ from ui_nodeLibraryView import Ui_nodeLibraryView
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets

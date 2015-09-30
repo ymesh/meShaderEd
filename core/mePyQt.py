@@ -29,14 +29,18 @@ except ImportError:
 		PythonQt = __import__( 'PyQt4', globals(), locals(), List )
 		PythonQtType = 'PyQt4'
 
+print ( '* ' + PythonQtType + ' module imported' )
+print ( '* ' + 'QT_VERSION = %x' % PythonQt.QtCore.QT_VERSION )
+
 Qt 				= PythonQt.Qt
 QtCore 		= PythonQt.QtCore
 QtGui 		= PythonQt.QtGui
 QtXml 		= PythonQt.QtXml
-QtWidgets = PythonQt.QtWidgets
+if QtCore.QT_VERSION >= 0x50000 :
+	QtWidgets = PythonQt.QtWidgets
 #QtNetwork = PythonQt.QtNetwork
 
-print ( '* ' + PythonQtType + ' module imported' )
+
 
 if PythonQtType == 'PyQt4' or PythonQtType == 'PyQt5':
 	#print('You can install PySide if interested in LGPL license.')

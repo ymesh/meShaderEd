@@ -12,7 +12,7 @@ from core.mePyQt import QtCore, QtGui, Qt
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 
-if QtCore.QT_VERSION < 50000 :
+if QtCore.QT_VERSION < 0x50000 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -45,7 +45,7 @@ class  NodeTreeView ( QtModule.QTreeView ) :
 		stream = QtCore.QDataStream ( data, QtCore.QIODevice.WriteOnly )
 		
 		itemName = item.text ()
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			itemFilename = item.data( QtCore.Qt.UserRole + 4 ).toString ()
 			stream << itemFilename
 		else :
@@ -59,7 +59,7 @@ class  NodeTreeView ( QtModule.QTreeView ) :
 		drag = QtGui.QDrag ( self )
 		drag.setMimeData ( mimeData )
 		#drag.setPixmap ( QtGui.QPixmap(':/node.png') )
-		if QtCore.QT_VERSION < 50000 :
+		if QtCore.QT_VERSION < 0x50000 :
 			drag.start ( QtCore.Qt.CopyAction )
 		else :
 			drag.exec_ ( QtCore.Qt.CopyAction )
