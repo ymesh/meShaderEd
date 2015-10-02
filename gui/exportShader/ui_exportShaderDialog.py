@@ -7,10 +7,10 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -65,8 +65,7 @@ class Ui_ExportShaderDialog(object):
 				self.tab = QtModule.QWidget()
 				self.tab.setObjectName(_fromUtf8("tab"))
 				self.gridLayout = QtModule.QGridLayout(self.tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout.setMargin(2)
+				self.gridLayout.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout.setSpacing(2)
 				self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
 				self.list_nodes = QtModule.QListWidget(self.tab)
@@ -80,8 +79,7 @@ class Ui_ExportShaderDialog(object):
 				self.tab_inputs.setObjectName(_fromUtf8("tab_inputs"))
 				self.gridLayout_2 = QtModule.QGridLayout(self.tab_inputs)
 				
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_2.setMargin(2)
+				self.gridLayout_2.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_2.setSpacing(2)
 				self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
 				self.list_inputs = QtModule.QListWidget(self.tab_inputs)
@@ -91,8 +89,7 @@ class Ui_ExportShaderDialog(object):
 				self.tab_outputs = QtModule.QWidget()
 				self.tab_outputs.setObjectName(_fromUtf8("tab_outputs"))
 				self.gridLayout_3 = QtModule.QGridLayout(self.tab_outputs)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_3.setMargin(2)
+				self.gridLayout_3.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_3.setSpacing(2)
 				self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
 				self.list_outputs = QtModule.QListWidget(self.tab_outputs)
@@ -104,8 +101,7 @@ class Ui_ExportShaderDialog(object):
 				self.tab_prop_node = QtModule.QWidget()
 				self.tab_prop_node.setObjectName(_fromUtf8("tab_prop_node"))
 				self.gridLayout_4 = QtModule.QGridLayout(self.tab_prop_node)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_4.setMargin(2)
+				self.gridLayout_4.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_4.setSpacing(2)
 				self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
 				self.node = NodePropertiesEditor(self.tab_prop_node)
@@ -115,8 +111,7 @@ class Ui_ExportShaderDialog(object):
 				self.tab_prop_param = QtModule.QWidget()
 				self.tab_prop_param.setObjectName(_fromUtf8("tab_prop_param"))
 				self.gridLayout_5 = QtModule.QGridLayout(self.tab_prop_param)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_5.setMargin(2)
+				self.gridLayout_5.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_5.setSpacing(2)
 				self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
 				self.param = NodeParamEditor(self.tab_prop_param)
@@ -131,7 +126,7 @@ class Ui_ExportShaderDialog(object):
 				self.node_tabWidget.setCurrentIndex(0)
 				self.params_tabWidget.setCurrentIndex(0)
 				self.prop_tabWidget.setCurrentIndex(0)
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					QtCore.QObject.connect(self.btn_export, QtCore.SIGNAL(_fromUtf8("clicked()")), ExportShaderDialog.onExport)
 					QtCore.QObject.connect(self.btn_close, QtCore.SIGNAL(_fromUtf8("clicked()")), ExportShaderDialog.reject)
 					QtCore.QObject.connect(self.btn_view, QtCore.SIGNAL(_fromUtf8("clicked()")), ExportShaderDialog.onViewCode)

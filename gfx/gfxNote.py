@@ -3,14 +3,14 @@
 	gfxNote.py
 
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from gfx.gfxNodeLabel import GfxNodeLabel
 
 from global_vars import DEBUG_MODE, GFX_NOTE_TYPE
 from meShaderEd import app_settings
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -89,8 +89,8 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	#
 	def remove ( self ) :
 		#
-		if DEBUG_MODE : print '>> GfxNote remove gfxNode (temp)'
-		if QtCore.QT_VERSION < 0x50000 :
+		if DEBUG_MODE : print '>> GfxNote.remove'
+		if usePyQt4 :
 			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
 		else :
 			self.scene().onGfxNodeRemoved.emit ( self )
@@ -106,10 +106,13 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	# updateGfxNode
 	#
 	def updateGfxNode ( self ) :
+		if DEBUG_MODE : print '>> GfxNote( %s ).updateGfxNode' % ( self.node.label )
 		# remove all children
-		for item in self.childItems () : self.scene ().removeItem ( item )
+		for item in self.childItems () : 
+			self.scene ().removeItem ( item )
 		self.setupParameters ()
 		self.setupGeometry ()
+		self.update ()
 	#
 	# setupParameters
 	#
@@ -233,7 +236,7 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	# paint
 	#
 	def paint ( self, painter, option, widget ) :
-		# print ( ">> GfxNode.paint" )
+		#print ( ">> GfxNode.paint" )
 		painter.setRenderHint ( QtGui.QPainter.Antialiasing )
 		painter.setRenderHint ( QtGui.QPainter.SmoothPixmapTransform )
 

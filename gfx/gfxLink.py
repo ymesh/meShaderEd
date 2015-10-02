@@ -3,12 +3,12 @@
 	gfxLink.py
 
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from global_vars import DEBUG_MODE, GFX_LINK_TYPE
 from meShaderEd import app_settings
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -90,7 +90,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 		scene = self.scene ()
 		if scene != None :
 			if DEBUG_MODE : print ">> GfxLink::remove emit( onGfxLinkRemoved )"
-			if QtCore.QT_VERSION < 0x50000 :
+			if usePyQt4 :
 				scene.emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self )
 			else :
 				scene.onGfxLinkRemoved.emit ( self )

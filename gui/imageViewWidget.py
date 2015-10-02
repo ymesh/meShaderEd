@@ -3,7 +3,7 @@
 	imageViewWidget.py
 
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
 #from PyQt4.QtCore import QDir, QString, QModelIndex
@@ -16,7 +16,7 @@ import gui.ui_settings as UI
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -44,7 +44,7 @@ class ImageViewWidget ( QtModule.QWidget ) :
 		#self.ui.treeView.setDragEnabled ( True )
 		#self.ui.treeView.setRootIsDecorated( True )
 
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			QtCore.QObject.connect ( self.ui.imageArea, QtCore.SIGNAL ( 'mouseDoubleClickSignal' ), self.updateViewer )
 			QtCore.QObject.connect ( self.ui.selector, QtCore.SIGNAL ( 'currentIndexChanged(int)' ), self.onViewerChanged )
 		else :
@@ -101,7 +101,7 @@ class ImageViewWidget ( QtModule.QWidget ) :
 	#
 	# updateViewer
 	#
-	@QtCore.pyqtSlot ()
+	#@QtCore.pyqtSlot ()
 	def updateViewer ( self, compute = True ) :
 		#
 		print ">> ImageViewWidget.updateViewer compute = %d" % compute

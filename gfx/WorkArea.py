@@ -3,7 +3,7 @@
  WorkArea.py
 
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
 from core.meCommon import *
@@ -21,7 +21,7 @@ from gfx.gfxSwatchNode import GfxSwatchNode
 from meShaderEd import app_settings
 from global_vars import DEBUG_MODE
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -43,7 +43,7 @@ class WorkAreaScene ( QtModule.QGraphicsScene ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 0x50000 :
+		if usePySide or usePyQt5 :
 			#
 			self.startNodeConnector = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
 			self.traceNodeConnector = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
@@ -58,14 +58,14 @@ class WorkAreaScene ( QtModule.QGraphicsScene ) :
 			
 			self.nodeUpdated = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem )
 			self.gfxNodeParamChanged = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem, QtCore.QObject )
-
+			#
 		self.view = view
 		self.connectSignals ()
 	#
 	# connectSignals
 	#
 	def connectSignals ( self ) :
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'selectionChanged()' ), self.view.onSelectionChanged )
 			
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'startNodeLink' ), self.view.onStartNodeLink )
@@ -102,18 +102,17 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def __init__ ( self ) :
 		#
 		QtModule.QGraphicsView.__init__ ( self )
-		
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 0x50000 :
+		if usePySide or usePyQt5 :
 			#
 			self.selectNodes = Signal () #( list, list )
 			self.nodeConnectionChanged = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QObject )
 		
 			self.gfxNodeAdded = Signal () #( QtModule.QGraphicsObject )
 			self.gfxNodeRemoved = Signal () #( QtModule.QGraphicsObject )
-		#
+			#
 		self.drawGrid = True
 		self.gridSnap = False
 		self.straightLinks = False
@@ -335,7 +334,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		#for item in scene.selectedItems (): item.setSelected ( False )
 		scene.addItem ( gfxNode )
 		gfxNode.setSelected ( True )
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'gfxNodeAdded' ), gfxNode )
 		else :
 			self.gfxNodeAdded.emit ( gfxNode )
@@ -376,7 +375,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			elif isinstance ( item, GfxSwatchNode ) : self.selectedNodes.append ( item )
 			elif isinstance ( item, GfxLink ) : self.selectedLinks.append ( item )
 
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'selectNodes' ), self.selectedNodes, self.selectedLinks )
 		else :
 			self.selectNodes.emit ( self.selectedNodes, self.selectedLinks )
@@ -444,7 +443,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def onTraceNodeLink ( self, connector, scenePos ) :
 		# node = connector.parentItem().node
 		# print ">> WorkArea: onDrawNodeLink from %s (%d %d)" % ( node.label, scenePos.x(), scenePos.y() )
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			connectCandidate = self.scene ().itemAt ( scenePos )
 		else :
 			connectCandidate = self.scene ().itemAt ( scenePos, self.transform () )
@@ -532,7 +531,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 
 			self.currentGfxLink.link = link
 			self.nodeNet.addLink ( link )
-			if QtCore.QT_VERSION < 0x50000 :
+			if  usePyQt4 :
 				self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.currentGfxLink.dstConnector.getGfxNode (), self.currentGfxLink.dstConnector.param )
 			else :
 				self.nodeConnectionChanged.emit ( self.currentGfxLink.dstConnector.getGfxNode (), self.currentGfxLink.dstConnector.param )
@@ -661,7 +660,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def onRemoveNode ( self, gfxNode ) :
 		#
 		print ">> WorkArea.onRemoveNode %s (id = %d)" % ( gfxNode.node.label, gfxNode.node.id )
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'gfxNodeRemoved' ), gfxNode )
 		else :
 			self.gfxNodeRemoved.emit ( gfxNode )
@@ -687,7 +686,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 				#self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), srcConnector.parentItem(), srcConnector.param )
 			if dstConnector is not None :
 				if DEBUG_MODE : print '*** dstConnector.parentItem().node.label = %s ' % dstConnector.getNode ().label
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), dstConnector.getGfxNode (), dstConnector.param )
 				else :
 					self.nodeConnectionChanged.emit ( dstConnector.getGfxNode (), dstConnector.param )
@@ -727,7 +726,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	# dragMoveEvent
 	#
 	def dragMoveEvent ( self, event ) :
-		#print ">> WorkArea: onDragMoveEvent"
+		#print ">> WorkArea.dragMoveEvent"
 		mimedata = event.mimeData ()
 		if mimedata.hasFormat ( 'application/x-text' ) or mimedata.hasFormat ( 'text/uri-list' ):
 			event.setDropAction ( QtCore.Qt.CopyAction )
@@ -740,7 +739,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def dropEvent ( self, event ) :
 		#
 		import os
-		if DEBUG_MODE : print ">> WorkArea.onDropEvent"
+		if DEBUG_MODE : print ">> WorkArea.dropEvent"
 		file_list = []
 		mimedata = event.mimeData ()
 
@@ -749,14 +748,20 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			data = mimedata.data ( 'application/x-text' )
 			stream = QtCore.QDataStream ( data, QtCore.QIODevice.ReadOnly )
 			
-			if QtCore.QT_VERSION < 0x50000 :
+			if usePyQt4 :
 				filename = QtCore.QString ()
-				stream >> filename
 			else :
 				filename = ''
+					
+			if not usePyQt5 :
+				if usePySide :
+					filename = stream.readString ()
+				else :
+					stream >> filename
+			else :
 				filename = stream.readBytes ()
 
-			if DEBUG_MODE : print 'itemFilename = %s' % ( filename )
+			if DEBUG_MODE : print '* read itemFilename = %s' % ( filename )
 
 			file_list.append ( filename )
 			event.setDropAction ( QtCore.Qt.CopyAction )
@@ -791,7 +796,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		scale = -1.0
 		if 'linux' in sys.platform: scale = 1.0
 		import math
-		if QtCore.QT_VERSION < 0x50000 :
+		if  not usePyQt5 :
 			scaleFactor = math.pow( 2.0, scale * event.delta () / 600.0 )
 		else :
 			delta = event.angleDelta ()

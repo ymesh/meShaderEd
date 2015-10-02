@@ -14,56 +14,43 @@ List = [ 'QtCore',
 				 'QtWidgets', 
 				 'Qt' 
 			 ]
-
 PythonQtType = None
-PySide = True
+usePySide = False
+usePyQt4 = False
+usePyQt5 = False
 
 try:
 	PythonQt = __import__( 'PySide', globals(), locals(), List )
 	PythonQtType = 'PySide'
+	usePySide = True
 except ImportError:
 	try:
 		PythonQt = __import__( 'PyQt5', globals(), locals(), List )
 		PythonQtType = 'PyQt5'
+		usePyQt5 = True
 	except ImportError:
-		PythonQt = __import__( 'PyQt4', globals(), locals(), List )
-		PythonQtType = 'PyQt4'
+		try:
+			PythonQt = __import__( 'PyQt4', globals(), locals(), List )
+			PythonQtType = 'PyQt4'
+			usePyQt4 = True
+		except ImportError:
+			pass
 
 print ( '* ' + PythonQtType + ' module imported' )
-print ( '* ' + 'QT_VERSION = %x' % PythonQt.QtCore.QT_VERSION )
 
-Qt 				= PythonQt.Qt
+if usePySide :
+	print ( '* ' + 'PySide.qVersion = %s' % PythonQt.QtCore.qVersion() )	
+else :
+	print ( '* ' + 'QT_VERSION = %x' % PythonQt.QtCore.QT_VERSION )
+
+#if not PySide :
+#	Qt = PythonQt.Qt
 QtCore 		= PythonQt.QtCore
 QtGui 		= PythonQt.QtGui
 QtXml 		= PythonQt.QtXml
-if QtCore.QT_VERSION >= 0x50000 :
-	QtWidgets = PythonQt.QtWidgets
 #QtNetwork = PythonQt.QtNetwork
+if usePyQt5 :
+	QtWidgets = PythonQt.QtWidgets
 
 
 
-if PythonQtType == 'PyQt4' or PythonQtType == 'PyQt5':
-	#print('You can install PySide if interested in LGPL license.')
-	PySide = False
-#
-# GetOpenFileName
-#
-def GetOpenFileName ( i_qwidget, i_title, i_path = None ) :
-	if i_path is None :
-		i_path = '.'
-	if PySide :
-		afile, filter = \
-			QtGui.QFileDialog.getOpenFileName ( i_qwidget, i_title, i_path )
-		return afile
-	return str ( QtGui.QFileDialog.getOpenFileName ( i_qwidget, i_title, i_path ) )
-#
-# GetSaveFileName
-#
-def GetSaveFileName ( i_qwdget, i_title, i_path = None ) :
-	if i_path is None :
-		i_path = '.'
-	if PySide :
-		afile, filter = \
-			QtGui.QFileDialog.getSaveFileName ( i_qwdget, i_title, i_path )
-		return afile
-	return str ( QtGui.QFileDialog.getSaveFileName ( i_qwdget, i_title, i_path ) )

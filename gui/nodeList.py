@@ -3,19 +3,18 @@
 	nodeList.py
 
 """
-from core.mePyQt import QtCore, QtGui
-
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
+from core.signal import Signal
 #from PyQt4.QtCore import QDir, QString, QModelIndex
 #from PyQt4.QtGui  import QFileSystemModel
 #from PyQt4.QtGui  import QFileIconProvider
 
 from ui_nodeList import Ui_nodeList
-#from MainWindow import MainWindow
 
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -26,18 +25,19 @@ else :
 #
 class NodeList ( QtModule.QWidget ) :
 	#
-	# Define signals for PyQt5
-	#
-	if QtCore.QT_VERSION >= 0x50000 :
-		setActiveNodeList = QtCore.pyqtSignal ( [QtModule.QWidget] )
-		addNode = QtCore.pyqtSignal ( [str] )
-	#
 	# __init__
 	#
 	def __init__ ( self, parent ) :
 		#
 		QtModule.QWidget.__init__ ( self, parent )
-
+		#
+		# Define signals for PyQt5
+		#
+		if usePySide or usePyQt5 :
+			#
+			self.setActiveNodeList = Signal ()
+			self.addNode = Signal ()
+			#
 		self.nodesLib = ''
 		self.nodesDir = ''
 		# This is always the same
@@ -52,7 +52,7 @@ class NodeList ( QtModule.QWidget ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			QtCore.QObject.connect ( self.ui.treeView, QtCore.SIGNAL ( "pressed(QModelIndex)" ), self.clicked )
 			QtCore.QObject.connect ( self.ui.treeView, QtCore.SIGNAL ( "doubleClicked(QModelIndex)" ), self.doubleClicked )
 		else :
@@ -92,13 +92,15 @@ class NodeList ( QtModule.QWidget ) :
 	#
 	def clicked ( self, index ) :
 		#
+		print ">> NodeList::clicked "
 		item = self.nodesLib.model.itemFromIndex ( index ) 
 		self.showDescription ( item )
 		#
 		# send signal to MainWindow to help distinguish which nodeList
 		# is active for addNode getNode events
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		print ">> NodeList::emit setActiveNodeList"
+		if  usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( "setActiveNodeList" ), self )
 		else :
 			self.setActiveNodeList.emit ( self )
@@ -107,26 +109,32 @@ class NodeList ( QtModule.QWidget ) :
 	#
 	def doubleClicked ( self, index ) :
 		#
+		print ">> NodeList::doubleClicked "
 		item = self.nodesLib.model.itemFromIndex ( index )
 		nodeKind = item.whatsThis ()
 		
 		if nodeKind != 'folder' :
-			if QtCore.QT_VERSION < 0x50000 :
+			if  usePyQt4 :
 				nodeFilename = item.data ( QtCore.Qt.UserRole + 4 ).toString ()
-				self.emit ( QtCore.SIGNAL ( 'addNode' ), nodeFilename )
 			else :
 				nodeFilename = item.data ( QtCore.Qt.UserRole + 4 )
+			
+			print ">> NodeList::emit addNode"
+			if  usePyQt4 :
+				self.emit ( QtCore.SIGNAL ( 'addNode' ), nodeFilename )
+			else :
 				self.addNode.emit ( nodeFilename )
 	#    
 	# showDescription
 	#
 	def showDescription ( self, item ) :
 		#
+		print ">> NodeList::showDescription "
 		import os
 		
 		nodeName     = item.text ()
 		nodeKind     = item.whatsThis ()
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			nodeAuthor   = item.data ( QtCore.Qt.UserRole + 1 ).toString ()
 			nodeType     = item.data ( QtCore.Qt.UserRole + 2 ).toString ()
 			nodeHelp     = item.data ( QtCore.Qt.UserRole + 3 ).toString ()

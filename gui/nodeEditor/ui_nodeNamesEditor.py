@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -26,8 +26,8 @@ class Ui_NodeNamesEditor(object):
 				NodeNamesEditor.resize(417, 393)
 				self.verticalLayout = QtModule.QVBoxLayout(NodeNamesEditor)
 				self.verticalLayout.setSpacing(0)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.verticalLayout.setMargin(0)
+				#if  usePyQt4 :
+				self.verticalLayout.setContentsMargins ( 0, 0, 0, 0 )
 				self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
 				self.horizontalLayout = QtModule.QHBoxLayout()
 				self.horizontalLayout.setSpacing(2)
@@ -64,7 +64,7 @@ class Ui_NodeNamesEditor(object):
 				self.verticalLayout.addWidget(self.listWidget)
 
 				self.retranslateUi(NodeNamesEditor)
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					QtCore.QObject.connect(self.addButton, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeNamesEditor.onAddItem)
 					QtCore.QObject.connect(self.removeButton, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeNamesEditor.onRemoveItem)
 					QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL(_fromUtf8("itemSelectionChanged()")), NodeNamesEditor.onSelectionChanged)

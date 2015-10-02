@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -359,7 +359,7 @@ class Ui_meRendererSetup(object):
 				self.retranslateUi(meRendererSetup)
 				self.tabs.setCurrentIndex(0)
 				
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL("clicked()"), meRendererSetup.close)
 					QtCore.QObject.connect(self.okButton, QtCore.SIGNAL("clicked()"), meRendererSetup.onSelect)
 					QtCore.QObject.connect(self.listPreset, QtCore.SIGNAL("currentIndexChanged(QString)"), meRendererSetup.onIndexChanged)

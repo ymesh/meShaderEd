@@ -8,7 +8,7 @@
  Dialog for managing node code
  
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from core.meCommon import *
 from global_vars import app_global_vars
@@ -18,7 +18,7 @@ from codeSyntaxHighlighter import CodeSyntaxHighlighter
 
 from ui_nodeCodeEditor import Ui_NodeCodeEditor
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets

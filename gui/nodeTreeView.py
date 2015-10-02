@@ -3,7 +3,7 @@
 	nodeTreeView.py
 
 """
-from core.mePyQt import QtCore, QtGui, Qt
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 #from PyQt4.QtCore import QDir, QString, QModelIndex
 #from PyQt4.QtGui  import QFileSystemModel
@@ -12,7 +12,9 @@ from core.mePyQt import QtCore, QtGui, Qt
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 
-if QtCore.QT_VERSION < 0x50000 :
+from global_vars import DEBUG_MODE
+
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -26,14 +28,14 @@ class  NodeTreeView ( QtModule.QTreeView ) :
 	# __init__
 	#
 	def __init__( self, parent = None ):
-		#print ">> NodeTreeWidget init"
+		#
 		QtModule.QTreeView.__init__ ( self, parent )
 		self.setMinimumHeight ( 200 )
 	#
 	# startDrag
-	#    
+	# 
 	def startDrag ( self, dropActions ) :
-		#print ">> NodeTreeView startDrag "
+		print ">> NodeTreeView::startDrag "
 		selectedIdx = self.selectedIndexes () 
 		# for idx in selectedIdx :
 		idx = selectedIdx[ 0 ]
@@ -45,12 +47,20 @@ class  NodeTreeView ( QtModule.QTreeView ) :
 		stream = QtCore.QDataStream ( data, QtCore.QIODevice.WriteOnly )
 		
 		itemName = item.text ()
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			itemFilename = item.data( QtCore.Qt.UserRole + 4 ).toString ()
-			stream << itemFilename
 		else :
 			itemFilename = item.data( QtCore.Qt.UserRole + 4 )
-			stream.writeBytes ( itemFilename  )
+			
+		if not usePyQt5 :	
+			if usePySide :
+				stream.writeString ( itemFilename )
+			else :
+				stream << itemFilename
+		else :	
+			stream.writeBytes ( itemFilename ) 
+			
+		if DEBUG_MODE : print '* write itemFilename = %s' % ( itemFilename )
 		
 		mimeData = QtCore.QMimeData()
 		mimeData.setData ( 'application/x-text', data )
@@ -59,7 +69,7 @@ class  NodeTreeView ( QtModule.QTreeView ) :
 		drag = QtGui.QDrag ( self )
 		drag.setMimeData ( mimeData )
 		#drag.setPixmap ( QtGui.QPixmap(':/node.png') )
-		if QtCore.QT_VERSION < 0x50000 :
+		if not usePyQt5 :
 			drag.start ( QtCore.Qt.CopyAction )
 		else :
 			drag.exec_ ( QtCore.Qt.CopyAction )

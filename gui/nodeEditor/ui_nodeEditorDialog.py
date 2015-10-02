@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -55,16 +55,14 @@ class Ui_NodeEditorDialog(object):
 				self.internals.setObjectName(_fromUtf8("internals"))
 				self.verticalLayout_3 = QtModule.QVBoxLayout(self.internals)
 				self.verticalLayout_3.setSpacing(0)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.verticalLayout_3.setMargin(0)
+				self.verticalLayout_3.setContentsMargins ( 0, 0, 0, 0 )
 				self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
 				self.tabs_code_list = QtModule.QTabWidget(self.internals)
 				self.tabs_code_list.setObjectName(_fromUtf8("tabs_code_list"))
 				self.internals_tab = QtModule.QWidget()
 				self.internals_tab.setObjectName(_fromUtf8("internals_tab"))
 				self.gridLayout_4 = QtModule.QGridLayout(self.internals_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_4.setMargin(2)
+				self.gridLayout_4.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_4.setSpacing(0)
 				self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
 				self.internals_list = NodeNamesEditor(self.internals_tab)
@@ -74,8 +72,7 @@ class Ui_NodeEditorDialog(object):
 				self.includes_tab = QtModule.QWidget()
 				self.includes_tab.setObjectName(_fromUtf8("includes_tab"))
 				self.gridLayout_5 = QtModule.QGridLayout(self.includes_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_5.setMargin(2)
+				self.gridLayout_5.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_5.setSpacing(0)
 				self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
 				self.includes_list = NodeNamesEditor(self.includes_tab)
@@ -89,16 +86,16 @@ class Ui_NodeEditorDialog(object):
 				self.parameters.setObjectName(_fromUtf8("parameters"))
 				self.verticalLayout_8 = QtModule.QVBoxLayout(self.parameters)
 				self.verticalLayout_8.setSpacing(0)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.verticalLayout_8.setMargin(0)
+				#if  usePyQt4 :
+				self.verticalLayout_8.setContentsMargins ( 0, 0, 0, 0 )
 				self.verticalLayout_8.setObjectName(_fromUtf8("verticalLayout_8"))
 				self.tabs_param_list = QtModule.QTabWidget(self.parameters)
 				self.tabs_param_list.setObjectName(_fromUtf8("tabs_param_list"))
 				self.inputs_tab = QtModule.QWidget()
 				self.inputs_tab.setObjectName(_fromUtf8("inputs_tab"))
 				self.gridLayout_2 = QtModule.QGridLayout(self.inputs_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_2.setMargin(2)
+				#if  usePyQt4 :
+				self.gridLayout_2.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_2.setSpacing(0)
 				self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
 				self.input_list = NodeNamesEditor(self.inputs_tab)
@@ -108,8 +105,8 @@ class Ui_NodeEditorDialog(object):
 				self.outputs_tab = QtModule.QWidget()
 				self.outputs_tab.setObjectName(_fromUtf8("outputs_tab"))
 				self.gridLayout_3 = QtModule.QGridLayout(self.outputs_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_3.setMargin(2)
+				#if  usePyQt4 :
+				self.gridLayout_3.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_3.setSpacing(0)
 				self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
 				self.output_list = NodeNamesEditor(self.outputs_tab)
@@ -123,8 +120,8 @@ class Ui_NodeEditorDialog(object):
 				self.handlers.setObjectName(_fromUtf8("handlers"))
 				self.verticalLayout_2 = QtModule.QVBoxLayout(self.handlers)
 				self.verticalLayout_2.setSpacing(0)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.verticalLayout_2.setMargin(0)
+				#if  usePyQt4 :
+				self.verticalLayout_2.setContentsMargins ( 0, 0, 0, 0 )
 				self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
 				self.handlers_list = NodeNamesEditor(self.handlers)
 				self.handlers_list.setObjectName(_fromUtf8("handlers_list"))
@@ -135,16 +132,16 @@ class Ui_NodeEditorDialog(object):
 				self.links.setObjectName(_fromUtf8("links"))
 				self.verticalLayout_81 = QtModule.QVBoxLayout(self.links)
 				self.verticalLayout_81.setSpacing(0)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.verticalLayout_81.setMargin(0)
+				#if  usePyQt4 :
+				self.verticalLayout_81.setContentsMargins ( 0, 0, 0, 0 )
 				self.verticalLayout_81.setObjectName(_fromUtf8("verticalLayout_81"))
 				self.tabs_links_list = QtModule.QTabWidget(self.links)
 				self.tabs_links_list.setObjectName(_fromUtf8("tabs_links_list"))
 				self.input_links_tab = QtModule.QWidget()
 				self.input_links_tab.setObjectName(_fromUtf8("input_links_tab"))
 				self.gridLayout_6 = QtModule.QGridLayout(self.input_links_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_6.setMargin(2)
+				#if  usePyQt4 :
+				self.gridLayout_6.setContentsMargins ( 0, 0, 0, 0 )
 				self.gridLayout_6.setSpacing(0)
 				self.gridLayout_6.setObjectName(_fromUtf8("gridLayout_6"))
 				self.input_links_listWidget = QtModule.QListWidget(self.input_links_tab)
@@ -154,8 +151,8 @@ class Ui_NodeEditorDialog(object):
 				self.output_links_tab = QtModule.QWidget()
 				self.output_links_tab.setObjectName(_fromUtf8("output_links_tab"))
 				self.gridLayout_66 = QtModule.QGridLayout(self.output_links_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_66.setMargin(2)
+				#if  usePyQt4 :
+				self.gridLayout_66.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_66.setSpacing(0)
 				self.gridLayout_66.setObjectName(_fromUtf8("gridLayout_66"))
 				self.output_links_listWidget = QtModule.QListWidget(self.output_links_tab)
@@ -177,8 +174,8 @@ class Ui_NodeEditorDialog(object):
 				self.node_code_tab = QtModule.QWidget()
 				self.node_code_tab.setObjectName(_fromUtf8("node_code_tab"))
 				self.gridLayout = QtModule.QGridLayout(self.node_code_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout.setMargin(2)
+				#if  usePyQt4 :
+				self.gridLayout.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout.setSpacing(2)
 				self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
 				self.node_code = NodeCodeEditor(self.node_code_tab)
@@ -188,8 +185,8 @@ class Ui_NodeEditorDialog(object):
 				self.control_code_tab = QtModule.QWidget()
 				self.control_code_tab.setObjectName(_fromUtf8("control_code_tab"))
 				self.gridLayout_7 = QtModule.QGridLayout(self.control_code_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_7.setMargin(2)
+				#if  usePyQt4 :
+				self.gridLayout_7.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_7.setSpacing(2)
 				self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
 				self.control_code = NodeCodeEditor(self.control_code_tab)
@@ -199,8 +196,8 @@ class Ui_NodeEditorDialog(object):
 				self.event_code_tab = QtModule.QWidget()
 				self.event_code_tab.setObjectName(_fromUtf8("event_code_tab"))
 				self.gridLayout_8 = QtModule.QGridLayout(self.event_code_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_8.setMargin(2)
+				#if  usePyQt4 :
+				self.gridLayout_8.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_8.setSpacing(2)
 				self.gridLayout_8.setObjectName(_fromUtf8("gridLayout_8"))
 				self.event_code = NodeCodeEditor(self.event_code_tab)
@@ -210,8 +207,8 @@ class Ui_NodeEditorDialog(object):
 				self.param_code_tab = QtModule.QWidget()
 				self.param_code_tab.setObjectName(_fromUtf8("param_code_tab"))
 				self.gridLayout_9 = QtModule.QGridLayout(self.param_code_tab)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout_9.setMargin(2)
+				#if  usePyQt4 :
+				self.gridLayout_9.setContentsMargins ( 2, 2, 2, 2 )
 				self.gridLayout_9.setSpacing(2)
 				self.gridLayout_9.setObjectName(_fromUtf8("gridLayout_9"))
 				self.param_code = NodeCodeEditor(self.param_code_tab)
@@ -255,7 +252,7 @@ class Ui_NodeEditorDialog(object):
 				self.tabs_param_list.setCurrentIndex(0)
 				self.tabs_links_list.setCurrentIndex(0)
 				self.tabWidget.setCurrentIndex(0)
-				if QtCore.QT_VERSION < 0x50000 :
+				if usePyQt4 :
 					QtCore.QObject.connect(self.toolBox, QtCore.SIGNAL(_fromUtf8("currentChanged(int)")), NodeEditorDialog.onToolBoxIndexChanged)
 					QtCore.QObject.connect(self.btn_save, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeEditorDialog.accept)
 					QtCore.QObject.connect(self.btn_close, QtCore.SIGNAL(_fromUtf8("clicked()")), NodeEditorDialog.reject)

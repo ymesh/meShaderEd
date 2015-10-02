@@ -3,13 +3,13 @@
  paramLabel.py
 
 """
-from core.mePyQt import QtGui, QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui 
 from core.signal import Signal
 
 from global_vars import app_global_vars, DEBUG_MODE
 import gui.ui_settings as UI
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -24,7 +24,8 @@ class ParamLabel ( QtModule.QLabel ) :
 	#
 	def __init__ ( self, parent, param = None ) :
 		#
-		super ( QtModule.QLabel, self ).__init__ ( parent )
+		#super ( QtModule.QLabel, self ).__init__ ( parent )
+		QtModule.QLabel.__init__ ( self, parent )
 		self.widget = parent
 		self.param = param
 		if param is not None :
@@ -72,7 +73,7 @@ class ParamLabel ( QtModule.QLabel ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.connect ( self.editLabel, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditingFinished )
 		else :
 			self.editLabel.editingFinished.connect ( self.onEditingFinished )
@@ -81,7 +82,7 @@ class ParamLabel ( QtModule.QLabel ) :
 	#
 	def disconnectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.disconnect ( self.editLabel, QtCore.SIGNAL ( 'editingFinished()' ), self.onEditingFinished )
 		else :
 			self.editLabel.editingFinished.disconnect ( self.onEditingFinished )

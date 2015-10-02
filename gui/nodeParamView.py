@@ -3,7 +3,7 @@
  nodeParamView.py
 
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 #from PyQt4.QtCore import QDir, QString, QModelIndex
 #from PyQt4.QtGui  import QFileSystemModel
@@ -19,7 +19,7 @@ from gui.nodeParamList import NodeParamListTab, NodeParamList
 import gui.ui_settings as UI
 from global_vars import DEBUG_MODE
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -37,11 +37,11 @@ class NodeParamView ( QtModule.QWidget ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 0x50000 :
+		if usePySide or usePyQt5 :
 			#
 			self.nodeParamChangedSignal = Signal ()
 			self.nodeLabelChangedSignal = Signal ()
-
+			#
 		self.gfxNode = None
 		
 		self.inputParamListTab = None
@@ -69,7 +69,7 @@ class NodeParamView ( QtModule.QWidget ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.connect ( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
 			self.connect ( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
 		else :
@@ -80,7 +80,7 @@ class NodeParamView ( QtModule.QWidget ) :
 	#
 	def disconnectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.disconnect ( self.nameEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.nodeLabelChanged )
 			self.disconnect ( self.showConnectButton, QtCore.SIGNAL ( 'toggled(bool)' ), self.showConnections )
 		else :
@@ -93,12 +93,12 @@ class NodeParamView ( QtModule.QWidget ) :
 		#print ">> NodeParamView.connectParamSignals"
 		if self.gfxNode is not None :
 			for inputParam in self.gfxNode.node.inputParams :
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					self.connect ( inputParam, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamChanged )
 				else :
 					inputParam.paramChangedSignal.connect ( self.onParamChanged )
 			for outputParam in self.gfxNode.node.outputParams :
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					self.connect ( outputParam, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamChanged )
 				else :
 					outputParam.paramChangedSignal.connect ( self.onParamChanged )
@@ -109,12 +109,12 @@ class NodeParamView ( QtModule.QWidget ) :
 		#print ">> NodeParamView.disconnectParamSignals"
 		if self.gfxNode is not None :
 			for inputParam in self.gfxNode.node.inputParams :
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					self.disconnect ( inputParam, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamChanged )
 				else :
 					inputParam.paramChangedSignal.disconnect ( self.onParamChanged )
 			for outputParam in self.gfxNode.node.outputParams :
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					self.disconnect ( outputParam, QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self.onParamChanged )
 				else :
 					outputParam.paramChangedSignal.disconnect ( self.onParamChanged )
@@ -135,7 +135,7 @@ class NodeParamView ( QtModule.QWidget ) :
 	def onParamChanged ( self, param ) :
 		#
 		if DEBUG_MODE : print ">> NodeParamView.onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'nodeParamChangedSignal' ), self.gfxNode, param ) # .node
 		else :
 			self.nodeParamChangedSignal.emit ( self.gfxNode, param ) # .node
@@ -153,7 +153,7 @@ class NodeParamView ( QtModule.QWidget ) :
 				# update label only if realy changed
 				if newLabel != self.gfxNode.node.label :
 					# rename node label if same name exists in NodeNet
-					if QtCore.QT_VERSION < 0x50000 :
+					if  usePyQt4 :
 						self.emit ( QtCore.SIGNAL ( 'nodeLabelChangedSignal' ), self.gfxNode, newLabel )
 					else :
 						self.nodeLabelChangedSignal.emit ( self.gfxNode, newLabel )
@@ -196,8 +196,7 @@ class NodeParamView ( QtModule.QWidget ) :
 
 		headerLayout = QtModule.QHBoxLayout ()
 		headerLayout.setSpacing ( UI.SPACING )
-		if QtCore.QT_VERSION < 0x50000 :
-			headerLayout.setMargin ( UI.SPACING )
+		headerLayout.setContentsMargins ( UI.SPACING, UI.SPACING, UI.SPACING, UI.SPACING )
 		headerLayout.setStretch ( 1, 1 )
 
 		headerLayout.addWidget ( label )

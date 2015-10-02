@@ -19,13 +19,19 @@
 
 """
 import os, sys
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from core.meCommon import *
 from core.nodeLibrary import NodeLibrary
 from core.meRendererPreset import meRendererPreset
 
 from global_vars import app_global_vars, app_colors, DEBUG_MODE
+
+if  not usePyQt5 :
+	QtModule = QtGui
+else :
+	from core.mePyQt import QtWidgets
+	QtModule = QtWidgets
 
 root = normPath ( sys.path [0] )
 branchName = 'QT5'
@@ -42,7 +48,7 @@ def setDefaultValue ( key, def_value ) :
 	if not app_settings.contains ( key ):
 		app_settings.setValue ( key, def_value )
 	value = app_settings.value ( key )
-	if QtCore.QT_VERSION < 0x50000 :
+	if usePyQt4 :
 		if value.toString () == 'true' : value = True
 		elif value.toString () == 'false' : value = False
 		else :
@@ -66,7 +72,7 @@ def getDefaultValue ( settings, group, key, def_value = None ) :
 	if group != '' : settings.beginGroup ( group )
 	value = settings.value ( key )
 	if group != '' : settings.endGroup ( )
-	if QtCore.QT_VERSION < 0x50000 :
+	if usePyQt4 :
 		if value.toString () == 'true' : value = True
 		elif value.toString () == 'false' : value = False
 		else :
@@ -84,11 +90,91 @@ def getDefaultValue ( settings, group, key, def_value = None ) :
 				value = str ( value )
 	return value
 
-if QtCore.QT_VERSION < 0x50000 :
-	QtModule = QtGui
-else :
-	from core.mePyQt import QtWidgets
-	QtModule = QtWidgets
+#
+# getSettingsStrValue 
+#
+#def getSettingsStrValue ( settings, key ) :  
+#	#
+#	if  usePyQt4 :
+#		return str ( settings.value ( key ).toString () )	
+#	else :
+#		return str ( settings.value ( key ) )	 
+#
+# createDefaultProject 
+#  
+def createDefaultProject ( settings, check_if_exist = False ) :
+	#  
+	project_filename = getDefaultValue ( settings, '', 'project_filename' )
+	project = getDefaultValue ( settings, '', 'project' )
+	project_shaders = getDefaultValue ( settings, '', 'project_shaders' )
+	project_textures = getDefaultValue ( settings, '', 'project_textures' )
+	shader_networks = getDefaultValue ( settings, '', 'shader_networks' )
+	shader_sources = getDefaultValue ( settings,  '', 'shader_sources' )
+	
+	filename = normPath ( os.path.join ( project, project_filename ) )
+	if check_if_exist :
+		if os.path.exists ( filename ) : 
+			print '>> DefaultProject %s already exists...' % filename
+			return
+	print '>> createDefaultProject %s' % filename
+	with open ( filename , 'w') as f :
+		f.write ( 'project_shaders=%s\n' % toRelativePath ( project, project_shaders ) )
+		f.write ( 'project_textures=%s\n' % toRelativePath ( project, project_textures ) ) 
+		f.write ( 'shader_networks=%s\n' % toRelativePath ( project, shader_networks ) )
+		f.write ( 'shader_sources=%s\n' % toRelativePath ( project, shader_sources ) )  
+	f.closed
+#
+# openDefaultProject 
+#  
+def openDefaultProject ( settings, global_vars, project, project_filename ) : 
+	#
+	ret = False
+	if os.path.exists ( project ) : 
+		#
+		filename = normPath ( os.path.join ( project, project_filename ) )
+		project_dir = normPath ( project )
+		# setup default setting
+		project_shaders = normPath ( os.path.join ( project_dir,'shaders' ) ) 
+		project_textures = normPath ( os.path.join ( project_dir,'textures' ) ) 
+		shader_networks_dir = normPath ( os.path.join ( project_shaders,'shn' ) )
+		shader_sources_dir = normPath ( os.path.join ( project_shaders,'src' ) ) 
+		if os.path.exists ( filename ) :
+			# read settings from existing project file
+			f = open ( filename, 'r' )
+			for line in f :
+				( key, value ) = line.split ( '=' )
+				name = key.strip()
+				if name in [ 'project_shaders', 'project_textures', 'shader_networks', 'shader_sources' ] :
+					print 'name = %s value = %s' % ( name, fromRelativePath ( project_dir, value.strip() ) )
+					settings.setValue ( name, fromRelativePath ( project_dir, value.strip() ) ) 
+			f.close ()
+		else :
+			# setup default settings and create default file
+			settings.setValue ( 'project', project_dir )
+			settings.setValue ( 'project_shaders', project_shaders )
+			settings.setValue ( 'project_textures', project_textures )
+			settings.setValue ( 'shader_networks', shader_networks_dir )
+			settings.setValue ( 'shader_sources', shader_sources_dir )
+			
+			createDefaultProject ( settings )
+			
+		global_vars [ 'ProjectPath' ] = project_dir
+	
+		global_vars [ 'ProjectShaders' ] = project_shaders
+		global_vars [ 'ProjectTextures' ] = project_textures
+		
+		global_vars [ 'ProjectNetworks' ] = shader_networks_dir
+		global_vars [ 'ProjectSources' ] = shader_sources_dir
+		
+		global_vars [ 'ProjectSearchPath' ] = sanitizeSearchPath ( project_dir )
+		global_vars [ 'ProjectSearchShaders' ] = sanitizeSearchPath ( project_shaders )
+		global_vars [ 'ProjectSearchTextures' ] = sanitizeSearchPath ( project_textures )
+		
+		createMissingDirs ( [ project_shaders, project_textures, shader_networks_dir, shader_sources_dir ] )
+			
+		ret = True
+
+	return ret
 #
 # main routine
 #
@@ -129,7 +215,7 @@ def main () :
 	#
 	# setup globals
 	#
-	app_global_vars [ 'version' ] = getSettingsStrValue ( app_settings, 'version' )
+	app_global_vars [ 'version' ] = getDefaultValue ( app_settings, '', 'version' )
 	app_global_vars [ 'RootPath' ]        = root
 	app_global_vars [ 'TempPath' ]        = temp_dir
 	app_global_vars [ 'ProjectPath' ]     = project_dir
@@ -219,11 +305,14 @@ if __name__ == "__main__":
 	if DEBUG_MODE :
 		#safeEffects = QtCore.QT_VERSION >= 0x40600 and QtCore.PYQT_VERSION > 0x40704
 		print '* Python %s' % sys.version
-		print '* QT_VERSION = %0X' % QtCore.QT_VERSION
-		print '* PYQT_VERSION = %0X' % QtCore.PYQT_VERSION
+		if not usePySide :
+			print '* QT_VERSION = %0X' % QtCore.QT_VERSION
+			print '* PYQT_VERSION = %0X' % QtCore.PYQT_VERSION
+		else :
+			print '* PySide Version = %s' % QtCore.__version__
 
 	if sys.platform.startswith ( 'win') :
-		if QtCore.QT_VERSION < 0x50000 :
+		if not usePyQt5 :
 			pass
 			#QtModule.QApplication.setStyle ( QtModule.QStyleFactory.create ( 'Cleanlooks' ) )
 			#QtModule.QApplication.setPalette ( QtModule.QApplication.style ().standardPalette () )

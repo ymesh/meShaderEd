@@ -3,10 +3,10 @@
 	imageView.py
 
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -25,32 +25,25 @@ class ImageView ( QtModule.QGraphicsView ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 0x50000 :
+		if usePySide or usePyQt5 :
 			#
 			self.mouseDoubleClickSignal = Signal ()
-		
+			#
 		self.state = 'idle' 
 		self.panStartPos = None
-		
 		self.pixmap = None
-	 
 		# set scene
 		scene = QtModule.QGraphicsScene ( self )
-		
 		scene.setSceneRect ( 0, 0, 256, 256 )
 		#scene.setItemIndexMethod ( QtGui.QGraphicsScene.NoIndex )
 		self.setScene ( scene )
-		
 		# qt graphics stuff
 		#self.setCacheMode ( QtGui.QGraphicsView.CacheBackground )
 		self.setRenderHint ( QtGui.QPainter.Antialiasing )
-		
 		self.setTransformationAnchor ( QtModule.QGraphicsView.AnchorUnderMouse )
 		self.setResizeAnchor ( QtModule.QGraphicsView.AnchorViewCenter )
 		self.setDragMode ( QtModule.QGraphicsView.RubberBandDrag )
-		
 		self.setMouseTracking ( False )
-		
 		self.BgBrush = QtGui.QBrush ( QtGui.QColor ( 128, 128, 128 ) )  
 	#
 	# keyPressEvent
@@ -70,7 +63,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 		scale = -1.0
 		if 'linux' in sys.platform: scale = 1.0     
 		import math
-		if QtCore.QT_VERSION < 0x50000 :
+		if  not usePyQt5 :
 			scaleFactor = math.pow( 2.0, scale * event.delta() / 600.0 )
 		else :
 			delta = event.angleDelta ()
@@ -99,7 +92,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 	def mouseDoubleClickEvent ( self, event ) :
 		#
 		#print ">> ImageView.mouseDoubleClickEvent"
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'mouseDoubleClickSignal' ) )
 		else :
 			self.mouseDoubleClickSignal.emit ()

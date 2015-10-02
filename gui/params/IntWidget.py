@@ -3,12 +3,12 @@
  IntWidget.py
 
 """
-from core.mePyQt import QtGui, QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -64,7 +64,7 @@ class Ui_IntWidget_field ( object ) :
 	#
 	def connectSignals ( self, IntWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			IntWidget.connect ( self.intEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
 		else :
 			self.intEdit.editingFinished.connect ( self.onIntEditEditingFinished )
@@ -73,7 +73,7 @@ class Ui_IntWidget_field ( object ) :
 	#
 	def disconnectSignals ( self, IntWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			IntWidget.disconnect ( self.intEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
 		else :
 			self.intEdit.editingFinished.disconnect ( self.onIntEditEditingFinished )
@@ -83,7 +83,7 @@ class Ui_IntWidget_field ( object ) :
 	def onIntEditEditingFinished ( self ) :
 		#
 		intStr = self.intEdit.text ()
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			intValue = intStr.toInt () [ 0 ] 
 		else :
 			intValue = int ( intStr )
@@ -92,7 +92,7 @@ class Ui_IntWidget_field ( object ) :
 	# updateGui
 	def updateGui ( self, value ):
 		#
-		if QtCore.QT_VERSION < 0x50000 : 
+		if usePyQt4 : 
 			self.intEdit.setText ( QtCore.QString.number ( value ) )
 		else :
 			self.intEdit.setText ( str ( value ) )
@@ -125,7 +125,7 @@ class Ui_IntWidget_switch ( object ) :
 	#
 	def connectSignals ( self, IntWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			IntWidget.connect ( self.checkBox, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onStateChanged )
 		else :
 			self.checkBox.stateChanged.connect ( self.onStateChanged )
@@ -134,7 +134,7 @@ class Ui_IntWidget_switch ( object ) :
 	#
 	def disconnectSignals ( self, IntWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			IntWidget.disconnect ( self.checkBox, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onStateChanged )
 		else :
 			self.checkBox.stateChanged.disconnect ( self.onStateChanged )
@@ -185,7 +185,7 @@ class Ui_IntWidget_selector ( object ) :
 	#
 	def connectSignals ( self, IntWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			IntWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
 			self.selector.activated.connect ( self.onCurrentIndexChanged ) 
@@ -194,7 +194,7 @@ class Ui_IntWidget_selector ( object ) :
 	#
 	def disconnectSignals ( self, IntWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			IntWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
 			self.selector.activated.disconnect ( self.onCurrentIndexChanged ) 
@@ -203,7 +203,7 @@ class Ui_IntWidget_selector ( object ) :
 	#
 	def onCurrentIndexChanged ( self, idx ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			( intValue, ok ) = self.selector.itemData ( idx ).toInt ()
 		else :
 			intValue = self.selector.itemData ( idx )
@@ -272,7 +272,7 @@ class Ui_IntWidget_slider ( object ) :
 	#
 	def connectSignals ( self, IntWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			IntWidget.connect ( self.intEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
 			IntWidget.connect ( self.slider, QtCore.SIGNAL ( 'valueChanged(int)' ), self.onSliderValueChanged )
 		else :
@@ -283,7 +283,7 @@ class Ui_IntWidget_slider ( object ) :
 	#
 	def disconnectSignals ( self, IntWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			IntWidget.disconnect ( self.intEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
 			IntWidget.disconnect ( self.slider, QtCore.SIGNAL ( 'valueChanged(int)' ), self.onSliderValueChanged )
 		else :
@@ -295,7 +295,7 @@ class Ui_IntWidget_slider ( object ) :
 	def onIntEditEditingFinished ( self ) :
 		#
 		intStr = self.intEdit.text ()
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			intValue = intStr.toInt () [ 0 ] 
 		else :
 			intValue = int ( intStr )
@@ -314,7 +314,7 @@ class Ui_IntWidget_slider ( object ) :
 	#
 	def updateGui ( self, value ) :
 		# 
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.intEdit.setText ( QtCore.QString.number ( value ) )
 		else :
 			self.intEdit.setText ( str ( value ) ) 

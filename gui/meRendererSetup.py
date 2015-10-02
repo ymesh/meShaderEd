@@ -11,35 +11,36 @@
  Presets are stored in xml file 
 
 """
-from core.mePyQt import QtCore, QtGui, QtXml
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui, QtXml
+from  core.signal import Signal
 
 from global_vars import app_global_vars, DEBUG_MODE
 
 from ui_meRendererSetup import Ui_meRendererSetup
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
 	QtModule = QtWidgets
-	
 #
 # meRendererSetup
 #
 class meRendererSetup ( QtModule.QDialog ) :
-	#
-	# Define signals for PyQt5
-	#
-	if QtCore.QT_VERSION >= 0x50000 :
-		presetChanged = QtCore.pyqtSignal ()
-		savePreset = QtCore.pyqtSignal ()
 	#
 	# __init__
 	#
 	def __init__ ( self, rendererPreset ) :
 		#
 		QtModule.QDialog.__init__ ( self )
-
+		#
+		# Define signals for PyQt5
+		#
+		if usePySide or usePyQt5 :
+			#
+			self.presetChanged = Signal ()
+			self.savePreset = Signal ()
+			#
 		self.rendererPreset = rendererPreset
 		self.labelsReady = False
 		self.buildGui ()
@@ -217,7 +218,7 @@ class meRendererSetup ( QtModule.QDialog ) :
 	def onSave ( self ) :
 		# get data from Gui for current renderer before saving
 		self.getDataFromGui ()
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'presetChanged' ) )
 			self.emit ( QtCore.SIGNAL ( 'savePreset' ) )
 		else :
@@ -230,7 +231,7 @@ class meRendererSetup ( QtModule.QDialog ) :
 	def onSelect ( self ) :
 		# get data from Gui for current renderer before saving
 		self.getDataFromGui ()
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.emit( QtCore.SIGNAL ( 'presetChanged' ) )
 		else :
 			self.presetChanged.emit ()

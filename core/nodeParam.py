@@ -6,7 +6,7 @@
 import os, sys
 import re
 import copy
-from core.mePyQt import QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore
 from core.signal import Signal
 
 from core.node import Node
@@ -29,7 +29,7 @@ class NodeParam ( QtCore.QObject ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 0x50000 :
+		if usePySide or usePyQt5 :
 			#
 			self.paramChangedSignal = Signal ()
 			
@@ -170,7 +170,7 @@ class NodeParam ( QtCore.QObject ) :
 	def paramChanged ( self ) :
 		#
 		if DEBUG_MODE : print '>> NodeParam.paramChanged (name = %s)' % self.name
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self )
 		else :
 			self.paramChangedSignal.emit ( self )

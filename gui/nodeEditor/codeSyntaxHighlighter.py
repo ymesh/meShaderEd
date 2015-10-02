@@ -9,14 +9,14 @@
 """
 
 import os, sys
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from core.meCommon import *
 from global_vars import app_global_vars
 
 import gui.ui_settings as UI
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -116,7 +116,7 @@ class CodeSyntaxHighlighter ( QtGui.QSyntaxHighlighter ):
 			commentLength = 0
 			if endIndex == -1:
 				self.setCurrentBlockState ( 1 )
-				if QtCore.QT_VERSION < 0x50000 :
+				if  not usePyQt5 :
 					commentLength = text.length () - startIndex
 				else :
 					commentLength = len ( text ) - startIndex

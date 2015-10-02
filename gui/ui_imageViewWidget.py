@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -34,7 +34,7 @@ class Ui_imageViewWidget(object):
 				imageViewWidget.setObjectName(_fromUtf8("imageViewWidget"))
 				imageViewWidget.resize(479, 334)
 				self.gridLayout = QtModule.QGridLayout(imageViewWidget)
-				#self.gridLayout.setMargin(4)
+				self.gridLayout.setContentsMargins ( 4, 4, 4, 4 )
 				self.gridLayout.setHorizontalSpacing(4)
 				self.gridLayout.setVerticalSpacing(2)
 				self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -71,7 +71,7 @@ class Ui_imageViewWidget(object):
 				self.gridLayout.setRowStretch(1, 1)
 
 				self.retranslateUi(imageViewWidget)
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					QtCore.QObject.connect(self.btn_render, QtCore.SIGNAL(_fromUtf8("clicked()")), imageViewWidget.updateViewer)
 					QtCore.QObject.connect(self.btn_reset, QtCore.SIGNAL(_fromUtf8("clicked()")), self.imageArea.resetZoom)
 				else :

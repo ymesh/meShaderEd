@@ -8,14 +8,14 @@
 # 
 #===============================================================================
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from core.meCommon import *
 from global_vars import app_global_vars
 
 from ui_settingsSetup import Ui_SettingsSetup
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -49,7 +49,7 @@ class SettingsSetup ( QtModule.QDialog ):
 		##else :
 		##  font.setPointSize(10)
 		
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.ui.lineEdit_temp.setText( self.app_settings.value('temp').toString() )
 			self.ui.lineEdit_inc.setText( self.app_settings.value('include').toString() )
 			self.ui.lineEdit_lib.setText( self.app_settings.value('lib').toString() )

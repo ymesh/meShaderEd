@@ -3,7 +3,7 @@
  gfxNode.py
 
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
 from gfx.gfxNodeLabel import GfxNodeLabel
@@ -14,7 +14,7 @@ from global_vars import app_colors, DEBUG_MODE, GFX_NODE_TYPE, VALID_RSL_PARAM_T
 from meShaderEd import app_settings
 import gui.ui_settings as UI
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -25,22 +25,12 @@ else :
 class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGraphicsItem
 	#
 	Type = GFX_NODE_TYPE
-	
 	#
 	# __init__
 	#
 	def __init__ ( self, node ) :
 		#
 		QtModule.QGraphicsItem.__init__ ( self )
-		#
-		# Define signals for PyQt5
-		#
-		if QtCore.QT_VERSION >= 0x50000 :
-			#
-			pass
-			#self.nodeUpdated = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem )
-			#self.gfxNodeParamChanged = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem, QtCore.QObject )
-			#self.onGfxNodeRemoved = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem )
 
 		self.node = node
 		self.header = {}
@@ -111,7 +101,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			QtCore.QObject.connect ( self.node, QtCore.SIGNAL ( 'nodeUpdated' ), self.onUpdateNode )
 			QtCore.QObject.connect ( self.node, QtCore.SIGNAL ( 'nodeParamsUpdated' ), self.onUpdateNodeParams )
 		else :
@@ -122,7 +112,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 	#
 	def disconnectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			QtCore.QObject.disconnect ( self.node, QtCore.SIGNAL ( 'nodeUpdated' ), self.onUpdateNode )
 			QtCore.QObject.disconnect ( self.node, QtCore.SIGNAL ( 'nodeParamsUpdated' ), self.onUpdateNodeParams )
 		else :
@@ -149,11 +139,11 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 	#
 	# onUpdateNode
 	#
-	def onUpdateNode ( self ) :
+	def onUpdateNode ( self, foo_param = None ) :
 		#
-		if DEBUG_MODE : print '>> GfxNode( %s ).updateNode' % ( self.node.label )
+		if DEBUG_MODE : print '>> GfxNode( %s ).onUpdateNode' % ( self.node.label )
 		self.updateGfxNodeParams ( True )
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.scene().emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
 		else :
 			self.scene().nodeUpdated.emit ( self )
@@ -164,7 +154,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		#
 		if DEBUG_MODE : print '>> GfxNode( %s ).onUpdateNodeParams' % ( self.node.label )
 		self.updateGfxNodeParams ( forceUpdate )
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.scene().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self )
 		else :
 			self.scene().gfxNodeParamChanged.emit ( self )
@@ -235,7 +225,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		self.disconnectSignals ()
 		for connect in self.inputConnectors : connect.removeAllLinks ()
 		for connect in self.outputConnectors : connect.removeAllLinks ()
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
 		else :
 			self.scene().onGfxNodeRemoved.emit ( self )
@@ -454,7 +444,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 			label.setProcessEvents ( True ) 
 			if forceUpdate :
 				self.update () 
-				if QtCore.QT_VERSION < 0x50000 :
+				if usePyQt4 :
 					self.scene().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self, param ) 
 				else :
 					self.gfxNodeParamChanged.emit ( self, param )
@@ -550,13 +540,12 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 	#
 	# itemChange
 	#
-	
 	def itemChange ( self, change, value ) :
 		#
 		if change == QtModule.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange: QGraphicsItem
 			if self.node.type != 'variable' :
 				# variable node has not header
-				#if QtCore.QT_VERSION < 0x50000 :
+				#if  not usePyQt5 :
 				#	self.header [ 'label' ].setSelected ( value.toBool () )
 				#else :
 				self.header [ 'label' ].setSelected ( value )

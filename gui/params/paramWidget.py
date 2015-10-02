@@ -3,7 +3,7 @@
  paramWidget.py
 
 """
-from core.mePyQt import QtGui, QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_PARAM_TYPES, VALID_RSL_NODE_TYPES, VALID_RSL_PARAM_TYPES
@@ -11,7 +11,7 @@ import gui.ui_settings as UI
 
 from paramLabel import ParamLabel
 
-if QtCore.QT_VERSION < 0x50000 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -25,11 +25,12 @@ class ParamWidget ( QtModule.QWidget ) :
 	#
 	def __init__ ( self, param, gfxNode, ignoreSubtype = False ) :
 		#
-		super ( QtModule.QWidget, self ).__init__ ( None )
+		#super ( QtModule.QWidget, self ).__init__ ( None )
+		QtModule.QWidget.__init__ ( self )
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 0x50000 :
+		if usePySide or usePyQt5 :
 			#
 			self.nodeParamRemoved = Signal ()
 			#
@@ -83,23 +84,23 @@ class ParamWidget ( QtModule.QWidget ) :
 		
 		self.label_vl = QtModule.QVBoxLayout ()
 		self.label_vl.setSpacing ( UI.SPACING )
-		if QtCore.QT_VERSION < 0x50000 :
-			self.label_vl.setMargin ( 0 )
+		#if usePyQt4 :
+		self.label_vl.setContentsMargins ( 0, 0, 0, 0 )
 		self.label_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 
 		#self.gui = QtGui.QWidget ( self )
 
 		self.hl = QtModule.QHBoxLayout ()
 		self.hl.setSpacing ( UI.SPACING )
-		if QtCore.QT_VERSION < 0x50000 :
-			self.hl.setMargin ( 0 )
+		#if usePyQt4 :
+		self.hl.setContentsMargins ( 0, 0, 0, 0 )
 		self.hl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		
 		# vertical layout for parametrs values (e.g. output links or matrix rows)
 		self.param_vl = QtModule.QVBoxLayout ()
 		self.param_vl.setSpacing ( UI.SPACING )
-		if QtCore.QT_VERSION < 0x50000 :
-			self.param_vl.setMargin ( 0 )
+		#if usePyQt4 :
+		self.param_vl.setContentsMargins ( 0, 0, 0, 0 )
 		self.param_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		#
 		# add 'isShaderParam' check box only for RSL nodes
@@ -114,7 +115,7 @@ class ParamWidget ( QtModule.QWidget ) :
 				self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
 				self.check.setToolTip ( 'Use as Shader parameter' )
 				self.check.setChecked ( self.param.shaderParam )
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					self.connect ( self.check, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onShaderParamChanged )
 				else :
 					self.check.stateChanged.connect ( self.onShaderParamChanged )
@@ -127,13 +128,13 @@ class ParamWidget ( QtModule.QWidget ) :
 			#
 			if self.param.removable :
 				self.removeButton = QtModule.QToolButton ( self )
-				sizePolicy = QtModule.QSizePolicy ( QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed )
+				sizePolicy = QtModule.QSizePolicy ( QtModule.QSizePolicy.Fixed, QtModule.QSizePolicy.Fixed )
 				sizePolicy.setHorizontalStretch ( 20 )
 				sizePolicy.setVerticalStretch ( 20 )
 				sizePolicy.setHeightForWidth ( self.removeButton.sizePolicy().hasHeightForWidth() )
 				self.removeButton.setSizePolicy ( sizePolicy )
 				self.removeButton.setMaximumSize ( QtCore.QSize ( 20, 20 ) )
-				icon = QtModule.QIcon ()
+				icon = QtGui.QIcon ()
 				icon.addPixmap ( QtGui.QPixmap ( ':/edit_icons/resources/del_list.png' ), QtGui.QIcon.Normal, QtGui.QIcon.On )
 				self.removeButton.setIcon ( icon )
 				self.removeButton.setAutoRaise ( True )
@@ -141,7 +142,7 @@ class ParamWidget ( QtModule.QWidget ) :
 				self.removeButton.setIconSize ( QtCore.QSize ( 16, 16 ) )
 				self.removeButton.setObjectName ( 'removeButton' )
 				self.hl.addWidget ( self.removeButton )
-				if QtCore.QT_VERSION < 0x50000 :
+				if usePyQt4 :
 					QtCore.QObject.connect ( self.removeButton, QtCore.SIGNAL ( 'clicked()' ), self.onRemoveItem )
 				else :
 					self.removeButton.clicked.connect ( self.onRemoveItem )
@@ -211,7 +212,7 @@ class ParamWidget ( QtModule.QWidget ) :
 	def onRemoveItem ( self ) : 
 		#
 		if DEBUG_MODE : print '>> ParamWidget( %s ).onRemoveItem ' % self.param.name
-		if QtCore.QT_VERSION >= 0x50000 :   
+		if usePyQt4 :   
 			self.emit ( QtCore.SIGNAL ( 'nodeParamRemoved' ), self.param ) 
 		else :
 			self.nodeParamRemoved.emit ( self.param ) 

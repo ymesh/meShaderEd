@@ -3,7 +3,7 @@
 	nodeLibrary.py
 
 """
-from core.mePyQt import QtCore, QtGui, QtXml
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui, QtXml
 #from QtCore import QDir, QFile, QVariant
 #from QtGui  import QStandardItemModel, QStandardItem
 
@@ -96,11 +96,18 @@ class NodeLibrary ( QtCore.QObject ) : # QtCore.QObject
 					item = QtGui.QStandardItem ( nodeName )
 					item.setEditable ( False )
 					
-					item.setData ( QtCore.QVariant ( nodeAuthor ),   QtCore.Qt.UserRole + 1 )
-					item.setData ( QtCore.QVariant ( nodeType ),     QtCore.Qt.UserRole + 2 )
-					item.setData ( QtCore.QVariant ( nodeHelp ),     QtCore.Qt.UserRole + 3 )
-					item.setData ( QtCore.QVariant ( nodeFilename ), QtCore.Qt.UserRole + 4 )
-					item.setData ( QtCore.QVariant ( nodeIcon ),     QtCore.Qt.UserRole + 5 )
+					if not usePySide :
+						item.setData ( QtCore.QVariant ( nodeAuthor ),   QtCore.Qt.UserRole + 1 )
+						item.setData ( QtCore.QVariant ( nodeType ),     QtCore.Qt.UserRole + 2 )
+						item.setData ( QtCore.QVariant ( nodeHelp ),     QtCore.Qt.UserRole + 3 )
+						item.setData ( QtCore.QVariant ( nodeFilename ), QtCore.Qt.UserRole + 4 )
+						item.setData ( QtCore.QVariant ( nodeIcon ),     QtCore.Qt.UserRole + 5 )
+					else :
+						item.setData ( nodeAuthor,   QtCore.Qt.UserRole + 1 )
+						item.setData ( nodeType,     QtCore.Qt.UserRole + 2 )
+						item.setData ( nodeHelp,     QtCore.Qt.UserRole + 3 )
+						item.setData ( nodeFilename, QtCore.Qt.UserRole + 4 )
+						item.setData ( nodeIcon,     QtCore.Qt.UserRole + 5 )
 					
 					if node.nodeName () == 'nodenet' :
 						# set Blue color for nodenet items

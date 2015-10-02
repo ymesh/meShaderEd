@@ -3,7 +3,7 @@
 	MainWindow.py
 
 """
-from core.mePyQt import QtCore, QtGui, QtXml 
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui, QtXml 
 from core.signal import Signal
 #from PyQt4.QtGui import QWhatsThis 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES, VALID_RSL_NODE_TYPES, VALID_RSL_SHADER_TYPES
@@ -27,11 +27,11 @@ from gfx.WorkArea import WorkArea
 
 from meShaderEd import app_settings
 #from meShaderEd import app_renderer
-from meShaderEd import getDefaultValue
+from meShaderEd import getDefaultValue, setDefaultValue, createDefaultProject, openDefaultProject
 
 from ui_MainWindow import Ui_MainWindow
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -60,13 +60,35 @@ class MainWindow ( QtModule.QMainWindow ) :
 		
 		self.clipboard = QtModule.QApplication.clipboard ()
 
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
 			self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
-			self.addRecentProject ( app_global_vars [ 'ProjectPath' ] )
 		else :
-			# should be fixed !!!
-			pass
+			self.recentProjects = []
+			self.recentNetworks = []
+			
+			recentProjects = app_settings.value ( 'RecentProjects' )
+			if recentProjects is not None :
+				if isinstance ( recentProjects, list ) :
+					for proj in recentProjects :
+						self.recentProjects.append ( proj )	
+				else :
+					self.recentProjects.append ( recentProjects )
+			
+			recentNetworks = app_settings.value ( 'RecentNetworks' )
+			if recentNetworks is not None :
+				if isinstance ( recentNetworks, list ) :
+					for network in recentNetworks :
+						self.recentNetworks.append ( network )	
+				else :
+					self.recentNetworks.append ( recentNetworks )
+			
+		print '* recentProjects =', self.recentProjects
+		print '* recentNetworks =', self.recentNetworks
+		
+		print '* ProjectPath =', app_global_vars [ 'ProjectPath' ]
+			
+		self.addRecentProject ( app_global_vars [ 'ProjectPath' ] )
 
 		self.setupMenuBar ()
 		self.setupPanels ()
@@ -107,7 +129,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			QtCore.QObject.connect ( self.ui.actionHelpMode, QtCore.SIGNAL ( 'toggled(bool)' ), self.onHelpMode )
 			QtCore.QObject.connect ( self.ui.nodeList_ctl.ui.nodeList, QtCore.SIGNAL ( 'setActiveNodeList' ), self.setActiveNodeList )
 			QtCore.QObject.connect ( self.ui.project_ctl.ui.nodeList, QtCore.SIGNAL ( 'setActiveNodeList' ), self.setActiveNodeList )
@@ -134,7 +156,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def connectWorkAreaSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			if self.workArea != None :
 				if self.activeNodeList != None :
 					QtCore.QObject.connect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet )
@@ -161,7 +183,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def disconnectWorkAreaSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			if self.workArea != None :
 				if self.activeNodeList != None :
 					QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
@@ -220,10 +242,10 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def buildRecentProjectsMenu ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
-			self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
-			print '>> self.recentProjects:'
-			print self.recentProjects
+		print '>> buildRecentProjectsMenu ...'
+		if usePyQt4 :
+			#self.recentProjects = app_settings.value ( 'RecentProjects' ).toStringList ()
+			print '>> self.recentProjects:', self.recentProjects
 			self.ui.menuRecent_Projects.clear ()
 			if len ( self.recentProjects ) :
 				icon =  QtGui.QIcon.fromTheme ( 'folder', QtGui.QIcon ( ':/file_icons/resources/open.png' ) )
@@ -235,15 +257,25 @@ class MainWindow ( QtModule.QMainWindow ) :
 					self.connect ( action, QtCore.SIGNAL ( 'triggered()' ), self.onOpenRecentProject )
 					self.ui.menuRecent_Projects.addAction ( action )
 		else :
-			# should be fixed !!!
-			pass
+			#self.recentProjects = app_settings.value ( 'RecentProjects' )
+			print '>> self.recentProjects:', self.recentProjects
+			self.ui.menuRecent_Projects.clear ()
+			if len ( self.recentProjects ) :
+				icon =  QtGui.QIcon.fromTheme ( 'folder', QtGui.QIcon ( ':/file_icons/resources/open.png' ) )
+				# QtGui.QIcon ( ':/file_icons/resources/recentFile.png' ) 'folder'
+				for i, fname in enumerate ( self.recentProjects ) :
+					# QtCore.QFileInfo ( fname ).fileName ()
+					action = QtModule.QAction ( icon, '&%d %s' % ( i + 1, fname ), self )
+					action.setData ( fname )
+					action.triggered.connect ( self.onOpenRecentProject )
+					self.ui.menuRecent_Projects.addAction ( action )
 	#
 	# buildRecentNetworksMenu
 	#
 	def buildRecentNetworksMenu ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
-			self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
+		if usePyQt4 :
+			#self.recentNetworks = app_settings.value ( 'RecentNetworks' ).toStringList ()
 			self.ui.menuRecent_Networks.clear ()
 			if len ( self.recentNetworks ) :
 				for i, fname in enumerate ( self.recentNetworks ) :
@@ -254,8 +286,16 @@ class MainWindow ( QtModule.QMainWindow ) :
 					self.connect ( action, QtCore.SIGNAL ( 'triggered()' ), self.onOpenRecentNetwork )
 					self.ui.menuRecent_Networks.addAction ( action )
 		else :
-			# should be fixed !!!
-			pass
+			#self.recentNetworks = app_settings.value ( 'RecentNetworks' )
+			self.ui.menuRecent_Networks.clear ()
+			if len ( self.recentNetworks ) :
+				for i, fname in enumerate ( self.recentNetworks ) :
+					icon =  QtGui.QIcon.fromTheme ( 'document-new', QtGui.QIcon ( ':/file_icons/resources/new.png' ) )
+					# QtCore.QFileInfo ( fname ).fileName ()
+					action = QtModule.QAction ( icon, '&%d %s' % ( i + 1, fname ), self )
+					action.setData ( fname )
+					action.triggered.connect ( self.onOpenRecentNetwork )
+					self.ui.menuRecent_Networks.addAction ( action )
 	#
 	# setupPanels
 	#
@@ -283,41 +323,46 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def addRecentProject ( self, project ) :
 		#
+		print '>> addRecentProject ', project
 		if project is not None :
-			if QtCore.QT_VERSION < 0x50000 :
+			if usePyQt4 :
 				recent_projects_max = getDefaultValue ( app_settings, '', 'recent_projects_max' )
-	
 				if project not in self.recentProjects :
 					self.recentProjects.prepend ( QtCore.QString ( project ) )
-	
 				while self.recentProjects.count () > recent_projects_max :
 					self.recentProjects.takeLast ()
-	
 				recentProjects = QtCore.QVariant ( self.recentProjects ) if self.recentProjects else QtCore.QVariant ()
 				app_settings.setValue ( 'RecentProjects', recentProjects )
 			else :
-				# should be fixed !!!
-				pass
+				recent_projects_max = getDefaultValue ( app_settings, '', 'recent_projects_max' )
+				if project not in self.recentProjects :
+					self.recentProjects.insert ( 0, project )
+					while len ( self.recentProjects ) > recent_projects_max :
+						self.recentProjects.pop ()
+					app_settings.setValue ( 'RecentProjects', self.recentProjects )
+					print '* project added recentProjects =', self.recentProjects
+			print '* recentProjects =', self.recentProjects
 	#
 	# addRecentNetwork
 	#
 	def addRecentNetwork ( self, network ) :
 		#
 		if network is not None :
-			if QtCore.QT_VERSION < 0x50000 :
+			if usePyQt4 :
 				recent_networks_max = getDefaultValue ( app_settings, '', 'recent_networks_max' )
-	
 				if network not in self.recentNetworks :
 					self.recentNetworks.prepend ( QtCore.QString ( network ) )
-	
 				while self.recentNetworks.count () > recent_networks_max :
 					self.recentNetworks.takeLast ()
-	
 				recentNetworks = QtCore.QVariant ( self.recentNetworks ) if self.recentNetworks else QtCore.QVariant ()
 				app_settings.setValue ( 'RecentNetworks', recentNetworks )
 			else :
-				# should be fixed !!!
-				pass
+				recent_networks_max = getDefaultValue ( app_settings, '', 'recent_networks_max' )
+				if network not in self.recentNetworks :
+					self.recentNetworks.insert ( 0, network )
+				while len ( self.recentNetworks ) > recent_networks_max :
+					self.recentNetworks.pop ()
+				app_settings.setValue ( 'RecentNetworks', self.recentNetworks )
 	#
 	# setupActions
 	#
@@ -390,7 +435,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		self.RendererPreset = copy.deepcopy ( app_global_vars [ 'RendererPreset' ] )
 		if DEBUG_MODE : print ( ':: self.RendererPreset.getCurrentPresetName = %s' % self.RendererPreset.getCurrentPresetName () )
 		renderSettingsDlg = meRendererSetup ( self.RendererPreset )
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'presetChanged' ), self.onRenderPresetChanged )
 			QtCore.QObject.connect ( renderSettingsDlg, QtCore.SIGNAL ( 'savePreset' ), self.onRenderPresetSave )
 		else :
@@ -472,7 +517,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	def setActiveNodeList ( self, nodeList ) :
 		#
 		if DEBUG_MODE : print '>> MainWindow.setActiveNodeList'
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			if self.activeNodeList != None :
 				QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
 			self.activeNodeList = nodeList
@@ -676,8 +721,8 @@ class MainWindow ( QtModule.QMainWindow ) :
 		#
 		self.setupActions ()
 		self.workArea.inspectedNode = None
-		if len ( gfxNodes ) == 1 : self.workArea.inspectedNode = gfxNodes[ 0 ]
-
+		if len ( gfxNodes ) == 1 : 
+			self.workArea.inspectedNode = gfxNodes[ 0 ]
 		self.ui.nodeParam_ctl.setNode ( self.workArea.inspectedNode )
 	#
 	# onNodeLabelChanged
@@ -699,7 +744,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		# from WorkArea we have GfxNode in signal nodeConnectionChanged
 		# hence need to update nodeParam_ctl
 		if isinstance ( gfxNode, GfxNote ) :
-			#if DEBUG_MODE : print "* update GfxNote"
+			if DEBUG_MODE : print "* update GfxNote"
 			gfxNode.updateGfxNode ()
 			#node.update ()
 			self.workArea.scene ().update ()
@@ -713,7 +758,6 @@ class MainWindow ( QtModule.QMainWindow ) :
 			if DEBUG_MODE : print "* update GfxNode"
 			gfxNode.updateGfxNode ( removeLinks = False )
 			self.updateNodeParamView ()
-
 		if self.ui.imageView_ctl.autoUpdate () : self.ui.imageView_ctl.updateViewer()
 	#
 	# onGxNodeParamChanged
@@ -791,8 +835,8 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	# onNew
 	# 
-	@QtCore.pyqtSlot ()
-	def onNew ( self, tabName = 'untitled' ) :
+	# @QtCore.pyqtSlot ()
+	def onNew ( self, foo_param=None, tabName = 'untitled' ) :
 		#
 		def tabNameExists ( self, name ) :
 			ret = False
@@ -842,7 +886,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		#
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			filename = str ( QtGui.QFileDialog.getOpenFileName ( self, "Open file", curDir, typeFilter ) )
 		else :
 			(filename, filter) = QtModule.QFileDialog.getOpenFileName ( self, "Open file", curDir, typeFilter )	
@@ -879,24 +923,33 @@ class MainWindow ( QtModule.QMainWindow ) :
 	def onOpenRecentNetwork ( self ) :
 		#
 		action = self.sender ()
-		if isinstance ( action, QtGui.QAction ):
-			network = unicode ( action.data ().toString () )
+		if isinstance ( action, QtModule.QAction ):
+			if usePyQt4 :
+				network = unicode ( action.data ().toString () )
+			else :
+				network = action.data ()
 			if network is not None :
 				if DEBUG_MODE : print '>> onOpenRecentNetwork : %s' % network
 				if not self.openNetwork ( network ) :
-					# TODO!!! remove network from rescentNetworks
-					pass
+					if usePyQt4 : 
+						self.recentNetworks.removeAll ( network )
+					else :
+						self.recentNetworks.remove ( network )
 	#
 	# onOpenRecentProject
 	#
 	def onOpenRecentProject ( self ) :
 		#
 		action = self.sender ()
-		if isinstance ( action, QtGui.QAction ):
-			project = unicode ( action.data ().toString () )
+		if isinstance ( action, QtModule.QAction ):
+			if usePyQt4 :
+				project = unicode ( action.data ().toString () )
+			else :
+				project = action.data () 
 			if project is not None :
 				print '>> onOpenRecentProject : %s' % project
-				if openDefaultProject ( app_settings, app_global_vars, project ) :
+				project_filename = getDefaultValue ( app_settings, '', 'project_filename' )
+				if openDefaultProject ( app_settings, app_global_vars, project, project_filename ) :
 					# very strange... app_settings doesn't update inside meCommon.openDefaultProject...
 					# though app_global_vars does
 					# have to duplicate this action here...
@@ -910,7 +963,10 @@ class MainWindow ( QtModule.QMainWindow ) :
 					self.setupWindowTitle ()
 				else :
 					print "ERROR! project %s doesn't exist" %  project
-					# TODO!!! remove project from rescentProjects
+					if usePyQt4 : 
+						self.recentProjects.removeAll ( network )
+					else :
+						self.recentProjects.remove ( network )
 	#
 	# onImport
 	#
@@ -921,7 +977,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			filename = str ( QtModule.QFileDialog.getOpenFileName ( self, "Import file", curDir, typeFilter ) )
 		else :
 			(filename, filter) = QtModule.QFileDialog.getOpenFileName ( self, "Import file", curDir, typeFilter )
@@ -940,7 +996,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
 
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
 		else :
 			(filename, filter) = QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter )
@@ -986,7 +1042,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 		curDir = app_global_vars [ 'ProjectNetworks' ]
 		saveName = os.path.join ( curDir, self.workArea.nodeNet.name + '.xml' )
 		typeFilter = 'Shader networks *.xml;;All files *.*;;'
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			filename = str( QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter ) )
 		else :
 			(filename, filter) = QtModule.QFileDialog.getSaveFileName ( self, "Save file as", saveName, typeFilter )

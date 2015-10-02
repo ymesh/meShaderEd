@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -26,7 +26,7 @@ class Ui_nodeList(object):
 				nodeList.resize(374, 699)
 				self.verticalLayout_2 = QtModule.QVBoxLayout(nodeList)
 				self.verticalLayout_2.setSpacing(2)
-				#self.verticalLayout_2.setMargin(2)
+				self.verticalLayout_2.setContentsMargins ( 2, 2, 2, 2 )
 				self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
 				self.splitter = QtModule.QSplitter(nodeList)
 				self.splitter.setOrientation(QtCore.Qt.Vertical)
@@ -49,7 +49,7 @@ class Ui_nodeList(object):
 				self.groupBox.setObjectName(_fromUtf8("groupBox"))
 				self.verticalLayout = QtModule.QVBoxLayout(self.groupBox)
 				self.verticalLayout.setSpacing(0)
-				#self.verticalLayout.setMargin(2)
+				self.verticalLayout.setContentsMargins ( 2, 2, 2, 2 )
 				self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
 				self.infoText = QtModule.QTextEdit(self.groupBox)
 				sizePolicy = QtModule.QSizePolicy(QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Expanding)

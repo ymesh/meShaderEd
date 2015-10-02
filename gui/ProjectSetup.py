@@ -8,14 +8,14 @@
 	Dialog for managing project directories
  
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from core.meCommon import *
 from global_vars import app_global_vars
 
 from ui_projectSetup import Ui_ProjectSetup
 
-if QtCore.QT_VERSION < 0x50000 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -32,7 +32,10 @@ class ProjectSetup( QtModule.QDialog ):
 		QtModule.QDialog.__init__ ( self )
 
 		self.app_settings = app_settings
-		self.rootDir = str ( self.app_settings.value ( 'project' ).toString () )      
+		if usePyQt4 :
+			self.rootDir = str ( self.app_settings.value ( 'project' ).toString () )
+		else :
+			self.rootDir = self.app_settings.value ( 'project' )
 		self.buildGui ()
 	#
 	# buildGui
@@ -51,7 +54,7 @@ class ProjectSetup( QtModule.QDialog ):
 		
 		self.ui.lineEdit_project.setText ( self.rootDir )
 
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.ui.lineEdit_network.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_networks' ).toString () ) ) )
 			self.ui.lineEdit_sources.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'shader_sources' ).toString () ) ) )
 			self.ui.lineEdit_shaders.setText ( toRelativePath ( self.rootDir, str ( self.app_settings.value ( 'project_shaders' ).toString () ) ) )

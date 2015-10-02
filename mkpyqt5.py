@@ -22,9 +22,9 @@ import os
 import platform
 import stat
 import sys
-from core.mePyQt import QtCore, PythonQtType
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, PythonQtType
 
-if QtCore.QT_VERSION < 0x50000 : pass
+if  not usePyQt5 : pass
 
 __version__ = "1.0.4"
 

@@ -4,7 +4,7 @@
 
 """
 import os, sys, copy
-from core.mePyQt import QtCore, QtXml
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtXml
 from core.signal import Signal
 #from PyQt4.QtCore import QDir, QFile, QVariant
 
@@ -26,7 +26,7 @@ class Node ( QtCore.QObject ) :
 		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 0x50000 :
+		if usePySide or usePyQt5 :
 			#
 			self.nodeUpdated = Signal () # QtCore.pyqtSignal ( [QtCore.QObject] )
 			self.nodeParamsUpdated = Signal () #QtCore.pyqtSignal ( [QtCore.QObject] )
@@ -105,7 +105,7 @@ class Node ( QtCore.QObject ) :
 	def updateNode ( self ) : 
 		#
 		if DEBUG_MODE : print '>> Node( %s ).updateNode' % self.label
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
 		else :
 			self.nodeUpdated.emit ( self )
@@ -115,7 +115,7 @@ class Node ( QtCore.QObject ) :
 	def updateNodeParams ( self ) : 
 		#
 		if DEBUG_MODE : print '>> Node( %s ).updateNodeParams' % self.label
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'nodeParamsUpdated' ), self )
 		else :
 			self.nodeParamsUpdated.emit ( self )
@@ -719,9 +719,10 @@ class Node ( QtCore.QObject ) :
 
 		if self.offset != None :
 			( x, y ) = self.offset
+			if DEBUG_MODE : print '>> Node::parseToXML offset (%d,%d)' % ( x, y )
 			offset_tag = dom.createElement ( 'offset' )
-			offset_tag.setAttribute ( 'x', x )
-			offset_tag.setAttribute ( 'y', y )
+			offset_tag.setAttribute ( 'x', str (x) ) # have to use 'str' because PySide throws 
+			offset_tag.setAttribute ( 'y', str (y) ) # Overflow error for negative values here
 			xml_node.appendChild ( offset_tag )
 
 		return xml_node

@@ -7,7 +7,7 @@
  Dialog for managing node code and parameters
 
 """
-from core.mePyQt import Qt, QtCore, QtGui, QtXml
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui, QtXml
 from core.signal import Signal
 
 from core.meCommon import *
@@ -37,7 +37,7 @@ TAB_PARAM_CODE = 4
 TAB_PARAM = 5
 TAB_LINK_INFO = 6
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -76,7 +76,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			QtCore.QObject.connect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onInputParamSelectionChanged )
 			QtCore.QObject.connect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onOutputParamSelectionChanged  )
 	
@@ -164,7 +164,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 	#
 	def disconnectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			QtCore.QObject.disconnect ( self.ui.input_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onInputParamSelectionChanged )
 			QtCore.QObject.disconnect ( self.ui.output_list, QtCore.SIGNAL ( 'selectionChangedSignal' ), self.updateGui ) # onOutputParamSelectionChanged  )
 	
@@ -299,13 +299,19 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 			# setup input links list
 			for link in self.editNode.getInputLinks () :
 				item = QtModule.QListWidgetItem ( 'id=%d' % link.id  )
-				item.setData ( QtCore.Qt.UserRole, QtCore.QVariant ( int ( link.id ) ) )
+				if not usePySide :
+					item.setData ( QtCore.Qt.UserRole, QtCore.QVariant ( int ( link.id ) ) )
+				else :
+					item.setData ( QtCore.Qt.UserRole, int ( link.id ) )
 				self.ui.input_links_listWidget.addItem ( item )
 	
 			# setup output links list
 			for link in self.editNode.getOutputLinks () :
 				item = QtModule.QListWidgetItem ( 'id=%d' % link.id  )
-				item.setData ( QtCore.Qt.UserRole, QtCore.QVariant ( int ( link.id ) ) )
+				if not usePySide :
+					item.setData ( QtCore.Qt.UserRole, QtCore.QVariant ( int ( link.id ) ) )
+				else :
+					item.setData ( QtCore.Qt.UserRole, int ( link.id ) )
 				self.ui.output_links_listWidget.addItem ( item )
 				
 			# setup event handlers list
@@ -396,7 +402,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 					inputLinkSelected = True
 					links_item = self.ui.input_links_listWidget.currentItem ()
 					if links_item is not None : 
-						if QtCore.QT_VERSION < 0x50000 :
+						if  not usePyQt5 :
 							( link_id, ok ) = links_item.data ( QtCore.Qt.UserRole ).toInt ()
 						else :
 							link_id = links_item.data ( QtCore.Qt.UserRole )
@@ -405,7 +411,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 					# output links
 					links_item = self.ui.output_links_listWidget.currentItem ()
 					if links_item is not None :
-						if QtCore.QT_VERSION < 0x50000 : 
+						if  not usePyQt5 : 
 							( link_id, ok ) = links_item.data ( QtCore.Qt.UserRole ).toInt ()
 						else:
 							link_id = links_item.data ( QtCore.Qt.UserRole )
@@ -536,7 +542,6 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 		paramList.ui.listWidget.setCurrentItem ( None )
 
 		# remove item from code (invalidate code)
-		pass
 	#
 	# onRenameInternal
 	#
@@ -659,7 +664,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 		typeDialog.btnBox.setCenterButtons ( True )
 		typeDialog.verticalLayout.addWidget ( typeDialog.btnBox )
 
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			QtCore.QObject.connect ( typeDialog.btnBox, QtCore.SIGNAL ( 'accepted()' ), typeDialog.accept )
 			QtCore.QObject.connect ( typeDialog.btnBox, QtCore.SIGNAL ( 'rejected()' ), typeDialog.reject )
 		else :
@@ -738,7 +743,7 @@ class NodeEditorDialog ( QtModule.QDialog ) :
 	def keyPressEvent ( self, event  ) :
 		#
 		#if DEBUG_MODE : print '>> NodeEditorDialog::keyPressEvent'
-		if  event.key () == QtCore.Qt.Key_Enter or event.key () == QtCore.Qt.Key_Return :
+		if event.key () == QtCore.Qt.Key_Enter or event.key () == QtCore.Qt.Key_Return :
 			event.ignore ()
 		else:
 			QtModule.QDialog.keyPressEvent ( self, event )

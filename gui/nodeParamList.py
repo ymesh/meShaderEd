@@ -3,7 +3,7 @@
  nodeParamList.py
 
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 #from PyQt4.QtCore import QDir, QString, QModelIndex
 #from PyQt4.QtGui  import QFileSystemModel
@@ -29,7 +29,7 @@ from gui.params.MatrixWidget import MatrixWidget
 from gui.params.TextWidget import TextWidget
 from gui.params.ControlWidget import ControlWidget
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -39,18 +39,18 @@ else :
 #
 class NodeParamListTab ( QtModule.QWidget ) :
 	#
-	# Define signals for PyQt5
-	#
-	if QtCore.QT_VERSION >= 0x50000 :
-		#
-		sectionResized = QtCore.pyqtSignal ( int,int,int )
-	#
 	# __init__
 	#
 	def __init__ ( self, parent, gfxNode = None, isInput = True, showConnected = False ) :
 		#
 		QtModule.QWidget.__init__ ( self, parent )
-		
+		#
+		# Define signals for PyQt5
+		#
+		if usePySide or usePyQt5 :
+			#
+			self.sectionResized = Signal ()
+			#
 		self.nodeParamView = parent
 		self.gfxNode = gfxNode
 		self.isInput = isInput
@@ -69,7 +69,7 @@ class NodeParamListTab ( QtModule.QWidget ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			self.connect ( self.paramHeader, QtCore.SIGNAL ( 'sectionResized(int,int,int)' ), self.onSectionResized )
 		else :
 			self.paramHeader.sectionResized.connect ( self.onSectionResized )
@@ -113,8 +113,12 @@ class NodeParamListTab ( QtModule.QWidget ) :
 		#
 		self.model = QtGui.QStandardItemModel ()
 		self.model.setColumnCount ( 2 )
-		self.model.setHeaderData ( 0, QtCore.Qt.Horizontal, QtCore.QVariant ( 'Parameter' ) )
-		self.model.setHeaderData ( 1, QtCore.Qt.Horizontal, QtCore.QVariant ( 'Value' ) )
+		if not usePySide :
+			self.model.setHeaderData ( 0, QtCore.Qt.Horizontal, QtCore.QVariant ( 'Parameter' ) )
+			self.model.setHeaderData ( 1, QtCore.Qt.Horizontal, QtCore.QVariant ( 'Value' ) )
+		else :
+			self.model.setHeaderData ( 0, QtCore.Qt.Horizontal, 'Parameter' )
+			self.model.setHeaderData ( 1, QtCore.Qt.Horizontal, 'Value' )
 			
 		self.paramHeader = QtModule.QHeaderView ( QtCore.Qt.Horizontal, self )
 		self.paramHeader.setModel ( self.model )
@@ -241,8 +245,8 @@ class NodeParamList ( QtModule.QWidget ) :
 		self.paramListLayout = QtModule.QGridLayout ()
 		self.paramListLayout.setSizeConstraint ( QtModule.QLayout.SetNoConstraint )
 		self.paramListLayout.setSpacing ( UI.SPACING )
-		if QtCore.QT_VERSION < 0x50000 :
-			self.paramListLayout.setMargin ( UI.SPACING )
+		self.paramListLayout.setContentsMargins ( UI.SPACING, UI.SPACING, UI.SPACING, UI.SPACING )
+		
 		self.paramListLayout.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		self.paramListLayout.setColumnMinimumWidth ( 0, self.labelWidth )
 		self.paramListLayout.setColumnStretch ( 1, 1 )
@@ -292,7 +296,7 @@ class NodeParamList ( QtModule.QWidget ) :
 								paramWidget.setEnabled ( False )
 							
 							if param.removable :
-								if QtCore.QT_VERSION < 0x50000 :
+								if  usePyQt4 :
 									QtCore.QObject.connect ( paramWidget, QtCore.SIGNAL ( 'nodeParamRemoved' ), self.nodeParamViewTab.onParamRemoved )
 								else :
 									paramWidget.nodeParamRemoved.connect ( self.nodeParamViewTab.onParamRemoved )

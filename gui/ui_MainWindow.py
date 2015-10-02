@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -39,7 +39,7 @@ class Ui_MainWindow(object):
 				self.centralwidget.setAcceptDrops(True)
 				self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
 				self.gridLayout = QtModule.QGridLayout(self.centralwidget)
-				#self.gridLayout.setMargin(0)
+				self.gridLayout.setContentsMargins ( 0, 0, 0, 0 )
 				self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
 				self.tabs = QtModule.QTabWidget(self.centralwidget)
 				self.tabs.setAcceptDrops(True)
@@ -409,7 +409,7 @@ class Ui_MainWindow(object):
 
 				self.retranslateUi(MainWindow)
 				self.tabs.setCurrentIndex(0)
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.close)
 					QtCore.QObject.connect(self.actionProjectSetup, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.onProjectSetup)
 					QtCore.QObject.connect(self.actionShowGrid, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), MainWindow.onShowGrid)

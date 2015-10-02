@@ -3,13 +3,13 @@
  StringWidget.py
 
 """
-from core.mePyQt import QtGui, QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui 
 
 from global_vars import app_global_vars, DEBUG_MODE
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -20,7 +20,7 @@ else :
 class StringWidget ( ParamWidget ) :
 	#
 	# buildGui
-	#                 
+	#
 	def buildGui ( self ) :
 		#
 		if not self.ignoreSubtype :
@@ -62,7 +62,7 @@ class Ui_StringWidget_field ( object ) :
 	#
 	def connectSignals ( self, StringWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			StringWidget.connect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
 		else :
 			self.stringEdit.editingFinished.connect ( self.onStringEditEditingFinished )
@@ -71,7 +71,7 @@ class Ui_StringWidget_field ( object ) :
 	#
 	def disconnectSignals ( self, StringWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if  usePyQt4 :
 			StringWidget.disconnect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
 		else :
 			self.stringEdit.editingFinished.disconnect ( self.onStringEditEditingFinished )
@@ -124,7 +124,7 @@ class Ui_StringWidget_selector ( object ) :
 	#
 	def connectSignals ( self, StringWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			StringWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
 			self.selector.activated.connect ( self.onCurrentIndexChanged )
@@ -133,7 +133,7 @@ class Ui_StringWidget_selector ( object ) :
 	#
 	def disconnectSignals ( self, StringWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			StringWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
 			self.selector.activated.disconnect ( self.onCurrentIndexChanged )
@@ -143,7 +143,7 @@ class Ui_StringWidget_selector ( object ) :
 	def onCurrentIndexChanged ( self, idx ) :
 		#
 		#pass
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			stringValue = self.selector.itemData ( idx ).toString ()
 		else :
 			stringValue = str ( self.selector.itemData ( idx ) )
@@ -190,17 +190,14 @@ class Ui_StringWidget_file ( object ) :
 		hl.addWidget ( self.stringEdit )
 		hl.addWidget ( self.btnBrowseDir )
 		self.widget.param_vl.addLayout ( hl )
-		
-		
-		#QtCore.QMetaObject.connectSlotsByName ( StringWidget )
-	 
+		QtCore.QMetaObject.connectSlotsByName ( StringWidget )
 		self.connectSignals ( StringWidget )
 	#
 	# connectSignals
 	#
 	def connectSignals ( self, StringWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			StringWidget.connect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
 			StringWidget.connect ( self.btnBrowseDir, QtCore.SIGNAL ( 'clicked()' ), self.onBrowseFile )
 		else :
@@ -211,7 +208,7 @@ class Ui_StringWidget_file ( object ) :
 	#
 	def disconnectSignals ( self, StringWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			StringWidget.disconnect ( self.stringEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
 			StringWidget.disconnect ( self.btnBrowseDir, QtCore.SIGNAL ( 'clicked()' ), self.onBrowseFile )
 		else :
@@ -242,7 +239,10 @@ class Ui_StringWidget_file ( object ) :
 		
 		curDir = app_global_vars [ 'ProjectPath' ]
 		
-		filename = QtModule.QFileDialog.getOpenFileName ( self.widget, 'Select file', curDir, typeFilter )
+		if usePyQt4 :
+			filename = QtModule.QFileDialog.getOpenFileName ( self.widget, 'Select file', curDir, typeFilter )
+		else :
+			( filename, filter ) = QtModule.QFileDialog.getOpenFileName ( self.widget, 'Select file', curDir, typeFilter )
 		
 		if filename != '' : 
 			self.widget.param.setValue ( str ( filename ) )

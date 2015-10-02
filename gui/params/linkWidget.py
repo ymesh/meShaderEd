@@ -3,13 +3,13 @@
  linkWidget.py
 
 """
-from core.mePyQt import QtGui, QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from global_vars import app_global_vars, DEBUG_MODE
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets

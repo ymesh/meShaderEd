@@ -3,7 +3,7 @@
 	noteNode.py
 
 """
-from core.mePyQt import QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore
 
 from core.node import Node
 from core.nodeParam import NodeParam

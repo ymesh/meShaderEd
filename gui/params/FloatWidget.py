@@ -6,13 +6,13 @@
 import math
 from decimal import *
 
-from core.mePyQt import QtGui, QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -68,7 +68,7 @@ class Ui_FloatWidget_field ( object ) :
 	#
 	def connectSignals ( self, FloatWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			FloatWidget.connect ( self.floatEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 		else :
 			self.floatEdit.editingFinished.connect ( self.onFloatEditEditingFinished )
@@ -77,7 +77,7 @@ class Ui_FloatWidget_field ( object ) :
 	#
 	def disconnectSignals ( self, FloatWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			FloatWidget.disconnect ( self.floatEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 		else :
 			self.floatEdit.editingFinished.disconnect ( self.onFloatEditEditingFinished )
@@ -87,7 +87,7 @@ class Ui_FloatWidget_field ( object ) :
 	def onFloatEditEditingFinished ( self ) :
 		#
 		floatStr = self.floatEdit.text ()
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			floatValue = floatStr.toFloat () [0]
 		else :
 			floatValue = float ( floatStr )
@@ -98,7 +98,7 @@ class Ui_FloatWidget_field ( object ) :
 	#
 	def updateGui ( self, value ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 : 
+		if usePyQt4 : 
 			self.floatEdit.setText ( QtCore.QString.number(value, 'f', 3) )
 		else :
 			self.floatEdit.setText ( str ( value ) )
@@ -130,7 +130,7 @@ class Ui_FloatWidget_switch ( object ) :
 	#
 	def connectSignals ( self, FloatWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			FloatWidget.connect ( self.checkBox, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onStateChanged )
 		else :
 			self.checkBox.stateChanged.connect ( self.onStateChanged )
@@ -139,7 +139,7 @@ class Ui_FloatWidget_switch ( object ) :
 	#
 	def disconnectSignals ( self, FloatWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			FloatWidget.disconnect ( self.checkBox, QtCore.SIGNAL ( 'stateChanged(int)' ), self.onStateChanged )
 		else :
 			self.checkBox.stateChanged.disconnect ( self.onStateChanged )
@@ -190,7 +190,7 @@ class Ui_FloatWidget_selector ( object ) :
 	#
 	def connectSignals ( self, FloatWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			FloatWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
 			self.selector.activated.connect ( self.onCurrentIndexChanged )
@@ -199,7 +199,7 @@ class Ui_FloatWidget_selector ( object ) :
 	#
 	def disconnectSignals ( self, FloatWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			FloatWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
 			self.selector.activated.disconnect ( self.onCurrentIndexChanged )
@@ -208,7 +208,10 @@ class Ui_FloatWidget_selector ( object ) :
 	#
 	def onCurrentIndexChanged ( self, idx ) :
 		#
-		( floatValue, ok ) = self.selector.itemData ( idx ).toFloat ()
+		if usePyQt4 :
+			( floatValue, ok ) = self.selector.itemData ( idx ).toFloat ()
+		else :
+			floatValue = self.selector.itemData ( idx )
 		self.widget.param.setValue ( float ( floatValue ) )
 	#
 	# updateGui
@@ -291,7 +294,7 @@ class Ui_FloatWidget_slider ( object ) :
 	#
 	def connectSignals ( self, FloatWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			FloatWidget.connect ( self.floatEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			FloatWidget.connect ( self.slider, QtCore.SIGNAL ( 'valueChanged(int)' ), self.onSliderValueChanged )
 		else :
@@ -302,7 +305,7 @@ class Ui_FloatWidget_slider ( object ) :
 	#
 	def disconnectSignals ( self, FloatWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			FloatWidget.disconnect ( self.floatEdit, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			FloatWidget.disconnect ( self.slider, QtCore.SIGNAL ( 'valueChanged(int)' ), self.onSliderValueChanged )
 		else :
@@ -314,7 +317,7 @@ class Ui_FloatWidget_slider ( object ) :
 	def onFloatEditEditingFinished ( self ) :
 		#
 		floatStr = self.floatEdit.text ()
-		if QtCore.QT_VERSION < 0x50000 :
+		if  not usePyQt5 :
 			floatValue = floatStr.toFloat () [ 0 ] 
 		else :
 			floatValue = float ( floatStr )
@@ -368,7 +371,7 @@ class Ui_FloatWidget_slider ( object ) :
 	#
 	def updateGui ( self, value ) : 
 		#
-		if QtCore.QT_VERSION < 0x50000 : 
+		if usePyQt4 : 
 			self.floatEdit.setText ( QtCore.QString.number ( value, 'f', 3 ) )
 		else :
 			self.floatEdit.setText ( str ( value ) )

@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -34,8 +34,7 @@ class Ui_NodeCodeEditor(object):
 				NodeCodeEditor.setObjectName(_fromUtf8("NodeCodeEditor"))
 				NodeCodeEditor.resize(683, 838)
 				self.gridLayout = QtModule.QGridLayout(NodeCodeEditor)
-				if QtCore.QT_VERSION < 0x50000 :
-					self.gridLayout.setMargin(0)
+				self.gridLayout.setContentsMargins ( 0, 0, 0, 0 )
 				self.gridLayout.setSpacing(0)
 				self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
 				self.textEdit = QtModule.QTextEdit(NodeCodeEditor)

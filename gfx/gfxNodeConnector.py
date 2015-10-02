@@ -4,14 +4,14 @@
 
 """
 import copy
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
 from meShaderEd import app_settings
 from global_vars import DEBUG_MODE, GFX_NODE_CONNECTOR_TYPE
 import gui.ui_settings as UI
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -28,7 +28,6 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	#
 	def __init__ ( self, param = None, radius = UI.CONNECTOR_RADIUS, isRound = True, node = None ) :
 		#
-		#QtModule.QGraphicsItem.__init__ ( self )
 		QtModule.QGraphicsItem.__init__ ( self )
 		
 		self.paramsBrushes = {   'c' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkRed ) )
@@ -73,10 +72,6 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 		paramTypeStr = self.getInputParam ().encodedTypeStr ()
 		if paramTypeStr in self.paramsBrushes.keys () :
 			self.brush = self.paramsBrushes [ paramTypeStr ]
-
-		#self.setFlag ( QtGui.QGraphicsItem.ItemIsSelectable )
-		#if DEBUG_MODE : print '>> GfxNodeConnector::__init__'
-		#if DEBUG_MODE : print self	
 		
 		# self.startNodeLink.connect ( self.onStartNodeLinkTest )
 	#
@@ -337,8 +332,6 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	def itemChange ( self, change, value ) :
 		#
 		#if DEBUG_MODE : print ">> itemChanged "
-		#if DEBUG_MODE : print change
-		#if DEBUG_MODE : print value	
 		if change == QtModule.QGraphicsItem.ItemSelectedHasChanged :
 			#if DEBUG_MODE : print "* selection "
 			self.isNodeSelected = ( value == 1 ) #value.toBool ()
@@ -360,21 +353,12 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 					x -= ( x % grid_size )
 					y -= ( y % grid_size )
 					self.setPos ( x, y )
-
 				#if DEBUG_MODE : print '* GfxNode.itemChange = ItemPositionHasChanged (%f, %f)' % ( x, y )
 				self.node.offset = ( x, y )
 				self.adjustLinks ()
 				#return QtCore.QPointF ( x, y )
-				
-		#elif change == QtModule.QGraphicsItem.ItemParentChange :
-			#if DEBUG_MODE : print "* parent "
-		#	return value
-		#else :
-		#	if DEBUG_MODE : print "* nothing "
-		#	return value
 		
 		return QtModule.QGraphicsItem.itemChange ( self, change, value )
-		
 	#
 	# hilite
 	#
@@ -385,7 +369,6 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	#
 	#  onStartNodeLinkTest
 	#
-	@QtCore.pyqtSlot ( QtModule.QGraphicsItem ) # QtModule.QGraphicsItem QtModule.QGraphicsItem
 	def onStartNodeLinkTest ( self, connector ) :
 		#
 		if DEBUG_MODE : print '>> onStartNodeLinkTest'
@@ -402,7 +385,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 		if event.modifiers () == QtCore.Qt.ControlModifier :
 			# start new ConnectorNode
 			self.state = 'traceNodeConnector'
-			if QtCore.QT_VERSION < 0x50000 :
+			if  usePyQt4 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'startNodeConnector' ), self, event.scenePos () )
 			else :
 				self.getScene ().startNodeConnector.emit ( self, event.scenePos () )
@@ -410,7 +393,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 			if not self.isNode () :
 				# start new link
 				self.state = 'traceNodeLink'
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					self.getScene ().emit ( QtCore.SIGNAL ( 'startNodeLink' ), self )
 				else :
 					#if DEBUG_MODE : print '* startNodeLink.emit '
@@ -427,12 +410,12 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	def mouseMoveEvent ( self, event ) :
 		#print ">> mouseMoveEvent at %d %d" % ( event.scenePos().x(), event.scenePos().y() )
 		if self.state == 'traceNodeLink' :
-			if QtCore.QT_VERSION < 0x50000 :
+			if  usePyQt4 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'traceNodeLink' ), self, event.scenePos () )
 			else :
 				self.getScene ().traceNodeLink.emit ( self, event.scenePos () )
 		elif self.state == 'traceNodeConnector' :
-			if QtCore.QT_VERSION < 0x50000 :
+			if  usePyQt4 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'traceNodeConnector' ), self, event.scenePos () )
 			else :
 				self.getScene ().traceNodeConnector.emit (  self, event.scenePos () )
@@ -446,12 +429,12 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	def mouseReleaseEvent ( self, event ) :
 		#print ">> mouseReleaseEvent"
 		if self.state == 'traceNodeLink' :
-			if QtCore.QT_VERSION < 0x50000 :
+			if  usePyQt4 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'endNodeLink' ), self, event.scenePos () )
 			else :
 				self.getScene ().endNodeLink.emit ( self, event.scenePos () )
 		elif self.state == 'traceNodeConnector' :
-			if QtCore.QT_VERSION < 0x50000 :
+			if  usePyQt4 :
 				self.getScene ().emit ( QtCore.SIGNAL ( 'endNodeConnector' ), self, event.scenePos () )
 			else :
 				self.getScene ().endNodeConnector.emit ( self, event.scenePos () )

@@ -3,12 +3,12 @@
  VectorWidget.py
 
 """
-from core.mePyQt import QtGui, QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -74,7 +74,7 @@ class Ui_VectorWidget_field ( object ) :
 	#
 	def connectSignals ( self, VectorWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			VectorWidget.connect ( self.floatEdit0, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			VectorWidget.connect ( self.floatEdit1, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			VectorWidget.connect ( self.floatEdit2, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
@@ -90,7 +90,7 @@ class Ui_VectorWidget_field ( object ) :
 	#
 	def disconnectSignals ( self, VectorWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			VectorWidget.disconnect ( self.floatEdit0, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			VectorWidget.disconnect ( self.floatEdit1, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			VectorWidget.disconnect ( self.floatEdit2, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
@@ -126,7 +126,7 @@ class Ui_VectorWidget_field ( object ) :
 	#
 	def updateGui ( self, value ) :
 		# 
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			self.floatEdit0.setText ( QtCore.QString.number( value [0], 'f', 3 ) )
 			self.floatEdit1.setText ( QtCore.QString.number( value [1], 'f', 3 ) )
 			self.floatEdit2.setText ( QtCore.QString.number( value [2], 'f', 3 ) )

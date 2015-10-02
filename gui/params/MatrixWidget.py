@@ -3,12 +3,12 @@
  MatrixWidget.py
 
 """
-from core.mePyQt import QtGui, QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -116,7 +116,8 @@ class Ui_MatrixWidget_field ( object ) :
 		
 		hl1 = QtModule.QHBoxLayout ()
 		hl1.setSpacing ( UI.SPACING )
-		hl1.setMargin ( 0 )
+		#if usePyQt4 :
+		hl1.setContentsMargins ( 0, 0, 0, 0 )
 		hl1.addWidget ( self.floatEdit0 )
 		hl1.addWidget ( self.floatEdit1 )
 		hl1.addWidget ( self.floatEdit2 )
@@ -128,7 +129,8 @@ class Ui_MatrixWidget_field ( object ) :
 		
 		hl2 = QtModule.QHBoxLayout ()
 		hl2.setSpacing ( UI.SPACING )
-		hl2.setMargin ( 0 )
+		#if usePyQt4 :
+		hl2.setContentsMargins ( 0, 0, 0, 0 )
 		hl2.addWidget ( self.floatEdit4 )
 		hl2.addWidget ( self.floatEdit5 )
 		hl2.addWidget ( self.floatEdit6 )
@@ -140,7 +142,8 @@ class Ui_MatrixWidget_field ( object ) :
 		
 		hl3 = QtModule.QHBoxLayout ()
 		hl3.setSpacing ( UI.SPACING )
-		hl3.setMargin ( 0 )
+		#if usePyQt4 :
+		hl3.setContentsMargins ( 0, 0, 0, 0 )
 		hl3.addWidget ( self.floatEdit8 )
 		hl3.addWidget ( self.floatEdit9 )
 		hl3.addWidget ( self.floatEdit10 )
@@ -152,7 +155,8 @@ class Ui_MatrixWidget_field ( object ) :
 		
 		hl4 = QtModule.QHBoxLayout ()
 		hl4.setSpacing ( UI.SPACING )
-		hl4.setMargin ( 0 )
+		#if usePyQt4 :
+		hl4.setContentsMargins ( 0, 0, 0, 0 )
 		hl4.addWidget ( self.floatEdit12 )
 		hl4.addWidget ( self.floatEdit13 )
 		hl4.addWidget ( self.floatEdit14 )
@@ -169,7 +173,7 @@ class Ui_MatrixWidget_field ( object ) :
 	#
 	def connectSignals ( self, MatrixWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			MatrixWidget.connect ( self.floatEdit0, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			MatrixWidget.connect ( self.floatEdit1, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			MatrixWidget.connect ( self.floatEdit2, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
@@ -218,7 +222,7 @@ class Ui_MatrixWidget_field ( object ) :
 	#
 	def disconnectSignals ( self, MatrixWidget ) :
 		#
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			MatrixWidget.disconnect ( self.floatEdit0, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			MatrixWidget.disconnect ( self.floatEdit1, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
 			MatrixWidget.disconnect ( self.floatEdit2, QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
@@ -326,22 +330,43 @@ class Ui_MatrixWidget_field ( object ) :
 	#      
 	def updateGui ( self, value ) :
 		# 
-		self.floatEdit0.setText ( QtCore.QString.number ( value [0][0], 'f', 3 ) )
-		self.floatEdit1.setText ( QtCore.QString.number ( value [0][1], 'f', 3 ) )
-		self.floatEdit2.setText ( QtCore.QString.number ( value [0][2], 'f', 3 ) )
-		self.floatEdit3.setText ( QtCore.QString.number ( value [0][3], 'f', 3 ) )
-		
-		self.floatEdit4.setText ( QtCore.QString.number ( value [1][0], 'f', 3 ) )
-		self.floatEdit5.setText ( QtCore.QString.number ( value [1][1], 'f', 3 ) )
-		self.floatEdit6.setText ( QtCore.QString.number ( value [1][2], 'f', 3 ) )
-		self.floatEdit7.setText ( QtCore.QString.number ( value [1][3], 'f', 3 ) )
-		
-		self.floatEdit8.setText ( QtCore.QString.number ( value [2][0], 'f', 3 ) )
-		self.floatEdit9.setText ( QtCore.QString.number ( value [2][1], 'f', 3 ) )
-		self.floatEdit10.setText ( QtCore.QString.number ( value [2][2], 'f', 3 ) )
-		self.floatEdit11.setText ( QtCore.QString.number ( value [2][3], 'f', 3 ) )
-		
-		self.floatEdit12.setText ( QtCore.QString.number ( value [3][0], 'f', 3 ) )
-		self.floatEdit13.setText ( QtCore.QString.number ( value [3][1], 'f', 3 ) )
-		self.floatEdit14.setText ( QtCore.QString.number ( value [3][2], 'f', 3 ) )
-		self.floatEdit15.setText ( QtCore.QString.number ( value [3][3], 'f', 3 ) )
+		if usePyQt4 :
+			self.floatEdit0.setText ( QtCore.QString.number ( value [0][0], 'f', 3 ) )
+			self.floatEdit1.setText ( QtCore.QString.number ( value [0][1], 'f', 3 ) )
+			self.floatEdit2.setText ( QtCore.QString.number ( value [0][2], 'f', 3 ) )
+			self.floatEdit3.setText ( QtCore.QString.number ( value [0][3], 'f', 3 ) )
+			
+			self.floatEdit4.setText ( QtCore.QString.number ( value [1][0], 'f', 3 ) )
+			self.floatEdit5.setText ( QtCore.QString.number ( value [1][1], 'f', 3 ) )
+			self.floatEdit6.setText ( QtCore.QString.number ( value [1][2], 'f', 3 ) )
+			self.floatEdit7.setText ( QtCore.QString.number ( value [1][3], 'f', 3 ) )
+			
+			self.floatEdit8.setText ( QtCore.QString.number ( value [2][0], 'f', 3 ) )
+			self.floatEdit9.setText ( QtCore.QString.number ( value [2][1], 'f', 3 ) )
+			self.floatEdit10.setText ( QtCore.QString.number ( value [2][2], 'f', 3 ) )
+			self.floatEdit11.setText ( QtCore.QString.number ( value [2][3], 'f', 3 ) )
+			
+			self.floatEdit12.setText ( QtCore.QString.number ( value [3][0], 'f', 3 ) )
+			self.floatEdit13.setText ( QtCore.QString.number ( value [3][1], 'f', 3 ) )
+			self.floatEdit14.setText ( QtCore.QString.number ( value [3][2], 'f', 3 ) )
+			self.floatEdit15.setText ( QtCore.QString.number ( value [3][3], 'f', 3 ) )
+		else :
+			self.floatEdit0.setText ( str ( value [0][0] ) )
+			self.floatEdit1.setText ( str ( value [0][1] ) )
+			self.floatEdit2.setText ( str ( value [0][2] ) )
+			self.floatEdit3.setText ( str ( value [0][3] ) )
+			
+			self.floatEdit4.setText ( str ( value [1][0] ) )
+			self.floatEdit5.setText ( str ( value [1][1] ) )
+			self.floatEdit6.setText ( str ( value [1][2] ) )
+			self.floatEdit7.setText ( str ( value [1][3] ) )
+			
+			self.floatEdit8.setText ( str ( value [2][0] ) )
+			self.floatEdit9.setText ( str ( value [2][1] ) )
+			self.floatEdit10.setText ( str ( value [2][2] ) )
+			self.floatEdit11.setText ( str ( value [2][3] ) )
+			
+			self.floatEdit12.setText ( str ( value [3][0] ) )
+			self.floatEdit13.setText ( str ( value [3][1] ) )
+			self.floatEdit14.setText ( str ( value [3][2] ) )
+			self.floatEdit15.setText ( str ( value [3][3] ) )

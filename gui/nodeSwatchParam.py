@@ -3,13 +3,13 @@
 	nodeSwatchParam.py
 
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from ui_nodeSwatchParam import Ui_NodeSwatchParam
 
 import ui_settings as UI
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets

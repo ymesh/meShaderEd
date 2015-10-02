@@ -3,13 +3,13 @@
  ColorWidget.py
 
 """
-from core.mePyQt import QtGui, QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
 import gui.ui_settings as UI 
 from paramWidget import ParamWidget 
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -37,10 +37,9 @@ class ColorWidget ( ParamWidget ) :
 	#                 
 	def buildGui ( self ) :
 		#
-		#
 		# Define signals for PyQt5
 		#
-		if QtCore.QT_VERSION >= 0x50000 :
+		if usePySide or usePyQt5 :
 			#
 			self.clicked = Signal ()
 			
@@ -65,7 +64,7 @@ class ColorEditEventFilter ( QtCore.QObject ) :
 		# check for single click
 		if event.type () == QtCore.QEvent.MouseButtonPress:
 			#print "eventFilter = MouseButtonPress" 
-			if QtCore.QT_VERSION < 0x50000 :
+			if usePyQt4 :
 				self.ColorWidget.emit ( QtCore.SIGNAL ( 'clicked()' ) )
 			else :
 				self.ColorWidget.clicked.emit ()
@@ -121,7 +120,7 @@ class Ui_ColorWidget_field ( object ) :
 	def connectSignals ( self, ColorWidget ) :
 		# register signal propertyChanged for updating the gui
 		#self.connect( self.colorProperty, QtCore.SIGNAL('propertyChanged()'), self.onPropertyChanged )
-		if QtCore.QT_VERSION < 0x50000 :
+		if usePyQt4 :
 			ColorWidget.connect ( ColorWidget, QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
 			ColorWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged ) 
 		else :
@@ -133,7 +132,7 @@ class Ui_ColorWidget_field ( object ) :
 	def disconnectSignals ( self, ColorWidget ) :
 		# register signal propertyChanged for updating the gui
 		#self.disconnect( self.colorProperty, QtCore.SIGNAL('propertyChanged()'), self.onPropertyChanged )
-		if QtCore.QT_VERSION < 0x50000 : 
+		if usePyQt4 : 
 			ColorWidget.disconnect ( ColorWidget, QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
 			ColorWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
@@ -143,7 +142,7 @@ class Ui_ColorWidget_field ( object ) :
 	# onClicked
 	#
 	def onClicked ( self ) : 
-		#print( "ColorWidget = onClicked" )
+		print( ">> ColorWidget::onClicked" )
 		redValue = int ( self.widget.param.value [0] * 255 )
 		greenValue = int ( self.widget.param.value [1] * 255 )
 		blueValue = int ( self.widget.param.value [2] * 255 )
@@ -182,8 +181,7 @@ class Ui_ColorWidget_field ( object ) :
 		
 		painter.setPen ( QtCore.Qt.NoPen )
 		painter.setBrush ( color )  
-		rect = QtCore.QRectF ( 0.0, 0.0, UI.COLOR_WIDTH, UI.HEIGHT )
-		painter.drawRects ( rect  )
+		painter.drawRect ( 0.0, 0.0, UI.COLOR_WIDTH, UI.HEIGHT )
 		painter.end ()
 		
 		self.colorEdit.setPixmap ( pixmap )

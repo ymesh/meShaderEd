@@ -5,7 +5,7 @@
 #
 #===============================================================================
 import os, sys
-from core.mePyQt import QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE
 from node import Node

@@ -5,7 +5,7 @@
 """
 import os, sys
 
-from core.mePyQt import QtCore, QtXml
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtXml
 #from PyQt4.QtCore import QDir, QFile, QVariant
 
 from node import *

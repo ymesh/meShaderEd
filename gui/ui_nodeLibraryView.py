@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -48,7 +48,7 @@ class Ui_nodeLibraryView(object):
 
 				self.retranslateUi(nodeLibraryView)
 				
-				if QtCore.QT_VERSION < 0x50000 :
+				if  usePyQt4 :
 					QtCore.QObject.connect(self.btn_reload, QtCore.SIGNAL(_fromUtf8("clicked()")), nodeLibraryView.onReload)
 				else :
 					self.btn_reload.clicked.connect( nodeLibraryView.onReload)

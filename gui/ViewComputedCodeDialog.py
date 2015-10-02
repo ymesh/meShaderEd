@@ -8,14 +8,14 @@
  Dialog for managing node code
  
 """
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES, VALID_RSL_NODE_TYPES, VALID_RSL_SHADER_TYPES
 
 from nodeEditor.nodeCodeEditor import NodeCodeEditor
 from ui_viewComputedCodeDialog import Ui_ViewComputedCodeDialog
 
-if QtCore.QT_VERSION < 0x50000 :
+if  not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets

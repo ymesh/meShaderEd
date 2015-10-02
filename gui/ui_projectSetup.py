@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -131,14 +131,14 @@ class Ui_ProjectSetup(object):
 				self.verticalLayout_3.addWidget(self.grp_shaders)
 				spacerItem = QtModule.QSpacerItem(20, 20, QtModule.QSizePolicy.Minimum, QtModule.QSizePolicy.Expanding)
 				self.verticalLayout_3.addItem(spacerItem)
-				self.buttonBox = QtGui.QDialogButtonBox(ProjectSetup)
+				self.buttonBox = QtModule.QDialogButtonBox(ProjectSetup)
 				self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-				self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+				self.buttonBox.setStandardButtons(QtModule.QDialogButtonBox.Cancel|QtModule.QDialogButtonBox.Ok)
 				self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
 				self.verticalLayout_3.addWidget(self.buttonBox)
 
 				self.retranslateUi(ProjectSetup)
-				if QtCore.QT_VERSION < 0x50000 :
+				if usePyQt4 :
 					QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), ProjectSetup.accept)
 					QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), ProjectSetup.reject)
 					QtCore.QObject.connect(self.btn_project_dir, QtCore.SIGNAL(_fromUtf8("clicked()")), ProjectSetup.onBrowseProjectDir)
@@ -158,17 +158,17 @@ class Ui_ProjectSetup(object):
 				QtCore.QMetaObject.connectSlotsByName(ProjectSetup)
 
 		def retranslateUi(self, ProjectSetup):
-			ProjectSetup.setWindowTitle(QtGui.QApplication.translate("ProjectSetup", "Project Setup", None))
-			self.grp_project.setTitle(QtGui.QApplication.translate("ProjectSetup", "Project", None))
-			self.label_project.setText(QtGui.QApplication.translate("ProjectSetup", "Root", None))
-			self.btn_project_dir.setText(QtGui.QApplication.translate("ProjectSetup", "...", None))
-			self.grp_shaders.setTitle(QtGui.QApplication.translate("ProjectSetup", "Resources", None))
-			self.label_shaders.setText(QtGui.QApplication.translate("ProjectSetup", "Shaders", None))
-			self.btn_shaders_dir.setText(QtGui.QApplication.translate("ProjectSetup", "...", None))
-			self.label_network.setText(QtGui.QApplication.translate("ProjectSetup", "Networks", None))
-			self.btn_network_dir.setText(QtGui.QApplication.translate("ProjectSetup", "...", None))
-			self.label_sources.setText(QtGui.QApplication.translate("ProjectSetup", "Sources", None))
-			self.btn_sources_dir.setText(QtGui.QApplication.translate("ProjectSetup", "...", None))
-			self.label_textures.setText(QtGui.QApplication.translate("ProjectSetup", "Textures", None))
-			self.btn_textures_dir.setText(QtGui.QApplication.translate("ProjectSetup", "...", None))
+			ProjectSetup.setWindowTitle(QtModule.QApplication.translate("ProjectSetup", "Project Setup", None))
+			self.grp_project.setTitle(QtModule.QApplication.translate("ProjectSetup", "Project", None))
+			self.label_project.setText(QtModule.QApplication.translate("ProjectSetup", "Root", None))
+			self.btn_project_dir.setText(QtModule.QApplication.translate("ProjectSetup", "...", None))
+			self.grp_shaders.setTitle(QtModule.QApplication.translate("ProjectSetup", "Resources", None))
+			self.label_shaders.setText(QtModule.QApplication.translate("ProjectSetup", "Shaders", None))
+			self.btn_shaders_dir.setText(QtModule.QApplication.translate("ProjectSetup", "...", None))
+			self.label_network.setText(QtModule.QApplication.translate("ProjectSetup", "Networks", None))
+			self.btn_network_dir.setText(QtModule.QApplication.translate("ProjectSetup", "...", None))
+			self.label_sources.setText(QtModule.QApplication.translate("ProjectSetup", "Sources", None))
+			self.btn_sources_dir.setText(QtModule.QApplication.translate("ProjectSetup", "...", None))
+			self.label_textures.setText(QtModule.QApplication.translate("ProjectSetup", "Textures", None))
+			self.btn_textures_dir.setText(QtModule.QApplication.translate("ProjectSetup", "...", None))
 

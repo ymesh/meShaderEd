@@ -7,9 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from core.mePyQt import QtCore, QtGui
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
-if QtCore.QT_VERSION < 0x50000 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -46,7 +46,7 @@ class Ui_SettingsSetup(object):
 				self.verticalLayout = QtModule.QVBoxLayout(self.grp_dirs)
 				self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
 				self.hl_temp = QtModule.QHBoxLayout()
-				self.hl_temp.setSizeConstraint(QtGui.QLayout.SetMinimumSize)
+				self.hl_temp.setSizeConstraint(QtModule.QLayout.SetMinimumSize)
 				self.hl_temp.setObjectName(_fromUtf8("hl_temp"))
 				self.label_temp = QtModule.QLabel(self.grp_dirs)
 				self.label_temp.setMinimumSize(QtCore.QSize(80, 0))
@@ -162,7 +162,7 @@ class Ui_SettingsSetup(object):
 				self.verticalLayout_2.addWidget(self.buttonBox)
 
 				self.retranslateUi(SettingsSetup)
-				if QtCore.QT_VERSION < 0x50000 :
+				if usePyQt4 :
 					QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), SettingsSetup.accept)
 					QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), SettingsSetup.reject)
 					QtCore.QObject.connect(self.btn_lib_dir, QtCore.SIGNAL(_fromUtf8("clicked()")), SettingsSetup.onBrowseLibraryDir)
@@ -185,20 +185,20 @@ class Ui_SettingsSetup(object):
 				QtCore.QMetaObject.connectSlotsByName(SettingsSetup)
 
 		def retranslateUi(self, SettingsSetup):
-				SettingsSetup.setWindowTitle(QtGui.QApplication.translate("SettingsSetup", "Settings Setup", None))
-				self.grp_dirs.setTitle(QtGui.QApplication.translate("SettingsSetup", "Directories", None))
-				self.label_temp.setText(QtGui.QApplication.translate("SettingsSetup", "Temp", None))
-				self.btn_temp_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None))
-				self.label_inc.setText(QtGui.QApplication.translate("SettingsSetup", "Includes", None))
-				self.btn_inc_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None))
-				self.label_lib.setText(QtGui.QApplication.translate("SettingsSetup", "Library", None))
-				self.btn_lib_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None))
-				self.label_nodes.setText(QtGui.QApplication.translate("SettingsSetup", "Nodes", None))
-				self.btn_nodes_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None))
-				self.label_shaders.setText(QtGui.QApplication.translate("SettingsSetup", "Shaders", None))
-				self.btn_shaders_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None))
-				self.label_textures.setText(QtGui.QApplication.translate("SettingsSetup", "Textures", None))
-				self.btn_textures_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None))
-				self.label_archives.setText(QtGui.QApplication.translate("SettingsSetup", "Archives", None))
-				self.btn_archives_dir.setText(QtGui.QApplication.translate("SettingsSetup", "...", None))
+				SettingsSetup.setWindowTitle(QtModule.QApplication.translate("SettingsSetup", "Settings Setup", None))
+				self.grp_dirs.setTitle(QtModule.QApplication.translate("SettingsSetup", "Directories", None))
+				self.label_temp.setText(QtModule.QApplication.translate("SettingsSetup", "Temp", None))
+				self.btn_temp_dir.setText(QtModule.QApplication.translate("SettingsSetup", "...", None))
+				self.label_inc.setText(QtModule.QApplication.translate("SettingsSetup", "Includes", None))
+				self.btn_inc_dir.setText(QtModule.QApplication.translate("SettingsSetup", "...", None))
+				self.label_lib.setText(QtModule.QApplication.translate("SettingsSetup", "Library", None))
+				self.btn_lib_dir.setText(QtModule.QApplication.translate("SettingsSetup", "...", None))
+				self.label_nodes.setText(QtModule.QApplication.translate("SettingsSetup", "Nodes", None))
+				self.btn_nodes_dir.setText(QtModule.QApplication.translate("SettingsSetup", "...", None))
+				self.label_shaders.setText(QtModule.QApplication.translate("SettingsSetup", "Shaders", None))
+				self.btn_shaders_dir.setText(QtModule.QApplication.translate("SettingsSetup", "...", None))
+				self.label_textures.setText(QtModule.QApplication.translate("SettingsSetup", "Textures", None))
+				self.btn_textures_dir.setText(QtModule.QApplication.translate("SettingsSetup", "...", None))
+				self.label_archives.setText(QtModule.QApplication.translate("SettingsSetup", "Archives", None))
+				self.btn_archives_dir.setText(QtModule.QApplication.translate("SettingsSetup", "...", None))
 
