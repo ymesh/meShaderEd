@@ -34,8 +34,10 @@ else :
 	QtModule = QtWidgets
 
 root = normPath ( sys.path [0] )
+
 branchName = ''
 version = '0.3.4' + branchName
+
 __version__  = version
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
