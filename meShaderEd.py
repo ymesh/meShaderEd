@@ -3,7 +3,7 @@
  
  meShaderEd.py
 
- version 0.3.4b (?? Oct 2013)
+ version 0.3.5b (?? Oct 2013)
 
  Author: Yuri Meshalkin (aka mesh) (mesh@kpp.kiev.ua)
 
@@ -35,8 +35,7 @@ else :
 
 root = normPath ( sys.path [0] )
 branchName = ''
-version = '0.3.4' + branchName
-__version__  = version
+__version__ = '0.3.5b' + branchName
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
 																	QtCore.QSettings.UserScope,
@@ -182,7 +181,7 @@ def main () :
 	# 
 	app = QtModule.QApplication ( sys.argv )
 	
-	app_settings.setValue ( 'version', version )
+	app_settings.setValue ( 'version', __version__ )
 	app_settings.setValue ( 'root', normPath ( root ) )
 	project_filename = setDefaultValue ( 'project_filename', 'meshadered.prj' )
 
@@ -295,7 +294,7 @@ def main () :
 #
 if __name__ == "__main__":
 	#
-	print '* meShaderEd version %s' % version
+	print '* meShaderEd version %s' % __version__ 
 
 	if len( sys.argv ) > 1 :
 		if sys.argv [ 1 ].lower () == '-debug' or sys.argv [ 1 ].lower () == '-d':
