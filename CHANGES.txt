@@ -1,200 +1,201 @@
 meShaderEd changes log
 
-version 0.3.4 (?? Oct 2013)
-  - NodeEditorPanel renamed to NodeEditorDialog. Source code collected to gui/nodeEditor.
-    -- added tabs for "Event Code", "Param Code", "Node", "Param", "Link Info"
-    -- added "Event Handlers" list
-  - ExportShaderPanel renamed to ExportShaderDialog. Source code collected to gui/exportShader.
-    -- it allows to rename/edit shader parameters
-    -- export computed code to .sl file
-  - MainWindow:
-    -- Action "Command->View Computed Code" displays RSL or RIB code for selected node
-    -- Action "File->Save Selected As" saves nodenet or single node from selection.
-  - RSL and RIB code includes comment block header for each node 
-  
+version 0.3.4 (3 Oct 2015)
+	- the code is compatible with PyQt5 and PySide
+	- NodeEditorPanel renamed to NodeEditorDialog. Source code collected to gui/nodeEditor.
+		-- added tabs for "Event Code", "Param Code", "Node", "Param", "Link Info"
+		-- added "Event Handlers" list
+	- ExportShaderPanel renamed to ExportShaderDialog. Source code collected to gui/exportShader.
+		-- it allows to rename/edit shader parameters
+		-- export computed code to .sl file
+	- MainWindow:
+		-- Action "Command->View Computed Code" displays RSL or RIB code for selected node
+		-- Action "File->Save Selected As" saves nodenet or single node from selection.
+	- RSL and RIB code includes comment block header for each node 
+	
 version 0.3.3 (15 Oct 2013)
-  - Shader parameters names exported as (NodeLabel)_(ParamLabel)
-  - parameters names with provider == 'primitive' exported as (ParamLabel)
-  - Parameters labels in NodeParamView can change provider, detail and enabled status by CTRL+RMB, ALT+LMB and ALT+RMB
-  - For ControlParam, tag <control_code> changed to <code> (though <control_code> will work temporary)
-  - For all nodes, tag <param_code> changed to <control_code> (though <param_code> will work temporary)
-  - Service nodes (note, swatch, ...) moved to Node Library->utilites folder
-  - Added ${NODENETNAME} to node_global_vars.py
-  - Added ${OUTPUTNAME} to node_global_vars.py ( ${OUTPUTNAME} = ${TempPath}/${NODENETNAME}_${NODELABEL} )
-  - Generated .rib files and output images names now started with "NodenetName_" prefix  
-  - ImageViewer doesn't rerender images while switching between tabs 
-  - Nodes have new tag <event_code> with event handlers ( ParamLabelRenamed, ParamAdded, ParamRemoved ) 
-  - New ImageViewer node uses <event_code> handlers for dynamicaly adding, removing and renaming new image inputs
+	- Shader parameters names exported as (NodeLabel)_(ParamLabel)
+	- parameters names with provider == 'primitive' exported as (ParamLabel)
+	- Parameters labels in NodeParamView can change provider, detail and enabled status by CTRL+RMB, ALT+LMB and ALT+RMB
+	- For ControlParam, tag <control_code> changed to <code> (though <control_code> will work temporary)
+	- For all nodes, tag <param_code> changed to <control_code> (though <param_code> will work temporary)
+	- Service nodes (note, swatch, ...) moved to Node Library->utilites folder
+	- Added ${NODENETNAME} to node_global_vars.py
+	- Added ${OUTPUTNAME} to node_global_vars.py ( ${OUTPUTNAME} = ${TempPath}/${NODENETNAME}_${NODELABEL} )
+	- Generated .rib files and output images names now started with "NodenetName_" prefix  
+	- ImageViewer doesn't rerender images while switching between tabs 
+	- Nodes have new tag <event_code> with event handlers ( ParamLabelRenamed, ParamAdded, ParamRemoved ) 
+	- New ImageViewer node uses <event_code> handlers for dynamicaly adding, removing and renaming new image inputs
 
 version 0.3.2 (16 Jul 2013)
-  - "Fit All", "Fit Selected" actions implemented.
-  - CTRL+LMB on node parameter changes attribute "shaderParam" (white color for "shaderParam == True")
-  - CTRL+RMB toggles parameter provider "primitive"/"internal" (orange color for "primitive")
-  - ALT+LMB toggles parameter detail "uniform/varying" (italic for "varying") 
-  - Added ToolButton for show/hide connected parameter in NodeParamView
-  - NodeParamView has tabs for "Input", "Output" parameters
-  - NodeParamView header control for resizing labels column
-  - Parameters label can be edited by LMB+DblClick
+	- "Fit All", "Fit Selected" actions implemented.
+	- CTRL+LMB on node parameter changes attribute "shaderParam" (white color for "shaderParam == True")
+	- CTRL+RMB toggles parameter provider "primitive"/"internal" (orange color for "primitive")
+	- ALT+LMB toggles parameter detail "uniform/varying" (italic for "varying") 
+	- Added ToolButton for show/hide connected parameter in NodeParamView
+	- NodeParamView has tabs for "Input", "Output" parameters
+	- NodeParamView header control for resizing labels column
+	- Parameters label can be edited by LMB+DblClick
 
 version 0.3.1 (10 Jun 2013)
-  - ControlParam with special <control_code> section in XML, that allows to execute
-    python code for dynamic parameters manipulation 
-  - ShaderInfo class for parsing compiled shaders parameters
-  - Lib/RIB/shaders/ReadShader.xml node that uses ShaderInfo call inside <control_code> section
-    for reloading shader parameters
-  - NodeParam new attributes : enabled, spaceDef, arraySize, defaultArray, valueArray 
-    (though arrays parameters support is not fully implemented yet...)
-    btext (button text for button ControlParam)
-    removable (for removing dynamcally added parameters as in read_shader.xml example)
-  - Fixed some shading nodes, code, shaders and textures for Air, Aqsis, Pixie and RenderDotC compatibility 
-  - Tested on PyQt 4.10.2 that was linked with Qt 5.0.2 libraries.
-  - New service nodes in Library
-  
+	- ControlParam with special <control_code> section in XML, that allows to execute
+		python code for dynamic parameters manipulation 
+	- ShaderInfo class for parsing compiled shaders parameters
+	- Lib/RIB/shaders/ReadShader.xml node that uses ShaderInfo call inside <control_code> section
+		for reloading shader parameters
+	- NodeParam new attributes : enabled, spaceDef, arraySize, defaultArray, valueArray 
+		(though arrays parameters support is not fully implemented yet...)
+		btext (button text for button ControlParam)
+		removable (for removing dynamcally added parameters as in read_shader.xml example)
+	- Fixed some shading nodes, code, shaders and textures for Air, Aqsis, Pixie and RenderDotC compatibility 
+	- Tested on PyQt 4.10.2 that was linked with Qt 5.0.2 libraries.
+	- New service nodes in Library
+	
 version 0.3.0 (16 Apr 2013)
-  SwatchNode for image preview in shading network
-  Duplicate nodes with links
-  Clipboard (Copy/Cut/Paste) operations in XML format
-  NodeEditor saves changes to node.
-  Texture patterns and fractals from ShadeTree colection added to Library.
+	SwatchNode for image preview in shading network
+	Duplicate nodes with links
+	Clipboard (Copy/Cut/Paste) operations in XML format
+	NodeEditor saves changes to node.
+	Texture patterns and fractals from ShadeTree colection added to Library.
 
 version 0.2.9 (5 Apr 2013)
-  TextParam widget
-  NoteNode -- UI node for shading network description
-  ConnectorNode -- UI node for links organisation
-    Ctrl-drag (Mac: Cmd-drag) node parameter connector to create ConnectorNode
-  Actions:
-    - select all nodes (Cmd+A)
-    - select nodes below in hierarchy (Cmd+Dn)
-    - select nodes above in hierarchy (Cmd+Up)
-    - duplicate nodes (Cmd+D) (without connections yet)
-  Store Recent Networks in File menu
-  Store Recent Projects in File menu
-  Saving project description file 'meshadered.prj' in project root
-  Added new nodes to Library from DRL
-  Library folders rearranged a little bit
+	TextParam widget
+	NoteNode -- UI node for shading network description
+	ConnectorNode -- UI node for links organisation
+		Ctrl-drag (Mac: Cmd-drag) node parameter connector to create ConnectorNode
+	Actions:
+		- select all nodes (Cmd+A)
+		- select nodes below in hierarchy (Cmd+Dn)
+		- select nodes above in hierarchy (Cmd+Up)
+		- duplicate nodes (Cmd+D) (without connections yet)
+	Store Recent Networks in File menu
+	Store Recent Projects in File menu
+	Saving project description file 'meshadered.prj' in project root
+	Added new nodes to Library from DRL
+	Library folders rearranged a little bit
 
 version 0.2.8 (20 Jan 2013)
-  Few texture nodes were added to Library (analogs of some useful Slim nodes),
-  and a bunch of very interesting nodes from DRL (aka Lex Darlog)
-  Added shadow to GfxNode (9 Nov 2012)
-  Added curved links support (8 Nov 2012)
-  Added "Snap to grid" support (8 Nov 2012)
-  Added general functions for renaming nodes and parameters (2 Nov 2012)
-  Added space option support for parameters: (30 Oct 2012)
-   ["rgb", "hsv", "hsl", "xyz", "XYZ", "YIQ"] for color
-   ["current", "shader", "object", "camera", "world", "raster", "NDC", "screen"]
-   for point, vector, normal, matrix
-  And very annoying bug with lost links after saving was fixed. (I hope)
+	Few texture nodes were added to Library (analogs of some useful Slim nodes),
+	and a bunch of very interesting nodes from DRL (aka Lex Darlog)
+	Added shadow to GfxNode (9 Nov 2012)
+	Added curved links support (8 Nov 2012)
+	Added "Snap to grid" support (8 Nov 2012)
+	Added general functions for renaming nodes and parameters (2 Nov 2012)
+	Added space option support for parameters: (30 Oct 2012)
+	 ["rgb", "hsv", "hsl", "xyz", "XYZ", "YIQ"] for color
+	 ["current", "shader", "object", "camera", "world", "raster", "NDC", "screen"]
+	 for point, vector, normal, matrix
+	And very annoying bug with lost links after saving was fixed. (I hope)
 
 version 0.2.7 (29 Oct 2012)
-   ProjectSetup: Using relative pathes for resource directories (20 Sep 2012)
-   ImageView: Auto update checkbox (9 Oct 2012)
-   ImageView: Reset zoom button (9 Oct 2012)
-   NodeEditorWindow: replaced by NodeEditorPanel
-   Format of root RSL nodes was changed (previose shader networks needs to replace those nodes)
-   Added support for LightSource rib node in BascicPrimitive2
+	 ProjectSetup: Using relative pathes for resource directories (20 Sep 2012)
+	 ImageView: Auto update checkbox (9 Oct 2012)
+	 ImageView: Reset zoom button (9 Oct 2012)
+	 NodeEditorWindow: replaced by NodeEditorPanel
+	 Format of root RSL nodes was changed (previose shader networks needs to replace those nodes)
+	 Added support for LightSource rib node in BascicPrimitive2
 
 version 0.2.6 (29 Aug 2012)
-   Added nodeEditorWindow feature
+	 Added nodeEditorWindow feature
 
 version 0.2.5 (19 Jul 2012)
-  added icons in node description window
-  added ReadArchive node
-  root RSL nodes now have rib output instead of just shader name
-  some preview nodes removed. BasicPrimitive node has selector for
-  choosing primitive.
+	added icons in node description window
+	added ReadArchive node
+	root RSL nodes now have rib output instead of just shader name
+	some preview nodes removed. BasicPrimitive node has selector for
+	choosing primitive.
 
 version 0.2.0 (27 May 2012)
-     BUG: some links doesn't save in XML
-     create missing directories (tmp)       (16 May 2012)
-     compile shaders to target directories (16 May 2012)
-     enlarge checkbox width for OSX       (14 May 2012)
-     enlarge combobox height for OSX      (24 May 2012)
-     Import NodeNetwork from XML (27 May 2012)
-     Drag and drop NodeNetwork from XML (27 May 2012)
-     Drag and drop Node from XML (27 May 2012)
-     Open NodeNetwork from XML (27 May 2012)
-          NodeNetwork.normalizeNodeID (27 May 2012)
-          manage Node and NodeLink id inside NodeNetwork (27 May 2012)
-          NodeNetwork.open (26 May 2012)
-          NodeNetwork.parseFromXML (26 May 2012)
-          Node.parseFromXML (26 May 2012)
-          NodeParam.parseFromXML (26 May 2012)
-          NodeLink.parseFromXML (26 May 2012)
+		 BUG: some links doesn't save in XML
+		 create missing directories (tmp)       (16 May 2012)
+		 compile shaders to target directories (16 May 2012)
+		 enlarge checkbox width for OSX       (14 May 2012)
+		 enlarge combobox height for OSX      (24 May 2012)
+		 Import NodeNetwork from XML (27 May 2012)
+		 Drag and drop NodeNetwork from XML (27 May 2012)
+		 Drag and drop Node from XML (27 May 2012)
+		 Open NodeNetwork from XML (27 May 2012)
+					NodeNetwork.normalizeNodeID (27 May 2012)
+					manage Node and NodeLink id inside NodeNetwork (27 May 2012)
+					NodeNetwork.open (26 May 2012)
+					NodeNetwork.parseFromXML (26 May 2012)
+					Node.parseFromXML (26 May 2012)
+					NodeParam.parseFromXML (26 May 2012)
+					NodeLink.parseFromXML (26 May 2012)
 
-     Save NodeNetwork to XML (25 May 2012)
-          NodeNetwork.save  (23 May 2012)
-          NodeNetwork.parseToXML (25 May 2012)
-          Node.parseToXML (25 May 2012)
-          NodeParam.parseToXML (25 May 2012)
-          NodeLink.parseToXML (25 May 2012)
-     New scene in new tab     (23 May 2012)
-     Switch between tabs and keep correct state for Viewer panels (23 May 2012)
-          WorkArea: getImageNodes (23 May 2012
-     MainWindow: arrange DockPanels      (18 May 2012)
-     RendererSetup: comma separated list for defines (20 May 2012)
-     MainWindow: SettingsSetup Ui      (22 May 2012)
-     ProjectSetup
-          manage directories     (17 May 2012)
+		 Save NodeNetwork to XML (25 May 2012)
+					NodeNetwork.save  (23 May 2012)
+					NodeNetwork.parseToXML (25 May 2012)
+					Node.parseToXML (25 May 2012)
+					NodeParam.parseToXML (25 May 2012)
+					NodeLink.parseToXML (25 May 2012)
+		 New scene in new tab     (23 May 2012)
+		 Switch between tabs and keep correct state for Viewer panels (23 May 2012)
+					WorkArea: getImageNodes (23 May 2012
+		 MainWindow: arrange DockPanels      (18 May 2012)
+		 RendererSetup: comma separated list for defines (20 May 2012)
+		 MainWindow: SettingsSetup Ui      (22 May 2012)
+		 ProjectSetup
+					manage directories     (17 May 2012)
 
-     Nodes Library panel        (22 May 2012)
-          Refresh button           (22 May 2012)
-          setActiveNodeList for nodeList panels (23 May 2012)
-     Project Networks panel    (22 May 2012)
-     RSLNode
-          Fix old ShaderLink nodes     (14 May 2012)
-          Nodes code hierarchy ( LIFO ) (14 May 2012)
-          include support     (14 May 2012)
-          comma separated list for includes                          (20 May 2012)
-          preserve include and output variable redefinition   (20 May 2012)
-          Displacement node (24 May 2012)
-          AOV support      (20 May 2012)
-          Textures.Shapes: Circle (23 May 2012)
-     RIBNode
-          BasicTorus     (16 May 2012)
-          BasicCylinder     (22 May 2012)
-          BasicPlane    (22 May 2012)
+		 Nodes Library panel        (22 May 2012)
+					Refresh button           (22 May 2012)
+					setActiveNodeList for nodeList panels (23 May 2012)
+		 Project Networks panel    (22 May 2012)
+		 RSLNode
+					Fix old ShaderLink nodes     (14 May 2012)
+					Nodes code hierarchy ( LIFO ) (14 May 2012)
+					include support     (14 May 2012)
+					comma separated list for includes                          (20 May 2012)
+					preserve include and output variable redefinition   (20 May 2012)
+					Displacement node (24 May 2012)
+					AOV support      (20 May 2012)
+					Textures.Shapes: Circle (23 May 2012)
+		 RIBNode
+					BasicTorus     (16 May 2012)
+					BasicCylinder     (22 May 2012)
+					BasicPlane    (22 May 2012)
 
-     ParamWidget
-          (int, float) slider subtype      (20 May 2012)
+		 ParamWidget
+					(int, float) slider subtype      (20 May 2012)
 
  version 0.1.0 (13 May 2012)
-      BUG: some links doesn't remove with bunch of nodes and links selected (27 May 2012)
-      define classes for parameters and shaders
-      Node panel
-          RSLNode Library
-          RIBNode Library
-          ImageNode Library
-      NodeLink
-      NodeParam panel
-          Rename node label
-           ParamWidget
-               'is shader parameter' flag
-               attribute subtype
-               switch subtype
-               selector subtype
-               file subtype
-               ColorWidget
-               MatrixWidget
-               Point/Normal/VectorWidget
-      PreviewPanel
-      Description panel
-      ProjectSetup dialog
-      RendererSetup dialog
-      RSLNode
-      RIBNode
-          BasicSphere
-          BasicSphere_aov
-          BasicTeapot
-      ImageNode
-          viewer
-          selector (8 input images)
-      Work Area
-           grid BG
-           GfxNode
-           GfxNodeLabel
-           GfxNodeConnector
-           GfxLink
-           Navigation
+			BUG: some links doesn't remove with bunch of nodes and links selected (27 May 2012)
+			define classes for parameters and shaders
+			Node panel
+					RSLNode Library
+					RIBNode Library
+					ImageNode Library
+			NodeLink
+			NodeParam panel
+					Rename node label
+					 ParamWidget
+							 'is shader parameter' flag
+							 attribute subtype
+							 switch subtype
+							 selector subtype
+							 file subtype
+							 ColorWidget
+							 MatrixWidget
+							 Point/Normal/VectorWidget
+			PreviewPanel
+			Description panel
+			ProjectSetup dialog
+			RendererSetup dialog
+			RSLNode
+			RIBNode
+					BasicSphere
+					BasicSphere_aov
+					BasicTeapot
+			ImageNode
+					viewer
+					selector (8 input images)
+			Work Area
+					 grid BG
+					 GfxNode
+					 GfxNodeLabel
+					 GfxNodeConnector
+					 GfxLink
+					 Navigation
 
  version 0.0.1 (5 Mar 2011)

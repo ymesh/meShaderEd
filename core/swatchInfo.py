@@ -1,17 +1,17 @@
 #===============================================================================
-# swatch.py
+# swatchinfo.py
 #
 #
 #
 #===============================================================================
 import os, sys
-from PyQt4 import QtCore
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore
 
 from global_vars import app_global_vars, DEBUG_MODE
 from core.node_global_vars import node_global_vars
 import gui.ui_settings as UI
 #
-# Node
+# SwatchInfo
 #
 class SwatchInfo ( QtCore.QObject ) :
   #

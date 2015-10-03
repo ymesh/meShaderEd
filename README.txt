@@ -18,12 +18,12 @@ Written by Yuri.Meshalkin (mesh@kpp.kiev.ua)
  To start this program -- run: python ./meShaderEd.py
  
  Supported OS: Windows, MacOSX, Linux
- (Tested on : Win7(Win8), OSX Lion 10.7(10.8), Ubuntu 12.04)  
+ (Tested on : Win7(Win8), OSX Lion 10.7(10.10), Ubuntu 12.04)  
  
  Software requirements:
  
  Python (2.5 - 2.7)
- PyQt 
+ PyQt (PyQt4, PyQt5, PySide)
  PIL (only for Windows)
   
 meShaderEd supports all Renderman compliant renderers and shader compilers,

@@ -1,0 +1,740 @@
+<!DOCTYPE example_001>
+<nodenet author="meShaderEd" name="example_001">
+ <help>Short NodeNetwork description</help>
+ <nodes>
+  <node icon="" author="mesh" id="1" label="imageViewer" name="imageViewer" type="image">
+   <help>Image viewer with dynamicaly added inputs</help>
+   <input>
+    <property value="" btext="Add" subtype="button" provider="attribute" label="Image input" default="" name="add_image" type="control">
+     <code>
+#print ":: Hello from (%s) XML control param code !!!" % self.label
+from core.params.imageNodeParam import ImageNodeParam
+lastNonremovableParam = node.getInputParamByName ( 'selector' )
+lastNonremovableParamIdx = node.inputParams.index ( lastNonremovableParam )
+lastParamIdx = len ( node.inputParams ) 
+suffixIdx = lastParamIdx - lastNonremovableParamIdx
+
+newParam = ImageNodeParam ()
+newParam.setup ( 'image' + str ( suffixIdx ), '', '', '' )
+newParam.value = ''
+newParam.default = ''
+newParam.subtype="file"
+newParam.range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"
+newParam.removable = True
+node.addInputParam ( newParam )
+node.updateNodeParams ()
+
+
+</code>
+    </property>
+    <property range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg" value="" subtype="file" label="Image" default="" name="image" type="image"/>
+    <property range="Image=image" value="image" subtype="selector" provider="attribute" label="Select input" default="image" name="selector" type="string"/>
+   </input>
+   <output/>
+   <internal/>
+   <include/>
+   <control_code><![CDATA[
+#print ":: Hello from (%s) XML control_code !!!" % self.label
+selectedInput = self.getInputParamByName ( 'selector' ).value
+print '* selectedInput = %s' % selectedInput 
+self.imageName = self.getInputParamValueByName ( selectedInput )
+
+]]></control_code>
+   <event_code>
+    <handler name="ParamAdded"><![CDATA[#print ":: Hello from ParamAdded handler" 
+#print ":: param.label = %s type = %s" % ( param.label, param.type )
+selector = self.getInputParamByName ( 'selector' )
+selector.range += ':%s=%s' % ( param.label, param.name ) 
+
+]]></handler>
+    <handler name="ParamLabelRenamed"><![CDATA[#print ":: Hello from ParamLabelRenamed handler"  
+#print ":: param.label = %s oldName = %s" % ( param.label, oldLabel )
+if param.type == 'image' :
+  selector = self.getInputParamByName ( 'selector' ) 
+  selector.renameItemInRange ( oldLabel, param.label )    
+
+]]></handler>
+    <handler name="ParamRemoved"><![CDATA[#print ":: Hello from ParamRemoved handler" 
+#print ":: param.label = %s type = %s" % ( param.label, param.type ) 
+selector = self.getInputParamByName ( 'selector' ) 
+selector.removeItemFromRange ( param.label )    
+
+]]></handler>
+   </event_code>
+   <offset y="-200" x="120"/>
+  </node>
+  <node icon="" author="mesh" id="2" label="BasicPreview" name="BasicPreview" type="rib">
+   <help>Basic preview RIB with geometry primitive, 2 distant and 1 environment light</help>
+   <input>
+    <property value="" label="Render Options" default="" name="Globals" type="rib"/>
+    <property range="Sphere:Teapot:Cylinder:Torus:Plane" value="Teapot" subtype="selector" provider="attribute" label="Primitive" default="Sphere" name="Primitive" type="string"/>
+    <property range="tiff:framebuffer:it" value="tiff" subtype="selector" provider="attribute" label="Display Driver" default="tiff" name="DisplayDriver" type="string"/>
+    <property value="256" provider="attribute" label="Image width" default="256" name="Width" type="int"/>
+    <property value="256" provider="attribute" label="Image height" default="256" name="Height" type="int"/>
+    <property value="1.250" provider="attribute" label="EnvLight Intensity" default="1.250" name="EnvIntensity" type="float"/>
+    <property range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" value="kitchen_LL.hdr.tex" subtype="file" provider="attribute" label="Environment Map" default="kitchen_LL.hdr.tex" name="EnvMap" type="string"/>
+    <property value="0.000 0.000 1.000" provider="attribute" label="Color" default="0.000 0.000 1.000" name="Color" type="color"/>
+    <property value="1.000 1.000 1.000" provider="attribute" label="Opacity" default="1.000 1.000 1.000" name="Opacity" type="color"/>
+    <property value="0.500" provider="attribute" label="Displacement Bound" default="0.500" name="DisplaceBound" type="float"/>
+    <property value="Displacement &quot;null&quot;" label="Displace Shader" default="Displacement &quot;null&quot;" name="FG_disp" type="rib"/>
+    <property value="Surface &quot;defaultsurface&quot;" label="Surface Shader" default="Surface &quot;defaultsurface&quot;" name="FG_surf" type="rib"/>
+    <property value="Surface &quot;liquidchecker&quot;" label="Background Shader" default="Surface &quot;liquidchecker&quot;" name="BG_surf" type="rib"/>
+    <property display="0" value="&#xa;      Rotate 0 0 1 0&#xa;      AttributeBegin&#xa;        Scale 0.35 0.35 0.35&#xa;        Translate -0.6 -1 0&#xa;        Rotate 120 -1 0 0&#xa;        Rotate 30 0 0 1&#xa;        Geometry &quot;teapot&quot;&#xa;      AttributeEnd&#xa;      " provider="attribute" label="PrimitiveCode" default="" name="PrimitiveCode" type="string"/>
+   </input>
+   <output>
+    <property value="${OUTPUTNAME}.tif" label="ImageFile" default="${OUTPUTNAME}.tif" name="ImageFile" type="image"/>
+   </output>
+   <internal/>
+   <include/>
+   <control_code><![CDATA[
+print ":: Hello from %s XML code !!!" % self.label
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Sphere':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Sphere 1.0 -1.0 1.0 360"
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Teapot':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = """
+      Rotate 0 0 1 0
+      AttributeBegin
+        Scale 0.35 0.35 0.35
+        Translate -0.6 -1 0
+        Rotate 120 -1 0 0
+        Rotate 30 0 0 1
+        Geometry \"teapot\"
+      AttributeEnd
+      """
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Cylinder':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Cylinder 1 -0.5 0.5 360"
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Torus':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = """
+  Rotate 0 1 0 0
+  Torus 0.7 0.4 0.0 360 360
+  """
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = 'Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]'
+
+
+]]></control_code>
+   <code><![CDATA[
+  Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
+  Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
+  Option "searchpath" "archive" "&:@:.:~:${ArchiveSearchPath}:${ProjectSearchPath}"
+
+  $(Globals)
+
+
+  ### Output image
+  Display "$(ImageFile)" "$(DisplayDriver)" "rgba"
+
+  Format $(Width) $(Height) 1.0
+
+  Projection "perspective" "fov" 45
+  Translate 0 0 3.0
+
+  Attribute "displacementbound" "float sphere" [$(DisplaceBound)]
+
+  WorldBegin
+
+    ReverseOrientation
+
+    TransformBegin
+      Rotate -90 1 0 0
+      CoordinateSystem "_environment"
+    TransformEnd
+
+    LightSource "distantlight" 1 "intensity" 1.0 "from" [-2 2 -3] "to" [0 0 0]
+    LightSource "distantlight" 2 "intensity" 0.4 "from" [6 -3 0] "to" [0 0 0]
+    LightSource "meEnvLight" 3  "uniform float Intensity" [$(EnvIntensity)]
+                                "uniform string meEnvMap_EnvMap" ["$(EnvMap)"]
+                                "uniform string meEnvMap_Space" ["_environment"]
+
+    AttributeBegin
+
+
+
+      Color [$(Color)]
+      Opacity [$(Opacity)]
+
+      $(FG_disp)
+      $(FG_surf)
+
+      $(PrimitiveCode)
+
+    AttributeEnd
+
+    AttributeBegin
+      Scale 7 7 7
+      Translate 0 0 2
+      $(BG_surf)
+
+      Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
+    AttributeEnd
+
+  WorldEnd
+  ]]></code>
+   <offset y="-200" x="-40"/>
+  </node>
+  <node icon="" author="mesh" id="3" label="surf" name="surface" type="surface">
+   <help>Basic surface shader.</help>
+   <input>
+    <property value="color(0.000,0.333,1.000)" label="Ci" shaderParam="1" default="color(0.000,0.000,0.000)" name="Ci" type="color"/>
+    <property value="color(1.000,1.000,1.000)" label="Oi" default="color(1.000,1.000,1.000)" name="Oi" type="color"/>
+   </input>
+   <output>
+    <property value="Surface &quot;${NODELABEL}&quot;" label="surface" default="Surface &quot;${NODELABEL}&quot;" name="surface" type="rib"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+#define SURFACE_SHADER ${INSTANCENAME}
+surface ${INSTANCENAME} ( 
+${PARAMS} 
+)
+{
+  /* CODE BEGIN ${INSTANCENAME} */
+  Ci = $(Ci) * $(Oi); 
+  Oi = $(Oi);
+  /* CODE END ${INSTANCENAME} */
+}
+	]]></code>
+   <offset y="-220" x="-220"/>
+  </node>
+  <node icon="" author="Pixar" id="4" label="SurfaceP" name="SurfaceP" type="rsl_code">
+   <help>Returns the 3D point on the surface of your object.</help>
+   <input>
+    <property value="" label="Space" detail="uniform" default="" name="Space" type="string">
+     <help>The name of a coordinate system for the manifold.
+		    In addition to your custom coordinate systems
+		    you can use "current", "world", "object", "shader"
+		    and "NDC" (screen coordinates).</help>
+    </property>
+    <property range="0 10 .001" value="1.000" subtype="slider" label="Frequency" default="1.000" name="Frequency" type="float">
+     <help>Controls the scale of the manifold.  Note
+		    that increasing the frequency of the manifold will result
+		    in decreasing the scale of a feature.</help>
+    </property>
+    <property value="1.000" subtype="switch" label="IgnorePref" default="1.000" name="IgnorePref" type="float">
+     <help>If you have attached __Pref geometry and,
+		    for debugging purposes, want to ignore it, click
+		    here.  Note that it's much more efficient to simply
+		    remove the reference geometry if it's not needed.</help>
+    </property>
+    <property value="point(-1.000,-1.000,-1.000)" provider="primitive" label="__Pref" detail="varying" default="point(-1.000,-1.000,-1.000)" name="__Pref" type="point"/>
+   </input>
+   <output>
+    <property value="point(0.000,0.000,0.000)" label="Q" default="point(0.000,0.000,0.000)" name="Q" type="point"/>
+    <property value="vector(0.000,0.000,0.000)" label="duQ" default="vector(0.000,0.000,0.000)" name="duQ" type="vector"/>
+    <property value="vector(0.000,0.000,0.000)" label="dvQ" default="vector(0.000,0.000,0.000)" name="dvQ" type="vector"/>
+   </output>
+   <internal>
+    <variable name="sys"/>
+   </internal>
+   <include/>
+   <code><![CDATA[
+
+	uniform string $(sys);
+	
+	if ( $(Space) == "" )
+    $(sys) = "shader";
+  else
+    $(sys) = $(Space);
+      
+  if ( xcomp(__Pref) == -1e10 || $(IgnorePref) != 0 )
+  {
+    $(Q) = $(Frequency) * transform( $(sys), P );
+  	$(duQ) = vtransform( $(sys), dPdu * du * $(Frequency) );
+  	$(dvQ) = vtransform( $(sys), dPdv * dv * $(Frequency) );
+  }
+  else 
+  {
+    $(Q) = $(Frequency) * transform( $(sys), __Pref );
+    $(duQ) = vector Du( $(Q) ) * du;
+    $(dvQ) = vector Dv( $(Q) ) * dv;
+  }
+	]]></code>
+   <offset y="-150" x="-740"/>
+  </node>
+  <node icon="FilteredNoiseC.png" author="Pixar" id="5" label="FilteredNoiseC" name="FilteredNoiseC" type="rsl_code">
+   <help>Color filtered noise.</help>
+   <input>
+    <property range="0 100 .1" value="6.000" subtype="slider" label="frequency" default="1.000" name="frequency" type="float"/>
+    <property value="point(0.000,0.000,0.000)" label="Q" default="point(0.000,0.000,0.000)" name="Q" type="point"/>
+    <property value="vector(0.000,0.000,0.000)" label="duQ" default="vector(0.000,0.000,0.000)" name="duQ" type="vector"/>
+    <property value="vector(0.000,0.000,0.000)" label="dvQ" default="vector(0.000,0.000,0.000)" name="dvQ" type="vector"/>
+   </input>
+   <output>
+    <property value="color(0.000,0.000,0.000)" label="result" default="color(0.000,0.000,0.000)" name="result" type="color"/>
+   </output>
+   <internal>
+    <variable name="pp"/>
+    <variable name="dppu"/>
+    <variable name="dppv"/>
+   </internal>
+   <include>
+    <file name="pxslUtil.h"/>
+   </include>
+   <code><![CDATA[
+	  point $(pp) = $(frequency) * $(Q);
+    vector $(dppu) = $(frequency) * $(duQ);
+    vector $(dppv) = $(frequency) * $(dvQ);
+    $(result) = pxslFilteredCNoise ( $(pp), $(dppu), $(dppv) );
+]]></code>
+   <offset y="-110" x="-580"/>
+  </node>
+  <node icon="blinn.png" author="Alexei Puzikov" id="6" label="blinn" name="blinn" type="rsl_code">
+   <help>Blinn illumination model.</help>
+   <input>
+    <property value="color(0.000,0.500,1.000)" label="SurfaceColor" default="color(0.000,0.500,1.000)" name="SurfaceColor" type="color"/>
+    <property value="1.000" label="diffuseCoeff" default="0.800" name="diffuseCoeff" type="float"/>
+    <property value="color(0.000,0.000,0.000)" label="ambientColor" default="color(0.000,0.000,0.000)" name="ambientColor" type="color"/>
+    <property value="color(0.000,0.000,0.000)" label="incandescence" default="color(0.000,0.000,0.000)" name="incandescence" type="color"/>
+    <property value="0.000" label="translucence" default="0.000" name="translucence" type="float"/>
+    <property value="color(0.500,0.500,0.500)" label="specularColor" default="color(0.500,0.500,0.500)" name="specularColor" type="color"/>
+    <property value="0.300" label="eccentricity" default="0.300" name="eccentricity" type="float"/>
+    <property value="0.700" label="specularRollOff" default="0.700" name="specularRollOff" type="float"/>
+   </input>
+   <output>
+    <property value="color(0.000,0.000,0.000)" label="outColor" default="color(0.000,0.000,0.000)" name="outColor" type="color"/>
+   </output>
+   <internal>
+    <variable name="Nf"/>
+    <variable name="H"/>
+    <variable name="Ln"/>
+    <variable name="E"/>
+    <variable name="V"/>
+    <variable name="Ia"/>
+    <variable name="Id"/>
+    <variable name="Itr"/>
+    <variable name="Is"/>
+    <variable name="NH"/>
+    <variable name="NH2"/>
+    <variable name="NHSQ"/>
+    <variable name="Dd"/>
+    <variable name="Gg"/>
+    <variable name="VN"/>
+    <variable name="VH"/>
+    <variable name="LN"/>
+    <variable name="Ff"/>
+    <variable name="tmp"/>
+   </internal>
+   <include/>
+   <code><![CDATA[ 
+ normal $(Nf);
+ vector $(H), $(Ln), $(V);
+ color $(Ia), $(Id), $(Itr), $(Is);
+ float $(NH), $(NH2), $(NHSQ), $(Dd), $(Gg), $(VN), $(VH), $(LN), $(Ff), $(tmp);
+ float $(E)= 1 / ($(eccentricity) * $(eccentricity)- 1);
+  
+ $(Nf)= faceforward(normalize(N), I);
+ $(Ia)= ambient() + $(ambientColor);
+ $(Id)= $(diffuseCoeff)* diffuse($(Nf));
+ 
+ $(Itr)= 0;
+ if ($(translucence)!= 0) {
+  illuminance(P, $(Nf), PI)
+  $(Itr)+= Cl;
+  $(Itr)*= $(translucence);
+ }
+ 
+ $(Is)= 0;
+ $(V)= normalize(-I);
+ $(VN)= $(V).$(Nf);
+ illuminance(P, $(Nf), PI * 0.5) {
+  $(Ln)= normalize(L);
+  $(H)= normalize($(Ln)+$(V));
+  $(NH)= $(Nf).$(H);
+  $(NHSQ)= $(NH)*$(NH);
+  $(NH2)= $(NH)* 2;
+  $(Dd)= ($(E)+1) / ($(NHSQ)+ $(E));
+  $(Dd)*= $(Dd);
+  $(VH)= $(V).$(H);
+  $(LN)= $(Ln).$(Nf);
+  if ($(VN) < $(LN)) {
+   if ($(VN)* $(NH2) < $(VH))
+   $(Gg)= $(NH2)/ $(VH);
+   else
+   $(Gg)= 1 / $(VN);
+   }
+  else {
+   if ($(LN)* $(NH2) < $(VH))
+   $(Gg)= ($(LN)* $(NH2)) / ($(VH)* $(VN));
+  else
+  $(Gg)= 1 / $(VN);
+ }
+ $(tmp)= pow((1 - $(VH)), 3);
+ $(Ff)= $(tmp)+ (1 - $(tmp)) * $(specularRollOff);
+ $(Is)+= Cl * $(Dd)* $(Gg)* $(Ff);
+ }
+ $(Is)*= $(specularColor);
+ 
+ $(outColor)= $(SurfaceColor)* ($(Ia) + $(Id) + $(Itr) + $(incandescence)+ $(Is));
+]]></code>
+   <offset y="-130" x="-420"/>
+  </node>
+  <node icon="" author="mesh" id="7" label="note" name="note" type="note">
+   <help>Text note</help>
+   <input>
+    <property value="color(0.700,0.000,0.000)" provider="attribute" label="Text Color" default="color(0.700,0.000,0.000)" name="text_color" type="color"/>
+    <property value="color(1.000,1.000,0.000)" provider="attribute" label="Background" default="color(1.000,1.000,0.000)" name="bg_color" type="color"/>
+    <property range="0 1 0.1" value="0.500" subtype="slider" provider="attribute" label="Opacity" default="0.500" name="opacity" type="float"/>
+    <property value="1" subtype="switch" provider="attribute" label="Show Border" default="1" name="border" type="int"/>
+    <property range="left:center:right" value="0" subtype="selector" provider="attribute" label="justify" default="0" name="justify" type="int"/>
+    <property value="This is basic example of RIB and RSL&#xa;nodes usage" provider="attribute" label="text" default="Write here some notes &#xa;or  network description ..." name="text" type="text"/>
+   </input>
+   <output/>
+   <internal/>
+   <include/>
+   <offset y="-340" x="-30"/>
+  </node>
+  <node icon="" author="mesh" id="34" label="swatchDisplace" name="swatchDisplace" type="displacement">
+   <help>Swatch displacement shader.</help>
+   <input>
+    <property value="point(0.000,0.000,0.000)" label="P" default="point(0.000,0.000,0.000)" name="P" type="point"/>
+    <property value="normal(0.000,1.000,0.000)" label="N" default="normal(0.000,1.000,0.000)" name="N" type="normal"/>
+   </input>
+   <output>
+    <property value="Displacement &quot;${NODELABEL}&quot;" label="disp" default="Displacement &quot;${NODELABEL}&quot;" name="disp" type="rib"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+#define DISPLACEMENT_SHADER ${INSTANCENAME}
+displacement ${INSTANCENAME} ( 
+${PARAMS} 
+)
+{
+/* CODE BEGIN ${INSTANCENAME} */
+   P = $(P); 
+	 N = $(N);
+/* CODE END ${INSTANCENAME} */
+}		
+	]]></code>
+   <offset y="-30" x="-220"/>
+  </node>
+  <node icon="" author="mesh" id="15" label="swatchSurface" name="swatchSurface" type="surface">
+   <help>Swatch surface shader.</help>
+   <input>
+    <property value="color(0.000,0.000,0.000)" label="Ci" default="color(0.000,0.000,0.000)" name="Ci" type="color"/>
+    <property value="color(1.000,1.000,1.000)" label="Oi" default="color(1.000,1.000,1.000)" name="Oi" type="color"/>
+   </input>
+   <output>
+    <property value="Surface &quot;${NODELABEL}&quot;" label="surface" default="Surface &quot;${NODELABEL}&quot;" name="surface" type="rib"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+#define SURFACE_SHADER ${INSTANCENAME}
+surface ${INSTANCENAME} ( 
+${PARAMS} 
+)
+{
+  /* CODE BEGIN ${INSTANCENAME} */
+  Ci = $(Ci) * $(Oi); 
+  Oi = $(Oi);
+  /* CODE END ${INSTANCENAME} */
+}
+	]]></code>
+   <offset y="90" x="-220"/>
+  </node>
+  <node icon="" author="mesh" id="16" label="swatchRib" name="swatchRib" type="rib">
+   <help>Basic primitive preview RIB for swatch node</help>
+   <input>
+    <property value="0" subtype="switch" provider="attribute" label="Raytrace" default="0" name="Raytrace" type="int"/>
+    <property range="Sphere:Teapot:Cylinder:Torus:Plane" value="Teapot" subtype="selector" provider="attribute" label="Primitive" default="Sphere" name="Primitive" type="string"/>
+    <property value="256" provider="attribute" label="Size" default="256" name="Size" type="int"/>
+    <property value="1.000" provider="attribute" label="Shading rate" default="1.000" name="ShadingRate" type="float"/>
+    <property value="1.250" provider="attribute" label="EnvLight Intensity" default="1.250" name="EnvIntensity" type="float"/>
+    <property range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" value="kitchen_LL.hdr.tex" subtype="file" provider="attribute" label="Environment Map" default="kitchen_LL.hdr.tex" name="EnvMap" type="string"/>
+    <property value="0.000 0.000 1.000" provider="attribute" label="Color" default="0.000 0.000 1.000" name="Color" type="color"/>
+    <property value="1.000 1.000 1.000" provider="attribute" label="Opacity" default="1.000 1.000 1.000" name="Opacity" type="color"/>
+    <property value="0.500" provider="attribute" label="Displacement Bound" default="0.500" name="DisplaceBound" type="float"/>
+    <property value="Displacement &quot;null&quot;" label="Displace Shader" default="Displacement &quot;null&quot;" name="FG_disp" type="rib"/>
+    <property value="Surface &quot;defaultsurface&quot;" label="Surface Shader" default="Surface &quot;defaultsurface&quot;" name="FG_surf" type="rib"/>
+    <property range="null:liquidchecker:stTexture" value="liquidchecker" subtype="selector" provider="attribute" label="Background Shader" default="liquidchecker" name="BG_surf" type="string"/>
+    <property display="0" value="liquidchecker" provider="attribute" label="BG_surf_name" default="" name="BG_surf_name" type="string"/>
+    <property display="0" value="&#xa;      Rotate 0 0 1 0&#xa;      AttributeBegin&#xa;        Scale 0.35 0.35 0.35&#xa;        Translate -0.6 -1 0&#xa;        Rotate 120 -1 0 0&#xa;        Rotate 30 0 0 1&#xa;        Geometry &quot;teapot&quot;&#xa;      AttributeEnd&#xa;      " provider="attribute" label="PrimitiveCode" default="" name="PrimitiveCode" type="string"/>
+    <property display="0" value="" provider="attribute" label="RaytraceCode" default="" name="RaytraceCode" type="string"/>
+   </input>
+   <output>
+    <property value="${OUTPUTNAME}.tif" label="ImageFile" default="${OUTPUTNAME}.tif" name="ImageFile" type="image"/>
+   </output>
+   <internal/>
+   <include/>
+   <control_code><![CDATA[
+print ":: Hello from %s XML code !!!" % self.label
+
+if self.getInputParamByName ( 'Raytrace' ).value == 1 :
+  self.getInputParamByName ( 'RaytraceCode' ).value = """
+  Option "trace" "int maxdepth" [4]
+  Attribute "visibility" "int trace" [1]
+  Attribute "visibility" "int transmission" [1]
+  Attribute "visibility" "int diffuse" [1]
+  Attribute "visibility" "int specular" [1]
+  Attribute "trace" "int displacements" [1]
+  Attribute "trace" "int maxdiffusedepth" [1]
+  Attribute "trace" "int maxspeculardepth" [4]
+  """
+else :
+  self.getInputParamByName ( 'RaytraceCode' ).value = ''
+  
+if self.getInputParamByName ( 'Primitive' ).value == 'Sphere':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Sphere 1.0 -1.0 1.0 360"
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Teapot':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = """
+      Rotate 0 0 1 0
+      AttributeBegin
+        Scale 0.35 0.35 0.35
+        Translate -0.6 -1 0
+        Rotate 120 -1 0 0
+        Rotate 30 0 0 1
+        Geometry \"teapot\"
+      AttributeEnd
+      """
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Cylinder':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = "Rotate 60 1 0 0\n Cylinder 0.8 -0.8 0.8 360"
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Torus':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = """
+  Rotate 0 1 0 0
+  Torus 0.7 0.4 0.0 360 360
+  """
+
+if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
+  self.getInputParamByName ( 'PrimitiveCode' ).value = 'Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]'
+
+if self.getInputParamByName ( 'BG_surf' ).value == 'null': self.getInputParamByName ( 'BG_surf_name' ).value = '"null"'
+if self.getInputParamByName ( 'BG_surf' ).value == 'liquidchecker': self.getInputParamByName ( 'BG_surf_name' ).value = '"liquidchecker"'
+if self.getInputParamByName ( 'BG_surf' ).value == 'stTexture': self.getInputParamByName ( 'BG_surf_name' ).value = '"sttexture" "texturename" "grid.tif"'
+
+
+
+]]></control_code>
+   <code><![CDATA[
+  Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
+  Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
+  Option "searchpath" "archive" "&:@:.:~:${ArchiveSearchPath}:${ProjectSearchPath}"
+  $(RaytraceCode)
+  Display "$(ImageFile)" "tiff" "rgba"
+  Format $(Size) $(Size) 1.0
+  Projection "perspective" "fov" 45
+  Translate 0 0 3.0
+
+  WorldBegin
+    ShadingRate $(ShadingRate)
+    ReverseOrientation
+
+    TransformBegin
+      Rotate -90 1 0 0
+      CoordinateSystem "_environment"
+    TransformEnd
+
+    LightSource "distantlight" 1 "intensity" 1.0 "from" [-2 2 -3] "to" [0 0 0]
+    LightSource "distantlight" 2 "intensity" 0.4 "from" [6 -3 0] "to" [0 0 0]
+    LightSource "meEnvLight" 3  "uniform float Intensity" [$(EnvIntensity)]
+                                "uniform string meEnvMap_EnvMap" ["$(EnvMap)"]
+                                "uniform string meEnvMap_Space" ["_environment"]
+
+    AttributeBegin
+      Color [$(Color)]
+      Opacity [$(Opacity)]
+
+      $(FG_disp)
+      $(FG_surf)
+
+      $(PrimitiveCode)
+
+    AttributeEnd
+
+    AttributeBegin
+      Scale 7 7 7
+      Translate 0 0 2
+      Surface $(BG_surf_name)
+
+      Patch "bilinear" "P" [-1 1 0 1 1 0 -1 -1 0 1 -1 0]
+    AttributeEnd
+
+  WorldEnd
+  ]]></code>
+   <offset y="10" x="-50"/>
+  </node>
+  <node icon="" author="mesh" id="17" label="swatchNode" name="swatchNode" type="swatch">
+   <help>Swatch node viewer </help>
+   <input>
+    <property range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg" value="" subtype="file" label="image" default="" name="image" type="image"/>
+    <property range="64=64:80=80:128=128:160=160:256=256" value="128" subtype="selector" provider="attribute" label="size" default="80" name="size" type="int"/>
+   </input>
+   <output/>
+   <internal/>
+   <include/>
+   <control_code><![CDATA[
+
+print ":: Hello from %s XML code !!!" % self.label
+self.imageName = self.getInputParamValueByName ( 'image' ) 
+
+
+]]></control_code>
+   <offset y="0" x="90"/>
+  </node>
+  <node icon="" author="mesh" id="33" label="P" name="P" type="variable">
+   <help>Global point P.</help>
+   <input/>
+   <output>
+    <property value="point(0.000,0.000,0.000)" label="P" default="point(0.000,0.000,0.000)" name="P" type="point"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+	  #ifdef SURFACE_SHADER
+	  $(P) = P;
+	  #endif
+	  #ifdef DISPLACEMENT_SHADER
+	  $(P) = P;
+	  #endif
+	  #ifdef LIGHT_SHADER
+	  $(P) = Ps;
+	  #endif
+	  #ifdef VOLUME_SHADER
+	  $(P) = Pv;
+	  #endif
+	  ]]></code>
+   <offset y="-410" x="-570"/>
+  </node>
+  <node icon="" author="mesh" id="28" label="disp" name="displacement" type="displacement">
+   <help>Root displacement shader.</help>
+   <input>
+    <property value="point(0.000,0.000,0.000)" label="P" default="point(0.000,0.000,0.000)" name="P" type="point"/>
+    <property value="normal(0.000,1.000,0.000)" label="N" default="normal(0.000,1.000,0.000)" name="N" type="normal"/>
+   </input>
+   <output>
+    <property value="Displacement &quot;${NODELABEL}&quot;" label="disp" default="Displacement &quot;${NODELABEL}&quot;" name="disp" type="rib"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+#define DISPLACEMENT_SHADER ${INSTANCENAME}
+displacement ${INSTANCENAME} ( 
+${PARAMS} 
+)
+{
+/* CODE BEGIN ${INSTANCENAME} */
+   P = $(P); 
+	 N = $(N);
+/* CODE END ${INSTANCENAME} */
+}		
+	]]></code>
+   <offset y="-360" x="-220"/>
+  </node>
+  <node icon="" author="mesh" id="29" label="N" name="N" type="variable">
+   <help>Global normal N.</help>
+   <input/>
+   <output>
+    <property value="normal(0.000,0.000,0.000)" label="N" default="normal(0.000,0.000,0.000)" name="N" type="normal"/>
+   </output>
+   <internal/>
+   <include/>
+   <code><![CDATA[
+	#ifdef SURFACE_SHADER
+	  $(N) = N;
+	  #endif
+	  #ifdef DISPLACEMENT_SHADER
+	  $(N) = N;
+	  #endif
+	  #ifdef LIGHT_SHADER
+	  $(N) = Ns;
+	  #endif
+	  #ifdef VOLUME_SHADER
+	  $(N) = Nv;
+	  #endif
+	]]></code>
+   <offset y="-350" x="-570"/>
+  </node>
+  <node icon="FilteredNoiseF.png" author="Pixar" id="30" label="FilteredNoiseF" name="FilteredNoiseF" type="rsl_code">
+   <help>Float filtered noise.</help>
+   <input>
+    <property range="0 100 .1" value="12.000" subtype="slider" label="frequency" default="1.000" name="frequency" type="float"/>
+    <property value="point(0.000,0.000,0.000)" label="Q" default="point(0.000,0.000,0.000)" name="Q" type="point"/>
+    <property value="vector(0.000,0.000,0.000)" label="duQ" default="vector(0.000,0.000,0.000)" name="duQ" type="vector"/>
+    <property value="vector(0.000,0.000,0.000)" label="dvQ" default="vector(0.000,0.000,0.000)" name="dvQ" type="vector"/>
+   </input>
+   <output>
+    <property value="0.000" label="result" default="0.000" name="result" type="float"/>
+   </output>
+   <internal>
+    <variable name="pp"/>
+    <variable name="dppu"/>
+    <variable name="dppv"/>
+   </internal>
+   <include>
+    <file name="pxslUtil.h"/>
+   </include>
+   <code><![CDATA[
+	  point $(pp) = $(frequency) * $(Q);
+    vector $(dppu) = $(frequency) * $(duQ);
+    vector $(dppv) = $(frequency) * $(dvQ);
+    $(result) = pxslFilteredFNoise ( $(pp), $(dppu), $(dppv) );
+	  ]]></code>
+   <offset y="-270" x="-580"/>
+  </node>
+  <node icon="" author="DRL" id="31" label="displace" name="displace" type="rsl_code">
+   <help>Simple displacement shader.</help>
+   <input>
+    <property value="point(0.000,0.000,0.000)" label="P" default="point(0.000,0.000,0.000)" name="P" type="point"/>
+    <property value="normal(0.000,1.000,0.000)" label="N" default="normal(0.000,1.000,0.000)" name="N" type="normal"/>
+    <property value="-0.200" label="Kdisp" detail="uniform" default="1.000" name="Kdisp" type="float"/>
+    <property value="0.000" label="inputDisp" default="0.000" name="inputDisp" type="float"/>
+    <property value="object" label="dispSpace" detail="uniform" default="object" name="dispSpace" type="string">
+     <help>The space that displacement is performed in. 
+			You may want to set it to "world" to ignore object scale.</help>
+    </property>
+   </input>
+   <output>
+    <property value="point(0.000,0.000,0.000)" label="outP" default="point(0.000,0.000,0.000)" name="outP" type="point"/>
+    <property value="normal(0.000,1.000,0.000)" label="outN" default="normal(0.000,1.000,0.000)" name="outN" type="normal"/>
+   </output>
+   <internal>
+    <variable name="Ndiff"/>
+   </internal>
+   <include/>
+   <code><![CDATA[
+normal $(Ndiff) = normalize( $(N) ) - normalize(Ng);
+$(outP) = transform( $(dispSpace), $(P) );
+$(outN) = normalize(ntransform( $(dispSpace), $(N) ));
+
+$(outP) += $(Kdisp) * $(inputDisp) * $(outN);
+$(outP) = transform( $(dispSpace), "current", $(outP) );
+$(outN) = normalize(calculatenormal( $(outP) ));
+$(outN) += $(Ndiff);
+]]></code>
+   <offset y="-330" x="-420"/>
+  </node>
+ </nodes>
+ <links>
+  <link srcParam="ImageFile" dstNode_id="1" dstParam="image" id="1" srcNode_id="2"/>
+  <link srcParam="surface" dstNode_id="2" dstParam="FG_surf" id="2" srcNode_id="3"/>
+  <link srcParam="Q" dstNode_id="5" dstParam="Q" id="3" srcNode_id="4"/>
+  <link srcParam="duQ" dstNode_id="5" dstParam="duQ" id="4" srcNode_id="4"/>
+  <link srcParam="dvQ" dstNode_id="5" dstParam="dvQ" id="5" srcNode_id="4"/>
+  <link srcParam="outColor" dstNode_id="3" dstParam="Ci" id="6" srcNode_id="6"/>
+  <link srcParam="result" dstNode_id="6" dstParam="SurfaceColor" id="7" srcNode_id="5"/>
+  <link srcParam="ImageFile" dstNode_id="17" dstParam="image" id="15" srcNode_id="16"/>
+  <link srcParam="surface" dstNode_id="16" dstParam="FG_surf" id="16" srcNode_id="15"/>
+  <link srcParam="outP" dstNode_id="34" dstParam="P" id="20" srcNode_id="31"/>
+  <link srcParam="outN" dstNode_id="34" dstParam="N" id="21" srcNode_id="31"/>
+  <link srcParam="disp" dstNode_id="16" dstParam="FG_disp" id="22" srcNode_id="34"/>
+  <link srcParam="outN" dstNode_id="28" dstParam="N" id="27" srcNode_id="31"/>
+  <link srcParam="outColor" dstNode_id="15" dstParam="Ci" id="31" srcNode_id="6"/>
+  <link srcParam="outP" dstNode_id="28" dstParam="P" id="32" srcNode_id="31"/>
+  <link srcParam="result" dstNode_id="31" dstParam="inputDisp" id="33" srcNode_id="30"/>
+  <link srcParam="P" dstNode_id="31" dstParam="P" id="34" srcNode_id="33"/>
+  <link srcParam="N" dstNode_id="31" dstParam="N" id="35" srcNode_id="29"/>
+  <link srcParam="disp" dstNode_id="2" dstParam="FG_disp" id="51" srcNode_id="28"/>
+  <link srcParam="Q" dstNode_id="30" dstParam="Q" id="52" srcNode_id="4"/>
+  <link srcParam="duQ" dstNode_id="30" dstParam="duQ" id="53" srcNode_id="4"/>
+  <link srcParam="dvQ" dstNode_id="30" dstParam="dvQ" id="54" srcNode_id="4"/>
+ </links>
+</nodenet>

@@ -5,8 +5,8 @@
 """
 import os, sys
 
-from PyQt4 import QtCore, QtXml
-from PyQt4.QtCore import QDir, QFile, QVariant
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtXml
+#from PyQt4.QtCore import QDir, QFile, QVariant
 
 from node import *
 from nodes.rslNode import RSLNode
@@ -71,20 +71,14 @@ class NodeNetwork ( QtCore.QObject ) :
   def copySetup ( self, newNode ) :
     #
     if DEBUG_MODE : print '>> NodeNetwork( %s ).copySetup ' % self.label
-
     newNode.node_id = self.node_id
     newNode.link_id = self.link_id
-
     newNode.name = self.name
     newNode.fileName = self.fileName
-
     newNode.help = self.help
-
     newNode.isDirty = self.isDirty
-
     newNode.nodes = {}
     newNode.links = {}
-
   #
   # renameNodeLabel
   #
@@ -325,7 +319,7 @@ class NodeNetwork ( QtCore.QObject ) :
     dom = QtXml.QDomDocument ( self.name )
     self.parseToXML ( dom )
 
-    file = QFile ( self.fileName )
+    file = QtCore.QFile ( self.fileName )
     if file.open ( QtCore.QIODevice.WriteOnly ) :
       if file.write ( dom.toByteArray () ) != -1 :
         result = True
@@ -341,7 +335,7 @@ class NodeNetwork ( QtCore.QObject ) :
 
     dom = QtXml.QDomDocument ( self.name )
 
-    file = QFile ( fileName )
+    file = QtCore.QFile ( fileName )
     if file.open ( QtCore.QIODevice.ReadOnly ) :
       if dom.setContent ( file )  :
         self.fileName = fileName
@@ -357,7 +351,7 @@ class NodeNetwork ( QtCore.QObject ) :
         else :
           print '!! unknown XML document format'
         self.correct_id ( nodes, links )
-    file.close()
+    file.close ()
     #if DEBUG_MODE : print '>> NodeNetwork( %s ).open node_id = %d link_id = %d' % ( self.name, self.node_id, self.link_id )
     #if DEBUG_MODE : self.printInfo ()
     return ( nodes, links )
@@ -371,7 +365,7 @@ class NodeNetwork ( QtCore.QObject ) :
 
     dom = QtXml.QDomDocument ( self.name )
 
-    file = QFile ( fileName )
+    file = QtCore.QFile ( fileName )
     if file.open ( QtCore.QIODevice.ReadOnly ) :
       if dom.setContent ( file )  :
         root = dom.documentElement ()
@@ -386,7 +380,7 @@ class NodeNetwork ( QtCore.QObject ) :
           ( nodes, links ) = self.add ( nodeNet )
         else :
           print '!! unknown XML document format'
-    file.close()
+    file.close ()
     #if DEBUG_MODE : print '>> NodeNetwork( %s ).insert node_id = %d link_id = %d' % ( self.name, self.node_id, self.link_id )
     #if DEBUG_MODE : self.printInfo ()
     return ( nodes, links )
