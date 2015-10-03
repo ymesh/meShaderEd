@@ -540,47 +540,18 @@ class Node ( QtCore.QObject ) :
 		# Assume that all nodes without specified type, have to be 'node'
 		#
 		if self.type == '' or self.type is None : 
-				self.type = 'node'
+			self.type = 'node'
 		#
 		# try to convert from old format nodes
 		#
 		if self.version == '' or self.version is None :
-			print '!!!! old format node type = %s' % self.type
-			self.version = '1.0'
-			if self.type in [ 'node', 'image', 'surface', 'displacement', 'light', 'volume', 'rib', 'rib_code', 'rsl_code' ] :
-				if self.type == 'image' :
-					self.format = 'image'
-				elif self.type in ['surface', 'displacement', 'light', 'volume', 'rsl_code', 'node', 'rsl' ] :
-					self.format = 'rsl'
-				elif self.type in ['rib', 'rib_code'] :
-					self.format = 'rib'
-				self.type = 'node'
-			print '!!!! converted to type = %s format = %s' % ( self.type, self.format )
-
+			( self.type, self.format ) = translateOldType ( self.type )
+			
 		help_tag = xml_node.namedItem ( 'help' )
 		if not help_tag.isNull() :
 			self.help = help_tag.toElement ().text ()
 			#print '-> help= %s' % self.help
 		self.icon = str ( xml_node.attributes ().namedItem ( 'icon' ).nodeValue () )
-
-#    from core.nodeParam import *
-#    createParamTable = {   'float':FloatNodeParam
-#                            ,'int':IntNodeParam
-#                            ,'color':ColorNodeParam
-#                            ,'string':StringNodeParam
-#                            ,'normal':NormalNodeParam
-#                            ,'point':PointNodeParam
-#                            ,'vector':VectorNodeParam
-#                            ,'matrix':MatrixNodeParam
-#                            ,'surface':SurfaceNodeParam
-#                            ,'displacement':DisplacementNodeParam
-#                            ,'volume':VolumeNodeParam
-#                            ,'light':LightNodeParam
-#                            ,'rib':RibNodeParam
-#                            ,'text':TextNodeParam
-#                            ,'transform':TransformNodeParam
-#                            ,'image':ImageNodeParam
-#                         }
 
 		input_tag = xml_node.namedItem ( 'input' )
 		if not input_tag.isNull () :
@@ -971,4 +942,36 @@ def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
 	else :
 		print '* Error: unknown param type !'
 	return param
-
+#
+# translateOldType
+#
+def translateOldType ( old_node_type ) :
+	#
+	node_type = None
+	node_format = None
+	print ( '!!!! old format node type = %s' % old_node_type )
+	if old_node_type in [ '' , 'image', 'surface', 'displacement', 'light', 'volume', 'rib', 'rib_code', 'rsl', 'rsl_code', 'geom' ] :
+		if old_node_type == 'image' :
+			node_format = 'image'
+		elif old_node_type in [ '', 'surface', 'displacement', 'light', 'volume', 'rsl', 'rsl_code' ] :
+			node_format = 'rsl'
+		elif old_node_type in ['rib', 'rib_code'] :
+			node_format = 'rib'
+		elif old_node_type == 'geom' :
+			node_format = 'geom'
+		node_type = 'node'
+	elif old_node_type == 'variable' :
+		node_format = 'rsl'
+		node_type = 'variable'
+	elif old_node_type == 'note' :
+		node_format = 'note'
+		node_type = 'note'
+	elif old_node_type == 'swatch' :
+		node_format = 'image'
+		node_type = 'swatch'
+	elif old_node_type == 'connector' :
+		node_format = 'connector'
+		node_type = 'connector'
+		
+	print ( '!!!! converted to type = %s format = %s' % ( node_type, node_format ) )
+	return ( node_type, node_format )

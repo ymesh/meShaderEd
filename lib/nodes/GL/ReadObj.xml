@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<node name="ReadObj" author="mesh" type="node" format="geom" version="1.0">
+  <help>Read .obj file</help>
+  <input>
+    <property name="Read" label=".OBJ file" btext="Read" type="control" default="" provider="attribute" subtype="button">
+<control_code>
+<![CDATA[
+print ":: Hello from (%s) XML control_code !!!" % self.label
+if node is not None :
+  print ":: Node = %s" % node.label
+  from core.utils.objReader import ObjReader
+  objReader = ObjReader ( node.getInputParamByName ( 'file_name' ).value )
+
+  node.updateNode ()
+
+
+]]>
+</control_code>
+    </property>
+    <property name="file_name" label="File Name" type="string" default="" subtype="file" range="OBJ=*.obj:All files=*.*"/>
+  </input>
+  <output>
+    <property name="geometry" type="geom" default=""/>
+  </output>
+<control_code>
+<![CDATA[
+print ":: Hello from (%s) XML control_code !!!" % self.label
+
+
+]]>
+</control_code>
+
+<code>
+</code>
+</node>

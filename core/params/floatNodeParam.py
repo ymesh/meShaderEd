@@ -15,7 +15,8 @@ class FloatNodeParam ( NodeParam ) :
 	#
 	def __init__ ( self, xml_param = None, isRibParam = False ) :
 		#
-		super ( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
+		NodeParam.__init__ ( self, xml_param, isRibParam )
+		#super ( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
 		self.type = 'float'
 	#
 	# encodedTypeStr

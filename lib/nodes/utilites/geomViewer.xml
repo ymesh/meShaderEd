@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="geomViewer" author="mesh" type="geom">
+<node name="geomViewer" author="mesh" type="node" format="geom" version="1.0">
 	<help>GL geometry viewer </help>
 	<input>
     <property name="geom" type="geom" default=""/>		

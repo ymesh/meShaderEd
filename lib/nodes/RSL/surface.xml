@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 
 <node name="surface" label="surf" format="rsl" type="node" author="mesh" version="1.0">
-  <help>Surface shader begin node.</help>
+  <help>Root surface shader.</help>
   <input>
     <property name="Ci" shaderParam="1" type="color" default="color(0.0, 0.0, 0.0)" />
     <property name="Oi" shaderParam="1" type="color" default="color(1.0, 1.0, 1.0)" />

@@ -3,13 +3,9 @@
  nodeNetwork.py
 
 """
-import os, sys
-
 from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtXml
-#from PyQt4.QtCore import QDir, QFile, QVariant
 
 from node import *
-
 
 from nodes.rslNode       import RSLNode
 from nodes.ribCodeNode   import RIBCodeNode
@@ -473,22 +469,11 @@ def createNodeFromXML ( xml_node ) :
 	node_type = str ( xml_node.attributes ().namedItem ( 'type' ).nodeValue () )
 	node_format = str ( xml_node.attributes ().namedItem ( 'format' ).nodeValue () )
 	node_version = str ( xml_node.attributes ().namedItem ( 'version' ).nodeValue () )
-	
 	#
 	# try to convert from old format nodes
 	#
 	if node_version == '' or node_version is None :
-		print '!!!! old format node type = %s' % node_type
-		if node_type in [ '' , 'image', 'surface', 'displacement', 'light', 'volume', 'rib', 'rib_code', 'rsl', 'rsl_code' ] :
-			if node_type == 'image' :
-				node_format = 'image'
-			elif node_type in [ '', 'surface', 'displacement', 'light', 'volume', 'rsl', 'rsl_code' ] :
-				node_format = 'rsl'
-			elif node_type in ['rib', 'rib_code'] :
-				node_format = 'rib'
-			node_type = 'node'
-		print '!!!! converted to type = %s format = %s' % ( node_type, node_format )
-	
+		( node_type, node_format ) = translateOldType ( node_type )
 	node = None
 	createNode = None
 	if node_type == 'node' : 
@@ -498,6 +483,8 @@ def createNodeFromXML ( xml_node ) :
 			createNode = RIBNode
 		elif node_format == 'image' :
 			createNode = ImageNode
+		elif node_format == 'geom' :
+			createNode = GeomNode
 	elif node_type == 'connector' :
 		createNode = ConnectorNode
 	elif node_type == 'note' :
@@ -506,9 +493,11 @@ def createNodeFromXML ( xml_node ) :
 		createNode = SwatchNode 
 	elif node_type == 'nodegroup' :
 		from nodeGroup import *
-		createNode = NodeGroup 
-	# 'geom'        : GeomNode 
-								 
+		createNode = NodeGroup
+	elif node_type == 'variable' :
+		if node_format == 'rsl' :
+			createNode = RSLNode  
+
 	if createNode is not None :
 		node = createNode ( xml_node )
 	else :

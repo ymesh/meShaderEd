@@ -379,8 +379,8 @@ class MainWindow ( QtModule.QMainWindow ) :
 				if data.hasText () :
 					enableForPaste = True
 					
-		self.ui.actionExportShader.setEnabled ( selectedNodeType in VALID_RSL_SHADER_TYPES )
-		self.ui.actionViewComputedCode.setEnabled ( selectedNodeType in VALID_RSL_NODE_TYPES or selectedNodeType in VALID_RIB_NODE_TYPES )
+		self.ui.actionExportShader.setEnabled ( True ) #( selectedNodeType in VALID_RSL_SHADER_TYPES )
+		self.ui.actionViewComputedCode.setEnabled ( True ) #( selectedNodeType in VALID_RSL_NODE_TYPES or selectedNodeType in VALID_RIB_NODE_TYPES )
 		self.ui.actionSaveSelected.setEnabled ( numSelectedNodes > 0 )
 		self.ui.actionSelectAll.setEnabled ( numNodes > 0 )
 		self.ui.actionSelectAbove.setEnabled ( numSelectedNodes == 1 )
