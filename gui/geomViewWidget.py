@@ -19,12 +19,12 @@ else :
 #
 # GeomViewWidget
 #
-class GeomViewWidget ( QtGui.QWidget ):
+class GeomViewWidget ( QtModule.QWidget ):
 	#
 	# __init__
 	#
 	def __init__ ( self ):
-		QtGui.QWidget.__init__ ( self )
+		QtModule.QWidget.__init__ ( self )
 
 		# This is always the same
 		self.ui=Ui_geomViewWidget ( )
@@ -86,7 +86,7 @@ class GeomViewWidget ( QtGui.QWidget ):
 	def onViewerChanged ( self, idx ) :
 		#
 		if len ( self.imageNodes ) > 0 :
-			print ">> ImageViewWidget: onViewerChanged to %s" % self.imageNodes [ idx ].node.label
+			print ( ">> ImageViewWidget: onViewerChanged to %s" % self.imageNodes [ idx ].node.label )
 			#QtCore.QObject.connect( self.imageNodes[ idx ].node, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.onNodeParamChanged )
 			self.updateViewer()
 	#
@@ -94,15 +94,15 @@ class GeomViewWidget ( QtGui.QWidget ):
 	#
 	def updateViewer ( self ) :
 		#
-		print ">> ImageViewWidget: updateViewer"
+		print ( ">> ImageViewWidget: updateViewer" )
 		idx = self.ui.selector.currentIndex ()
 		if len ( self.imageNodes ) > 0 :
 			gfxNode = self.imageNodes [ idx ]
-			print ">> ImageViewWidget: getImageName on %s" % gfxNode.node.label
+			print ( ">> ImageViewWidget: getImageName on %s" % gfxNode.node.label )
 
 			imageName = gfxNode.node.computeNode ()
 
-			print ">> ImageViewWidget: imageName = %s" % imageName
+			print ( ">> ImageViewWidget: imageName = %s" % imageName )
 
 			self.ui.imageArea.setImage ( imageName )
 
@@ -119,7 +119,7 @@ class GeomViewWidget ( QtGui.QWidget ):
 	#
 	def onNodeParamChanged ( self, node, param ) :
 		#
-		print ">> ImageViewWidget: onNodeParamChanged %s %s" % ( node.label, param.name )
+		print ( ">> ImageViewWidget: onNodeParamChanged %s %s" % ( node.label, param.name ) )
 		if node == self.currentImageNode ().node :
 			self.updateViewer ()
 	#
@@ -127,7 +127,7 @@ class GeomViewWidget ( QtGui.QWidget ):
 	#
 	def onNodeLabelChanged ( self, gfxNode, newLabel ) :
 		#
-		print ">> ImageViewWidget: onNodeLabelChanged %s %s" % ( gfxNode.node.label, newLabel )
+		print ( ">> ImageViewWidget: onNodeLabelChanged %s %s" % ( gfxNode.node.label, newLabel ) )
 		i = 0
 		for i in range ( len ( self.imageNodes ) ) :
 			if gfxNode ==  self.imageNodes [ i ] :

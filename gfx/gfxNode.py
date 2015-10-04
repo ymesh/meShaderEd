@@ -447,9 +447,9 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 			if forceUpdate :
 				self.update () 
 				if usePyQt4 :
-					self.scene().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self, param ) 
+					self.scene ().emit ( QtCore.SIGNAL ( 'gfxNodeParamChanged' ), self, param ) 
 				else :
-					self.gfxNodeParamChanged.emit ( self, param )
+					self.scene ().gfxNodeParamChanged.emit ( self, param )
 	#
 	# addGfxNodeParam
 	#
