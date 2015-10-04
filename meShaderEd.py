@@ -290,7 +290,7 @@ def main () :
 	# It's exec_ because exec is a reserved word in Python
 	sys.exit ( app.exec_ () )
 #
-# 
+#  __main__
 #
 if __name__ == "__main__":
 	#

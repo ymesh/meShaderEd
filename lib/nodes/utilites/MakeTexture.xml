@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<node name="MakeTexture" author="mesh">
+  <help>Convert image file to texture</help>
+  <input>
+    <property name="image" label="Image File" type="string" default="" subtype="file" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"/>
+    <property name="overwrite" label="Overwrite existing" type="int" default="0" provider="attribute" subtype="switch"/>
+    <property name="renderer" label="Renderer" type="string" provider="attribute" default="${RendererPreset}" enabled="1"
+      subtype="selector"
+      range = "3Delight:Air:Aqsis:Pixie:PRMan:RenderDotC"/>
+    <property name="Reload" label="TexMake Parameters" btext="Reload" type="control" default="" provider="attribute" subtype="button">
+    <code>
+    <![CDATA[
+print ":: Hello from (%s) XML control_code !!!" % self.label
+if node is not None :
+  print ":: Node = %s" % node.label
+  node.updateNode ()
+
+
+]]>
+</code>
+    </property>
+    <property name="texmake" label="TexMake command" type="string" provider="attribute" default="${TexMake}" display="1" enabled="0"/>
+    <property name="texmake_params" type="string" provider="attribute" default="" display="0"/>
+
+  </input>
+  <output>
+    <property name="texture" label="Texture" type="string" default=""/>
+  </output>
+<control_code>
+<![CDATA[
+print ":: Hello from (%s) XML control_code !!!" % self.label
+lastInputParam = self.getInputParamByName ( 'texmake_params' )
+lastInputParamIdx = self.inputParams.index ( lastInputParam )
+
+inputImage = self.getInputParamValueByName ( 'image' ).strip ('"') 
+outputParam = self.getOutputParamByName ( 'texture' )
+outputParam.setValue ( inputImage )
+
+
+]]>
+</control_code>
+</node>

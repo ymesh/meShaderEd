@@ -23,7 +23,7 @@ class RSLCodeNode ( Node ) :
 	# copy
 	#
 	def copy ( self ) :
-		if DEBUG_MODE : print '>> RSL_code( %s ).copy' % self.label
+		if DEBUG_MODE : print '( >> RSL_code( %s ).copy' % self.label )
 		newNode = RSLCodeNode ()
 		self.copySetup ( newNode )
 		return newNode
