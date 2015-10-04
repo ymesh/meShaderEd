@@ -283,7 +283,7 @@ def main () :
 	# It's exec_ because exec is a reserved word in Python
 	sys.exit ( app.exec_ () )
 #
-# 
+#  __main__
 #
 if __name__ == "__main__":
 	#
@@ -291,16 +291,16 @@ if __name__ == "__main__":
 
 	if len( sys.argv ) > 1 :
 		if sys.argv [ 1 ].lower () == '-debug' or sys.argv [ 1 ].lower () == '-d':
-			print '>> Running in DEBUG mode ...'
+			print ( '>> Running in DEBUG mode ...' )
 			DEBUG_MODE = True
 
 	if DEBUG_MODE :
-		print '* Python %s' % sys.version
+		print ( '* Python %s' % sys.version )
 		if not usePySide :
-			print '* QT_VERSION = %0X' % QtCore.QT_VERSION
-			print '* PYQT_VERSION = %0X' % QtCore.PYQT_VERSION
+			print ( '* QT_VERSION = %0X' % QtCore.QT_VERSION )
+			print ( '* PYQT_VERSION = %0X' % QtCore.PYQT_VERSION )
 		else :
-			print '* PySide Version = %s' % QtCore.__version__
+			print ( '* PySide Version = %s' % QtCore.__version__ )
 
 	if sys.platform.startswith ( 'win') :
 		if not usePyQt5 :
