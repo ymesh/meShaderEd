@@ -42,7 +42,7 @@ class Ui_ControlWidget_field ( object ) :
 	#
 	def setupUi ( self, ControlWidget ) :
 		#
-		hl = QtGui.QHBoxLayout ()
+		hl = QtModule.QHBoxLayout ()
 		hl.setStretch ( 1, 1 )
 		
 		self.widget = ControlWidget
@@ -137,7 +137,7 @@ class Ui_ControlWidget_button ( object ) :
 	#
 	def onClicked ( self ) :
 		#
-		if DEBUG_MODE : print '>> Ui_ControlWidget_button.clicked()'
+		if DEBUG_MODE : print ( '>> Ui_ControlWidget_button.clicked()' )
 		self.widget.param.execControlCode ( self.widget.gfxNode.node )
 	#
 	# updateGui

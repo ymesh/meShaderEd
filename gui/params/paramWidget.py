@@ -49,7 +49,7 @@ class ParamWidget ( QtModule.QWidget ) :
 	#
 	def __del__ ( self ) :
 		#
-		if DEBUG_MODE : print '>> ParamWidget( %s ).__del__ ' % self.param.name
+		if DEBUG_MODE : print ( '>> ParamWidget( %s ).__del__ ' % self.param.name )
 	#
 	# connectSignals
 	#
@@ -71,7 +71,7 @@ class ParamWidget ( QtModule.QWidget ) :
 	#
 	def onParamChanged ( self, param ) :
 		#
-		if DEBUG_MODE : print ">> ParamWidget( %s ).onParamChanged" % param.name
+		if DEBUG_MODE : print ( ">> ParamWidget( %s ).onParamChanged" % param.name )
 		self.ui.disconnectSignals ( self )
 		self.ui.updateGui ( self.param.value )
 		self.ui.connectSignals ( self )
@@ -109,7 +109,8 @@ class ParamWidget ( QtModule.QWidget ) :
 			#
 			# add "Use as Shader parameter" checkbox
 			#
-			if ( self.gfxNode.node.type in VALID_RSL_NODE_TYPES ) and ( self.param.type in VALID_RSL_PARAM_TYPES ) and ( self.param.provider != 'attribute' ) :
+			#if ( self.gfxNode.node.type in VALID_RSL_NODE_TYPES ) and ( self.param.type in VALID_RSL_PARAM_TYPES ) and ( self.param.provider != 'attribute' ) :
+			if ( self.gfxNode.node.format == 'rsl' ) and ( self.param.type in VALID_RSL_PARAM_TYPES ) and ( self.param.provider != 'attribute' ) :
 				self.check = QtModule.QCheckBox ( self )
 				self.check.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
 				self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )

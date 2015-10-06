@@ -9,10 +9,10 @@
 """
 List = [ 'QtCore', 
 				 'QtGui', 
-				 #'QtNetwork', 
 				 'QtXml', 
 				 'QtWidgets', 
-				 'Qt' 
+				 'QtOpenGL'
+				 #'QtNetwork'
 			 ]
 PythonQtType = None
 usePySide = False
@@ -43,14 +43,11 @@ if usePySide :
 else :
 	print ( '* ' + 'QT_VERSION = %x' % PythonQt.QtCore.QT_VERSION )
 
-#if not PySide :
-#	Qt = PythonQt.Qt
 QtCore 		= PythonQt.QtCore
 QtGui 		= PythonQt.QtGui
 QtXml 		= PythonQt.QtXml
-#QtNetwork = PythonQt.QtNetwork
+QtOpenGL 	= PythonQt.QtOpenGL
+#QtNetwork = PythonQt.QtNetwork 
 if usePyQt5 :
 	QtWidgets = PythonQt.QtWidgets
-
-
 

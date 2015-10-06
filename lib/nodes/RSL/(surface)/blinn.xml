@@ -4,13 +4,13 @@
 	<help>Blinn illumination model.</help>
 	<input>
 		<property name="SurfaceColor" type="color" default="color(0,0.5,1)"	/>		
-		<property name="diffuseCoeff" type="float" default="0.8"/>		
+		<property name="diffuseCoeff" type="float" default="0.8" subtype="slider" range="0 1.0 0.01"/>		
 		<property name="ambientColor" type="color" default="color(0,0,0)"	/>		
 		<property name="incandescence" type="color" default="color(0,0,0)"	/>		
-		<property name="translucence" type="float" default="0.0"/>		
+		<property name="translucence" type="float" default="0.0" subtype="slider" range="0 1.0 0.01"/>		
 		<property name="specularColor" type="color" default="color(0.5,0.5,0.5)"/>		
-		<property name="eccentricity" type="float" default="0.3"/>		
-		<property name="specularRollOff" type="float" default="0.7"/>		
+		<property name="eccentricity" type="float" default="0.3" subtype="slider" range="0 1.0 0.01"/>		
+		<property name="specularRollOff" type="float" default="0.7" subtype="slider" range="0 1.0 0.01"/>		
 	</input>
 	<output>
 		<property name="outColor" type="color"/>			

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="AttributeBlock" author="mesh" type="rib_code">
+<node name="AttributeBlock" author="mesh" format='rib' type="rib_code">
 	<help>Connect RIB code node</help>
 	<input>
 	  <property name="attributes" type="rib" default=""/>

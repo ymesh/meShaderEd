@@ -14,18 +14,17 @@ from core.meCommon import *
 from global_vars import app_global_vars
 
 from ui_projectSetup import Ui_ProjectSetup
-
 if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
 	QtModule = QtWidgets
-	
 #
 # ProjectSetup
 #
 class ProjectSetup( QtModule.QDialog ):
 	#
+	# __init__
 	#
 	def __init__ ( self, app_settings ):
 		#
@@ -33,7 +32,7 @@ class ProjectSetup( QtModule.QDialog ):
 
 		self.app_settings = app_settings
 		if usePyQt4 :
-			self.rootDir = str ( self.app_settings.value ( 'project' ).toString () )
+			self.rootDir = str ( self.app_settings.value ( 'project' ).toString () )      
 		else :
 			self.rootDir = self.app_settings.value ( 'project' )
 		self.buildGui ()

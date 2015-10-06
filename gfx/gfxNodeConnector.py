@@ -10,8 +10,7 @@ from core.signal import Signal
 from meShaderEd import app_settings
 from global_vars import DEBUG_MODE, GFX_NODE_CONNECTOR_TYPE
 import gui.ui_settings as UI
-
-if  not usePyQt5 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -29,7 +28,6 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	def __init__ ( self, param = None, radius = UI.CONNECTOR_RADIUS, isRound = True, node = None ) :
 		#
 		QtModule.QGraphicsItem.__init__ ( self )
-		
 		self.paramsBrushes = {   'c' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkRed ) )
 														,'f' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.lightGray ) )
 														,'m' : QtGui.QBrush ( QtGui.QColor ( QtCore.Qt.darkYellow ) )
@@ -72,7 +70,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 		paramTypeStr = self.getInputParam ().encodedTypeStr ()
 		if paramTypeStr in self.paramsBrushes.keys () :
 			self.brush = self.paramsBrushes [ paramTypeStr ]
-		
+
 		# self.startNodeLink.connect ( self.onStartNodeLinkTest )
 	#
 	# type
@@ -104,7 +102,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 		painter.setPen ( pen )
 		painter.setBrush ( self.brush )
 		painter.drawEllipse ( self.rect )
-		#print ( ">> GfxNodeConnector.paint" )
+		# print ( ">> GfxNodeConnector.paint" )
 	#
 	# getCenterPoint
 	#
@@ -167,7 +165,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	#
 	def remove ( self ) :
 		#
-		if DEBUG_MODE : print '>> GfxNodeConnector::remove'
+		if DEBUG_MODE : print ( '>> GfxNodeConnector.remove' )
 		if self.isNode () :
 			inputGfxLinks = self.getInputGfxLinks ()
 			outputGfxLinks = self.getOutputGfxLinks ()
@@ -184,8 +182,11 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 				#
 				# inputLink and corresponding node link will be removed from nodeNet
 				#
-				self.scene().emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), inputLink )
-
+				if usePyQt4 :
+					self.scene().emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), inputLink )
+				else :
+					self.scene().onGfxLinkRemoved.emit ( inputLink )
+					
 				for gfxLink in outputGfxLinks :
 					gfxLink.setSrcConnector ( srcConnector )
 					srcNode.attachOutputParamToLink ( srcParam, gfxLink.link )
@@ -197,7 +198,10 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 				srcConnector.adjustLinks ()
 			else :
 				self.removeAllLinks ()
-			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+			if usePyQt4 :
+				self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+			else :
+				self.scene().onGfxNodeRemoved.emit ( self )
 		else :
 			self.removeAllLinks ()
 	#
@@ -215,7 +219,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 		#
 		result = False
 		if self.isNode () :
-			#if DEBUG_MODE : print '* isConnectedToInput isNode'
+			#if DEBUG_MODE : print ( '* isConnectedToInput isNode' )
 			outputGfxLinks = self.getOutputGfxLinks ()
 			for gfxLink in outputGfxLinks :
 				dstConnector = gfxLink.dstConnector
@@ -330,7 +334,6 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	# itemChange
 	#
 	def itemChange ( self, change, value ) :
-		#
 		#if DEBUG_MODE : print ">> itemChanged "
 		if change == QtModule.QGraphicsItem.ItemSelectedHasChanged :
 			#if DEBUG_MODE : print "* selection "
@@ -346,6 +349,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 				from meShaderEd import getDefaultValue
 				grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
 				grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
+
 				x = self.x()
 				y = self.y()
 				if grid_snap :
@@ -353,11 +357,12 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 					x -= ( x % grid_size )
 					y -= ( y % grid_size )
 					self.setPos ( x, y )
+
 				#if DEBUG_MODE : print '* GfxNode.itemChange = ItemPositionHasChanged (%f, %f)' % ( x, y )
 				self.node.offset = ( x, y )
 				self.adjustLinks ()
 				#return QtCore.QPointF ( x, y )
-		
+
 		return QtModule.QGraphicsItem.itemChange ( self, change, value )
 	#
 	# hilite
@@ -394,7 +399,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 				# start new link
 				self.state = 'traceNodeLink'
 				if  usePyQt4 :
-					self.getScene ().emit ( QtCore.SIGNAL ( 'startNodeLink' ), self )
+					self.getScene ().emit ( QtCore.SIGNAL ( 'startNodeLink' ), self  )
 				else :
 					#if DEBUG_MODE : print '* startNodeLink.emit '
 					#if DEBUG_MODE : print self

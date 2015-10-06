@@ -1,36 +1,35 @@
-#===============================================================================
-# SettingsSetup.py
-#
-# ver. 1.0.0
-# Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
-# 
-# Dialog for managing meShaderEd settings
-# 
-#===============================================================================
+"""
 
+	SettingsSetup.py
+
+	ver. 1.0.0
+	Author: Yuri Meshalkin (aka mesh) (yuri.meshalkin@gmail.com)
+
+	Dialog for managing meShaderEd settings
+
+"""
 from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from core.meCommon import *
 from global_vars import app_global_vars
 
 from ui_settingsSetup import Ui_SettingsSetup
-
-if  not usePyQt5 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
 	QtModule = QtWidgets
-	
 #
 # SettingsSetup
 #
 class SettingsSetup ( QtModule.QDialog ):
 	#
+	# __init__
 	#
 	def __init__ ( self, app_settings ):
 		#
 		QtModule.QDialog.__init__(self)
-
+	
 		self.app_settings = app_settings
 					
 		#self.debugPrint()
@@ -49,7 +48,7 @@ class SettingsSetup ( QtModule.QDialog ):
 		##else :
 		##  font.setPointSize(10)
 		
-		if  usePyQt4 :
+		if usePyQt4 :
 			self.ui.lineEdit_temp.setText( self.app_settings.value('temp').toString() )
 			self.ui.lineEdit_inc.setText( self.app_settings.value('include').toString() )
 			self.ui.lineEdit_lib.setText( self.app_settings.value('lib').toString() )
@@ -66,6 +65,7 @@ class SettingsSetup ( QtModule.QDialog ):
 			self.ui.lineEdit_textures.setText( self.app_settings.value('texture') )
 			self.ui.lineEdit_archives.setText( self.app_settings.value('archive') )
 	#
+	# onBrowseTempDir
 	#  
 	def onBrowseTempDir ( self ):
 		#
@@ -74,6 +74,7 @@ class SettingsSetup ( QtModule.QDialog ):
 		if newDir != '' : 
 			self.ui.lineEdit_temp.setText( normPath( newDir ) )
 	#
+	# onBrowseLibraryDir
 	#  
 	def onBrowseLibraryDir ( self ):
 		#
@@ -82,6 +83,7 @@ class SettingsSetup ( QtModule.QDialog ):
 		if newDir != '' : 
 			self.ui.lineEdit_lib.setText( normPath( newDir ) )
 	#
+	# onBrowseNodesDir
 	#  
 	def onBrowseNodesDir ( self ):
 		#
@@ -90,6 +92,7 @@ class SettingsSetup ( QtModule.QDialog ):
 		if newDir != '' : 
 			self.ui.lineEdit_nodes.setText( normPath( newDir ) )
 	#
+	# onBrowseIncludesDir
 	#  
 	def onBrowseIncludesDir ( self ):
 		#
@@ -98,6 +101,7 @@ class SettingsSetup ( QtModule.QDialog ):
 		if newDir != '' : 
 			self.ui.lineEdit_inc.setText( normPath( newDir ) )
 	#
+	# onBrowseShadersDir
 	#  
 	def onBrowseShadersDir ( self ):
 		#
@@ -106,6 +110,7 @@ class SettingsSetup ( QtModule.QDialog ):
 		if newDir != '' : 
 			self.ui.lineEdit_shaders.setText( normPath( newDir ) )
 	#
+	# onBrowseTexturesDir
 	#  
 	def onBrowseTexturesDir ( self ):
 		#
@@ -114,6 +119,7 @@ class SettingsSetup ( QtModule.QDialog ):
 		if newDir != '' : 
 			self.ui.lineEdit_textures.setText( normPath( newDir ) )
 	#
+	# onBrowseArchivesDir
 	#  
 	def onBrowseArchivesDir ( self ):
 		#
@@ -122,12 +128,14 @@ class SettingsSetup ( QtModule.QDialog ):
 		if newDir != '' : 
 			self.ui.lineEdit_archives.setText( normPath( newDir ) )
 	#
+	# reject
 	#  
-	def reject ( self ):
+	def reject ( self ) :
 		self.done( 0 ) 
 	#  
+	# accept
 	#  
-	def accept ( self ):
+	def accept ( self ) :
 		#print ">> SettingsSetup: accept"
 		
 		temp_dir = normPath ( self.ui.lineEdit_temp.text() )

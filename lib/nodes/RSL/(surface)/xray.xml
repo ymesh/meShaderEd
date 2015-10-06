@@ -3,7 +3,7 @@
 <node name="xray" author="Simon Bunker" icon="xray.png">
 	<help>Simple xray surface shader; assign it to Oi.</help>
 	<input>
-		<property name="edgefalloff" type="float" default="1"/>				
+		<property name="edgefalloff" type="float" default="1" subtype="slider" range="0 1.0 0.01"/>				
 	</input>
 	<output>
 		<property name="outOpacity" type="color"/>		

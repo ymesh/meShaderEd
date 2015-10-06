@@ -21,12 +21,11 @@ from gfx.gfxSwatchNode import GfxSwatchNode
 from meShaderEd import app_settings
 from global_vars import DEBUG_MODE
 
-if  not usePyQt5 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
 	QtModule = QtWidgets
-
 #
 # WorkAreaScene
 #
@@ -48,14 +47,11 @@ class WorkAreaScene ( QtModule.QGraphicsScene ) :
 			self.startNodeConnector = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
 			self.traceNodeConnector = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
 			self.endNodeConnector = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
-			
 			self.startNodeLink = Signal () #( QtModule.QGraphicsObject ) # QtModule.QGraphicsItem
 			self.traceNodeLink = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
 			self.endNodeLink = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QPointF )
-	
 			self.onGfxNodeRemoved = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject )
 			self.onGfxLinkRemoved = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject )
-			
 			self.nodeUpdated = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem )
 			self.gfxNodeParamChanged = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsItem, QtCore.QObject )
 			#
@@ -65,31 +61,24 @@ class WorkAreaScene ( QtModule.QGraphicsScene ) :
 	# connectSignals
 	#
 	def connectSignals ( self ) :
-		if  usePyQt4 :
+		if usePyQt4 :
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'selectionChanged()' ), self.view.onSelectionChanged )
-			
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'startNodeLink' ), self.view.onStartNodeLink )
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'traceNodeLink' ), self.view.onTraceNodeLink )
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'endNodeLink' ), self.view.onEndNodeLink )
-	
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'startNodeConnector' ), self.view.onStartNodeConnector )
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'traceNodeConnector' ), self.view.onTraceNodeConnector )
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'endNodeConnector' ), self.view.onEndNodeConnector )
-	
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self.view.onRemoveNode )
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self.view.onRemoveLink )
-			
 		else :
 			self.selectionChanged.connect ( self.view.onSelectionChanged )
-			
 			self.startNodeLink.connect ( self.view.onStartNodeLink )
 			self.traceNodeLink.connect ( self.view.onTraceNodeLink )
 			self.endNodeLink.connect ( self.view.onEndNodeLink )
-	
 			self.startNodeConnector.connect ( self.view.onStartNodeConnector )
 			self.traceNodeConnector.connect ( self.view.onTraceNodeConnector )
 			self.endNodeConnector.connect ( self.view.onEndNodeConnector )
-	
 			self.onGfxNodeRemoved.connect ( self.view.onRemoveNode )
 			self.onGfxLinkRemoved.connect ( self.view.onRemoveLink )
 #
@@ -109,7 +98,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			#
 			self.selectNodes = Signal () #( list, list )
 			self.nodeConnectionChanged = Signal () #QtCore.pyqtSignal ( QtModule.QGraphicsObject, QtCore.QObject )
-		
+
 			self.gfxNodeAdded = Signal () #( QtModule.QGraphicsObject )
 			self.gfxNodeRemoved = Signal () #( QtModule.QGraphicsObject )
 			#
@@ -137,6 +126,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 
 		# set scene
 		scene = WorkAreaScene ( self )
+
 		scene.setSceneRect ( -10000, -10000, 20000, 20000 )
 		#scene.setItemIndexMethod ( QtGui.QGraphicsScene.NoIndex )
 		self.setScene ( scene )
@@ -169,6 +159,9 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		self.setBackgroundBrush ( self.viewBrush )
 
 		# self.connectSignals ()
+
+
+
 
 		if DEBUG_MODE : print ">> WorkArea. __init__"
 	#
@@ -207,6 +200,20 @@ class WorkArea ( QtModule.QGraphicsView ) :
 					 isinstance ( item, GfxSwatchNode ) or 
 					 ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
 				if type is None or item.node.type == type :
+					resultList.append ( item )
+		return resultList
+	#
+	# Returns a list of GfxNodes in the scene for given format
+	# or all nodes if type == None
+	#
+	def getGfxNodesByFormat ( self, format = None ) :
+		#
+		resultList = []
+		for item in self.scene ().items () :
+			if ( isinstance ( item, GfxNode ) or
+					 isinstance ( item, GfxSwatchNode ) or 
+					 ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
+				if format is None or item.node.format == format :
 					resultList.append ( item )
 		return resultList
 	#
@@ -334,7 +341,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		#for item in scene.selectedItems (): item.setSelected ( False )
 		scene.addItem ( gfxNode )
 		gfxNode.setSelected ( True )
-		if  usePyQt4 :
+		if usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'gfxNodeAdded' ), gfxNode )
 		else :
 			self.gfxNodeAdded.emit ( gfxNode )
@@ -375,7 +382,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			elif isinstance ( item, GfxSwatchNode ) : self.selectedNodes.append ( item )
 			elif isinstance ( item, GfxLink ) : self.selectedLinks.append ( item )
 
-		if  usePyQt4 :
+		if usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'selectNodes' ), self.selectedNodes, self.selectedLinks )
 		else :
 			self.selectNodes.emit ( self.selectedNodes, self.selectedLinks )
@@ -419,7 +426,6 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		#
 		#if DEBUG_MODE : print '>> WorkArea::onStartNodeLink'
 		#if DEBUG_MODE : print connector	
-			
 		srcNode = connector.getNode ()
 		srcParam = connector.param
 		if DEBUG_MODE : print '>> WorkArea::onStartNodeLink from %s (%s)' % ( srcNode.label, srcParam.label )
@@ -443,7 +449,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def onTraceNodeLink ( self, connector, scenePos ) :
 		# node = connector.parentItem().node
 		# print ">> WorkArea: onDrawNodeLink from %s (%d %d)" % ( node.label, scenePos.x(), scenePos.y() )
-		if  usePyQt4 :
+		if usePyQt4 :
 			connectCandidate = self.scene ().itemAt ( scenePos )
 		else :
 			connectCandidate = self.scene ().itemAt ( scenePos, self.transform () )
@@ -531,7 +537,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 
 			self.currentGfxLink.link = link
 			self.nodeNet.addLink ( link )
-			if  usePyQt4 :
+			if usePyQt4 :
 				self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), self.currentGfxLink.dstConnector.getGfxNode (), self.currentGfxLink.dstConnector.param )
 			else :
 				self.nodeConnectionChanged.emit ( self.currentGfxLink.dstConnector.getGfxNode (), self.currentGfxLink.dstConnector.param )
@@ -660,7 +666,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def onRemoveNode ( self, gfxNode ) :
 		#
 		print ">> WorkArea.onRemoveNode %s (id = %d)" % ( gfxNode.node.label, gfxNode.node.id )
-		if  usePyQt4 :
+		if usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'gfxNodeRemoved' ), gfxNode )
 		else :
 			self.gfxNodeRemoved.emit ( gfxNode )
@@ -686,7 +692,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 				#self.emit( QtCore.SIGNAL( 'nodeConnectionChanged' ), srcConnector.parentItem(), srcConnector.param )
 			if dstConnector is not None :
 				if DEBUG_MODE : print '*** dstConnector.parentItem().node.label = %s ' % dstConnector.getNode ().label
-				if  usePyQt4 :
+				if usePyQt4 :
 					self.emit ( QtCore.SIGNAL ( 'nodeConnectionChanged' ), dstConnector.getGfxNode (), dstConnector.param )
 				else :
 					self.nodeConnectionChanged.emit ( dstConnector.getGfxNode (), dstConnector.param )
@@ -747,12 +753,10 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			# decode drop stuff
 			data = mimedata.data ( 'application/x-text' )
 			stream = QtCore.QDataStream ( data, QtCore.QIODevice.ReadOnly )
-			
 			if usePyQt4 :
 				filename = QtCore.QString ()
 			else :
 				filename = ''
-					
 			if not usePyQt5 :
 				if usePySide :
 					filename = stream.readString ()
@@ -792,20 +796,17 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def wheelEvent ( self, event ) :
 		#print ">> WorkArea.wheelEvent"
 		# QtGui.QGraphicsView.wheelEvent( self, event)
-		import sys
+		import sys, math
 		scale = -1.0
 		if 'linux' in sys.platform: scale = 1.0
-		import math
 		if  not usePyQt5 :
 			scaleFactor = math.pow( 2.0, scale * event.delta () / 600.0 )
 		else :
 			delta = event.angleDelta ()
 			#print ( '>> delta rx = %d ry = %d' % ( delta.x (), delta.y () ) )
 			scaleFactor = math.pow( 2.0, scale * delta.y () / 600.0 )
-		
 		# self.matrix () is depicated
 		factor = self.transform ().scale ( scaleFactor, scaleFactor ).mapRect ( QtCore.QRectF ( -1, -1, 2, 2 ) ).width ()
-		
 		if factor < 0.07 or factor > 100: return
 		self.scale ( scaleFactor, scaleFactor )
 	#
@@ -850,11 +851,10 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		
 		elif self.state == 'zoom' :
 			#
-			import sys
+			import sys, math
 			deltaPos = currentPos - self.startPos
 			scale = -1.0
 			if 'linux' in sys.platform: scale = 1.0
-			import math
 			scaleFactor = math.pow ( 2.0, scale * max ( deltaPos.x (), deltaPos.y () ) / 200.0  ) #
 			factor = self.transform ().scale ( scaleFactor, scaleFactor ).mapRect ( QtCore.QRectF( -1, -1, 2, 2 ) ).width ()
 
@@ -882,7 +882,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def resetZoom ( self ) :
 		#
-		if DEBUG_MODE : print ">> WorkArea.resetZoom"
+		if DEBUG_MODE : print ( ">> WorkArea.resetZoom" )
 		self.setInteractive ( False )
 		self.resetTransform()
 		self.centerOn ( 0.0, 0.0 )
@@ -895,7 +895,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		# case QEvent::TouchUpdate:
 		# case QEvent::TouchEnd:
 		if event.type() == QtCore.QEvent.TouchBegin :
-			if DEBUG_MODE : print ">> WorkArea.QEvent.TouchBegin"
+			if DEBUG_MODE : print ( ">> WorkArea.QEvent.TouchBegin" )
 		return QtModule.QGraphicsView.viewportEvent ( self, event )
 	#
 	# deselectAllNodes
@@ -919,7 +919,6 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		#
 		if DEBUG_MODE : print ( '>> WorkArea.insertNodeNet filename = ' + filename )
 		if DEBUG_MODE : print ( ">> WorkArea.insertNodeNet (before) nodes = %d links = %d" % ( len(self.nodeNet.nodes.values()), len(self.nodeNet.links.values()) ) )
-
 		( nodes, links ) = self.nodeNet.insert ( normPath ( filename ) )
 
 		if pos == None :
@@ -934,13 +933,13 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		for node in nodes : self.addGfxNode ( node, pos )
 		for link in links : self.addGfxLink ( link )
 
-		if DEBUG_MODE : print '>> WorkArea.insertNodeNet (after) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values () ) )
+		if DEBUG_MODE : print ( '>> WorkArea.insertNodeNet (after) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values () ) ) )
 	#
 	# copyNodes
 	#
 	def copyNodes ( self, clipboard, cutNodes = False ) :
 		#
-		if DEBUG_MODE : print '>> WorkArea.copyNodes ( cutNodes = %s )'  % str ( cutNodes )
+		if DEBUG_MODE : print ( '>> WorkArea.copyNodes ( cutNodes = %s )'  % str ( cutNodes ) )
 		
 		dupNodeNet = NodeNetwork ( 'clipboard' )
 		
@@ -980,7 +979,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def pasteNodes ( self, clipboard ) :
 		#
-		if DEBUG_MODE : print '>> WorkArea.pasteNodes ...'
+		if DEBUG_MODE : print ( '>> WorkArea.pasteNodes ...' )
 		nodes = []
 		links = []
 		
@@ -1008,7 +1007,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def duplicateNodes ( self, preserveLinks = False ) :
 		#
-		if DEBUG_MODE : print '>> WorkArea.duplicateNode ( preserveLinks = %s )'  % str ( preserveLinks )
+		if DEBUG_MODE : print ( '>> WorkArea.duplicateNode ( preserveLinks = %s )'  % str ( preserveLinks ) )
 		
 		dupNodeNet = NodeNetwork ( 'duplicate' )
 		
@@ -1057,7 +1056,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def nodeNetFromSelected ( self, nodeNetName, preserveLinks = False ) :
 		#
-		if DEBUG_MODE : print '>> WorkArea.nodeNetFromSelected ( preserveLinks = %s )'  % str ( preserveLinks )
+		if DEBUG_MODE : print ( '>> WorkArea.nodeNetFromSelected ( preserveLinks = %s )'  % str ( preserveLinks ) )
 		dupNodeNet = NodeNetwork ( nodeNetName )
 		
 		for gfxNode in self.selectedNodes :

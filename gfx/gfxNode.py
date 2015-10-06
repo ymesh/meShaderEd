@@ -10,7 +10,7 @@ from gfx.gfxNodeLabel import GfxNodeLabel
 from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
 
-from global_vars import app_colors, DEBUG_MODE, GFX_NODE_TYPE, VALID_RSL_PARAM_TYPES, VALID_RIB_NODE_TYPES, VALID_RSL_NODE_TYPES
+from global_vars import app_colors, DEBUG_MODE, GFX_NODE_TYPE, VALID_RSL_PARAM_TYPES
 from meShaderEd import app_settings
 import gui.ui_settings as UI
 
@@ -129,11 +129,11 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		#
 		bg = QtGui.QColor ( 128, 128, 128 )
 		
-		if self.node.type in VALID_RSL_NODE_TYPES :
+		if self.node.format == 'rsl' :
 			bg = app_colors [ 'rsl_node_bg' ] 
-		elif self.node.type in VALID_RIB_NODE_TYPES :
+		elif self.node.format == 'rib' :
 			bg = app_colors [ 'rib_node_bg' ] 
-		elif self.node.type == 'image' :
+		elif self.node.format == 'image' :
 			bg = app_colors [ 'image_node_bg' ]
 		return bg
 	#
@@ -143,6 +143,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		#
 		if DEBUG_MODE : print '>> GfxNode( %s ).onUpdateNode' % ( self.node.label )
 		self.updateGfxNodeParams ( True )
+		self.updateNodeLabel ()
 		if usePyQt4 :
 			self.scene().emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
 		else :
@@ -251,7 +252,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 	#
 	def updateParams ( self, params, labels ) :
 		#
-		if DEBUG_MODE : print '>> GfxNode.updateParams'
+		if DEBUG_MODE : print ( '>> GfxNode.updateParams' )
 		geomChanged = False
 		i = 0
 		for param in params : # for i in range( len( self.node.inputParams )) :

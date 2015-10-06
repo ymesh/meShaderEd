@@ -21,13 +21,13 @@ class ConnectorNode( Node ) :
 		if xml_node is None :
 			self.type = 'connector'
 			self.name = self.label = self.type
-		if DEBUG_MODE : print ">> ConnectorNode( %s ).__init__" % self.label
+		if DEBUG_MODE : print ( ">> ConnectorNode( %s ).__init__" % self.label )
 	#
 	# copy
 	#
 	def copy ( self ) :
 		#
-		if DEBUG_MODE : print '>> ConnectorNode( %s ).copy' % self.label
+		if DEBUG_MODE : print ( '>> ConnectorNode( %s ).copy' % self.label )
 		newNode = ConnectorNode ()
 		self.copySetup ( newNode )
 		return newNode
@@ -36,4 +36,4 @@ class ConnectorNode( Node ) :
 	#
 	def computeNode ( self ) :
 		#
-		print '>> ConnectorNode( %s ).computeNode (dummy call)' % self.label
+		print ( '>> ConnectorNode( %s ).computeNode (dummy call)' % self.label )

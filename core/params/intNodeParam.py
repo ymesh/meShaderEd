@@ -4,10 +4,9 @@
 
 """
 from core.nodeParam import NodeParam
-
 from global_vars import app_global_vars, DEBUG_MODE
 #
-# Integer
+# IntNodeParam
 #
 class IntNodeParam ( NodeParam ) :
 	#

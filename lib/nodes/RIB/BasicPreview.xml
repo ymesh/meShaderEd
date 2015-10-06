@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="BasicPreview" author="mesh" type="rib">
+<node name="BasicPreview" author="mesh" format='rib' type="node" version="1.0">
 	<help>Basic preview RIB with geometry primitive, 2 distant and 1 environment light</help>
 	<input>
     <property name="Globals" label="Render Options" type="rib" default=""/>

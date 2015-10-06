@@ -3,10 +3,10 @@
 	ShaderInfo.py
 
 """
-import os, sys
 import re
 
 from global_vars import app_global_vars, DEBUG_MODE, VALID_RSL_PARAM_TYPES
+
 from core.meCommon import parseGlobalVars
 
 from core.params.floatNodeParam        import FloatNodeParam
@@ -74,6 +74,7 @@ class ShaderInfo () :
 		inputLines = []
 		if DEBUG_MODE : print '>> ShaderInfo.get ( %s ) by "%s"' % ( self.fileName, app_global_vars [ 'ShaderInfo' ] )
 		from core.meCommon import launchProcess
+		import os
 		curDir =  os.getcwd ()
 		
 		cmdList = []
@@ -145,7 +146,8 @@ class ShaderInfo () :
 				if state == 'GET_TYPE' :
 					# get shader name and type
 					( self.name, self.type ) = self.parseShaderNameLine ( line )
-					print '>> shader name = %s type = %s' % ( self.name, self.type )
+					print ( '>> shader name = %s type = %s' % ( self.name, self.type ) )
+					
 					state = 'GET_PARAM'
 				elif state == 'GET_PARAM' :
 					# get parameter description
@@ -246,6 +248,9 @@ class ShaderInfo () :
 										}
 			type = airShaderType [ type ]
 		
+		#if type == 'shader' :
+		#	print ( '** changing type to Surface ...' )
+		#	type = 'surface'
 		return ( name.strip ( '"' ), type )
 	#
 	# parseParamLine

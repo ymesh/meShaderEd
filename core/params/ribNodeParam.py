@@ -5,11 +5,10 @@
 """
 from core.node import Node
 from core.nodeParam import NodeParam
-
 from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import parseGlobalVars
 #
-# RIB
+# RibNodeParam
 #
 class RibNodeParam ( NodeParam ) :
 	#

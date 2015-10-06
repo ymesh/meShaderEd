@@ -5,12 +5,6 @@
 """
 from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
-#from PyQt4.QtCore import QDir, QString, QModelIndex
-#from PyQt4.QtGui  import QFileSystemModel
-#from PyQt4.QtGui  import QFileIconProvider
-
-#from ui_nodeParam import Ui_nodeParam
-#from MainWindow import MainWindow
 
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
@@ -28,8 +22,7 @@ from gui.params.VectorWidget import VectorWidget
 from gui.params.MatrixWidget import MatrixWidget
 from gui.params.TextWidget import TextWidget
 from gui.params.ControlWidget import ControlWidget
-
-if  not usePyQt5 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -69,7 +62,7 @@ class NodeParamListTab ( QtModule.QWidget ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if  usePyQt4 :
+		if usePyQt4 :
 			self.connect ( self.paramHeader, QtCore.SIGNAL ( 'sectionResized(int,int,int)' ), self.onSectionResized )
 		else :
 			self.paramHeader.sectionResized.connect ( self.onSectionResized )
@@ -246,7 +239,6 @@ class NodeParamList ( QtModule.QWidget ) :
 		self.paramListLayout.setSizeConstraint ( QtModule.QLayout.SetNoConstraint )
 		self.paramListLayout.setSpacing ( UI.SPACING )
 		self.paramListLayout.setContentsMargins ( UI.SPACING, UI.SPACING, UI.SPACING, UI.SPACING )
-		
 		self.paramListLayout.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		self.paramListLayout.setColumnMinimumWidth ( 0, self.labelWidth )
 		self.paramListLayout.setColumnStretch ( 1, 1 )
@@ -296,7 +288,7 @@ class NodeParamList ( QtModule.QWidget ) :
 								paramWidget.setEnabled ( False )
 							
 							if param.removable :
-								if  usePyQt4 :
+								if usePyQt4 :
 									QtCore.QObject.connect ( paramWidget, QtCore.SIGNAL ( 'nodeParamRemoved' ), self.nodeParamViewTab.onParamRemoved )
 								else :
 									paramWidget.nodeParamRemoved.connect ( self.nodeParamViewTab.onParamRemoved )

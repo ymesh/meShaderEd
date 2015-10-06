@@ -1,15 +1,15 @@
 <?xml version="1.0"?> 
 
-<node name="surface" label="surf" type="surface" author="mesh">
-	<help>Basic surface shader.</help>
-	<input>
-		<property name="Ci" type="color" default="color(0.0, 0.0, 0.0)" />
-		<property name="Oi" type="color" default="color(1.0, 1.0, 1.0)" />
-	</input>
-	<output>
-	  <property name="surface" type="rib" default="Surface &quot;${NODELABEL}&quot;" />
-	</output>
-	<code><![CDATA[
+<node name="surface" label="surf" format="rsl" type="node" author="mesh" version="1.0">
+  <help>Root surface shader.</help>
+  <input>
+    <property name="Ci" shaderParam="1" type="color" default="color(0.0, 0.0, 0.0)" />
+    <property name="Oi" shaderParam="1" type="color" default="color(1.0, 1.0, 1.0)" />
+  </input>
+  <output>
+    <property name="surface" type="rib" default="Surface &quot;${NODELABEL}&quot;" />
+  </output>
+  <code><![CDATA[
 #define SURFACE_SHADER ${INSTANCENAME}
 surface ${INSTANCENAME} ( 
 ${PARAMS} 
@@ -20,6 +20,6 @@ ${PARAMS}
   Oi = $(Oi);
   /* CODE END ${INSTANCENAME} */
 }
-	]]>
-	</code>
+  ]]>
+  </code>
 </node>

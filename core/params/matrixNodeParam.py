@@ -7,10 +7,9 @@ import re
 
 from core.node import Node
 from core.nodeParam import NodeParam
-
 from global_vars import app_global_vars, DEBUG_MODE
 #
-# Matrix
+# MatrixNodeParam
 #
 class MatrixNodeParam ( NodeParam ) :
 	#

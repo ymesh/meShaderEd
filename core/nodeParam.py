@@ -92,8 +92,6 @@ class NodeParam ( QtCore.QObject ) :
 	def copySetup ( self, newParam ) :
 		#
 		#if DEBUG_MODE : print '>> NodeParam( %s ).copySetup' % self.label
-		#if QtCore.QT_VERSION >= 0x50000 :
-		#	newParam.paramChangedSignal = self.paramChangedSignal # Signal ()
 		newParam.id = self.id
 		newParam.name = self.name
 		newParam.label = self.label

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="visibility" author="mesh" type="rib_code">
+<node name="visibility" author="mesh" format='rib' type="node" version="1.0">
 	<help>visibility attributes</help>
 	<input>
     <property name="trace" type="int" default="1" provider="attribute" subtype="switch" />

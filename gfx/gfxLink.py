@@ -7,8 +7,7 @@ from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 from global_vars import DEBUG_MODE, GFX_LINK_TYPE
 from meShaderEd import app_settings
-
-if  not usePyQt5 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -30,6 +29,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 		gfxLink.srcPoint = gfxLink.mapToItem ( gfxLink, srcP )
 		gfxLink.dstPoint = gfxLink.mapToItem ( gfxLink, dstP )
 		gfxLink.adjust ()
+
 		return gfxLink
 	#
 	# createFromLink
@@ -41,6 +41,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 		gfxLink.link = link
 		gfxLink.path = QtGui.QPainterPath ()
 		gfxLink.adjust ()
+
 		return gfxLink
 	#
 	# __init__
@@ -89,7 +90,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 		#if self.link is not None :
 		scene = self.scene ()
 		if scene != None :
-			if DEBUG_MODE : print ">> GfxLink::remove emit( onGfxLinkRemoved )"
+			if DEBUG_MODE : print ( ">> GfxLink::remove emit( onGfxLinkRemoved )" )
 			if usePyQt4 :
 				scene.emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self )
 			else :
@@ -214,7 +215,7 @@ class GfxLink ( QtModule.QGraphicsItem ) :
 				p1 = self.srcPoint + QtCore.QPointF ( offsetVX, offsetVY )
 				self.points.append ( p1 )
 				# third point
-				p2 = QtCore.QPointF ( centerX, self.srcPoint.y() )
+				p2 =   QtCore.QPointF ( centerX, self.srcPoint.y() )
 				self.points.append ( p2 )
 				# fourth point
 				p3 = QtCore.QPointF ( centerX, centerY )

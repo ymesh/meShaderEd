@@ -1,14 +1,13 @@
 """
-	
+
 	floatNodeParam.py
 
 """
 from core.nodeParam import NodeParam
-
 from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import parseGlobalVars
 #
-# Float
+# FloatNodeParam
 #
 class FloatNodeParam ( NodeParam ) :
 	#
@@ -16,7 +15,8 @@ class FloatNodeParam ( NodeParam ) :
 	#
 	def __init__ ( self, xml_param = None, isRibParam = False ) :
 		#
-		super ( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
+		NodeParam.__init__ ( self, xml_param, isRibParam )
+		#super ( FloatNodeParam, self ).__init__ ( xml_param, isRibParam )
 		self.type = 'float'
 	#
 	# encodedTypeStr

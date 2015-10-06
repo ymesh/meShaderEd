@@ -3,17 +3,17 @@
 <node name="toon" author="Fredrik Gustafsson" icon="toon.png">
 	<help>Toon Antialising Shader.</help>
 	<input>
-		<property name="Ka" type="float" default="0.25" />
-		<property name="Kd" type="float" default="0.67" />
-		<property name="Ks" type="float" default="35" />
-		<property name="roughness" type="float" default="0.08" />	
+		<property name="Ka" type="float" default="0.25" subtype="slider" range="0 1.0 0.01"/>
+		<property name="Kd" type="float" default="0.67" subtype="slider" range="0 1.0 0.01"/>
+		<property name="Ks" type="float" default="1.0" subtype="slider" range="0 1.0 0.01"/>
+		<property name="roughness" type="float" default="0.08" subtype="slider" range="0 1.0 0.01"/>	
 		<property name="specularcolor" type="color" default="color(1.0,1.0,1.0)" />		
 		<property name="paint_color" type="color" default="color(0.0,0.5,1.0)" />
-		<property name="paint_spec" type="float" default="0.92" />
-		<property name="paint_trans" type="float" default="0.35" />		
-		<property name="paint_fuzz" type="float" default="0.025" />	
-		<property name="ink_thresh" type="float" default="0.23" />	
-		<property name="ink_fuzz" type="float" default="0.02" />	
+		<property name="paint_spec" type="float" default="0.92" subtype="slider" range="0 1.0 0.01"/>
+		<property name="paint_trans" type="float" default="0.35" subtype="slider" range="0 1.0 0.01"/>		
+		<property name="paint_fuzz" type="float" default="0.025"subtype="slider" range="0 1.0 0.01" />	
+		<property name="ink_thresh" type="float" default="0.23" subtype="slider" range="0 1.0 0.01"/>	
+		<property name="ink_fuzz" type="float" default="0.02" subtype="slider" range="0 1.0 0.01"/>	
 		<property name="ink_color" type="color" default="color(0.05,0.05,0.05)" />			
 	</input>
 	<output>

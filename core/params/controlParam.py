@@ -8,7 +8,6 @@ import copy
 
 from core.node import Node
 from core.nodeParam import NodeParam
-
 from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import parseGlobalVars
 #
@@ -25,7 +24,7 @@ class ControlParam ( NodeParam ) :
 		self.code = ''
 		NodeParam.__init__ ( self, xml_param, isRibParam )
 
-		if DEBUG_MODE : print '>> ControlParam ( %s ).__init__ btext = "%s"' % ( self.label, self.btext )
+		if DEBUG_MODE : print ( '>> ControlParam ( %s ).__init__ btext = "%s"' % ( self.label, self.btext ) )
 	#
 	# encodedTypeStr
 	#
@@ -43,7 +42,7 @@ class ControlParam ( NodeParam ) :
 	#
 	def copySetup ( self, newParam ) :
 		#
-		if DEBUG_MODE : print '>> ControlParam ( %s ).copySetup' % self.label
+		if DEBUG_MODE : print ( '>> ControlParam ( %s ).copySetup' % self.label )
 		NodeParam.copySetup ( self, newParam )
 		newParam.code = self.code
 		newParam.btext = self.btext
@@ -87,7 +86,7 @@ class ControlParam ( NodeParam ) :
 	#
 	def parseFromXML ( self, xml_param ) :
 		#
-		if DEBUG_MODE : print '>> ControlParam ( %s ).parseFromXML' % self.label
+		if DEBUG_MODE : print ( '>> ControlParam ( %s ).parseFromXML' % self.label )
 		NodeParam.parseFromXML ( self, xml_param )
 
 		control_code_tag = xml_param.namedItem ( 'code' )
@@ -107,7 +106,7 @@ class ControlParam ( NodeParam ) :
 	#
 	def parseToXML ( self, dom ) :
 		#
-		if DEBUG_MODE : print '>> ControlParam ( %s ).parseToXML' % self.label
+		if DEBUG_MODE : print ( '>> ControlParam ( %s ).parseToXML' % self.label )
 		xmlnode = NodeParam.parseToXML ( self, dom )
 
 		if self.code is not None :
