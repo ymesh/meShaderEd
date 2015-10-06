@@ -146,6 +146,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		#
 		if DEBUG_MODE : print '>> GfxNode( %s ).onUpdateNode' % ( self.node.label )
 		self.updateGfxNodeParams ( True )
+		self.updateNodeLabel ()
 		if usePyQt4 :
 			self.scene().emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
 		else :
@@ -254,7 +255,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 	#
 	def updateParams ( self, params, labels ) :
 		#
-		if DEBUG_MODE : print '>> GfxNode.updateParams'
+		if DEBUG_MODE : print ( '>> GfxNode.updateParams' )
 		geomChanged = False
 		i = 0
 		for param in params : # for i in range( len( self.node.inputParams )) :

@@ -363,13 +363,22 @@ class MainWindow ( QtModule.QMainWindow ) :
 		numNodes = 0
 		numSelectedNodes = 0
 		numSelectedLinks = 0
-		selectedNodeType = None
+		#selectedNodeType = None
+		#selectedNodeFormat = None
+		isShader = False
+		isCode = False
 		if self.workArea is not None :
 			numNodes = len ( self.workArea.getAllGfxNodes () )
 			numSelectedNodes = len ( self.workArea.selectedNodes )
 			numSelectedLinks = len ( self.workArea.selectedLinks )
 			if numSelectedNodes == 1 :
-				selectedNodeType = self.getSelectedNode ().node.type
+				selectedNode = self.getSelectedNode ().node
+				selectedNodeType = selectedNode.type
+				selectedNodeFormat = selectedNode.format
+				if selectedNodeFormat in [ 'rsl', 'rib' ] :
+					isCode = True
+					if selectedNode.thisIs () == 'rsl_shader_node' :
+						isShader = True
 		enableForPaste = False
 
 		if self.clipboard.ownsClipboard () or (sys.platform == 'darwin'):
@@ -379,8 +388,9 @@ class MainWindow ( QtModule.QMainWindow ) :
 				if data.hasText () :
 					enableForPaste = True
 					
-		self.ui.actionExportShader.setEnabled ( True ) #( selectedNodeType in VALID_RSL_SHADER_TYPES )
-		self.ui.actionViewComputedCode.setEnabled ( True ) #( selectedNodeType in VALID_RSL_NODE_TYPES or selectedNodeType in VALID_RIB_NODE_TYPES )
+		self.ui.actionExportShader.setEnabled ( isShader  )
+		self.ui.actionCompileShader.setEnabled ( isShader  )
+		self.ui.actionViewComputedCode.setEnabled ( isCode ) 
 		self.ui.actionSaveSelected.setEnabled ( numSelectedNodes > 0 )
 		self.ui.actionSelectAll.setEnabled ( numNodes > 0 )
 		self.ui.actionSelectAbove.setEnabled ( numSelectedNodes == 1 )
@@ -731,41 +741,39 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def onNodeParamChanged ( self, gfxNode, param ) :
 		#
-		if DEBUG_MODE : print ">> MainWindow.onNodeParamChanged"
-		#param.shaderParam = not gfxNode.node.isInputParamLinked ( param )
-
+		if DEBUG_MODE : print ( ">> MainWindow.onNodeParamChanged" )
 		# from WorkArea we have GfxNode in signal nodeConnectionChanged
 		# hence need to update nodeParam_ctl
 		if isinstance ( gfxNode, GfxNote ) :
-			if DEBUG_MODE : print "* update GfxNote"
+			if DEBUG_MODE : print ( "* update GfxNote" )
 			gfxNode.updateGfxNode ()
-			#node.update ()
 			self.workArea.scene ().update ()
 		elif isinstance ( gfxNode, GfxSwatchNode ) :
-			if DEBUG_MODE : print "* update GfxSwatchNode"
+			if DEBUG_MODE : print ( "* update GfxSwatchNode" )
 			gfxNode.setupSwatchParams ()
 			gfxNode.setupGeometry ()
 			gfxNode.adjustLinks ()
 			self.workArea.scene ().update ()
 		elif isinstance ( gfxNode, GfxNode ) :
-			if DEBUG_MODE : print "* update GfxNode"
+			if DEBUG_MODE : print ( "* update GfxNode" )
 			gfxNode.updateGfxNode ( removeLinks = False )
-			self.updateNodeParamView ()
+			self.updateNodeParamView ( gfxNode, param )
 
-		if self.ui.imageView_ctl.autoUpdate () : self.ui.imageView_ctl.updateViewer()
+		if self.ui.imageView_ctl.autoUpdate () : 
+			self.ui.imageView_ctl.updateViewer()
 	#
 	# onGxNodeParamChanged
 	#
 	def onGfxNodeParamChanged ( self, gfxNode, param = None ) :
 		#
-		if DEBUG_MODE : print ">> MainWindow.onGxNodeParamChanged" 
+		if DEBUG_MODE : print ( ">> MainWindow.onGxNodeParamChanged" )
 		
 		# from WorkArea we have GfxNode in signal nodeConnectionChanged
 		# hence need to update nodeParam_ctl
 		if isinstance ( gfxNode, GfxNode ) or isinstance ( gfxNode, GfxSwatchNode ) :
 			#if DEBUG_MODE : print "* update nodeView"
 			# gfxNode.updateInputParams ()
-			self.updateNodeParamView ()
+			self.updateNodeParamView ( gfxNode, param )
 			self.workArea.scene ().update ()
 
 		if self.ui.imageView_ctl.autoUpdate () : 
@@ -773,15 +781,19 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	# updateNodeParamView
 	#
-	def updateNodeParamView ( self, gfxNode = None ) :
+	def updateNodeParamView ( self, gfxNode = None, param = None ) :
 		#
-		if DEBUG_MODE : 
-			print '>> MainWindow.updateNodeParamView'
-			if gfxNode is not None :
-				print '** gfxNode = "%s"' % gfxNode.node.label
-		self.ui.nodeParam_ctl.disconnectParamSignals ()
-		self.ui.nodeParam_ctl.connectParamSignals ()
-		self.ui.nodeParam_ctl.updateGui ()
+		if DEBUG_MODE : print ( '>> MainWindow.updateNodeParamView' )
+		if gfxNode is not None :
+			print ( '** gfxNode = "%s"' % gfxNode.node.label )
+			if param is not None :
+				print ( '** param = "%s"' % param.name )
+			print ( '** No update'  )
+		else :
+			print ( '** Update without params'  )
+			self.ui.nodeParam_ctl.disconnectParamSignals ()
+			self.ui.nodeParam_ctl.connectParamSignals ()
+			self.ui.nodeParam_ctl.updateGui ()
 	#
 	# onFitAll
 	#

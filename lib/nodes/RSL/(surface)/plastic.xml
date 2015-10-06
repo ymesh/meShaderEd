@@ -6,10 +6,10 @@
 		<property name="inColor" type="color" default="color(1.0, 1.0, 1.0)"	/>		
 		<property name="inOpacity" type="float" default="1.0"/>		
 		<property name="specColor" type="color" default="color(1.0, 1.0, 1.0)"	/>		
-		<property name="ka" type="float" default="1.0"/>		
-		<property name="kd" type="float" default="0.5"/>		
-		<property name="ks" type="float" default="0.5"/>		
-		<property name="roughness" type="float" default="0.1"/>		
+		<property name="ka" type="float" default="1.0" subtype="slider" range="0 1.0 0.01"/>		
+		<property name="kd" type="float" default="0.5" subtype="slider" range="0 1.0 0.01"/>		
+		<property name="ks" type="float" default="0.5" subtype="slider" range="0 1.0 0.01"/>		
+		<property name="roughness" type="float" default="0.1" subtype="slider" range="0 1.0 0.01"/>		
 	</input>
 	<output>
 		<property name="outColor" type="color"/>		

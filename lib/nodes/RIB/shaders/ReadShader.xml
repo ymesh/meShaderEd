@@ -50,7 +50,8 @@ if node is not None :
       node.addOutputParam ( param )
       print param.name, param.type
 
-  node.updateNode ()
+  node.nodenet.renameNodeLabel ( node, shaderInfo.name )
+  node.updateNode ( True )
 
 
 ]]>

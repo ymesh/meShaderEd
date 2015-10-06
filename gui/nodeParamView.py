@@ -127,7 +127,7 @@ class NodeParamView ( QtModule.QWidget ) :
 	#
 	def onParamChanged ( self, param ) :
 		#
-		if DEBUG_MODE : print ">> NodeParamView.onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name )
+		if DEBUG_MODE : print ( ">> NodeParamView.onParamChanged node = %s param = %s" % ( self.gfxNode.node.label, param.name ) )
 		if usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'nodeParamChangedSignal' ), self.gfxNode, param ) # .node
 		else :

@@ -146,7 +146,8 @@ class ShaderInfo () :
 				if state == 'GET_TYPE' :
 					# get shader name and type
 					( self.name, self.type ) = self.parseShaderNameLine ( line )
-					print '>> shader name = %s type = %s' % ( self.name, self.type )
+					print ( '>> shader name = %s type = %s' % ( self.name, self.type ) )
+					
 					state = 'GET_PARAM'
 				elif state == 'GET_PARAM' :
 					# get parameter description
@@ -247,6 +248,9 @@ class ShaderInfo () :
 										}
 			type = airShaderType [ type ]
 		
+		#if type == 'shader' :
+		#	print ( '** changing type to Surface ...' )
+		#	type = 'surface'
 		return ( name.strip ( '"' ), type )
 	#
 	# parseParamLine

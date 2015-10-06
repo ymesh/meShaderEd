@@ -1,13 +1,12 @@
 """
 
  node.py
- 
 
 """
 import os, sys, copy
 from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtXml
 from core.signal import Signal
-#from PyQt4.QtCore import QDir, QFile, QVariant
+
 from global_vars import app_global_vars, DEBUG_MODE, VALID_RIB_NODE_TYPES
 from core.node_global_vars import node_global_vars
 from core.meCommon import getParsedLabel, normPath
@@ -89,7 +88,7 @@ class Node ( QtCore.QObject ) :
 	#
 	def __del__ ( self ) :
 		#
-		if DEBUG_MODE : print '>> Node( %s ).__del__' % self.label
+		if DEBUG_MODE : print ( '>> Node( %s ).__del__' % self.label )
 	#
 	# build
 	#
@@ -107,23 +106,26 @@ class Node ( QtCore.QObject ) :
 	#
 	# updateNode
 	#
-	def updateNode ( self ) : 
+	def updateNode ( self, emit_signal = False ) : 
 		#
-		if DEBUG_MODE : print '>> Node( %s ).updateNode' % self.label
-		if usePyQt4 :
-			self.emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
-		else :
-			self.nodeUpdated.emit ( self )
+		if DEBUG_MODE : print ( '>> Node( %s ).updateNode' % self.label  ), emit_signal
+		if emit_signal :
+			if DEBUG_MODE : print ( '** emit signal nodeUpdated' )
+			if usePyQt4 :
+				self.emit ( QtCore.SIGNAL ( 'nodeUpdated' ), self )
+			else :
+				self.nodeUpdated.emit ( self )
 	#
 	# updateNodeParams
 	#
-	def updateNodeParams ( self ) : 
+	def updateNodeParams ( self, emit_signal = False ) : 
 		#
-		if DEBUG_MODE : print '>> Node( %s ).updateNodeParams' % self.label
-		if usePyQt4 :
-			self.emit ( QtCore.SIGNAL ( 'nodeParamsUpdated' ), self )
-		else :
-			self.nodeParamsUpdated.emit ( self )
+		if DEBUG_MODE : print ( '>> Node( %s ).updateNodeParams' % self.label ), emit_signal
+		if emit_signal :
+			if usePyQt4 :
+				self.emit ( QtCore.SIGNAL ( 'nodeParamsUpdated' ), self )
+			else :
+				self.nodeParamsUpdated.emit ( self )
 	#
 	# addChild
 	#
@@ -135,29 +137,29 @@ class Node ( QtCore.QObject ) :
 		#
 		if node in self.childs :
 			self.childs.remove ( node )
-			if DEBUG_MODE : print '** Node(%s).removeChild %s' % ( self.label, node.label )
+			if DEBUG_MODE : print ( '** Node(%s).removeChild %s' % ( self.label, node.label ) )
 		else :
-			if DEBUG_MODE : print '!! Node(%s).removeChild child %s is not in the list' % ( self.label, node.label )
+			if DEBUG_MODE : print ( '!! Node(%s).removeChild child %s is not in the list' % ( self.label, node.label ) )
 	#
 	# printInfo
 	#
 	def printInfo ( self ) :
 		#
-		print ':: Node (id = %d) label = %s' % ( self.id, self.label )
-		print '** Node inputLinks:'
+		print ( ':: Node (id = %d) label = %s' % ( self.id, self.label ) )
+		print ( '** Node inputLinks:' )
 		for param in self.inputLinks.keys () :
-			print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
+			print ( '\t* param: %s (%s) linked to ' % ( param.name, param.label ) )
 			self.inputLinks [ param ].printInfo ()
-		print '** Node outputLinks:'
+		print ( '** Node outputLinks:' )
 		#print '*****', self.outputLinks
 		for param in self.outputLinks.keys () :
-			print '\t* param: %s (%s) linked to ' % ( param.name, param.label )
+			print ( '\t* param: %s (%s) linked to ' % ( param.name, param.label ) )
 			linklist = self.outputLinks [ param ]
 			for link in linklist :
 				link.printInfo ()
-		print '** Node children:'
+		print ( '** Node children:' )
 		for child in self.childs :
-			print '\t* %s' % child.label
+			print ( '\t* %s' % child.label )
 	#
 	# addInputParam
 	#
@@ -228,7 +230,7 @@ class Node ( QtCore.QObject ) :
 	def detachInputParam ( self, param ) :
 		#
 		removedLink = None
-		if DEBUG_MODE : print ">> Node::detachInputParam param = %s" % param.name
+		if DEBUG_MODE : print ( ">> Node::detachInputParam param = %s" % param.name )
 		if param in self.inputLinks.keys () :
 			removedLink = self.inputLinks.pop ( param )
 		return removedLink
@@ -282,7 +284,7 @@ class Node ( QtCore.QObject ) :
 					firstParam = link.srcNode.inputParams [0]
 					( srcNode, srcParam ) = link.srcNode.getLinkedSrcNode ( firstParam )
 				else :
-					if DEBUG_MODE : print '* no inputParams at connector %s' % ( link.srcNode.label )
+					if DEBUG_MODE : print ( '* no inputParams at connector %s' % ( link.srcNode.label ) )
 			else :
 				srcNode = link.srcNode
 				srcParam = link.srcParam
@@ -312,7 +314,7 @@ class Node ( QtCore.QObject ) :
 							for ( retNode, retParam ) in retList : 
 								dstConnections.append ( ( retNode, retParam ) )
 					else :
-						if DEBUG_MODE : print '* no outputParams at connector %s' % ( link.dstNode.label )
+						if DEBUG_MODE : print ( '* no outputParams at connector %s' % ( link.dstNode.label ) )
 				else :
 					dstNode = link.dstNode
 					dstParam = link.dstParam
@@ -458,7 +460,7 @@ class Node ( QtCore.QObject ) :
 	def renameParamLabel ( self, param, newLabel ) :
 		#
 		oldLabel = param.label
-		if DEBUG_MODE : print ">> Node( %s ).renameParamLabel  oldLabel = %s newLabel = %s" % ( self.label, oldLabel, newLabel )
+		if DEBUG_MODE : print ( ">> Node( %s ).renameParamLabel  oldLabel = %s newLabel = %s" % ( self.label, oldLabel, newLabel ) )
 		if newLabel == '' : newLabel = self.param.name
 		# assign new unique label to param
 		from meCommon import getUniqueName
@@ -473,7 +475,7 @@ class Node ( QtCore.QObject ) :
 	#
 	def onParamChanged ( self, param ) :
 		#
-		if DEBUG_MODE : print ">> Node: onParamChanged node = %s param = %s" % ( self.label, param.name )
+		if DEBUG_MODE : print ( ">> Node: onParamChanged node = %s param = %s (pass...)" % ( self.label, param.name ) )
 		pass
 		#self.emit( QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self, param )
 	#
@@ -483,7 +485,7 @@ class Node ( QtCore.QObject ) :
 	#
 	# getName
 	#
-	def getName ( self ) : return self.label
+	def getName ( self ) : return self.name
 	#
 	# getNodenetName
 	#
@@ -523,7 +525,7 @@ class Node ( QtCore.QObject ) :
 		if not id_node.isNull () :
 			self.id = int ( id_node.nodeValue () )
 		else :
-			if DEBUG_MODE : print '>> Node::parseFromXML id is None'
+			if DEBUG_MODE : print ( '>> Node::parseFromXML id is None' )
 
 		self.name = str ( xml_node.attributes ().namedItem ( 'name' ).nodeValue () )
 		self.label = str ( xml_node.attributes ().namedItem ( 'label' ).nodeValue () )
@@ -539,8 +541,8 @@ class Node ( QtCore.QObject ) :
 		#
 		# Assume that all nodes without specified type, have to be 'node'
 		#
-		if self.type == '' or self.type is None : 
-			self.type = 'node'
+		#if self.type == '' or self.type is None : 
+		#	self.type = 'node'
 		#
 		# try to convert from old format nodes
 		#
@@ -640,16 +642,15 @@ class Node ( QtCore.QObject ) :
 				#print '** handler = %s' % handler_name
 				#print '** handler code :'
 				#print self.event_code [ handler_name ] 
-		
 	#
 	# parseToXML
 	#
 	def parseToXML ( self, dom ) :
 		#
 		xml_node = dom.createElement ( 'node' )
-		if DEBUG_MODE : print '>> Node::parseToXML (id = %d)' % ( self.id )
+		if DEBUG_MODE : print ( '>> Node::parseToXML (id = %d)' % ( self.id ) )
 		if self.id is None :
-			if DEBUG_MODE : print '>> Node::parseToXML id is None'
+			if DEBUG_MODE : print ( '>> Node::parseToXML id is None' )
 		xml_node.setAttribute ( 'id', str( self.id ) )
 		xml_node.setAttribute ( 'name', self.name )
 		if self.label != None : xml_node.setAttribute ( 'label', self.label )
@@ -949,16 +950,22 @@ def translateOldType ( old_node_type ) :
 	#
 	node_type = None
 	node_format = None
+	if old_node_type is None : old_node_type = ''
 	print ( '!!!! old format node type = %s' % old_node_type )
-	if old_node_type in [ '' , 'image', 'surface', 'displacement', 'light', 'volume', 'rib', 'rib_code', 'rsl', 'rsl_code', 'geom' ] :
-		if old_node_type == 'image' :
-			node_format = 'image'
-		elif old_node_type in [ '', 'surface', 'displacement', 'light', 'volume', 'rsl', 'rsl_code' ] :
-			node_format = 'rsl'
-		elif old_node_type in ['rib', 'rib_code'] :
-			node_format = 'rib'
-		elif old_node_type == 'geom' :
-			node_format = 'geom'
+	if old_node_type in [ '', 'surface', 'displacement', 'light', 'volume', 'rsl', 'rsl_code' ] :
+		node_format = 'rsl'
+		node_type = 'node'
+	elif old_node_type == 'image' :
+		node_format = 'image'
+		node_type = 'node'
+	elif old_node_type == 'rib' :
+		node_format = 'rib'
+		node_type = 'node'
+	elif old_node_type == 'rib_code' :
+		node_format = 'rib'
+		node_type = 'node'
+	elif old_node_type == 'geom' :
+		node_format = 'geom'
 		node_type = 'node'
 	elif old_node_type == 'variable' :
 		node_format = 'rsl'

@@ -165,7 +165,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 	#
 	def remove ( self ) :
 		#
-		if DEBUG_MODE : print '>> GfxNodeConnector::remove'
+		if DEBUG_MODE : print ( '>> GfxNodeConnector.remove' )
 		if self.isNode () :
 			inputGfxLinks = self.getInputGfxLinks ()
 			outputGfxLinks = self.getOutputGfxLinks ()
@@ -182,8 +182,11 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 				#
 				# inputLink and corresponding node link will be removed from nodeNet
 				#
-				self.scene().emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), inputLink )
-
+				if usePyQt4 :
+					self.scene().emit ( QtCore.SIGNAL ( 'onGfxLinkRemoved' ), inputLink )
+				else :
+					self.scene().onGfxLinkRemoved.emit ( inputLink )
+					
 				for gfxLink in outputGfxLinks :
 					gfxLink.setSrcConnector ( srcConnector )
 					srcNode.attachOutputParamToLink ( srcParam, gfxLink.link )
@@ -195,7 +198,10 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 				srcConnector.adjustLinks ()
 			else :
 				self.removeAllLinks ()
-			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+			if usePyQt4 :
+				self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
+			else :
+				self.scene().onGfxNodeRemoved.emit ( self )
 		else :
 			self.removeAllLinks ()
 	#
@@ -213,7 +219,7 @@ class GfxNodeConnector ( QtModule.QGraphicsItem ) : #QtModule.QGraphicsItem
 		#
 		result = False
 		if self.isNode () :
-			#if DEBUG_MODE : print '* isConnectedToInput isNode'
+			#if DEBUG_MODE : print ( '* isConnectedToInput isNode' )
 			outputGfxLinks = self.getOutputGfxLinks ()
 			for gfxLink in outputGfxLinks :
 				dstConnector = gfxLink.dstConnector

@@ -485,6 +485,8 @@ def createNodeFromXML ( xml_node ) :
 			createNode = ImageNode
 		elif node_format == 'geom' :
 			createNode = GeomNode
+	#elif node_type == 'rib_code' :
+	#		createNode = RIBCodeNode
 	elif node_type == 'connector' :
 		createNode = ConnectorNode
 	elif node_type == 'note' :
