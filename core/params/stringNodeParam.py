@@ -40,7 +40,20 @@ class StringNodeParam ( NodeParam ) :
 	def valueToStr ( self, value ) :
 		#
 		ret_str = parseGlobalVars ( value )
-		if not self.isRibParam : ret_str = str ( "\"" + value + "\"" )
+		if not self.isRibParam : 
+			ret_str = str ( "\"" + value + "\"" )
+		return ret_str
+	#
+	# getValueToRSL
+	#
+	def getValueToRSL ( self, value ) :
+		ret_str = str ( "\"" + value + "\"" )
+		return ret_str
+	#
+	# getValueToRIB
+	#
+	def getValueToRIB ( self, value ) :
+		ret_str = str ( "\"" + value + "\"" )
 		return ret_str
 	#
 	# getRangeValues

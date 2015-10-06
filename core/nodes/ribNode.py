@@ -51,9 +51,7 @@ class RIBNode ( Node ) :
 	#
 	def getParamDeclaration ( self, param ) :
 		#
-		paramValueStr = param.getValueToStr ()
-		if param.type == 'string' :
-			paramValueStr = '"' + paramValueStr + '"'
+		paramValueStr = param.getValueToRIB ( param.value )
 		result = '"' + param.typeToStr () + ' ' + self.getParamName ( param ) + '" '
 		result += '[ ' + paramValueStr + ' ]'
 		return result

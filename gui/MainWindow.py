@@ -518,7 +518,7 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def setActiveNodeList ( self, nodeList ) :
 		#
-		if DEBUG_MODE : print '>> MainWindow.setActiveNodeList'
+		if DEBUG_MODE : print ( '>> MainWindow.setActiveNodeList' )
 		if usePyQt4 :
 			if self.activeNodeList != None :
 				QtCore.QObject.disconnect ( self.activeNodeList, QtCore.SIGNAL ( 'addNode' ), self.workArea.insertNodeNet  )
@@ -546,21 +546,17 @@ class MainWindow ( QtModule.QMainWindow ) :
 		#
 		#print ">> MainWindow: onAddGfxNode = %s" % gfxNode.node.label
 		if gfxNode.node.format == 'image' : 
-			if gfxNode.node.name.startswith ( 'imageViewer' ) : 
+			if gfxNode.node.thisIs () == 'image_render_node' :
 				self.ui.imageView_ctl.addViewer ( gfxNode )
-
-			#if self.ui.nodeParam_ctl.receivers( QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ) ) == 0 :
-			#  QtCore.QObject.connect( self.ui.nodeParam_ctl, QtCore.SIGNAL( 'onNodeParamChanged(QObject,QObject)' ), self.ui.imageView_ctl.onNodeParamChanged )
-			#else :
-			#  print ">> MainWindow: nodeParam_ctl onNodeParamChanged already connected to imageView_ctl"
 	#
 	# onRemoveGfxNode
 	#
 	def onRemoveGfxNode ( self, gfxNode ) :
 		#
-		if DEBUG_MODE : print '>> MainWindow.onRemoveGfxNode = %s' % gfxNode.node.label
+		if DEBUG_MODE : print ( '>> MainWindow.onRemoveGfxNode = %s' % gfxNode.node.label )
 		if gfxNode.node.format == 'image' :
-			self.ui.imageView_ctl.removeViewer ( gfxNode )
+			if gfxNode.node.thisIs () == 'image_render_node' :
+				self.ui.imageView_ctl.removeViewer ( gfxNode )
 			#QtCore.QObject.disconnect ( self.ui.nodeParam_ctl, QtCore.SIGNAL ( 'onNodeParamChanged(QObject,QObject)' ), self.ui.imageView_ctl.onNodeParamChanged )
 	#
 	# getSelectedNode
@@ -693,21 +689,21 @@ class MainWindow ( QtModule.QMainWindow ) :
 	# onCopy
 	#
 	def onCopy ( self ) :
-		if DEBUG_MODE : print '>> MainWindow.onCopy'
+		if DEBUG_MODE : print ( '>> MainWindow.onCopy' )
 		self.workArea.copyNodes ( self.clipboard, cutNodes = False )
 		self.setupActions ()
 	#
 	# onCut
 	#
 	def onCut ( self ) :
-		 if DEBUG_MODE : print '>> MainWindow.onCut'
+		 if DEBUG_MODE : print ( '>> MainWindow.onCut' )
 		 self.workArea.copyNodes ( self.clipboard, cutNodes = True )
 		 self.setupActions ()
 	#
 	# onPaste
 	#
 	def onPaste ( self ) :
-		if DEBUG_MODE : print '>> MainWindow.onPaste'
+		if DEBUG_MODE : print ( '>> MainWindow.onPaste' )
 		self.workArea.pasteNodes ( self.clipboard )
 	#
 	# onDuplicate
@@ -725,7 +721,11 @@ class MainWindow ( QtModule.QMainWindow ) :
 		self.setupActions ()
 		self.workArea.inspectedNode = None
 		if len ( gfxNodes ) == 1 : 
-			self.workArea.inspectedNode = gfxNodes[ 0 ]
+			gfxNode =  gfxNodes [ 0 ]
+			self.workArea.inspectedNode = gfxNode
+			if gfxNode.node.format == 'image' : 
+				if gfxNode.node.thisIs () == 'image_render_node' : 
+					self.ui.imageView_ctl.selectViewer ( gfxNode )
 		self.ui.nodeParam_ctl.setNode ( self.workArea.inspectedNode )
 	#
 	# onNodeLabelChanged

@@ -7,14 +7,13 @@ from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtXml
 
 from node import *
 
-from nodes.rslNode       import RSLNode
-from nodes.ribCodeNode   import RIBCodeNode
-from nodes.ribNode       import RIBNode
-from nodes.imageNode     import ImageNode
-from nodes.connectorNode import ConnectorNode
-from nodes.noteNode      import NoteNode
-from nodes.swatchNode    import SwatchNode
-from nodes.geomNode import GeomNode
+from nodes.rslNode				import RSLNode
+from nodes.ribNode				import RIBNode
+from nodes.imageNode			import ImageNode
+from nodes.connectorNode	import ConnectorNode
+from nodes.noteNode				import NoteNode
+from nodes.swatchNode			import SwatchNode
+from nodes.geomNode 			import GeomNode
 
 from nodeParam import NodeParam
 from nodeLink import NodeLink
@@ -442,30 +441,6 @@ class NodeNetwork ( QtCore.QObject ) :
 #
 def createNodeFromXML ( xml_node ) :
 	#
-	"""
-	createNodeTable = { 'rib'         : RIBNode
-										 ,'rib_code'    : RIBCodeNode
-										 ,'image'       : ImageNode
-										 ,'surface'     : RSLNode
-										 ,'displacement': RSLNode
-										 ,'light'       : RSLNode
-										 ,'volume'      : RSLNode
-										 ,'connector'   : ConnectorNode
-										 ,'note'        : NoteNode
-										 ,'swatch'      : SwatchNode
-										}
-	"""
-	createNodeTable = { 'node'        : RIBNode
-										 ,'image'       : ImageNode
-										 ,'surface'     : RSLNode
-										 ,'displacement': RSLNode
-										 ,'light'       : RSLNode
-										 ,'volume'      : RSLNode
-										 ,'connector'   : ConnectorNode
-										 ,'note'        : NoteNode
-										 ,'swatch'      : SwatchNode
-										}                    
-
 	node_type = str ( xml_node.attributes ().namedItem ( 'type' ).nodeValue () )
 	node_format = str ( xml_node.attributes ().namedItem ( 'format' ).nodeValue () )
 	node_version = str ( xml_node.attributes ().namedItem ( 'version' ).nodeValue () )
@@ -485,8 +460,6 @@ def createNodeFromXML ( xml_node ) :
 			createNode = ImageNode
 		elif node_format == 'geom' :
 			createNode = GeomNode
-	#elif node_type == 'rib_code' :
-	#		createNode = RIBCodeNode
 	elif node_type == 'connector' :
 		createNode = ConnectorNode
 	elif node_type == 'note' :
