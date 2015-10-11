@@ -2,9 +2,17 @@
 # ui_settings.py
 #
 import sys
+from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
+
+if  not usePyQt5 :
+	QtModule = QtGui
+else :
+	from core.mePyQt import QtWidgets
+	QtModule = QtWidgets
 
 CHECK_WIDTH = 20
-SPACING = 0
+SPACING = 4
+VSPACING = 8
 FIELD_WIDTH = 60
 COMBO_WIDTH = 120
 COMBO_HEIGHT = 22
@@ -35,4 +43,7 @@ CONNECTOR_RADIUS = 5
 
 SHADOW_OFFSET = 4
 SHADOW_OPACITY = 0.2
+
+SP_MIN = QtModule.QSizePolicy.Minimum
+SP_EXPAND = QtModule.QSizePolicy.Expanding
 

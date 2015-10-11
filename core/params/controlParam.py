@@ -123,5 +123,6 @@ class ControlParam ( NodeParam ) :
 	#
 	def execControlCode ( self, node ) :
 		#
+		print ( '>> ControlParam ( %s ).execControlCode' % self.label )
 		if self.code is not None :
 			exec (  self.code, { 'node' : node, 'self' : self } )

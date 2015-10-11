@@ -796,12 +796,12 @@ class MainWindow ( QtModule.QMainWindow ) :
 			print ( '** gfxNode = "%s"' % gfxNode.node.label )
 			if param is not None :
 				print ( '** param = "%s"' % param.name )
-			print ( '** No update'  )
-		else :
-			print ( '** Update without params'  )
-			self.ui.nodeParam_ctl.disconnectParamSignals ()
-			self.ui.nodeParam_ctl.connectParamSignals ()
-			self.ui.nodeParam_ctl.updateGui ()
+				print ( '** No update'  )
+				return
+		print ( '** Update all parameters'  )
+		self.ui.nodeParam_ctl.disconnectParamSignals ()
+		self.ui.nodeParam_ctl.connectParamSignals ()
+		self.ui.nodeParam_ctl.updateGui ()
 	#
 	# onFitAll
 	#

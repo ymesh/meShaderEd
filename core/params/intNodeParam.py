@@ -3,8 +3,11 @@
 	intNodeParam.py
 
 """
+import re
+
 from core.nodeParam import NodeParam
 from global_vars import app_global_vars, DEBUG_MODE
+from core.meCommon import parseGlobalVars
 #
 # IntNodeParam
 #
@@ -31,18 +34,39 @@ class IntNodeParam ( NodeParam ) :
 	#
 	# valueFromStr
 	#
-	def valueFromStr ( self, str ) :
+	def valueFromStr ( self, strValue ) :
 		#
-		value = 0
-		
-		if str != '' :
-			try: value = int ( str )
-			except: raise Exception ( 'Cannot parse integer value for parameter %s' % ( self.name ) )
+		if not self.isArray () :
+			value = 0
+			if strValue != '' :
+				try: value = int ( strValue )
+				except: raise Exception ( 'Cannot parse integer value for parameter %s' % ( self.name ) )
+		else :
+			value = []
+			s = re.findall ( r'[+-]?[\d\.]+', strValue )
+			f = map ( int, s )
+			value = f
 		return value
 	#
 	# valueToStr
 	#
-	def valueToStr ( self, value ) : return '%d'% value
+	def valueToStr ( self, value ) : 
+		#
+		if not self.isArray () :
+			strValue = '%d' % value
+		else :
+			strValue = '[' + ''.join ( '%d' % f + ',' for f in value [: - 1] ) + '%d' % value [ - 1] + ']'
+		return strValue
+	#
+	# getValueToRIB
+	#
+	def getValueToRIB ( self, value ) :
+		#
+		if not self.isArray () :
+			strValue = '%d' % value
+		else :
+			strValue = '[' + ''.join ( '%d' % f + ' ' for f in value [: - 1] ) + '%d' % value [ - 1] + ']'
+		return strValue
 	#
 	# getRangeValues
 	#
@@ -69,7 +93,7 @@ class IntNodeParam ( NodeParam ) :
 						label = s
 						value = int ( i )
 					i += 1
-					rangeList.append ( (label, value) )
+					rangeList.append ( ( parseGlobalVars ( label ), value ) )
 			#
 			# get range for slider
 			#

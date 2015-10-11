@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<node name="MakeTexture" author="mesh">
+<node name="MakeTexture" author="mesh" format='image' type="node" version="1.0">
   <help>Convert image file to texture</help>
   <input>
     <property name="image" label="Image File" type="string" default="" subtype="file" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"/>

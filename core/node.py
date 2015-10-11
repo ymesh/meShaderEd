@@ -325,6 +325,10 @@ class Node ( QtCore.QObject ) :
 	#
 	def removeParam ( self, param ) :
 		#
+		if self.event_code :
+			if 'ParamRemoving' in self.event_code.keys () :
+				exec ( self.event_code [ 'ParamRemoving' ], { 'param' : param, 'self' : self } )
+		
 		removedLinks = []
 		if param.isInput :
 			link = self.detachInputParam ( param )
@@ -513,8 +517,13 @@ class Node ( QtCore.QObject ) :
 		#
 		result = ''
 		result += param.typeToStr () + ' '
-		result += self.getParamName ( param ) + ' = '
-		result += param.getValueToStr () + ';\n'
+		result += self.getParamName ( param )
+		if param.isArray () and not param.isRibParam :
+			arraySize = ''
+			if param.arraySize > 0 :
+				arraySize = str ( param.arraySize )
+			result += '[%s]' % arraySize
+		result += ' = ' + param.getValueToStr () + ';\n'
 		return result
 	#
 	# parseFromXML
@@ -539,20 +548,15 @@ class Node ( QtCore.QObject ) :
 		self.author = str ( xml_node.attributes ().namedItem ( 'author' ).nodeValue () )
 		self.type = str ( xml_node.attributes ().namedItem ( 'type' ).nodeValue () )
 		#
-		# Assume that all nodes without specified type, have to be 'node'
-		#
-		#if self.type == '' or self.type is None : 
-		#	self.type = 'node'
-		#
 		# try to convert from old format nodes
 		#
 		if self.version == '' or self.version is None :
-			( self.type, self.format ) = translateOldType ( self.type )
+			if self.format == '' or self.format is None :
+				( self.type, self.format ) = translateOldType ( self.type )
 			
 		help_tag = xml_node.namedItem ( 'help' )
 		if not help_tag.isNull() :
 			self.help = help_tag.toElement ().text ()
-			#print '-> help= %s' % self.help
 		self.icon = str ( xml_node.attributes ().namedItem ( 'icon' ).nodeValue () )
 
 		input_tag = xml_node.namedItem ( 'input' )
@@ -560,34 +564,26 @@ class Node ( QtCore.QObject ) :
 			xml_paramList = input_tag.toElement ().elementsByTagName ( 'property' )
 			for i in range ( 0, xml_paramList.length () ) :
 				xml_param = xml_paramList.item ( i )
-				#param_type = str( xml_param.attributes().namedItem( 'type' ).nodeValue() )
 				#
 				# some parameters (String, Color, Point, Vector, Normal, Matrix ...)
 				# have different string interpretation in RIB
 				#
 				isRibParam = ( self.format == 'rib' )
 				param = createParamFromXml ( xml_param, isRibParam, True ) # #param.isInput = True
-				#param = createParamTable[ param_type ]( xml_param, isRibParam )
-				#param.isInput = True
 				self.addInputParam ( param )
-				#print '--> param = %s value = %s (isRibParam = %d )' % ( param.label, param.getValueToStr(), isRibParam )
 
 		output_tag = xml_node.namedItem ( 'output' )
 		if not output_tag.isNull () :
 			xml_paramList = output_tag.toElement ().elementsByTagName ( 'property' )
 			for i in range ( 0, xml_paramList.length () ) :
 				xml_param = xml_paramList.item ( i )
-				#param_type = str( xml_param.attributes().namedItem( 'type' ).nodeValue() )
 				#
 				# some parameters (Color, Point, Vector, Normal, Matrix ...)
 				# have different string interpretation in RIB
 				#
 				isRibParam = ( self.format == 'rib' )
 				param = createParamFromXml ( xml_param, isRibParam, False ) # #param.isInput = False
-				#param = createParamTable[ param_type ]( xml_param, isRibParam )
-				#param.isInput = False
 				self.addOutputParam ( param )
-				#print '--> param = %s value = %s' % ( param.label, param.getValueToStr() )
 
 		internal_tag = xml_node.namedItem ( 'internal' )
 		if not internal_tag.isNull () :
@@ -639,9 +635,6 @@ class Node ( QtCore.QObject ) :
 				code_str = str ( handler_tag.toElement ().text () ).lstrip ()
 				if code_str == '' : code_str = None
 				self.event_code [ handler_name ] = code_str
-				#print '** handler = %s' % handler_name
-				#print '** handler code :'
-				#print self.event_code [ handler_name ] 
 	#
 	# parseToXML
 	#
@@ -709,9 +702,9 @@ class Node ( QtCore.QObject ) :
 			
 		if self.event_code :
 			event_code_tag = dom.createElement ( 'event_code' )
-			print '*** write event_code'
+			print ( '*** write event_code' )
 			for key in self.event_code.keys () :
-				print '*** write handler "%s"' % key
+				print ( '*** write handler "%s"' % key )
 				handler_tag = dom.createElement( 'handler' )
 				handler_tag.setAttribute ( 'name', key )
 				event_code_tag.appendChild ( handler_tag )
@@ -741,7 +734,18 @@ class Node ( QtCore.QObject ) :
 	# computeNode
 	#
 	def computeNode ( self, CodeOnly = False ) : assert 0, 'computeNode needs to be implemented!'
-
+	#
+	# collectComputed
+	#
+	def collectComputed ( self, computedCode, visitedNodes, CodeOnly = False ) :
+		#
+		print ( '>>> Node.collectComputed (empty)' )
+	#
+	# parseGlobalVars
+	#
+	def parseGlobalVars ( self, parsedStr ) :
+		#
+		print ( '>>> Node.parseGlobalVars (empty)' )
 	#
 	# execControlCode
 	#
@@ -752,55 +756,11 @@ class Node ( QtCore.QObject ) :
 			if control_code != '' :
 				exec control_code
 	#
-	# parseGlobalVars
-	#
-	def parseGlobalVars ( self, parsedStr ) :
-		#
-		resultStr = ''
-		parserStart = 0
-		parserPos = 0
-
-		while parserPos != -1 :
-			parserPos = str ( parsedStr ).find ( '$', parserStart )
-			if parserPos != -1 :
-				#
-				if parserPos != 0 :
-					resultStr += parsedStr [ parserStart : parserPos ]
-
-				# check global vars first
-				if parsedStr [ ( parserPos + 1 ) : ( parserPos + 2 ) ] == '{' :
-					globStart = parserPos + 2
-					parserPos = str( parsedStr ).find ( '}', globStart )
-					global_var_name = parsedStr [ globStart : ( parserPos ) ]
-
-					#print '-> found global var %s' % global_var_name
-
-					if global_var_name in app_global_vars.keys () :
-						resultStr += app_global_vars [ global_var_name ]
-					elif global_var_name in node_global_vars.keys () :
-						if   global_var_name == 'INSTANCENAME' : resultStr += self.getInstanceName ()
-						elif global_var_name == 'NODELABEL' : resultStr += self.getLabel ()
-						elif global_var_name == 'NODENAME' : resultStr += self.getName ()
-						elif global_var_name == 'PARAMS' : resultStr += self.getComputedInputParams () + self.getComputedOutputParams ()
-						elif global_var_name == 'NODENETNAME' : resultStr += self.getNodenetName ()
-						elif global_var_name == 'OUTPUTNAME' : resultStr += normPath ( os.path.join ( app_global_vars [ 'TempPath' ], self.getNodenetName () + '_' + self.getLabel () ) )
-				else :
-					# keep $ sign for otheer, non ${...} cases
-					resultStr += '$'
-
-			#print 'parserPos = %d parserStart = %d' % ( parserPos, parserStart )
-			if parserPos != -1 :
-				parserStart = parserPos + 1
-
-		resultStr += parsedStr [ parserStart: ]
-
-		return resultStr
-	#
 	# copySetup
 	#
 	def copySetup ( self, newNode ) :
 		#
-		if DEBUG_MODE : print '>> Node( %s ).copySetup ' % self.label
+		if DEBUG_MODE : print ( '>> Node( %s ).copySetup ' % self.label )
 
 		newNode.id = self.id
 
@@ -839,7 +799,7 @@ class Node ( QtCore.QObject ) :
 		newNode.outputLinks = {}
 
 		#newNode.childs = set ()
-		print '***newNode.childs: ', newNode.childs
+		print ( '***newNode.childs: ', newNode.childs )
 		#newNode.childs = copy.copy ( self.childs )
 
 		newNode.inputParams = []
@@ -901,10 +861,10 @@ def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
 	from core.params.pointNodeParam        import PointNodeParam
 	from core.params.vectorNodeParam       import VectorNodeParam
 	from core.params.matrixNodeParam       import MatrixNodeParam
-	from core.params.surfaceNodeParam      import SurfaceNodeParam
-	from core.params.displacementNodeParam import DisplacementNodeParam
-	from core.params.volumeNodeParam       import VolumeNodeParam
-	from core.params.lightNodeParam        import LightNodeParam
+	#from core.params.surfaceNodeParam      import SurfaceNodeParam
+	#from core.params.displacementNodeParam import DisplacementNodeParam
+	#from core.params.volumeNodeParam       import VolumeNodeParam
+	#from core.params.lightNodeParam        import LightNodeParam
 	from core.params.ribNodeParam          import RibNodeParam
 	from core.params.textNodeParam         import TextNodeParam
 	from core.params.transformNodeParam    import TransformNodeParam
@@ -922,10 +882,10 @@ def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
 													,'point'        : PointNodeParam
 													,'vector'       : VectorNodeParam
 													,'matrix'       : MatrixNodeParam
-													,'surface'      : SurfaceNodeParam
-													,'displacement' : DisplacementNodeParam
-													,'volume'       : VolumeNodeParam
-													,'light'        : LightNodeParam
+#													,'surface'      : SurfaceNodeParam
+#													,'displacement' : DisplacementNodeParam
+#													,'volume'       : VolumeNodeParam
+#													,'light'        : LightNodeParam
 													,'rib'          : RibNodeParam
 													,'text'         : TextNodeParam
 													,'transform'    : TransformNodeParam
@@ -938,7 +898,7 @@ def createParamFromXml ( xml_param, isRibParam, isInput = True ) :
 		param = createParamTable [ param_type ]( xml_param, isRibParam )
 		param.isInput = isInput
 	else :
-		print '* Error: unknown param type !'
+		print ( '* Error: unknown param type !' )
 	return param
 #
 # translateOldType

@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+
+<node name="PointArray" label="PointArray" author="mesh" type="node" format="rsl" version="1.0">
+	<help>Point Array node.</help>
+	<input>
+		<property name="add_element" label="Array element" btext="Add" type="control" default="" provider="attribute" subtype="button"> 
+			<code>
+<![CDATA[
+print ":: Hello from (%s) XML control param code !!!" % self.label
+
+from core.params.pointNodeParam import PointNodeParam
+
+suffixIdx = node.getInputParamByName ( 'size' ).value
+newParam = PointNodeParam ()
+#
+# param.setup( name, label, detail, provider ) 
+#
+newParam.setup ( 'element_%s' % str ( suffixIdx ), 'element[%s]' % str ( suffixIdx ), 'uniform' )
+newParam.value = [0.0, 0.0, 0.0]
+newParam.default = [0.0, 0.0, 0.0]
+newParam.removable = True
+node.addInputParam ( newParam )
+node.updateNodeParams ( False )
+node.updateNode ( True )
+
+
+
+]]>
+		</code>
+		</property>   
+		<property name="size" label="Array Size" type="int" enabled="0" provider="attribute" default="1" />
+		<property name="element_0" label="element[0]" removable="1" type="point" default="point(0)" detail="uniform" />
+	</input>
+	<output>
+		<property name="array" label="pointArray" type="point" arraySize="1" default="[point(0.0)]" detail="uniform" />
+	</output>
+	<code>
+<![CDATA[
+/*
+
+	$(array)[0] = $(element_0);
+		....
+	This will be replaced with actual code 
+	after execution "control_code" of the node
+	
+*/
+]]>
+	</code>
+	<control_code>
+<![CDATA[
+print ":: Hello from (%s) XML control_code !!!" % self.label
+self.code = ""
+arraySize = self.getInputParamByName ( 'size' ).value
+for i in range ( arraySize ) :
+	self.code += "$(array)[%d] = $(element_%d);\n" % ( i, i )
+
+
+
+]]>
+	</control_code>
+		<event_code>
+		<handler name="ParamAdded">
+<![CDATA[
+print ":::: ParamAdded handler (%s)" % param.label
+arraySizeParam = self.getInputParamByName ( 'size' )
+arrayParam = self.getOutputParamByName ( 'array' )
+
+newArraySize = arraySizeParam.value + 1
+arraySizeParam.setValue ( newArraySize, False ) # no emit signal
+
+arrayParam.arraySize = newArraySize
+arrayParam.default.append ( [0.0, 0.0, 0.0] )
+arrayParam.value.append ( [0.0, 0.0, 0.0] )
+
+arrayParam.spaceArray.append ( None )
+arrayParam.spaceDefArray.append ( None )
+
+self.computeNode ( True ) # code only
+print ":::: array size +1"
+
+
+
+]]>
+		</handler>
+		<handler name="ParamRemoving">
+<![CDATA[
+print ":::: ParamRemoving handler (%s)" % param.label 
+#
+# called before removing parameter
+#
+arraySizeParam = self.getInputParamByName ( 'size' )
+arrayParam = self.getOutputParamByName ( 'array' )
+
+if arraySizeParam.value > 0 :
+	paramIndex = self.inputParams.index ( param )
+	indexToRemove = paramIndex - 2 # add_element + size = 2
+	
+	arrayParam.arraySize = arraySizeParam.value - 1
+	arrayParam.default.pop ( indexToRemove )
+	arrayParam.value.pop ( indexToRemove )
+	
+	arrayParam.spaceArray.pop ( indexToRemove )
+	arrayParam.spaceDefArray.pop ( indexToRemove )
+	
+	if indexToRemove < arraySizeParam.value - 1 :
+		#
+		# rename the rest parameters after 'indexToRemove'
+		#
+		for i in range ( paramIndex + 1, arraySizeParam.value + 2 ) :
+			self.inputParams [ i ].name = 'element_%d' % ( i - 3 )
+			self.inputParams [ i ].label = 'element[%d]' % ( i - 3 )
+
+
+
+]]> 
+		</handler>     
+		<handler name="ParamRemoved">
+<![CDATA[
+print ":::: ParamRemoved handler (%s)" %param.label 
+arraySizeParam = self.getInputParamByName ( 'size' )
+arrayParam = self.getOutputParamByName ( 'array' )
+
+if arraySizeParam.value > 0 :
+	newArraySize = arraySizeParam.value - 1
+	arraySizeParam.setValue ( newArraySize, False ) # no emit signal  
+	
+	self.computeNode ( True ) # code only
+	print ":::: array size -1"
+	
+	
+	
+]]> 
+		</handler>      
+	</event_code>  
+</node>

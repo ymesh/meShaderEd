@@ -4,7 +4,7 @@
 
 """
 import re
-
+import copy
 from core.node import Node
 from core.nodeParam import NodeParam
 from global_vars import app_global_vars, DEBUG_MODE
@@ -46,59 +46,119 @@ class ColorNodeParam ( NodeParam ) :
 	#
 	def valueFromRSL ( self, strValue ) :
 		#
-		value = [ 0.0, 0.0, 0.0 ]
-
-		if strValue != '' :
-			strValue = strValue.replace ( ' ', '' )
-			color3_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
-			color1_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+\))'
-			color3_space_pattern_str = 'color"[A-z]*"\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
-			color1_space_pattern_str = 'color"[A-z]*"\(([+]?([0-9]*\.)?[0-9]+\))'
-			float_pattern_str = '[+]?[0-9]*\.?[0-9]+'
-			space_pattern_str = '"[A-z]*"'
-
-			p = re.compile ( color3_pattern_str )
-			match = p.match ( strValue )
-			if match :
-				p = re.compile ( float_pattern_str )
-				f = p.findall ( strValue )
-				f = map ( float, f )
-				value = [ f [0], f [1], f [2] ]
-			else :
-				p = re.compile ( color1_pattern_str )
-				match = p.match( strValue )
+		color3_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
+		color1_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+\))'
+		color3_space_pattern_str = 'color"[A-z]*"\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
+		color1_space_pattern_str = 'color"[A-z]*"\(([+]?([0-9]*\.)?[0-9]+\))'
+		float_pattern_str = '[+]?[0-9]*\.?[0-9]+'
+		space_pattern_str = '"[A-z]*"'
+			
+		if not self.isArray () :
+			value = [ 0.0, 0.0, 0.0 ]
+			if strValue != '' :
+				strValue = strValue.replace ( ' ', '' )
+				p = re.compile ( color3_pattern_str )
+				match = p.match ( strValue )
 				if match :
 					p = re.compile ( float_pattern_str )
-					f = p.findall( strValue )
+					f = p.findall ( strValue )
 					f = map ( float, f )
-					value = [ f [0], f [0], f [0] ]
+					value = [ f [0], f [1], f [2] ]
 				else :
-					p = re.compile ( color3_space_pattern_str )
+					p = re.compile ( color1_pattern_str )
 					match = p.match( strValue )
 					if match :
 						p = re.compile ( float_pattern_str )
-						f = p.findall ( strValue )
+						f = p.findall( strValue )
 						f = map ( float, f )
-						value = [ f [0], f [1], f [2] ]
-
-						p = re.compile ( space_pattern_str )
-						s = p.findall ( strValue )
-						self.space = s [0].strip ( '"' )
+						value = [ f [0], f [0], f [0] ]
 					else :
-						p = re.compile ( color1_space_pattern_str )
+						p = re.compile ( color3_space_pattern_str )
 						match = p.match( strValue )
 						if match :
 							p = re.compile ( float_pattern_str )
 							f = p.findall ( strValue )
 							f = map ( float, f )
-							value = [ f [0], f [0], f [0] ]
-
+							value = [ f [0], f [1], f [2] ]
+	
 							p = re.compile ( space_pattern_str )
 							s = p.findall ( strValue )
 							self.space = s [0].strip ( '"' )
 						else :
-							err = 'Cannot parse color %s values' % self.name
-							raise Exception ( err )
+							p = re.compile ( color1_space_pattern_str )
+							match = p.match( strValue )
+							if match :
+								p = re.compile ( float_pattern_str )
+								f = p.findall ( strValue )
+								f = map ( float, f )
+								value = [ f [0], f [0], f [0] ]
+	
+								p = re.compile ( space_pattern_str )
+								s = p.findall ( strValue )
+								self.space = s [0].strip ( '"' )
+							else :
+								err = 'Cannot parse color %s values' % self.name
+								raise Exception ( err )
+		else :
+			arrayValue = []
+			spaceValue = []
+			strValue = strValue.strip ( '[]' )
+			if strValue != '' :
+				strValue = strValue.replace ( ' ', '' )
+				strArrayValue = []
+				args = strValue.split ( 'color' )
+				for a in args :
+					if a != '' :
+						strArrayValue.append ( 'color' + a.rstrip (',') )
+				for strValue in strArrayValue :		
+					value = [ 0.0, 0.0, 0.0 ]
+					space = None
+					p = re.compile ( color3_pattern_str )
+					match = p.match ( strValue )
+					if match :
+						p = re.compile ( float_pattern_str )
+						f = p.findall ( strValue )
+						f = map ( float, f )
+						value = [ f [0], f [1], f [2] ]
+					else :
+						p = re.compile ( color1_pattern_str )
+						match = p.match( strValue )
+						if match :
+							p = re.compile ( float_pattern_str )
+							f = p.findall( strValue )
+							f = map ( float, f )
+							value = [ f [0], f [0], f [0] ]
+						else :
+							p = re.compile ( color3_space_pattern_str )
+							match = p.match( strValue )
+							if match :
+								p = re.compile ( float_pattern_str )
+								f = p.findall ( strValue )
+								f = map ( float, f )
+								value = [ f [0], f [1], f [2] ]
+		
+								p = re.compile ( space_pattern_str )
+								s = p.findall ( strValue )
+								space = s [0].strip ( '"' )
+							else :
+								p = re.compile ( color1_space_pattern_str )
+								match = p.match( strValue )
+								if match :
+									p = re.compile ( float_pattern_str )
+									f = p.findall ( strValue )
+									f = map ( float, f )
+									value = [ f [0], f [0], f [0] ]
+		
+									p = re.compile ( space_pattern_str )
+									s = p.findall ( strValue )
+									space = s [0].strip ( '"' )
+								else :
+									err = 'Cannot parse color %s values' % self.name
+									raise Exception ( err )
+					arrayValue.append ( value )
+					spaceValue.append ( space )
+			self.spaceArray = copy.deepcopy ( spaceValue ) 
+			value = arrayValue								
 		return value
 	#
 	# valueFromRIB
@@ -106,9 +166,7 @@ class ColorNodeParam ( NodeParam ) :
 	def valueFromRIB ( self, strValue ) :
 		#
 		value = [ 0.0, 0.0, 0.0 ]
-
 		if strValue != '' :
-			#str = str.replace( ' ', '' )
 			color_values = strValue.split ( ' ' )
 			f = map ( float, color_values )
 			value = [ f [0], f [1], f [2] ]
@@ -127,14 +185,39 @@ class ColorNodeParam ( NodeParam ) :
 	#
 	def getValueToRSL ( self, value ) :
 		#
-		ret_str = 'color'
-		if self.space != None :
-			if self.space != '' :
-				ret_str += ' "' + self.space + '" '
-		return ret_str + '(' + ''.join ( '%.3f' % f + ',' for f in value [: - 1] ) + '%.3f' % value [ - 1] + ')'
+		if not self.isArray () :
+			strValue = 'color'
+			if self.space != None and self.space != '' :
+				strValue += ' "' + self.space + '" '
+			strValue += '(' + ''.join ( '%.3f' % f + ',' for f in value [: - 1] ) + '%.3f' % value [ - 1] + ')'
+		else :
+			arrayStrValue = '{'
+			for i in range ( self.arraySize ) :
+				strValue = 'color'
+				space = self.spaceArray [ i ]
+				if space != None and space != '' :
+					strValue += ' "' + space + '" '
+				strValue += '(' + ''.join ( '%.3f' % f + ',' for f in value [ i ][: - 1] ) + '%.3f' % value [ i ][ - 1] + ')'
+				if i != ( self.arraySize - 1 ) :
+					strValue += ','
+				arrayStrValue += strValue
+			arrayStrValue += '}'
+			strValue = arrayStrValue
+		return strValue
 	#
 	# getValueToRIB
 	#
 	def getValueToRIB ( self, value ) :
 		#
-		return ''.join ( '%.3f' % f + ' ' for f in value [: - 1] ) + '%.3f' % value [ - 1]
+		if not self.isArray () :
+			strValue = ''.join ( '%.3f' % f + ' ' for f in value [: - 1] ) + '%.3f' % value [ - 1]
+		else :
+			arrayStrValue = '['
+			for i in range ( self.arraySize ) :
+				strValue = ''.join ( '%.3f' % f + ' ' for f in value [ i ][: - 1] ) + '%.3f' % value [ i ][ - 1]
+				if i != ( self.arraySize - 1 ) :
+					strValue += ','
+				arrayStrValue += strValue
+			arrayStrValue += ']'
+			strValue = arrayStrValue
+		return strValue

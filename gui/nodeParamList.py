@@ -118,16 +118,16 @@ class NodeParamListTab ( QtModule.QWidget ) :
 		self.paramHeader.resizeSection ( 0, self.labelWidth )
 		self.paramHeader.setMinimumSectionSize  ( self.labelWidth )
 		self.paramHeader.setStretchLastSection ( True )
-		self.paramHeader.setFixedHeight ( 24 )
-		self.paramHeader.setFrameShape ( QtModule.QFrame.Box )
+		self.paramHeader.setFixedHeight ( UI.HEIGHT + 10 ) # !!!!!
+		self.paramHeader.setFrameShape ( QtModule.QFrame.NoFrame )
 		self.paramHeader.setFrameShadow ( QtModule.QFrame.Raised )
-		self.paramHeader.setLineWidth ( 1 )
-		self.paramHeader.setMidLineWidth ( 2 )
+		self.paramHeader.setLineWidth ( 0 )
+		self.paramHeader.setMidLineWidth ( 0 )
 		
 		self.stackedWidget = QtModule.QStackedWidget ( self )
 		
 		self.paramsLayout = QtModule.QGridLayout ( self )
-		self.paramsLayout.setContentsMargins ( 2, 2, 2, 2 )
+		self.paramsLayout.setContentsMargins ( UI.SPACING, UI.SPACING, UI.SPACING, UI.SPACING )
 		self.paramsLayout.setSizeConstraint ( QtModule.QLayout.SetNoConstraint )
 		self.paramsLayout.setVerticalSpacing ( 0 )
 		self.paramsLayout.setRowStretch ( 1, 1 )
@@ -193,10 +193,10 @@ class NodeParamList ( QtModule.QWidget ) :
 		self.paramWidgets = {  'string'       : StringWidget
 													,'image'        : StringWidget
 													,'rib'          : StringWidget
-													,'surface'      : StringWidget
-													,'displacement' : StringWidget
-													,'light'        : StringWidget
-													,'volume'       : StringWidget
+#													,'surface'      : StringWidget
+#													,'displacement' : StringWidget
+#													,'light'        : StringWidget
+#													,'volume'       : StringWidget
 													,'float'        : FloatWidget
 													,'int'          : IntWidget
 													,'color'        : ColorWidget
@@ -237,7 +237,7 @@ class NodeParamList ( QtModule.QWidget ) :
 			
 		self.paramListLayout = QtModule.QGridLayout ()
 		self.paramListLayout.setSizeConstraint ( QtModule.QLayout.SetNoConstraint )
-		self.paramListLayout.setSpacing ( UI.SPACING )
+		self.paramListLayout.setSpacing ( UI.VSPACING )
 		self.paramListLayout.setContentsMargins ( UI.SPACING, UI.SPACING, UI.SPACING, UI.SPACING )
 		self.paramListLayout.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		self.paramListLayout.setColumnMinimumWidth ( 0, self.labelWidth )
@@ -282,6 +282,7 @@ class NodeParamList ( QtModule.QWidget ) :
 							paramWidget = apply ( self.paramWidgets [ param.type ], [ param, self.gfxNode ] )
 						
 						if paramWidget is not None :
+							#
 							self.paramListLayout.addLayout ( paramWidget.label_vl, paramRows, 0, 1, 1 )
 							self.paramListLayout.addLayout ( paramWidget.param_vl, paramRows, 1, 1, 1 )
 							if not param.enabled :
@@ -294,6 +295,8 @@ class NodeParamList ( QtModule.QWidget ) :
 									paramWidget.nodeParamRemoved.connect ( self.nodeParamViewTab.onParamRemoved )
 					paramRows += 1
 			
-			spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Minimum, QtModule.QSizePolicy.Expanding )
-			self.paramListLayout.addItem ( spacer, paramRows, 0, 1, 1 ) 
+			sp1 = QtModule.QSpacerItem ( 0, 0, UI.SP_MIN, UI.SP_EXPAND )
+			sp2 = QtModule.QSpacerItem ( 0, 0, UI.SP_MIN, UI.SP_EXPAND )
+			self.paramListLayout.addItem ( sp1, paramRows, 0, 1, 1 ) 
+			self.paramListLayout.addItem ( sp2, paramRows, 1, 1, 1 ) 
 			self.paramListLayout.setRowStretch ( paramRows, 1 )

@@ -3,7 +3,7 @@
  
  meShaderEd.py
 
- version 0.3.5b (?? Oct 2013)
+ version 0.3.5 (11 Oct 2013)
 
  Author: Yuri Meshalkin (aka mesh) (mesh@kpp.kiev.ua)
 
@@ -35,7 +35,7 @@ else :
 
 root = normPath ( sys.path [0] )
 branchName = ''
-__version__ = '0.3.5b' + branchName
+__version__ = '0.3.5' + branchName
 
 app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
 																	QtCore.QSettings.UserScope,

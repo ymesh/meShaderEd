@@ -12,7 +12,7 @@ from core.node import Node
 from core.nodeParam import NodeParam
 from core.meCommon import *
 
-from global_vars import app_global_vars, DEBUG_MODE, VALID_RSL_SHADER_TYPES
+from global_vars import app_global_vars, DEBUG_MODE, VALID_RSL_PARAM_TYPES, VALID_SCENE_TYPES
 from core.node_global_vars import node_global_vars
 #
 # RSLNode
@@ -69,13 +69,14 @@ class RSLNode ( Node ) :
 					self.computedOutputParamsList += srcNode.computedOutputParamsList
 					self.computedIncludesList += srcNode.computedIncludesList
 			else :
-				if param.shaderParam :
-					self.computedInputParamsList.append ( ( param, self ) ) # += declare
-				else :
-					self.computedLocalParamsList.append ( ( param, self ) ) # += declare
+				if param.provider != 'attribute' and param.type in VALID_RSL_PARAM_TYPES :
+					if param.shaderParam :
+						self.computedInputParamsList.append ( ( param, self ) ) # += declare
+					else :
+						self.computedLocalParamsList.append ( ( param, self ) ) # += declare
 
 		for param in self.outputParams :
-			if not param.type in ['rib', 'surface', 'displacement', 'light', 'volume'] :
+			if not param.type in VALID_SCENE_TYPES :
 				if param.provider == 'primitive' or param.shaderParam :
 					self.computedOutputParamsList.append ( ( param, self ) ) # += ( 'output ' + declare )
 				else :
@@ -118,6 +119,47 @@ class RSLNode ( Node ) :
 				shaderCode = computedCode + self.getHeader () + node_code      
 				
 		return shaderCode
+	#
+	# parseGlobalVars
+	#
+	def parseGlobalVars ( self, parsedStr ) :
+		#
+		resultStr = ''
+		parserStart = 0
+		parserPos = 0
+
+		while parserPos != -1 :
+			parserPos = str ( parsedStr ).find ( '$', parserStart )
+			if parserPos != -1 :
+				#
+				if parserPos != 0 :
+					resultStr += parsedStr [ parserStart : parserPos ]
+				# check global vars first
+				if parsedStr [ ( parserPos + 1 ) : ( parserPos + 2 ) ] == '{' :
+					globStart = parserPos + 2
+					parserPos = str( parsedStr ).find ( '}', globStart )
+					global_var_name = parsedStr [ globStart : ( parserPos ) ]
+
+					#print '-> found global var %s' % global_var_name
+
+					if global_var_name in app_global_vars.keys () :
+						resultStr += app_global_vars [ global_var_name ]
+					elif global_var_name in node_global_vars.keys () :
+						if   global_var_name == 'INSTANCENAME' : resultStr += self.getInstanceName ()
+						elif global_var_name == 'NODELABEL' : resultStr += self.getLabel ()
+						elif global_var_name == 'NODENAME' : resultStr += self.getName ()
+						elif global_var_name == 'PARAMS' : resultStr += self.getComputedInputParams () + self.getComputedOutputParams ()
+						elif global_var_name == 'NODENETNAME' : resultStr += self.getNodenetName ()
+						elif global_var_name == 'OUTPUTNAME' : resultStr += normPath ( os.path.join ( app_global_vars [ 'TempPath' ], self.getNodenetName () + '_' + self.getLabel () ) )
+				else :
+					# keep $ sign for otheer, non ${...} cases
+					resultStr += '$'
+			if parserPos != -1 :
+				parserStart = parserPos + 1
+
+		resultStr += parsedStr [ parserStart: ]
+
+		return resultStr
 	#
 	# RSL specific parser
 	#

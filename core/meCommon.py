@@ -156,7 +156,8 @@ def getUniqueName  ( name, nameList ) :
 def getParsedLabel ( text ) :
 	#
 	newLabel = str ( text ).strip ()
-	newLabel = newLabel.replace ( ' ', "_" )
+	newLabel = newLabel.replace ( ' ', '_' )
+	newLabel = newLabel.translate ( None, '[]' )
 	return newLabel  
 #
 # parseGlobalVars
@@ -186,7 +187,7 @@ def parseGlobalVars ( inputStr ) :
 				#print '-> found global var %s' % global_var_name
 
 				if global_var_name in app_global_vars.keys () :
-					resultStr += app_global_vars [ global_var_name ]
+					resultStr += str ( app_global_vars [ global_var_name ] )
 			else :
 				# keep $ sign for otheer, non ${...} cases
 				resultStr += '$'
