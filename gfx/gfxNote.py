@@ -105,6 +105,7 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	#
 	def updateGfxNode ( self ) :
 		if DEBUG_MODE : print '>> GfxNote( %s ).updateGfxNode' % ( self.node.label )
+		# remove all children
 		for item in self.childItems () : 
 			self.scene ().removeItem ( item )
 		self.setupParameters ()

@@ -3,6 +3,8 @@
 	floatNodeParam.py
 
 """
+import re
+
 from core.nodeParam import NodeParam
 from global_vars import app_global_vars, DEBUG_MODE
 from core.meCommon import parseGlobalVars
@@ -33,18 +35,39 @@ class FloatNodeParam ( NodeParam ) :
 	#
 	# valueFromStr
 	#
-	def valueFromStr ( self, str ) :
+	def valueFromStr ( self, strValue ) :
 		#
-		value = 0.0
-
-		if str != '':
-			try: value = float ( str )
-			except: raise Exception ( 'Cannot parse float value for parameter %s' % ( self.name ) )
+		if not self.isArray () :
+			value = 0.0
+			if strValue != '' :
+				try: value = float ( strValue )
+				except: raise Exception ( 'Cannot parse float value for parameter %s' % ( self.name ) )
+		else :
+			value = []
+			s = re.findall ( r'[+-]?[\d\.]+', strValue )
+			f = map ( float, s )
+			value = f
 		return value
 	#
 	# valueToStr
 	#
-	def valueToStr ( self, value ) : return '%.3f' % float ( value )
+	def valueToStr ( self, value ) : 
+		#
+		if not self.isArray () :
+			strValue = '%.3f' % float ( value )
+		else :
+			strValue = '{' + ''.join ( '%.3f' % f + ',' for f in value [: - 1] ) + '%.3f' % value [ - 1] + '}'
+		return strValue
+	#
+	# getValueToRIB
+	#
+	def getValueToRIB ( self, value ) :
+		#
+		if not self.isArray () :
+			strValue = '%.3f' % float ( value )
+		else :
+			strValue = '[' + ''.join ( '%.3f' % f + ' ' for f in value [: - 1] ) + '%.3f' % value [ - 1] + ']'
+		return strValue
 	#
 	# getRangeValues
 	#

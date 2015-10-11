@@ -2,87 +2,26 @@
 <nodenet name="startup" author="meShaderEd">
  <help>Short NodeNetwork description</help>
  <nodes>
-  <node label="imageViewer" icon="" name="imageViewer" id="1" type="image" author="mesh">
-   <help>Image viewer with dynamicaly added inputs</help>
-   <input>
-    <property btext="Add" label="Image input" name="add_image" subtype="button" value="" type="control" default="" provider="attribute">
-     <code>
-#print ":: Hello from (%s) XML control param code !!!" % self.label
-from core.params.imageNodeParam import ImageNodeParam
-lastNonremovableParam = node.getInputParamByName ( 'selector' )
-lastNonremovableParamIdx = node.inputParams.index ( lastNonremovableParam )
-lastParamIdx = len ( node.inputParams ) 
-suffixIdx = lastParamIdx - lastNonremovableParamIdx
-
-newParam = ImageNodeParam ()
-newParam.setup ( 'image' + str ( suffixIdx ), '', '', '' )
-newParam.value = ''
-newParam.default = ''
-newParam.subtype="file"
-newParam.range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"
-newParam.removable = True
-node.addInputParam ( newParam )
-node.updateNodeParams ()
-
-
-</code>
-    </property>
-    <property label="Image" name="image" subtype="file" value="" type="image" default="" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"/>
-    <property label="Select input" name="selector" subtype="selector" value="image" type="string" default="image" provider="attribute" range="Image=image"/>
-   </input>
-   <output/>
-   <internal/>
-   <include/>
-   <control_code><![CDATA[
-#print ":: Hello from (%s) XML control_code !!!" % self.label
-selectedInput = self.getInputParamByName ( 'selector' ).value
-print '* selectedInput = %s' % selectedInput 
-self.imageName = self.getInputParamValueByName ( selectedInput )
-
-]]></control_code>
-   <event_code>
-    <handler name="ParamAdded"><![CDATA[#print ":: Hello from ParamAdded handler" 
-#print ":: param.label = %s type = %s" % ( param.label, param.type )
-selector = self.getInputParamByName ( 'selector' )
-selector.range += ':%s=%s' % ( param.label, param.name ) 
-
-]]></handler>
-    <handler name="ParamLabelRenamed"><![CDATA[#print ":: Hello from ParamLabelRenamed handler"  
-#print ":: param.label = %s oldName = %s" % ( param.label, oldLabel )
-if param.type == 'image' :
-  selector = self.getInputParamByName ( 'selector' ) 
-  selector.renameItemInRange ( oldLabel, param.label )    
-
-]]></handler>
-    <handler name="ParamRemoved"><![CDATA[#print ":: Hello from ParamRemoved handler" 
-#print ":: param.label = %s type = %s" % ( param.label, param.type ) 
-selector = self.getInputParamByName ( 'selector' ) 
-selector.removeItemFromRange ( param.label )    
-
-]]></handler>
-   </event_code>
-   <offset x="110" y="-100"/>
-  </node>
-  <node label="BasicPreview" icon="" name="BasicPreview" id="2" type="rib" author="mesh">
+  <node name="BasicPreview" icon="" format="rib" parent="" version="" author="mesh" id="2" type="node" label="BasicPreview">
    <help>Basic preview RIB with geometry primitive, 2 distant and 1 environment light</help>
    <input>
-    <property label="Render Options" name="Globals" value="" type="rib" default=""/>
-    <property label="Primitive" name="Primitive" subtype="selector" value="Teapot" type="string" default="Sphere" provider="attribute" range="Sphere:Teapot:Cylinder:Torus:Plane"/>
-    <property label="Display Driver" name="DisplayDriver" subtype="selector" value="tiff" type="string" default="tiff" provider="attribute" range="tiff:framebuffer:it"/>
-    <property label="Image width" name="Width" value="256" type="int" default="256" provider="attribute"/>
-    <property label="Image height" name="Height" value="256" type="int" default="256" provider="attribute"/>
-    <property label="EnvLight Intensity" name="EnvIntensity" value="1.250" type="float" default="1.250" provider="attribute"/>
-    <property label="Environment Map" name="EnvMap" subtype="file" value="kitchen_LL.hdr.tex" type="string" default="kitchen_LL.hdr.tex" provider="attribute" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif"/>
-    <property label="Color" name="Color" value="0.000 0.000 1.000" type="color" default="0.000 0.000 1.000" provider="attribute"/>
-    <property label="Opacity" name="Opacity" value="1.000 1.000 1.000" type="color" default="1.000 1.000 1.000" provider="attribute"/>
-    <property label="Displacement Bound" name="DisplaceBound" value="0.500" type="float" default="0.500" provider="attribute"/>
-    <property label="Displace Shader" name="FG_disp" value="Displacement &quot;null&quot;" type="rib" default="Displacement &quot;null&quot;"/>
-    <property label="Surface Shader" name="FG_surf" value="Surface &quot;defaultsurface&quot;" type="rib" default="Surface &quot;defaultsurface&quot;"/>
-    <property label="Background Shader" name="BG_surf" value="Surface &quot;liquidchecker&quot;" type="rib" default="Surface &quot;liquidchecker&quot;"/>
-    <property label="PrimitiveCode" name="PrimitiveCode" display="0" value="&#xa;      Rotate 0 0 1 0&#xa;      AttributeBegin&#xa;        Scale 0.35 0.35 0.35&#xa;        Translate -0.6 -1 0&#xa;        Rotate 120 -1 0 0&#xa;        Rotate 30 0 0 1&#xa;        Geometry &quot;teapot&quot;&#xa;      AttributeEnd&#xa;      " type="string" default="" provider="attribute"/>
+    <property name="Globals" value="" default="" type="rib" label="Render Options"/>
+    <property name="Primitive" provider="attribute" value="Teapot" range="Sphere:Teapot:Cylinder:Torus:Plane" default="Sphere" subtype="selector" type="string" label="Primitive"/>
+    <property name="DisplayDriver" provider="attribute" value="tiff" range="tiff:framebuffer:it" default="tiff" subtype="selector" type="string" label="Display Driver"/>
+    <property name="Width" provider="attribute" value="256" default="256" type="int" label="Image width"/>
+    <property name="Height" provider="attribute" value="256" default="256" type="int" label="Image height"/>
+    <property name="EnvIntensity" provider="attribute" value="1.250" default="1.250" type="float" label="EnvLight Intensity"/>
+    <property name="EnvMap" provider="attribute" value="kitchen_LL.hdr.tex" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" default="kitchen_LL.hdr.tex" subtype="file" type="string" label="Environment Map"/>
+    <property name="Color" provider="attribute" value="0.000 0.000 1.000" default="0.000 0.000 1.000" type="color" label="Color"/>
+    <property name="Opacity" provider="attribute" value="1.000 1.000 1.000" default="1.000 1.000 1.000" type="color" label="Opacity"/>
+    <property name="DisplaceBound" provider="attribute" value="0.500" default="0.500" type="float" label="Displacement Bound"/>
+    <property name="FG_disp" value="Displacement &quot;null&quot;" default="Displacement &quot;null&quot;" type="rib" label="Displace Shader"/>
+    <property name="FG_surf" value="Surface &quot;defaultsurface&quot;" default="Surface &quot;defaultsurface&quot;" type="rib" label="Surface Shader"/>
+    <property name="BG_surf" value="Surface &quot;liquidchecker&quot;" default="Surface &quot;liquidchecker&quot;" type="rib" label="Background Shader"/>
+    <property name="PrimitiveCode" provider="attribute" value="&#xa;      Rotate 0 0 1 0&#xa;      AttributeBegin&#xa;        Scale 0.35 0.35 0.35&#xa;        Translate -0.6 -1 0&#xa;        Rotate 120 -1 0 0&#xa;        Rotate 30 0 0 1&#xa;        Geometry &quot;teapot&quot;&#xa;      AttributeEnd&#xa;      " display="0" default="" type="string" label="PrimitiveCode"/>
    </input>
    <output>
-    <property label="ImageFile" name="ImageFile" value="${OUTPUTNAME}.tif" type="image" default="${OUTPUTNAME}.tif"/>
+    <property name="ImageFile" value="${OUTPUTNAME}.tif" default="${OUTPUTNAME}.tif" type="image" label="ImageFile"/>
    </output>
    <internal/>
    <include/>
@@ -175,16 +114,16 @@ if self.getInputParamByName ( 'Primitive' ).value == 'Plane':
 
   WorldEnd
   ]]></code>
-   <offset x="-60" y="-130"/>
+   <offset x="-60.0" y="-130.0"/>
   </node>
-  <node label="surf" icon="" name="surface" id="3" type="surface" author="mesh">
+  <node name="surface" icon="" format="rsl" parent="" version="" author="mesh" id="3" type="node" label="surf">
    <help>Basic surface shader.</help>
    <input>
-    <property label="Ci" name="Ci" shaderParam="1" value="color(0.000,0.333,1.000)" type="color" default="color(0.000,0.000,0.000)"/>
-    <property label="Oi" name="Oi" value="color(1.000,1.000,1.000)" type="color" default="color(1.000,1.000,1.000)"/>
+    <property name="Ci" value="color(0.000,0.333,1.000)" shaderParam="1" default="color(0.000,0.000,0.000)" type="color" label="Ci"/>
+    <property name="Oi" value="color(1.000,1.000,1.000)" default="color(1.000,1.000,1.000)" type="color" label="Oi"/>
    </input>
    <output>
-    <property label="surface" name="surface" value="Surface &quot;${NODELABEL}&quot;" type="rib" default="Surface &quot;${NODELABEL}&quot;"/>
+    <property name="surface" value="Surface &quot;${NODELABEL}&quot;" default="Surface &quot;${NODELABEL}&quot;" type="rib" label="surface"/>
    </output>
    <internal/>
    <include/>
@@ -200,26 +139,89 @@ ${PARAMS}
   /* CODE END ${INSTANCENAME} */
 }
 	]]></code>
-   <offset x="-200" y="-110"/>
+   <offset x="-200.0" y="-110.0"/>
   </node>
-  <node label="note" icon="" name="note" id="10" type="note" author="mesh">
+  <node name="note" icon="" format="note" parent="" version="" author="mesh" id="10" type="note" label="note">
    <help>Text note</help>
    <input>
-    <property label="Text Color" name="text_color" value="color(0.700,0.000,0.000)" type="color" default="color(0.700,0.000,0.000)" provider="attribute"/>
-    <property label="Background" name="bg_color" value="color(1.000,1.000,0.000)" type="color" default="color(1.000,1.000,0.000)" provider="attribute"/>
-    <property label="Opacity" name="opacity" subtype="slider" value="0.500" type="float" default="0.500" provider="attribute" range="0 1 0.1"/>
-    <property label="Show Border" name="border" subtype="switch" value="1" type="int" default="1" provider="attribute"/>
-    <property label="justify" name="justify" subtype="selector" value="0" type="int" default="0" provider="attribute" range="left:center:right"/>
-    <property label="text" name="text" value="This is basic example of RIB and RSL&#xa;nodes usage" type="text" default="Write here some notes &#xa;or  network description ..." provider="attribute"/>
+    <property name="text_color" provider="attribute" value="color(0.700,0.000,0.000)" default="color(0.700,0.000,0.000)" type="color" label="Text Color"/>
+    <property name="bg_color" provider="attribute" value="color(1.000,1.000,0.000)" default="color(1.000,1.000,0.000)" type="color" label="Background"/>
+    <property name="opacity" provider="attribute" value="0.500" range="0 1 0.1" default="0.500" subtype="slider" type="float" label="Opacity"/>
+    <property name="border" provider="attribute" value="1" default="1" subtype="switch" type="int" label="Show Border"/>
+    <property name="justify" provider="attribute" value="0" range="left:center:right" default="0" subtype="selector" type="int" label="justify"/>
+    <property name="text" provider="attribute" value="This is basic example of RIB and RSL&#xa;nodes usage" default="Write here some notes &#xa;or  network description ..." type="text" label="text"/>
    </input>
    <output/>
    <internal/>
    <include/>
-   <offset x="30" y="30"/>
+   <offset x="30.0" y="30.0"/>
+  </node>
+  <node name="imageViewer" icon="" format="image" parent="" version="2.0" author="mesh" id="12" type="node" label="imageViewer">
+   <help>Image viewer with dynamicaly added inputs</help>
+   <input>
+    <property name="add_image" provider="attribute" value="" default="" btext="Add" subtype="button" type="control" label="Image input">
+     <code>
+print ":: Hello from (%s) XML control param code !!!" % self.label
+from core.params.imageNodeParam import ImageNodeParam
+lastNonremovableParam = node.getInputParamByName ( 'selector' )
+lastNonremovableParamIdx = node.inputParams.index ( lastNonremovableParam )
+lastParamIdx = len ( node.inputParams ) 
+suffixIdx = lastParamIdx - lastNonremovableParamIdx
+newParam = ImageNodeParam ()
+newParam.setup ( 'image' + str ( suffixIdx ), '', '', '' )
+newParam.value = ''
+newParam.default = ''
+newParam.subtype="file"
+newParam.range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"
+newParam.removable = True
+node.addInputParam ( newParam )
+node.updateNodeParams ()
+node.updateNode ( True )
+
+
+</code>
+    </property>
+    <property name="image" value="" range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg" default="" subtype="file" type="image" label="Image"/>
+    <property name="selector" provider="attribute" value="image" range="Image=image" default="image" subtype="selector" type="string" label="Select input"/>
+   </input>
+   <output/>
+   <internal/>
+   <include/>
+   <control_code><![CDATA[
+print ":: Hello from (%s) XML control_code !!!" % self.label
+selectedInput = self.getInputParamByName ( 'selector' ).value
+print '* selectedInput = %s' % selectedInput 
+self.imageName = self.getInputParamValueByName ( selectedInput )
+
+
+]]></control_code>
+   <event_code>
+    <handler name="ParamAdded"><![CDATA[print ":: Hello from ParamAdded handler" 
+print ":: param.label = %s type = %s" % ( param.label, param.type )
+selector = self.getInputParamByName ( 'selector' )
+selector.range += ':%s=%s' % ( param.label, param.name ) 
+
+
+]]></handler>
+    <handler name="ParamLabelRenamed"><![CDATA[print ":: Hello from ParamLabelRenamed handler"  
+print ":: param.label = %s oldName = %s" % ( param.label, oldLabel )
+if param.type == 'image' :
+  selector = self.getInputParamByName ( 'selector' ) 
+  selector.renameItemInRange ( oldLabel, param.label )    
+
+]]></handler>
+    <handler name="ParamRemoved"><![CDATA[print ":: Hello from ParamRemoved handler" 
+print ":: param.label = %s type = %s" % ( param.label, param.type ) 
+selector = self.getInputParamByName ( 'selector' ) 
+selector.removeItemFromRange ( param.label )    
+
+]]></handler>
+   </event_code>
+   <offset x="120.0" y="-100.0"/>
   </node>
  </nodes>
  <links>
-  <link dstNode_id="1" id="1" srcNode_id="2" srcParam="ImageFile" dstParam="image"/>
-  <link dstNode_id="2" id="2" srcNode_id="3" srcParam="surface" dstParam="FG_surf"/>
+  <link srcParam="ImageFile" dstParam="image" dstNode_id="12" srcNode_id="2" id="1"/>
+  <link srcParam="surface" dstParam="FG_surf" dstNode_id="2" srcNode_id="3" id="2"/>
  </links>
 </nodenet>

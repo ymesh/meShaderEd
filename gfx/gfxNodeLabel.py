@@ -184,6 +184,7 @@ class GfxNodeLabel ( QtModule.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 	# mousePressEvent
 	#
 	def mousePressEvent ( self, event ) :
+		#
 		if self.processEvents :
 			#print ">> GfxNodeLabel.mousePressEvent"
 			inWhatsThisMode = QtModule.QWhatsThis.inWhatsThisMode ()
@@ -219,6 +220,7 @@ class GfxNodeLabel ( QtModule.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 						parentNode.updateGfxNodeParamLabel ( self.param, self, True )
 						return
 			QtCore.QEvent.ignore ( event )
+			return
 		QtModule.QGraphicsItem.mousePressEvent ( self, event )
 	"""
 	#

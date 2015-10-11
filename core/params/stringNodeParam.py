@@ -3,6 +3,8 @@
 	stringNodeParam.py
 
 """
+import re
+
 from core.node import Node
 from core.nodeParam import NodeParam
 from global_vars import app_global_vars, DEBUG_MODE
@@ -33,28 +35,37 @@ class StringNodeParam ( NodeParam ) :
 	#
 	# valueFromStr
 	#
-	def valueFromStr ( self, strInput ) : return parseGlobalVars ( strInput )
+	def valueFromStr ( self, strValue ) : 
+		#
+		if not self.isArray () :
+			value = parseGlobalVars ( strValue )
+		else :
+			value = []
+			strValue = strValue.strip ( '[]' )
+			s = strValue.split ( ',' )
+			for i in range ( len ( s ) ) :
+				value.append ( parseGlobalVars( s[ i ].strip ( "\" " ) ) )
+		return value
 	#
 	# valueToStr
 	#
 	def valueToStr ( self, value ) :
 		#
-		ret_str = parseGlobalVars ( value )
-		if not self.isRibParam : 
-			ret_str = str ( "\"" + value + "\"" )
-		return ret_str
+		if not self.isArray () :
+			strValue = parseGlobalVars ( value )
+			if not self.isRibParam : 
+				strValue = str ( "\"" + value + "\"" )
+		else :
+			strValue = '{' + ''.join ( '"%s"' % f + ',' for f in value [: - 1] ) + '"%s"' % value [ - 1] + '}'
+		return strValue
 	#
 	# getValueToRSL
 	#
-	def getValueToRSL ( self, value ) :
-		ret_str = str ( "\"" + value + "\"" )
-		return ret_str
+	def getValueToRSL ( self, value ) : return self.valueToStr ( value )
 	#
 	# getValueToRIB
 	#
-	def getValueToRIB ( self, value ) :
-		ret_str = str ( "\"" + value + "\"" )
-		return ret_str
+	def getValueToRIB ( self, value ) : return self.valueToStr ( value )
 	#
 	# getRangeValues
 	#

@@ -6,13 +6,13 @@
     <property name="add_image" label="Image input" btext="Add" type="control" default="" provider="attribute" subtype="button"> 
     <code>
 <![CDATA[
-#print ":: Hello from (%s) XML control param code !!!" % self.label
+print ":: Hello from (%s) XML control param code !!!" % self.label
+
 from core.params.imageNodeParam import ImageNodeParam
 lastNonremovableParam = node.getInputParamByName ( 'selector' )
 lastNonremovableParamIdx = node.inputParams.index ( lastNonremovableParam )
 lastParamIdx = len ( node.inputParams ) 
 suffixIdx = lastParamIdx - lastNonremovableParamIdx
-
 newParam = ImageNodeParam ()
 newParam.setup ( 'image' + str ( suffixIdx ), '', '', '' )
 newParam.value = ''
@@ -22,6 +22,7 @@ newParam.range="All files=*.*:TIFF=*.tif:PNG=*.png:JPEG=*.jpg"
 newParam.removable = True
 node.addInputParam ( newParam )
 node.updateNodeParams ()
+node.updateNode ( True )
 
 
 ]]>
@@ -38,39 +39,46 @@ node.updateNodeParams ()
   </output>
   <control_code>
 <![CDATA[
-#print ":: Hello from (%s) XML control_code !!!" % self.label
+print ":: Hello from (%s) XML control_code !!!" % self.label
 selectedInput = self.getInputParamByName ( 'selector' ).value
 print '* selectedInput = %s' % selectedInput 
 self.imageName = self.getInputParamValueByName ( selectedInput )
+
 
 ]]>
   </control_code>
   <event_code>
     <handler name="ParamLabelRenamed">
 <![CDATA[
-#print ":: Hello from ParamLabelRenamed handler"  
-#print ":: param.label = %s oldName = %s" % ( param.label, oldLabel )
+print ":: Hello from ParamLabelRenamed handler"  
+print ":: param.label = %s oldName = %s" % ( param.label, oldLabel )
 if param.type == 'image' :
   selector = self.getInputParamByName ( 'selector' ) 
   selector.renameItemInRange ( oldLabel, param.label )    
+
+
 
 ]]>   
     </handler>  
     <handler name="ParamAdded">
 <![CDATA[
-#print ":: Hello from ParamAdded handler" 
-#print ":: param.label = %s type = %s" % ( param.label, param.type )
+print ":: Hello from ParamAdded handler" 
+print ":: param.label = %s type = %s" % ( param.label, param.type )
 selector = self.getInputParamByName ( 'selector' )
 selector.range += ':%s=%s' % ( param.label, param.name ) 
+
+
 
 ]]>
     </handler> 
     <handler name="ParamRemoved">
 <![CDATA[
-#print ":: Hello from ParamRemoved handler" 
-#print ":: param.label = %s type = %s" % ( param.label, param.type ) 
+print ":: Hello from ParamRemoved handler" 
+print ":: param.label = %s type = %s" % ( param.label, param.type ) 
 selector = self.getInputParamByName ( 'selector' ) 
 selector.removeItemFromRange ( param.label )    
+
+
 
 ]]>      
     </handler> 

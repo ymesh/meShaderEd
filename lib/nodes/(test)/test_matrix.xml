@@ -13,7 +13,7 @@
 		<property name="matrix1" type="matrix" default="1" detail="uniform">
 		<help></help>
 		</property>
-		<property name="repeatS" type="float" default="1" detail="uniform">
+		<property name="matrix2" type="matrix" default="matrix (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)" detail="uniform">
 		<help></help>
 		</property>
 		<property name="repeatT" type="float" default="1" detail="uniform">

@@ -89,7 +89,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	#
 	def __delete__ ( self, obj ) :
 		#
-		print '* NodeParamEditor closed... %s' % str( obj )
+		print ( '* NodeParamEditor closed... %s' % str( obj ) )
 	#
 	# buildGui
 	#
@@ -140,7 +140,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	#
 	def onParamDefValueChanged ( self, param ) :
 		#
-		if DEBUG_MODE : print '* onParamDefValueChanged'
+		if DEBUG_MODE : print ( '* onParamDefValueChanged' )
 		self.param.default = self.param_default.value
 		if  usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamDefValue' ), self.param )
@@ -151,7 +151,7 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	#
 	def onParamValueChanged ( self, param ) :
 		#
-		if DEBUG_MODE : print '* onParamValueChanged'
+		if DEBUG_MODE : print ( '* onParamValueChanged' )
 		self.param.value = param.value
 		if  usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'changeParamValue' ), self.param )
@@ -271,14 +271,18 @@ class NodeParamEditor ( QtModule.QWidget ) :
 	#
 	def setParam ( self, param ) :
 		#
-		self.removeValueWidget()
-		self.disconnectSignals()
+		print ( '>> NodeParamEdiror.setParam ' )
+		self.removeValueWidget ()
+		self.disconnectSignals ()
 		self.param = param
 		
 		if self.param is not None :
 			#import copy
-			self.param_default = self.param.copy() # duplicate param for default value editing
-			self.param_default.value = param.default
+			print ( ':: param(%s).value = ' % param.label ), param.value
+			self.param_default = self.param.copy () # duplicate param for default value editing
+			self.param_default.value = copy.deepcopy ( param.default )
+			if param.isArray () :
+				self.param_default.spaceDefArray = copy.deepcopy ( param.spaceDefArray )
 
 			self.ui.name_lineEdit.setText ( self.param.name )
 			self.ui.label_lineEdit.setText ( self.param.label )
@@ -306,9 +310,9 @@ class NodeParamEditor ( QtModule.QWidget ) :
 			# setup param values view
 			#
 			paramsLayout = QtModule.QGridLayout ()
-			paramsLayout.setContentsMargins ( 2, 2, 2, 2 )
+			paramsLayout.setContentsMargins ( UI.SPACING, UI.SPACING, UI.SPACING, UI.SPACING )
 			paramsLayout.setSizeConstraint ( QtModule.QLayout.SetNoConstraint )
-			paramsLayout.setVerticalSpacing ( 4 )
+			paramsLayout.setVerticalSpacing ( UI.VSPACING  )
 			paramsLayout.setColumnStretch ( 1, 1 )
 			paramsLayout.setRowStretch ( 2, 1 )
 			
@@ -331,10 +335,16 @@ class NodeParamEditor ( QtModule.QWidget ) :
 				paramsLayout.addLayout ( self.ui.def_value_widget.label_vl, 1, 0, 1, 1 )
 				paramsLayout.addLayout ( self.ui.def_value_widget.param_vl, 1, 1, 1, 1 )
 				
-				spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Minimum, QtModule.QSizePolicy.Expanding )
+				spacer = QtModule.QSpacerItem ( 0, 0, UI.SP_MIN, UI.SP_EXPAND )
 				paramsLayout.addItem ( spacer, 2, 0, 1, 1 ) 
 
-			self.ui.value_stackedWidget.addWidget ( frame )
+			# build a scroll area
+			scrollArea = QtModule.QScrollArea ()
+			scrollArea.setWidgetResizable ( True )
+			scrollArea.setWidget ( frame )
+			
+			self.ui.value_stackedWidget.addWidget ( scrollArea )
+			
 			self.connectSignals ()
 		else :
 			self.reset ()

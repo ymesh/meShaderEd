@@ -63,8 +63,8 @@ class NodeParam ( QtCore.QObject ) :
 
 		self.defaultArray = []
 		self.valueArray = []
-		#self.spaceArray = []
-		#self.spaceDefArray = []
+		self.spaceArray = []			# array elements spaces
+		self.spaceDefArray = []		# default array elements spaces
 		
 		# nodegroup specific parameters 
 		self.linked_node = None
@@ -74,16 +74,17 @@ class NodeParam ( QtCore.QObject ) :
 	#
 	# isArray
 	#
-	def isArray ( self ) : return ( self.array is not None )
+	def isArray ( self ) : return ( self.arraySize is not None )
 	#
 	# setup
 	#
 	def setup ( self, name, label = '', detail = None, provider = None ) :
 		#
 		self.name = name
-		if label == '' or label is None : self.label = name
-		else: self.label = label
-
+		if label == '' or label is None : 
+			self.label = name
+		else: 
+			self.label = label
 		self.detail = detail
 		self.provider = provider
 	#
@@ -115,7 +116,14 @@ class NodeParam ( QtCore.QObject ) :
 		newParam.spaceDef = self.spaceDef
 
 		newParam.default = copy.deepcopy ( self.default )
-		newParam.value = copy.deepcopy ( self.value )
+		newParam.value = copy.deepcopy ( self.value )  
+		
+		newParam.arraySize = self.arraySize
+		
+		newParam.defaultArray  = copy.deepcopy ( self.defaultArray )
+		newParam.valueArray 	 = copy.deepcopy ( self.valueArray )   
+		newParam.spaceArray 	 = copy.deepcopy ( self.spaceArray ) 
+		newParam.spaceDefArray = copy.deepcopy ( self.spaceDefArray ) 
 		
 		newParam.linked_node = self.linked_node
 		newParam.linked_param = self.linked_param
@@ -124,8 +132,15 @@ class NodeParam ( QtCore.QObject ) :
 	#
 	def typeToStr ( self ) :
 		#
-		str = self.detail + ' ' + self.type
-		return str.lstrip ()
+		typeStr = self.detail + ' ' + self.type
+		if self.isRibParam :
+			if self.isArray () :
+				arraySize = ''
+				if self.arraySize > 0 :
+					arraySize = str ( self.arraySize )
+				typeStr += '[%s]' % arraySize
+			
+		return typeStr.lstrip ()
 	#
 	# encodedTypeStr
 	#
@@ -176,13 +191,14 @@ class NodeParam ( QtCore.QObject ) :
 	#
 	# paramChanged
 	#
-	def paramChanged ( self ) :
+	def paramChanged ( self, emitSignal = True ) :
 		#
-		if DEBUG_MODE : print '>> NodeParam.paramChanged (name = %s)' % self.name
-		if usePyQt4 :
-			self.emit ( QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self )
-		else :
-			self.paramChangedSignal.emit ( self )
+		if DEBUG_MODE : print ( '>> NodeParam.paramChanged (name = %s) emit = ' % self.name ), emitSignal
+		if emitSignal :
+			if usePyQt4 :
+				self.emit ( QtCore.SIGNAL ( 'paramChangedSignal(QObject)' ), self )
+			else :
+				self.paramChangedSignal.emit ( self )
 	#
 	# setupUI
 	#
@@ -193,11 +209,11 @@ class NodeParam ( QtCore.QObject ) :
 	#
 	# setValue
 	#
-	def setValue ( self, value ) :
+	def setValue ( self, value, emitSignal = True ) :
 		#
 		if self.value != value :
 			self.value = value
-			self.paramChanged ()
+			self.paramChanged ( emitSignal )
 	#
 	# removeItemFromRange
 	#
@@ -288,15 +304,19 @@ class NodeParam ( QtCore.QObject ) :
 			spaceDef = str ( xml_param.attributes ().namedItem ( 'spaceDef' ).nodeValue () )
 			if spaceDef != '' :
 				self.spaceDef = space
-
+		
+		if not xml_param.attributes ().namedItem ( 'arraySize' ).isNull () :
+			self.arraySize = int ( xml_param.attributes ().namedItem ( 'arraySize' ).nodeValue () )
+		
 		self.setDefaultFromStr ( xml_param.attributes ().namedItem ( 'default' ).nodeValue () )
-
+		# after reading array values, space for each element is stored to self.spaceArray,
+		# so we need to copy it to self.spaceDefArray for default value
+		self.spaceDefArray 	 = copy.deepcopy ( self.spaceArray )
+		
 		if not xml_param.attributes ().namedItem ( 'value' ).isNull () :
 			self.setValueFromStr ( xml_param.attributes ().namedItem ( 'value' ).nodeValue () )
 		else :
-			self.value = self.default
-
-		#print ':: value = %s default = %s' % ( self.getValueToStr(), self.getDefaultToStr()  )
+			self.value = copy.deepcopy ( self.default ) 
 
 		help_tag = xml_param.namedItem ( 'help' )
 
@@ -327,17 +347,23 @@ class NodeParam ( QtCore.QObject ) :
 
 		# write default value space only if it differs from value space
 		if self.spaceDef != None  :
-			if self.spaceDef != '' and  self.spaceDef != self.space : xmlnode.setAttribute ( 'spaceDef', self.spaceDef )
+			if self.spaceDef != '' and  self.spaceDef != self.space : 
+				xmlnode.setAttribute ( 'spaceDef', self.spaceDef )
 
 		if self.default != None :
 			value = self.getDefaultToStr ()
-			if not self.type in VALID_RIB_NODE_TYPES : value = value.strip ( '\"' )
+			if not self.type in VALID_RIB_NODE_TYPES : 
+				value = value.strip ( '\"' )
 			xmlnode.setAttribute ( 'default', value )
 
 		if self.value != None :
 			value = self.getValueToStr ()
-			if not self.type in VALID_RIB_NODE_TYPES : value = value.strip ( '\"' )
+			if not self.type in VALID_RIB_NODE_TYPES : 
+				value = value.strip ( '\"' )
 			xmlnode.setAttribute ( 'value', value )
+			
+		if self.arraySize != None :
+			xmlnode.setAttribute ( 'arraySize', self.arraySize )
 
 		if self.help != None :
 			# append node help (short description)

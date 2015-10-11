@@ -71,6 +71,47 @@ class RIBNode ( Node ) :
 			result = shaderRiCall [ shader_type ]
 		return result
 	#
+	# parseGlobalVars
+	#
+	def parseGlobalVars ( self, parsedStr ) :
+		#
+		resultStr = ''
+		parserStart = 0
+		parserPos = 0
+
+		while parserPos != -1 :
+			parserPos = str ( parsedStr ).find ( '$', parserStart )
+			if parserPos != -1 :
+				#
+				if parserPos != 0 :
+					resultStr += parsedStr [ parserStart : parserPos ]
+				# check global vars first
+				if parsedStr [ ( parserPos + 1 ) : ( parserPos + 2 ) ] == '{' :
+					globStart = parserPos + 2
+					parserPos = str( parsedStr ).find ( '}', globStart )
+					global_var_name = parsedStr [ globStart : ( parserPos ) ]
+
+					#print '-> found global var %s' % global_var_name
+
+					if global_var_name in app_global_vars.keys () :
+						resultStr += app_global_vars [ global_var_name ]
+					elif global_var_name in node_global_vars.keys () :
+						if   global_var_name == 'INSTANCENAME' : resultStr += self.getInstanceName ()
+						elif global_var_name == 'NODELABEL' : resultStr += self.getLabel ()
+						elif global_var_name == 'NODENAME' : resultStr += self.getName ()
+						elif global_var_name == 'PARAMS' : resultStr += self.getComputedInputParams () + self.getComputedOutputParams ()
+						elif global_var_name == 'NODENETNAME' : resultStr += self.getNodenetName ()
+						elif global_var_name == 'OUTPUTNAME' : resultStr += normPath ( os.path.join ( app_global_vars [ 'TempPath' ], self.getNodenetName () + '_' + self.getLabel () ) )
+				else :
+					# keep $ sign for otheer, non ${...} cases
+					resultStr += '$'
+			if parserPos != -1 :
+				parserStart = parserPos + 1
+
+		resultStr += parsedStr [ parserStart: ]
+
+		return resultStr
+	#
 	# parseLocalVars
 	#
 	def parseLocalVars ( self, parsedStr, CodeOnly = False ) :

@@ -1,25 +1,31 @@
 <node name="test_array" author="mesh">
 	<help>Test array parameters.</help>
 	<input>
-		<property name="angle" type="float" default="0" detail="uniform">
+		<property name="colorArray" type="color" arraySize="3" default="color (0),color(1.0), color &quot;hsv&quot; (1.0, 0, 0)]" detail="uniform">
 		<help></help>
 		</property>
-		<property name="repeatS" type="float" default="1" detail="uniform">
+		<property name="floatArray11" type="float" arraySize="11" default="[1.0,2.0,3,4,5,6,7,8,9,10,11]" detail="uniform">
 		<help></help>
 		</property>
-		<property name="repeatT" type="float" default="1" detail="uniform">
+		<property name="floatArray1" type="float" arraySize="1" default="[1.0]" detail="uniform">
 		<help></help>
 		</property>
-		<property name="offsetS" type="float" default="0" detail="uniform">
+		<property name="intArray3" type="int" arraySize="3" default="[1,2,3]" detail="uniform">
 		<help></help>
 		</property>
-		<property name="offsetT" type="float" default="0" detail="uniform">
+		<property name="stringArray" type="string" arraySize="3" default="[&quot;This&quot;, &quot;is&quot;,&quot;Array&quot; ]" detail="uniform">
 		<help></help>
 		</property>
-		<property name="flipS" type="float" default="0" detail="uniform">
+		<property name="normalArray" type="normal" arraySize="4" default="[normal(0,0,0), normal(1), normal &quot;world&quot; (0,1,0), normal &quot;current&quot; (0) ]" detail="uniform">
 		<help></help>
 		</property>
-		<property name="flipT" type="float" default="0" detail="uniform">
+		<property name="pointArray" type="point" arraySize="4" default="[point(0,0,0), point(1), point &quot;world&quot; (0,1,0), point &quot;current&quot; (0) ]" detail="uniform">
+		<help></help>
+		</property>
+		<property name="vectorArray" type="vector" arraySize="4" space="object" default="[vector(0,0,0), vector(1), vector &quot;world&quot; (0,1,0), vector &quot;current&quot; (0) ]" detail="uniform">
+		<help></help>
+		</property>
+		<property name="matrixArray" type="matrix" arraySize="3" space="object" default="[matrix(0), matrix(1), matrix (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15) ]" detail="uniform">
 		<help></help>
 		</property>
 	</input>
@@ -28,16 +34,14 @@
 		<property name="dQu" type="vector"/>	
 		<property name="dQv" type="vector"/>	
 	</output>
-	<include><file name="me_manifold.h"/></include>
+	<include></include>
 	<internal>
-		
 	</internal>
 	<code><![CDATA[
 		point $(Q);
 		vector $(dQu);
 		vector $(dQv);
-  		    	
-  	me_ST( $(angle), $(repeatS), $(repeatT), $(offsetS), $(offsetT), $(flipS), $(flipT), $(Q), $(dQu), $(dQv) );
+  	
   	
   ]]>
 	</code>

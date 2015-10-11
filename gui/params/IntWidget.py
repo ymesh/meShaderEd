@@ -22,18 +22,20 @@ class IntWidget ( ParamWidget ) :
 	#
 	def buildGui ( self ) :
 		#
-		if not self.ignoreSubtype :
-			if self.param.subtype == 'selector' : 
-				self.ui = Ui_IntWidget_selector ()
-			elif self.param.subtype == 'switch' : 
-				self.ui = Ui_IntWidget_switch ()
-			elif self.param.subtype == 'slider' or self.param.subtype == 'vslider' : 
-				self.ui = Ui_IntWidget_slider ()
-			else:
-				self.ui = Ui_IntWidget_field () 
+		if self.param.isArray () :
+			self.ui = Ui_IntWidget_array ()
 		else :
-			self.ui = Ui_IntWidget_field () 
-				 
+			if not self.ignoreSubtype :
+				if self.param.subtype == 'selector' : 
+					self.ui = Ui_IntWidget_selector ()
+				elif self.param.subtype == 'switch' : 
+					self.ui = Ui_IntWidget_switch ()
+				elif self.param.subtype == 'slider' or self.param.subtype == 'vslider' : 
+					self.ui = Ui_IntWidget_slider ()
+				else:
+					self.ui = Ui_IntWidget_field () 
+			else :
+				self.ui = Ui_IntWidget_field () 
 		self.ui.setupUi ( self )
 #
 # Ui_IntWidget_field
@@ -96,6 +98,94 @@ class Ui_IntWidget_field ( object ) :
 			self.intEdit.setText ( QtCore.QString.number ( value ) )
 		else :
 			self.intEdit.setText ( str ( value ) )
+#
+# Ui_IntWidget_array
+#          
+class Ui_IntWidget_array ( object ) :
+	#
+	# setupUi
+	#
+	def setupUi ( self, IntWidget ) :
+		#
+		self.widget = IntWidget
+		self.labels = []
+		self.controls = []
+		
+		font = QtGui.QFont ()
+		labelFontMetric = QtGui.QFontMetricsF ( font )
+		label_wi = 0
+		char_wi = labelFontMetric.width ( 'x' )
+		array_size = self.widget.param.arraySize
+		if array_size > 0 :
+			label_wi =  char_wi * ( len ( str ( array_size - 1 ) ) + 2 ) # [0]
+		
+		for i in range ( self.widget.param.arraySize ) :
+			self.labels.append ( QtModule.QLabel ( IntWidget ) )
+			self.labels [ i ].setMinimumSize ( QtCore.QSize ( label_wi, UI.HEIGHT ) )
+			self.labels [ i ].setMaximumSize ( QtCore.QSize ( label_wi, UI.HEIGHT ) )
+			self.labels [ i ].setAlignment ( QtCore.Qt.AlignRight )
+			self.labels [ i ].setText ( '[' + str ( i ) + ']' )
+
+			self.controls.append ( QtModule.QLineEdit ( IntWidget ) )
+			self.controls [ i ].setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
+			self.controls [ i ].setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
+			
+			sp = QtModule.QSpacerItem ( 0, 0, UI.SP_EXPAND,  UI.SP_MIN )
+			
+			hl = QtModule.QHBoxLayout ()
+			hl.addWidget ( self.labels [ i ] )
+			hl.addWidget ( self.controls [ i ] )
+			hl.addItem ( sp )
+			self.widget.param_vl.addLayout ( hl )
+		
+		self.connectSignals ( IntWidget )
+		QtCore.QMetaObject.connectSlotsByName ( IntWidget )
+	#
+	# connectSignals
+	#
+	def connectSignals ( self, IntWidget ) :
+		#
+		for i in range ( self.widget.param.arraySize ) :
+			if usePyQt4 :
+				IntWidget.connect ( self.controls [ i ], QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
+			else :
+				self.controls [ i ].editingFinished.connect ( self.onIntEditEditingFinished )
+	#
+	# disconnectSignals
+	#
+	def disconnectSignals ( self, IntWidget ) :
+		#
+		for i in range ( self.widget.param.arraySize ) :
+			if usePyQt4 :
+				IntWidget.disconnect ( self.controls [ i ], QtCore.SIGNAL ( 'editingFinished()' ), self.onIntEditEditingFinished )
+			else :
+				self.controls [ i ].editingFinished.disconnect ( self.onIntEditEditingFinished )
+	#
+	#  onIntEditEditingFinished
+	#
+	def onIntEditEditingFinished ( self ) :
+		#
+		arrayValue = []
+
+		for i in range ( self.widget.param.arraySize ) :
+			intStr = self.controls [ i ].text ()
+			if usePyQt4 :
+				intValue = intStr.toInt () [ 0 ] 
+			else :
+				intValue = int ( intStr )
+			arrayValue.append ( intValue )
+
+		self.widget.param.setValue ( arrayValue )      
+	#
+	# updateGui
+	#
+	def updateGui ( self, value ):
+		#
+		for i in range ( self.widget.param.arraySize ) :
+			if usePyQt4 : 
+				self.controls [ i ].setText ( QtCore.QString.number ( value [ i ] ) )
+			else :
+				self.controls [ i ].setText ( str ( value [ i ] ) )
 #
 # Ui_IntWidget_switch
 #          

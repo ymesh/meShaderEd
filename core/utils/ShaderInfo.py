@@ -72,7 +72,7 @@ class ShaderInfo () :
 	def getShaderInfo ( self, methods = False ) :
 		#
 		inputLines = []
-		if DEBUG_MODE : print '>> ShaderInfo.get ( %s ) by "%s"' % ( self.fileName, app_global_vars [ 'ShaderInfo' ] )
+		if DEBUG_MODE : print ( '>> ShaderInfo.get ( %s ) by "%s"' % ( self.fileName, app_global_vars [ 'ShaderInfo' ] ) )
 		from core.meCommon import launchProcess
 		import os
 		curDir =  os.getcwd ()
@@ -152,11 +152,11 @@ class ShaderInfo () :
 				elif state == 'GET_PARAM' :
 					# get parameter description
 					( paramName, paramType, paramDetail, isOutput, paramArraySize ) = self.parseParamLineProc ( line )
-					print '>> paramName = %s type = "%s %s" output = %s ArraySize = %s' % ( paramName, paramDetail, paramType, isOutput, paramArraySize )
+					print ( '>> paramName = %s type = "%s %s" output = %s ArraySize = %s' % ( paramName, paramDetail, paramType, isOutput, paramArraySize ) )
 
 					if paramType in createParamTable.keys () :
 						param = createParamTable [ paramType ] ( isRibParam = True )
-						print '** created "%s" param "%s"' % ( paramType, paramName )
+						print ( '** created "%s" param "%s"' % ( paramType, paramName ) )
 						param.setup ( paramName, paramName, paramDetail, 'attribute' )
 						param.arraySize = paramArraySize
 						param.isInput = not isOutput
@@ -166,7 +166,7 @@ class ShaderInfo () :
 							self.outputParams.append ( param )
 					else :
 						param = None
-						print '* Error: unknown param type !'
+						print ( '* Error: unknown param type !' )
 
 					valueNum = 1
 					if self.renderer in [ 'prman', 'aqsis', 'renderdc' ]  :
@@ -182,7 +182,7 @@ class ShaderInfo () :
 						# in AIR case, default value is in the same line, as parameter name 
 						if paramArraySize is None :
 							( paramValue, paramSpace ) = self.parseValueLineProc ( line, paramType )
-							print '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace )
+							print ( '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace ) )
 							if param is not None :
 								param.default = paramValue
 								param.value = paramValue
@@ -190,7 +190,7 @@ class ShaderInfo () :
 						else :
 							for valueIdx in range ( paramArraySize ) :
 								( paramValue, paramSpace ) = self.parseValueLineProc ( line, paramType, valueIdx, True )
-								print '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace )
+								print ( '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace ) )
 								if param is not None :
 									param.defaultArray.append ( paramValue )
 									param.valueArray.append ( paramValue )   
@@ -204,23 +204,23 @@ class ShaderInfo () :
 						line = accumLine + line
 					if paramArraySize is None :
 						( paramValue, paramSpace ) = self.parseValueLineProc ( line, paramType )
-						print '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace )
+						print ( '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace ) )
 						if param is not None :
 							param.default = paramValue
 							param.value = paramValue
 							param.space = paramSpace
 					else :
-						print '* Warning: Arrays are not fully supported yet !'
+						print ( '* Warning: Arrays are not fully supported yet !' )
 						if self.renderer in [ 'prman', 'aqsis', 'renderdc' ] :
 							( paramValue, paramSpace ) = self.parseValueLineProc ( line, paramType, valueIdx )
-							print '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace )
+							print ( '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace ) )
 							if param is not None :
 								param.defaultArray.append ( paramValue )
 								param.valueArray.append ( paramValue )
 						else :
 							for valueIdx in range ( paramArraySize ) :
 								( paramValue, paramSpace ) = self.parseValueLineProc ( line, paramType, valueIdx, True )
-								print '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace )
+								print ( '>> paramValue = "%s" paramSpace = "%s"' % ( paramValue, paramSpace ) )
 								if param is not None :
 									param.defaultArray.append ( paramValue )
 									param.valueArray.append ( paramValue )
@@ -386,7 +386,7 @@ class ShaderInfo () :
 		# idxInArray is dummy parameter here and used only for compatibility
 		# with other renderers parseValueLine functions
 		#
-		print 'parsing prman value:%s ...' % inputStr
+		print ( 'parsing prman value:%s ...' % inputStr )
 
 		paramValue = None
 		paramSpace = None
@@ -423,7 +423,7 @@ class ShaderInfo () :
 	#
 	def parseValueLine_delight ( self, inputStr, paramType, idxInArray = 0, isArray = False ) :
 		#
-		print 'parsing value: %s ...' % inputStr
+		print ( 'parsing value: %s ...' % inputStr )
 
 		paramValue = None
 		paramSpace = None
@@ -524,7 +524,7 @@ class ShaderInfo () :
 		# idxInArray is dummy parameter here and used only for compatibility
 		# with other renderers parseValueLine functions
 		#
-		print 'parsing aqsis value: %s ...' % inputStr
+		print ( 'parsing aqsis value: %s ...' % inputStr )
 
 		paramValue = None
 		paramSpace = None
@@ -556,7 +556,7 @@ class ShaderInfo () :
 	#
 	def parseValueLine_pixie ( self, inputStr, paramType, idxInArray = 0, isArray = False ) :
 		#
-		print 'parsing value: %s ...' % inputStr
+		print ( 'parsing value: %s ...' % inputStr )
 
 		paramValue = None
 		paramSpace = None
@@ -608,7 +608,7 @@ class ShaderInfo () :
 	#
 	def parseValueLine_rdc ( self, inputStr, paramType, idxInArray = 0, isArray = False ) :
 		#
-		print 'parsing value: %s ...' % inputStr
+		print ( 'parsing value: %s ...' % inputStr )
 
 		paramValue = None
 		paramSpace = None

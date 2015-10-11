@@ -25,7 +25,6 @@ class ParamWidget ( QtModule.QWidget ) :
 	#
 	def __init__ ( self, param, gfxNode, ignoreSubtype = False ) :
 		#
-		#super ( QtModule.QWidget, self ).__init__ ( None )
 		QtModule.QWidget.__init__ ( self )
 		#
 		# Define signals for PyQt5
@@ -84,22 +83,18 @@ class ParamWidget ( QtModule.QWidget ) :
 		
 		self.label_vl = QtModule.QVBoxLayout ()
 		self.label_vl.setSpacing ( UI.SPACING )
-		#if usePyQt4 :
 		self.label_vl.setContentsMargins ( 0, 0, 0, 0 )
 		self.label_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
-
-		#self.gui = QtGui.QWidget ( self )
-
+		
+		
 		self.hl = QtModule.QHBoxLayout ()
 		self.hl.setSpacing ( UI.SPACING )
-		#if usePyQt4 :
 		self.hl.setContentsMargins ( 0, 0, 0, 0 )
 		self.hl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		
 		# vertical layout for parametrs values (e.g. output links or matrix rows)
 		self.param_vl = QtModule.QVBoxLayout ()
 		self.param_vl.setSpacing ( UI.SPACING )
-		#if usePyQt4 :
 		self.param_vl.setContentsMargins ( 0, 0, 0, 0 )
 		self.param_vl.setAlignment ( QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft )
 		#
@@ -110,7 +105,9 @@ class ParamWidget ( QtModule.QWidget ) :
 			# add "Use as Shader parameter" checkbox
 			#
 			#if ( self.gfxNode.node.type in VALID_RSL_NODE_TYPES ) and ( self.param.type in VALID_RSL_PARAM_TYPES ) and ( self.param.provider != 'attribute' ) :
-			if ( self.gfxNode.node.format == 'rsl' ) and ( self.param.type in VALID_RSL_PARAM_TYPES ) and ( self.param.provider != 'attribute' ) :
+			if ( self.gfxNode.node.format == 'rsl' ) and \
+				( self.param.type in VALID_RSL_PARAM_TYPES ) and \
+				( self.param.provider != 'attribute' ) :
 				self.check = QtModule.QCheckBox ( self )
 				self.check.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
 				self.check.setMaximumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) )
@@ -147,14 +144,8 @@ class ParamWidget ( QtModule.QWidget ) :
 					QtCore.QObject.connect ( self.removeButton, QtCore.SIGNAL ( 'clicked()' ), self.onRemoveItem )
 				else :
 					self.removeButton.clicked.connect ( self.onRemoveItem )
-		#self.label = QtGui.QLabel ( self )
+
 		self.label = ParamLabel ( self, self.param )
-		#font = QtGui.QFont ()
-		#font.setBold ( False )
-		#self.label.setFont ( font )
-		# QtCore.QObject
-		#self.connect ( self.label, QtCore.SIGNAL ( 'mouseDoubleClickEvent(QEvent)' ), self.onMouseDoubleClickEvent )
-		#self.connect ( self.label, QtCore.SIGNAL ( 'mousePressEvent(QEvent)' ), self.onMousePressEvent )
 		
 		self.helpMark = QtModule.QLabel ( self )
 		palette = QtGui.QPalette ()
@@ -184,9 +175,12 @@ class ParamWidget ( QtModule.QWidget ) :
 		self.hl.addWidget ( self.label )
 		self.hl.addWidget ( self.helpMark )
 		#self.hl.addLayout ( self.param_vl )
-		spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
-		self.label_vl.addItem ( spacer )
+		#sp = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
+		
 		self.label_vl.addLayout ( self.hl )
+		sp_v = QtModule.QSpacerItem ( 0, 0, QtModule.QSizePolicy.Minimum, QtModule.QSizePolicy.Expanding )
+		self.label_vl.addItem ( sp_v )
+		
 	#
 	# onShaderParamChanged
 	#
@@ -194,10 +188,6 @@ class ParamWidget ( QtModule.QWidget ) :
 		#
 		self.param.shaderParam = self.check.isChecked ()
 		self.gfxNode.updateGfxNodeParams ( True )
-		#if self.param.isInput : 
-		#  self.gfxNode.updateInputParams ()
-		#else :
-		#  self.gfxNode.updateOutputParams ()
 	#
 	# buildGui -- virtual method
 	# should be overriden in inherited classes
@@ -205,8 +195,8 @@ class ParamWidget ( QtModule.QWidget ) :
 	def buildGui ( self ) :
 		#
 		pass
-		spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
-		self.hl.addItem ( spacer )
+		#spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
+		#self.hl.addItem ( spacer )
 	#
 	# onRemoveItem
 	#

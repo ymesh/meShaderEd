@@ -68,7 +68,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 	#
 	def onAddItem ( self ) :
 		#
-		if DEBUG_MODE : print '>> NodeNamesEditor: onAddItem'
+		if DEBUG_MODE : print ( '>> NodeNamesEditor: onAddItem' )
 		new_text = str ( self.ui.name_lineEdit.text () ).strip ()
 		if new_text != '' :
 			if  usePyQt4 :
@@ -80,7 +80,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 	#
 	def onRemoveItem ( self ) :
 		#
-		if DEBUG_MODE : print '>> NodeNamesEditor::onRemoveItem'
+		if DEBUG_MODE : print ( '>> NodeNamesEditor::onRemoveItem' )
 		list_item = self.ui.listWidget.currentItem ()
 		
 		if list_item is not None :
@@ -96,7 +96,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 	#
 	def onRenameItem ( self ) :
 		#
-		if DEBUG_MODE : print '>> NodeNamesEditor.onRenameItem'
+		if DEBUG_MODE : print ( '>> NodeNamesEditor.onRenameItem' )
 		new_text = str ( self.ui.name_lineEdit.text () ).strip ()
 		
 		if new_text == '' :
@@ -121,7 +121,7 @@ class NodeNamesEditor ( QtModule.QWidget ) :
 	#
 	def onSelectionChanged ( self ) :
 		#
-		if DEBUG_MODE : print '>> NodeNamesEditor.onSelectionChanged'
+		if DEBUG_MODE : print ( '>> NodeNamesEditor.onSelectionChanged' )
 		list_item = self.ui.listWidget.currentItem ()
 		
 		if list_item is not None :

@@ -475,9 +475,11 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 
 		labels.append ( label )
 
+		connector = GfxNodeConnector ( param, UI.CONNECTOR_RADIUS, node = None )
 		if not param.isInput : 
 			connector.singleLinkOnly = False
 		connectors.append ( connector )
+		print '**** append conector'
 	#
 	# removeGfxNodeParam
 	#

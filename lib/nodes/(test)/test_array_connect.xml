@@ -1,0 +1,32 @@
+<node name="test_array_connect" author="mesh" type="node" format="rsl">
+	<help>Test array parameters.</help>
+	<input>
+		<property name="colorArray3" type="color" arraySize="3" default="color (0),color(1.0), color &quot;hsv&quot; (1.0, 0, 0)]" detail="uniform">
+		<help></help>
+		</property>
+		<property name="floatArray3" type="float" arraySize="3" default="[1.0,2.0,3]" detail="uniform">
+		<help></help>
+		</property>
+	</input>
+	<output>
+		<property name="out_color"  type="color"/>	
+		<property name="Q" type="point"/>	
+		<property name="duQ" type="vector"/>	
+		<property name="dvQ" type="vector"/>	
+	</output>
+	<include></include>
+	<internal>
+	</internal>
+	<code><![CDATA[
+		$(Q) = P;
+    $(duQ) = vector Du( $(Q) ) * du;
+    $(dvQ) = vector Dv( $(Q) ) * dv;
+  	
+  	$(out_color) = Cs;
+  	
+  	printf ( " %f ",  $(floatArray3)[0] );
+  	
+  ]]>
+	</code>
+	<offset x="100" y = "45"/>
+</node>

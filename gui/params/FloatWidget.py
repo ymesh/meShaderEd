@@ -26,18 +26,20 @@ class FloatWidget ( ParamWidget ) :
 	#
 	def buildGui ( self ) :
 		#
-		if not self.ignoreSubtype :
-			if self.param.subtype == 'selector': 
-				self.ui = Ui_FloatWidget_selector()
-			elif self.param.subtype == 'switch': 
-				self.ui = Ui_FloatWidget_switch()
-			elif self.param.subtype == 'slider' or self.param.subtype == 'vslider' : 
-				self.ui = Ui_FloatWidget_slider()
-			else:
-				self.ui = Ui_FloatWidget_field() 
+		if self.param.isArray () :
+			self.ui = Ui_FloatWidget_array ()
 		else :
-			self.ui = Ui_FloatWidget_field() 
-				 
+			if not self.ignoreSubtype :
+				if self.param.subtype == 'selector': 
+					self.ui = Ui_FloatWidget_selector ()
+				elif self.param.subtype == 'switch': 
+					self.ui = Ui_FloatWidget_switch ()
+				elif self.param.subtype == 'slider' or self.param.subtype == 'vslider' : 
+					self.ui = Ui_FloatWidget_slider ()
+				else:
+					self.ui = Ui_FloatWidget_field () 
+			else :
+					self.ui = Ui_FloatWidget_field ()
 		self.ui.setupUi ( self )
 #
 # Ui_FloatWidget_field
@@ -48,21 +50,17 @@ class Ui_FloatWidget_field ( object ) :
 	#
 	def setupUi ( self, FloatWidget ) :
 		#
-		hl = QtModule.QHBoxLayout ()
 		self.widget = FloatWidget
-		
+		hl = QtModule.QHBoxLayout ()
 		self.floatEdit = QtModule.QLineEdit ( FloatWidget )
-		
 		self.floatEdit.setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
 		self.floatEdit.setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
-		spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
-		
+		sp = QtModule.QSpacerItem ( 0, 0, UI.SP_EXPAND, UI.SP_MIN )
 		hl.addWidget ( self.floatEdit )
-		hl.addItem ( spacer )
+		hl.addItem ( sp )
 		self.widget.param_vl.addLayout ( hl )
-		
-		QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
 		self.connectSignals ( FloatWidget )
+		QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
 	#
 	# connectSignals
 	#
@@ -85,7 +83,7 @@ class Ui_FloatWidget_field ( object ) :
 	# onFloatEditEditingFinished
 	#
 	def onFloatEditEditingFinished ( self ) :
-		#
+		# 
 		floatStr = self.floatEdit.text ()
 		if usePyQt4 :
 			floatValue = floatStr.toFloat () [0]
@@ -103,6 +101,94 @@ class Ui_FloatWidget_field ( object ) :
 		else :
 			self.floatEdit.setText ( str ( value ) )
 #
+# Ui_FloatWidget_array
+#          
+class Ui_FloatWidget_array ( object ) :
+	#
+	# setupUi
+	#
+	def setupUi ( self, FloatWidget ) :
+		#
+		self.widget = FloatWidget
+		self.labels = []
+		self.controls = []
+		
+		font = QtGui.QFont ()
+		labelFontMetric = QtGui.QFontMetricsF ( font )
+		label_wi = 0
+		char_wi = labelFontMetric.width ( 'x' )
+		array_size = self.widget.param.arraySize
+		if array_size > 0 :
+			label_wi =  char_wi * ( len ( str ( array_size - 1 ) ) + 2 ) # [0]
+		
+		for i in range ( self.widget.param.arraySize ) :
+			self.labels.append ( QtModule.QLabel ( FloatWidget ) )
+			self.labels [ i ].setMinimumSize ( QtCore.QSize ( label_wi, UI.HEIGHT ) )
+			self.labels [ i ].setMaximumSize ( QtCore.QSize ( label_wi, UI.HEIGHT ) )
+			self.labels [ i ].setAlignment ( QtCore.Qt.AlignRight )
+			self.labels [ i ].setText ( '[' + str ( i ) + ']' )
+			
+			self.controls.append ( QtModule.QLineEdit ( FloatWidget ) )
+			self.controls [ i ].setMinimumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
+			self.controls [ i ].setMaximumSize ( QtCore.QSize ( UI.FIELD_WIDTH, UI.HEIGHT ) )
+			
+			sp = QtModule.QSpacerItem ( 0, 0, UI.SP_EXPAND,  UI.SP_MIN )
+			
+			hl = QtModule.QHBoxLayout ()
+			hl.addWidget ( self.labels [ i ] )
+			hl.addWidget ( self.controls [ i ] )
+			hl.addItem ( sp )
+			self.widget.param_vl.addLayout ( hl )
+		
+		self.connectSignals ( FloatWidget )
+		QtCore.QMetaObject.connectSlotsByName ( FloatWidget )
+	#
+	# connectSignals
+	#
+	def connectSignals ( self, FloatWidget ) :
+		#
+		for i in range ( self.widget.param.arraySize ) :
+			if usePyQt4 :
+				FloatWidget.connect ( self.controls [ i ], QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
+			else :
+				self.controls [ i ].editingFinished.connect ( self.onFloatEditEditingFinished )
+	#
+	# disconnectSignals
+	#
+	def disconnectSignals ( self, FloatWidget ) :
+		#
+		for i in range ( self.widget.param.arraySize ) :
+			if usePyQt4 :
+				FloatWidget.disconnect ( self.controls [ i ], QtCore.SIGNAL ( 'editingFinished()' ), self.onFloatEditEditingFinished )
+			else :
+				self.controls [ i ].editingFinished.disconnect ( self.onFloatEditEditingFinished )
+	#
+	# onFloatEditEditingFinished
+	#
+	def onFloatEditEditingFinished ( self ) :
+		# 
+		arrayValue = []
+
+		for i in range ( self.widget.param.arraySize ) :
+			floatStr = self.controls [ i ].text ()
+			if usePyQt4 :
+				floatValue = floatStr.toFloat () [0]
+			else :
+				floatValue = float ( floatStr )
+			arrayValue.append ( floatValue )
+
+		self.widget.param.setValue ( arrayValue )
+	#
+	# updateGui
+	#
+	def updateGui ( self, value ) :
+		#
+		for i in range ( self.widget.param.arraySize ) :
+			if usePyQt4 : 
+				self.controls [ i ].setText ( QtCore.QString.number( value [ i ], 'f', 3) )
+			else :
+				self.controls [ i ].setText ( str ( value [ i ] ) )
+#
 # Ui_FloatWidget_switch
 #          
 class Ui_FloatWidget_switch ( object ) :
@@ -110,17 +196,17 @@ class Ui_FloatWidget_switch ( object ) :
 	# setupUi
 	def setupUi ( self, FloatWidget ) :
 		#
-		hl = QtModule.QHBoxLayout ()
 		self.widget = FloatWidget
+		hl = QtModule.QHBoxLayout ()
 		
 		self.checkBox = QtModule.QCheckBox ( FloatWidget )
 		
 		self.checkBox.setMinimumSize ( QtCore.QSize ( UI.CHECK_WIDTH, UI.HEIGHT ) ) # UI.EDIT_WIDTH
 		self.checkBox.setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
-		spacer = QtModule.QSpacerItem ( 20, 20, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
+		sp = QtModule.QSpacerItem ( 0, 0, UI.SP_EXPAND, UI.SP_MIN )
 		
 		hl.addWidget ( self.checkBox )
-		hl.addItem ( spacer )
+		hl.addItem ( sp )
 		self.widget.param_vl.addLayout ( hl )
 
 		self.connectSignals ( FloatWidget )

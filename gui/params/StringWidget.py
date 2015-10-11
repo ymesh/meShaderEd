@@ -23,15 +23,18 @@ class StringWidget ( ParamWidget ) :
 	#
 	def buildGui ( self ) :
 		#
-		if not self.ignoreSubtype :
-			if self.param.subtype == 'selector': 
-				self.ui = Ui_StringWidget_selector ()
-			elif self.param.subtype == 'file':
-				self.ui = Ui_StringWidget_file () 
-			else:
-				self.ui = Ui_StringWidget_field () 
-		else :
-			self.ui = Ui_StringWidget_field ()    
+		if self.param.isArray () :
+			self.ui = Ui_StringWidget_array ()
+		else :	
+			if not self.ignoreSubtype :
+				if self.param.subtype == 'selector': 
+					self.ui = Ui_StringWidget_selector ()
+				elif self.param.subtype == 'file':
+					self.ui = Ui_StringWidget_file () 
+				else:
+					self.ui = Ui_StringWidget_field () 
+			else :
+				self.ui = Ui_StringWidget_field ()
 		self.ui.setupUi ( self )
 #
 # Ui_StringWidget_field
@@ -87,7 +90,88 @@ class Ui_StringWidget_field ( object ) :
 	#
 	def updateGui ( self, value ) :
 		# 
-		self.stringEdit.setText ( value )
+		self.stringEdit.setText ( str ( value ) )
+
+#
+# Ui_StringWidget_array
+#
+class Ui_StringWidget_array ( object ) :
+	#
+	# setupUi
+	#
+	def setupUi ( self, StringWidget ) :
+		#
+		self.widget = StringWidget
+		self.labels = []
+		self.controls = []
+		
+		font = QtGui.QFont ()
+		labelFontMetric = QtGui.QFontMetricsF ( font )
+		label_wi = 0
+		char_wi = labelFontMetric.width ( 'x' )
+		array_size = self.widget.param.arraySize
+		if array_size > 0 :
+			label_wi =  char_wi * ( len ( str ( array_size - 1 ) ) + 2 ) # [0]
+		
+		for i in range ( self.widget.param.arraySize ) :
+			self.labels.append ( QtModule.QLabel ( StringWidget ) )
+			self.labels [ i ].setMinimumSize ( QtCore.QSize ( label_wi, UI.HEIGHT ) )
+			self.labels [ i ].setMaximumSize ( QtCore.QSize ( label_wi, UI.HEIGHT ) )
+			self.labels [ i ].setAlignment ( QtCore.Qt.AlignRight )
+			self.labels [ i ].setText ( '[' + str ( i ) + ']' )
+		
+			self.controls.append ( QtModule.QLineEdit ( StringWidget ) )
+			self.controls [ i ].setMinimumSize ( QtCore.QSize ( UI.LABEL_WIDTH, UI.HEIGHT ) )
+			self.controls [ i ].setMaximumSize ( QtCore.QSize ( UI.MAX, UI.HEIGHT ) )
+			
+			hl = QtModule.QHBoxLayout ()
+			hl.setStretch ( 0, 0 )
+			hl.setStretch ( 1, 1 )
+			hl.addWidget ( self.labels [ i ] )
+			hl.addWidget ( self.controls [ i ] )
+			self.widget.param_vl.addLayout ( hl )
+		
+		self.connectSignals ( StringWidget )
+		QtCore.QMetaObject.connectSlotsByName ( StringWidget )
+	#
+	# connectSignals
+	#
+	def connectSignals ( self, StringWidget ) :
+		#
+		for i in range ( self.widget.param.arraySize ) :
+			if  usePyQt4 :
+				StringWidget.connect ( self.controls [ i ], QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
+			else :
+				self.controls [ i ].editingFinished.connect ( self.onStringEditEditingFinished )
+	#
+	# disconnectSignals
+	#
+	def disconnectSignals ( self, StringWidget ) :
+		#
+		for i in range ( self.widget.param.arraySize ) :
+			if  usePyQt4 :
+				StringWidget.disconnect ( self.controls [ i ], QtCore.SIGNAL ( 'editingFinished()' ), self.onStringEditEditingFinished )
+			else :
+				self.controls [ i ].editingFinished.disconnect ( self.onStringEditEditingFinished )
+	#
+	# onStringEditEditingFinished
+	#
+	def onStringEditEditingFinished ( self ) :
+		#
+		arrayValue = []
+		
+		for i in range ( self.widget.param.arraySize ) :
+			stringValue = self.controls [ i ].text ()
+			arrayValue.append ( stringValue )
+			
+		self.widget.param.setValue ( arrayValue )
+	#
+	# updateGui
+	#
+	def updateGui ( self, value ) :
+		# 
+		for i in range ( self.widget.param.arraySize ) :
+			self.controls [ i ].setText ( str ( value [ i ] ) )
 #
 # Ui_StringWidget_selector
 #          
@@ -97,7 +181,7 @@ class Ui_StringWidget_selector ( object ) :
 	#
 	def setupUi ( self, StringWidget ) :
 		#
-		hl = QtModule.QHBoxLayout ()
+		
 		self.widget = StringWidget
 		
 		self.selector = QtModule.QComboBox ( StringWidget )
@@ -111,14 +195,15 @@ class Ui_StringWidget_selector ( object ) :
 			#print "label = %s value = %s" % ( label, value )
 			self.selector.addItem ( label, value )
 		
-		spacer = QtModule.QSpacerItem ( UI.HEIGHT, UI.HEIGHT, QtModule.QSizePolicy.Expanding, QtModule.QSizePolicy.Minimum )
+		sp = QtModule.QSpacerItem ( UI.HEIGHT, UI.HEIGHT, UI.SP_EXPAND, UI.SP_MIN )
 		
+		hl = QtModule.QHBoxLayout ()
 		hl.addWidget ( self.selector )
-		hl.addItem ( spacer )
+		hl.addItem ( sp )
 		self.widget.param_vl.addLayout ( hl )
 		
-		QtCore.QMetaObject.connectSlotsByName ( StringWidget )
 		self.connectSignals ( StringWidget )
+		QtCore.QMetaObject.connectSlotsByName ( StringWidget )
 	#
 	# connectSignals
 	#

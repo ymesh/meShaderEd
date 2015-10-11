@@ -137,7 +137,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 		# case QEvent::TouchUpdate:
 		# case QEvent::TouchEnd:
 		if event.type () == QtCore.QEvent.TouchBegin :
-			print ">> ImageView: QEvent.TouchBegin"
+			print ( ">> ImageView: QEvent.TouchBegin" )
 		return QtModule.QGraphicsView.viewportEvent ( self, event )
 	#
 	# setImage
@@ -149,18 +149,18 @@ class ImageView ( QtModule.QGraphicsView ) :
 		hi = 256   
 
 		if imageName != '' :
-			print ">> ImageView.setImage name = %s" % imageName
+			print ( ">> ImageView.setImage name = %s" % imageName )
 
 			imageReader = QtGui.QImageReader ( imageName )
 
 			if imageReader.canRead () :
 				image = imageReader.read ()
 				if not self.pixmap.convertFromImage ( image ) :
-					print "!! QPixmap can't convert %s" % imageName  
+					print ( "!! QPixmap can't convert %s" % imageName )
 			else:
-				print "!! QImageReader can't read %s..." % imageName   
+				print ( "!! QImageReader can't read %s..." % imageName )
 				# print imageReader.supportedImageFormats ()
-				print "!! Lets try PIL module ..."
+				print ( "!! Lets try PIL module ..." )
 				import Image
 				image = Image.open ( imageName )
 				# image.verify()
@@ -169,7 +169,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 				from global_vars import app_global_vars
 
 				tmpname = app_global_vars [ 'TempPath' ] + '/' + os.path.basename ( imageName + '.png' )
-				print "** Save %s ..." % tmpname 
+				print ( "** Save %s ..." % tmpname )
 				image.save ( tmpname )  
 
 				self.pixmap = QtGui.QPixmap ( tmpname )
@@ -178,7 +178,7 @@ class ImageView ( QtModule.QGraphicsView ) :
 			wi = self.pixmap.width ()
 			hi = self.pixmap.height () 
 		else:
-			print "!! ImageView: isNull()"  
+			print ( "!! ImageView: isNull()" )
 
 		self.scene ().setSceneRect ( 0, 0, wi, hi )
 		self.scene ().update ()
