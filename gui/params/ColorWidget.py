@@ -55,7 +55,7 @@ class ColorEditEventFilter ( QtCore.QObject ) :
 		if event.type () == QtCore.QEvent.MouseButtonPress:
 			#print ( '>>> ColorEditEventFilter obj = ' ), obj
 			if usePyQt4 :
-				self.ColorWidget.emit ( QtCore.SIGNAL ( 'clicked()' ), obj )
+				self.ColorWidget.emit ( QtCore.SIGNAL ( 'clicked(QObject)' ), obj )
 			else :
 				self.ColorWidget.clicked.emit ( obj )
 			return True
@@ -110,7 +110,7 @@ class Ui_ColorWidget_field ( object ) :
 		# register signal propertyChanged for updating the gui
 		#self.connect( self.colorProperty, QtCore.SIGNAL('propertyChanged()'), self.onPropertyChanged )
 		if usePyQt4 :
-			ColorWidget.connect ( ColorWidget, QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
+			ColorWidget.connect ( ColorWidget, QtCore.SIGNAL ( 'clicked(QObject)' ), self.onClicked )
 			ColorWidget.connect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged ) 
 		else :
 			ColorWidget.clicked.connect ( self.onClicked )
@@ -122,7 +122,7 @@ class Ui_ColorWidget_field ( object ) :
 		# register signal propertyChanged for updating the gui
 		#self.disconnect( self.colorProperty, QtCore.SIGNAL('propertyChanged()'), self.onPropertyChanged )
 		if usePyQt4 : 
-			ColorWidget.disconnect ( ColorWidget, QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
+			ColorWidget.disconnect ( ColorWidget, QtCore.SIGNAL ( 'clicked(QObject)' ), self.onClicked )
 			ColorWidget.disconnect ( self.selector, QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 		else :
 			ColorWidget.clicked.disconnect ( self.onClicked )

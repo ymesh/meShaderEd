@@ -34,20 +34,22 @@ except ImportError:
 			PythonQtType = 'PyQt4'
 			usePyQt4 = True
 		except ImportError:
-			pass
+			print ( '!!! No PyQt module imported !!!' )
 
-print ( '* ' + PythonQtType + ' module imported' )
-
-if usePySide :
-	print ( '* ' + 'PySide.qVersion = %s' % PythonQt.QtCore.qVersion() )	
+if PythonQtType is not None :
+	print ( '* ' + PythonQtType + ' module imported' )
+	
+	if usePySide :
+		print ( '* ' + 'PySide.qVersion = %s' % PythonQt.QtCore.qVersion() )	
+	else :
+		print ( '* ' + 'QT_VERSION = %x' % PythonQt.QtCore.QT_VERSION )
+	
+	QtCore 		= PythonQt.QtCore
+	QtGui 		= PythonQt.QtGui
+	QtXml 		= PythonQt.QtXml
+	QtOpenGL 	= PythonQt.QtOpenGL
+	#QtNetwork = PythonQt.QtNetwork 
+	if usePyQt5 :
+		QtWidgets = PythonQt.QtWidgets
 else :
-	print ( '* ' + 'QT_VERSION = %x' % PythonQt.QtCore.QT_VERSION )
-
-QtCore 		= PythonQt.QtCore
-QtGui 		= PythonQt.QtGui
-QtXml 		= PythonQt.QtXml
-QtOpenGL 	= PythonQt.QtOpenGL
-#QtNetwork = PythonQt.QtNetwork 
-if usePyQt5 :
-	QtWidgets = PythonQt.QtWidgets
-
+	exit()
