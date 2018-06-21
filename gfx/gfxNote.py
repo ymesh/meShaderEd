@@ -9,7 +9,7 @@ from gfx.gfxNodeLabel import GfxNodeLabel
 
 from global_vars import DEBUG_MODE, GFX_NOTE_TYPE
 from meShaderEd import app_settings
-if  not usePyQt5 :
+if not usePyQt5 :
 	QtModule = QtGui
 else :
 	from core.mePyQt import QtWidgets
@@ -27,8 +27,9 @@ class GfxNote ( QtModule.QGraphicsItem ):
 		#
 		QtModule.QGraphicsItem.__init__ ( self )
 
+		self.node = node
 		self.label_widget = None
-		self.text_widget = None
+		self.text_value_widget = None
 		
 		self.headerFont = QtGui.QFont ()
 		self.paramsFont = QtGui.QFont ()
@@ -40,20 +41,13 @@ class GfxNote ( QtModule.QGraphicsItem ):
 		# node parameters
 		self.showBorder = True
 		self.justify = QtCore.Qt.AlignLeft # left:center:right
-		self.text = ''
-		self.opacity = 0.5
+		self.text_value = ''
+		self.opacity = 1.0
 		self.bgColor = QtGui.QColor ( 128, 128, 128 )
-		self.textColor = QtGui.QColor ( 0, 0, 0 )
+		self.text_valueColor = QtGui.QColor ( 0, 0, 0 )
 		self.selectedColor = QtGui.QColor ( 250, 250, 250 )
 		
-		self.node = node
-		
-		if self.node is not None :
-			self.updateGfxNode ()
-			( x, y ) = self.node.offset
-			self.setPos ( x, y )
-		
-		self.PenBorderNormal = QtGui.QPen( QtGui.QBrush ( self.textColor ),
+		self.PenBorderNormal = QtGui.QPen( QtGui.QBrush ( self.text_valueColor ),
 																	 1.0,
 																	 QtCore.Qt.SolidLine,
 																	 QtCore.Qt.RoundCap,
@@ -66,28 +60,44 @@ class GfxNote ( QtModule.QGraphicsItem ):
 																	 QtCore.Qt.RoundJoin )
 
 		self.bgColor.setAlphaF ( self.opacity )
-		
 		self.BrushNodeNormal = QtGui.QBrush ( self.bgColor )
-
+		
 		# flag (new from QT 4.6...)
 		self.setFlag ( QtModule.QGraphicsItem.ItemSendsScenePositionChanges )
 		self.setFlag ( QtModule.QGraphicsItem.ItemSendsGeometryChanges )
+		
 		#self.setFlag ( QtModule.QGraphicsItem.ItemIsFocusable )
 
 		# qt graphics stuff
 		self.setFlag ( QtModule.QGraphicsItem.ItemIsMovable )
 		self.setFlag ( QtModule.QGraphicsItem.ItemIsSelectable )
-		self.setZValue ( 1 )  
+		self.setZValue ( 2 )
+		
+		if self.node is not None :
+			self.updateGfxNode ()
+			( x, y ) = self.node.offset
+			self.setPos ( x, y )  
+	#
+	# __del__
+	#
+	def __del__ ( self ) :
+		print ( '>>> GfxNote( %s ).__del__' % ( self.node.label ))
 	#
 	# type
 	#
 	def type ( self ) : return GfxNote.Type
 	#
+	# onUpdateNode
+	#
+	def onUpdateNode ( self, foo_param = None ) :
+		#
+		if DEBUG_MODE : print '>> GfxNote( %s ).onUpdateNode' % ( self.node.label )
+	#
 	# remove
 	#
 	def remove ( self ) :
 		#
-		if DEBUG_MODE : print '>> GfxNote.remove'
+		if DEBUG_MODE : print ( '>>> GfxNote( %s ).remove' % ( self.node.label ))
 		if usePyQt4 :
 			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
 		else :
@@ -104,7 +114,7 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	# updateGfxNode
 	#
 	def updateGfxNode ( self ) :
-		if DEBUG_MODE : print '>> GfxNote( %s ).updateGfxNode' % ( self.node.label )
+		if DEBUG_MODE : print ( '>>> GfxNote( %s ).updateGfxNode' % ( self.node.label ) )
 		# remove all children
 		for item in self.childItems () : 
 			self.scene ().removeItem ( item )
@@ -116,6 +126,8 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	#
 	def setupParameters ( self ) :
 		#
+		if DEBUG_MODE : print ( '>>> GfxNote( %s ).setupParameters' % ( self.node.label ) )
+		print self.node
 		if self.node is not None :
 			#
 			# get known node parametres
@@ -124,8 +136,8 @@ class GfxNote ( QtModule.QGraphicsItem ):
 				param = self.node.getInputParamByName ( name )
 				if param is not None :
 					if name == 'text' :
-						self.text = param.value
-						#print '* text = %s' % self.text
+						self.text_value = param.value
+						#print '* text = %s' % self.text_value
 					elif name == 'border' :
 						self.showBorder = param.value
 						#print '* showBorder = %s' % self.showBorder
@@ -141,7 +153,7 @@ class GfxNote ( QtModule.QGraphicsItem ):
 						r = param.value [0] 
 						g = param.value [1] 
 						b = param.value [2] 
-						self.textColor = QtGui.QColor ( r * 255, g * 255, b * 255 )
+						self.text_valueColor = QtGui.QColor ( r * 255, g * 255, b * 255 )
 						#print '* text_color = %f %f %f' % ( r, g, b )
 					elif name == 'justify' :
 						if param.value == 0 :
@@ -153,21 +165,23 @@ class GfxNote ( QtModule.QGraphicsItem ):
 			
 			self.label_widget = GfxNodeLabel ( self.node.label, bgFill = False )
 			self.label_widget.setBold ()
-			self.label_widget.setNormalColor ( self.textColor )
+			self.label_widget.setNormalColor ( self.text_valueColor )
 			if self.isSelected () : self.label_widget.setSelected ()
 
-			self.text_widget = GfxNodeLabel ( self.text, bgFill = False )
-			self.text_widget.setNormalColor ( self.textColor )
-			self.text_widget.setNormal ( True )
-			self.text_widget.justify = self.justify
+			self.text_value_widget = GfxNodeLabel ( self.text_value, bgFill = False )
+			self.text_value_widget.setNormalColor ( self.text_valueColor )
+			self.text_value_widget.setNormal ( True )
+			self.text_value_widget.justify = self.justify
 			
 			self.label_widget.setParentItem ( self )
-			self.text_widget.setParentItem ( self )
+			self.text_value_widget.setParentItem ( self )
 	#
 	# setupGeometry
 	#
 	def setupGeometry ( self ) :
 		#
+		if DEBUG_MODE : print ( '>>> GfxNote( %s ).setupGeometry' % ( self.node.label ) )
+		
 		wi = 80 # minimal node width
 		hi = 0
 		x = self.x_offset
@@ -176,13 +190,14 @@ class GfxNote ( QtModule.QGraphicsItem ):
 		( wi_label, hi_label ) = self.label_widget.getLabelSize ()
 		self.label_widget.rect = QtCore.QRectF ( x, y, wi_label, hi_label )
 		
-		( wi_text, hi_text ) = self.text_widget.getLabelSize ()
-		self.text_widget.rect = QtCore.QRectF ( x, y + hi_label + self.y_offset , wi_text, hi_text )
+		( wi_text, hi_text ) = self.text_value_widget.getLabelSize ()
+		self.text_value_widget.rect = QtCore.QRectF ( x, y + hi_label + self.y_offset , wi_text, hi_text )
 		
 		wi_max = max ( wi,  wi_label, wi_text ) + 2 * self.x_offset 
 		hi_max = hi_label + hi_text + 3 * self.y_offset
 		
 		self.rect = QtCore.QRectF ( 0, 0, wi_max, hi_max )  
+		print wi_max, hi_max
 	#
 	# boundingRect
 	#
@@ -207,15 +222,18 @@ class GfxNote ( QtModule.QGraphicsItem ):
 	def itemChange ( self, change, value ) :
 		#
 		if change == QtModule.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
+			if DEBUG_MODE : print ( '>>> GfxNote( %s ).itemChange' % ( self.node.label ) )
+			#print ( '** selection ' )
 			self.label_widget.setSelected ( value == 1 )
 			if value == 1 :
 				items = self.scene ().items ()
-				for i in range ( len ( items ) - 1, -1, -1 ) :
-					if items [ i ].parentItem() is None :
+				for i in range ( len ( items ) - 1, 0, -1 ) :
+					if items [ i ].parentItem () is None :
 						if items [ i ] != self :
 							items [ i ].stackBefore ( self )
-				#scene.setFocusItem ( self )
-		elif change == QtModule.QGraphicsItem.ItemPositionHasChanged:
+			#return value
+		elif change == QtModule.QGraphicsItem.ItemPositionHasChanged :
+			#print ( '** position ' )
 			from meShaderEd import getDefaultValue
 			grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
 			grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
@@ -228,16 +246,18 @@ class GfxNote ( QtModule.QGraphicsItem ):
 				self.setPos ( x, y )
 			#if DEBUG_MODE : print '* GfxNode.itemChange = ItemPositionHasChanged (%f, %f)' % ( x, y )
 			self.node.offset = ( x, y )
+			#return QtCore.QPointF ( x, y )
 			#self.adjustLinks ()
+		#else :
+		#	return value
 		return QtModule.QGraphicsItem.itemChange ( self, change, value )
 	#
 	# paint
 	#
 	def paint ( self, painter, option, widget ) :
-		# print ( ">> GfxNode.paint" )
+		#print ( ">> GfxNote.paint" )
 		painter.setRenderHint ( QtGui.QPainter.Antialiasing )
 		painter.setRenderHint ( QtGui.QPainter.SmoothPixmapTransform )
-
 		self.paintFrame ( painter )
 	#
 	# paintFrame

@@ -62,11 +62,6 @@ class GfxSwatchNode ( QtModule.QGraphicsItem ) :
 		self.rect = QtCore.QRectF ( 0, 0, self.swatchSize, self.swatchSize )
 		self.pixmap = None
 
-		if self.node is not None :
-			self.updateGfxNode ()
-			( x, y ) = self.node.offset
-			self.setPos ( x, y )
-
 		# flag (new from QT 4.6...)
 		self.setFlag ( QtModule.QGraphicsItem.ItemSendsScenePositionChanges )
 		self.setFlag ( QtModule.QGraphicsItem.ItemSendsGeometryChanges )
@@ -75,6 +70,11 @@ class GfxSwatchNode ( QtModule.QGraphicsItem ) :
 		self.setFlag ( QtModule.QGraphicsItem.ItemIsMovable )
 		self.setFlag ( QtModule.QGraphicsItem.ItemIsSelectable )
 		self.setZValue ( 1 )
+		
+		if self.node is not None :
+			self.updateGfxNode ()
+			( x, y ) = self.node.offset
+			self.setPos ( x, y )
 
 		#self.connectSignals ()
 	#
@@ -82,21 +82,21 @@ class GfxSwatchNode ( QtModule.QGraphicsItem ) :
 	#
 	def connectSignals ( self ) :
 		#
-		if  self.scene () is not None :
-			if  usePyQt4 :
+		if self.scene () is not None :
+			if usePyQt4 :
 				QtCore.QObject.connect ( self.scene (), QtCore.SIGNAL ( 'updateSwatch' ), self.updateSwatch )
 			else :
-				self.scene ().updateSwatch.connect (  self.updateSwatch )
+				self.scene ().updateSwatch.connect ( self.updateSwatch )
 	#
 	# disconnectSignals
 	#
 	def disconnectSignals ( self ) :
 		#
-		if  self.scene () is not None :
-			if  usePyQt4 :
+		if self.scene () is not None :
+			if usePyQt4 :
 				QtCore.QObject.disconnect ( self.scene (), QtCore.SIGNAL ( 'updateSwatch' ), self.updateSwatch )
 			else :
-				self.scene ().updateSwatch.disconnect (  self.updateSwatch )
+				self.scene ().updateSwatch.disconnect ( self.updateSwatch )
 	#
 	# type
 	#
@@ -108,7 +108,7 @@ class GfxSwatchNode ( QtModule.QGraphicsItem ) :
 		#
 		if DEBUG_MODE : print '>> GfxSwatchNode.remove'
 		for connect in self.inputConnectors : connect.removeAllLinks ()
-		if  usePyQt4 :
+		if usePyQt4 :
 			self.scene().emit ( QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self )
 		else :
 			self.scene().onGfxNodeRemoved.emit ( self )
@@ -209,7 +209,7 @@ class GfxSwatchNode ( QtModule.QGraphicsItem ) :
 		if change == QtModule.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange:
 			if value == 1 :
 				items = self.scene ().items ()
-				for i in range ( len ( items ) - 1, -1, -1 ) :
+				for i in range ( len ( items ) - 1, 0, -1 ) :
 					if items [ i ].parentItem() is None :
 						if items [ i ] != self :
 							items [ i ].stackBefore ( self )

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<node name="RibGeneric" author="mesh" type="rib">
+	<help>Generic Rib structure</help>
+	<input>
+    <property name="Options" label="Options" type="rib" default=""/>
+    <property name="Frame" label="Frame" type="rib" default=""/>
+    <property name="DisplayDriver" label="Display Driver" type="string" default="tiff" provider="attribute" subtype="selector" range="tiff:framebuffer:it" />
+    <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
+    <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>  
+    <property name="World" label="World" type="rib" default=""/>
+	</input>
+	<output>
+	  <property name="ImageFile" type="image" default="${OUTPUTNAME}.tif"/>
+	</output>
+	<control_code>
+<![CDATA[
+print ":: Hello from %s XML code !!!" % self.label
+
+]]>
+	</control_code>
+	<code>
+  <![CDATA[
+Option "searchpath" "shader" "&:@:.:~:${ShaderSearchPath}:${ProjectSearchPath}:${ProjectSearchShaders}"
+Option "searchpath" "texture" "&:@:.:~:${TextureSearchPath}:${ProjectSearchPath}:${ProjectSearchTextures}"
+Option "searchpath" "archive" "&:@:.:~:${ArchiveSearchPath}:${ProjectSearchPath}"
+$(Options)
+FrameBegin 1  
+	$(Frame)
+	Display "$(ImageFile)" "$(DisplayDriver)" "rgba"
+	Format $(Width) $(Height) 1.0
+	WorldBegin
+		$(World)
+	WorldEnd
+FrameEnd
+  ]]>
+	</code>		
+</node>

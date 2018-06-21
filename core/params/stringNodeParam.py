@@ -37,6 +37,7 @@ class StringNodeParam ( NodeParam ) :
 	#
 	def valueFromStr ( self, strValue ) : 
 		#
+		strValue = str ( strValue )
 		if not self.isArray () :
 			value = parseGlobalVars ( strValue )
 		else :

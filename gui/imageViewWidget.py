@@ -6,7 +6,7 @@
 from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 from core.signal import Signal
 
-from ui_imageViewWidget import Ui_imageViewWidget
+from imageViewWidget_ui import Ui_imageViewWidget
 
 import gui.ui_settings as UI
 from core.node import Node
@@ -93,7 +93,12 @@ class ImageViewWidget ( QtModule.QWidget ) :
 	#
 	def selectViewer ( self, gfxNode ) :
 		#
-		self.ui.selector.setCurrentText( gfxNode.node.label )
+		if usePySide :
+		#if not usePySide :
+			self.ui.selector.setCurrentText( gfxNode.node.label )
+		else :
+			idx = self.ui.selector.findText( gfxNode.node.label )
+			self.ui.selector.setCurrentIndex ( idx )
 	#
 	# onViewerChanged
 	#

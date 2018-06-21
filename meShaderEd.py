@@ -3,7 +3,8 @@
  
  meShaderEd.py
 
- version 0.3.5b (?? Oct 2015)
+ meShaderEd main programm
+ version 0.3.6b (?? Mar 2016)
 
  Author: Yuri Meshalkin (aka mesh) (mesh@kpp.kiev.ua)
 
@@ -35,11 +36,13 @@ else :
 	
 root = normPath ( sys.path [0] )
 branchName = 'construct'
-__version__ = '0.3.5b ' + branchName
+__version__ = '0.3.6b ' + branchName
 
-app_settings = QtCore.QSettings ( QtCore.QSettings.IniFormat,
+app_settings = QtCore.QSettings ( 
+	QtCore.QSettings.IniFormat, 
 																	QtCore.QSettings.UserScope,
-																	'mesh', 'meShaderEd_' + branchName )
+	'mesh', 
+	'meShaderEd_' + branchName )
 #
 # setDefaultValue
 #
@@ -276,8 +279,11 @@ def main () :
 	app_settings.endGroup ()
 
 	from gui.MainWindow import MainWindow
+	import gui.resources_rc
+	app_icon = QtGui.QIcon ( QtGui.QPixmap( ":/file_icons/resources/meShaderEd_v001a.png") )
 
 	window = MainWindow ()
+	window.setWindowIcon ( app_icon )
 	window.show ()
 
 	# It's exec_ because exec is a reserved word in Python
@@ -302,10 +308,11 @@ if __name__ == "__main__":
 		else :
 			print ( '* PySide Version = %s' % QtCore.__version__ )
 
-	if sys.platform.startswith ( 'win') :
+	if sys.platform.startswith ( 'win') or sys.platform.startswith ( 'linux') :
 		if not usePyQt5 :
-			pass
-			#QtModule.QApplication.setStyle ( QtModule.QStyleFactory.create ( 'Cleanlooks' ) )
-			#QtModule.QApplication.setPalette ( QtModule.QApplication.style ().standardPalette () )
+			#pass
+			#QtModule.QApplication.setStyle ( QtModule.QStyleFactory.create ( 'Cleanlooks' ) ) # ''
+			QtModule.QApplication.setStyle ( QtModule.QStyleFactory.create ( 'Plastique' ) )
+			QtModule.QApplication.setPalette ( QtModule.QApplication.style ().standardPalette () )
 
 	main ()

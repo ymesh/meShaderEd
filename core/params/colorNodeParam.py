@@ -46,6 +46,7 @@ class ColorNodeParam ( NodeParam ) :
 	#
 	def valueFromRSL ( self, strValue ) :
 		#
+		strValue = str ( strValue )
 		color3_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'
 		color1_pattern_str = 'color\(([+]?([0-9]*\.)?[0-9]+\))'
 		color3_space_pattern_str = 'color"[A-z]*"\(([+]?([0-9]*\.)?[0-9]+,){2}[+]?([0-9]*\.)?[0-9]+\)'

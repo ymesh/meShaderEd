@@ -82,7 +82,7 @@ class NodeParamListTab ( QtModule.QWidget ) :
 	#
 	def setNode ( self, gfxNode ) :
 		#
-		#if DEBUG_MODE :print ">> NodeParamListTab.setNode"
+		#if DEBUG_MODE : print ">> NodeParamListTab.setNode", gfxNode
 		self.gfxNode = gfxNode
 		#self.nodeParamList.setNode ( gfxNode )
 		self.updateGui ()
@@ -218,7 +218,7 @@ class NodeParamList ( QtModule.QWidget ) :
 	#
 	def setNode ( self, gfxNode ) :
 		#
-		#if DEBUG_MODE :print ">> NodeParamList.setNode"
+		#if DEBUG_MODE :print ">> NodeParamList.setNode", gfxNode 
 		self.gfxNode = gfxNode
 		self.updateGui ()
 	#

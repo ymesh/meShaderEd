@@ -1,5 +1,6 @@
 <!DOCTYPE group_01>
 <node name="group_01" label="NodeGroup" author="mesh" type="nodegroup" format="">
+<state>closed</state>
 <help>Node group test</help>
 <input>
   <property name="Globals" type='link' linked_node="5" linked_param="Globals"/>

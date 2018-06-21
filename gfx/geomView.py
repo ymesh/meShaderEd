@@ -229,7 +229,8 @@ class GeomView ( QtOpenGL.QGLWidget ) : # , QGLFunctions
 	#
 	def drawSpiral ( self ) :
 		#
-		spiral_code = """
+		spiral_code = \
+"""
 glEnableClientState ( GL_VERTEX_ARRAY )
 spiral_array = []
 # Second Spiral using "array immediate mode" (i.e. Vertex Arrays)
@@ -250,7 +251,7 @@ glFlush ()
 
 
 
-		"""    
+"""
 		exec spiral_code
 		
 		# Draw the spiral in 'immediate mode'

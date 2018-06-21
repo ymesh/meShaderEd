@@ -35,12 +35,12 @@ class ColorFieldEventFilter ( QtCore.QObject ) :
 		if event.type () == QtCore.QEvent.MouseButtonPress:
 			#print ( '>>> ColorFieldEventFilter obj = ' ), obj
 			if usePyQt4 :
-				self.colorField.emit ( QtCore.SIGNAL ( 'clicked()' ), self.colorField.idx )
+				self.colorField.emit ( QtCore.SIGNAL ( 'clicked(int)' ), self.colorField.idx )
 			else :
 				self.colorField.clicked.emit ( self.colorField.idx )
 			return True
 		else:
-			return obj.eventFilter ( obj, event )    
+			return obj.eventFilter ( obj, event )
 #
 # ColorField for ColorWidget
 #
@@ -54,7 +54,7 @@ class ColorField ( QtModule.QWidget ) :
 		#
 		# Define signals for PyQt5
 		#
-		if usePySide or usePyQt5 :
+		if not usePyQt4 :
 			#
 			self.clicked = Signal ()
 			#

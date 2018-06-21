@@ -27,10 +27,9 @@ from nodeList import NodeList
 from gfx.WorkArea import WorkArea
 
 from meShaderEd import app_settings
-#from meShaderEd import app_renderer
 from meShaderEd import getDefaultValue, setDefaultValue, createDefaultProject, openDefaultProject
 
-from ui_MainWindow import Ui_MainWindow
+from MainWindow_ui import Ui_MainWindow
 if not usePyQt5 :
 	QtModule = QtGui
 else :
@@ -47,16 +46,11 @@ class MainWindow ( QtModule.QMainWindow ) :
 		#
 		QtModule.QMainWindow.__init__ ( self )
 
+		self.activeNodeList = None
+		self.workArea = None # current work area
+		
 		self.ui = Ui_MainWindow ()
 		self.ui.setupUi ( self )
-		#
-		# setup WhatsThis help action
-		#
-		self.ui.actionHelpMode = QtModule.QWhatsThis.createAction ( )
-		self.ui.actionHelpMode.setToolTip ( 'Enter "WhatsThis" help mode' )
-		self.ui.menuHelp.addAction ( self.ui.actionHelpMode )
-		self.ui.toolBar.addSeparator()
-		self.ui.toolBar.addAction ( self.ui.actionHelpMode )
 		
 		self.clipboard = QtModule.QApplication.clipboard ()
 
@@ -88,36 +82,14 @@ class MainWindow ( QtModule.QMainWindow ) :
 
 		self.setupMenuBar ()
 		self.setupPanels ()
-
-		self.activeNodeList = None
-		self.workArea = None # current work area
+		
 		self.onNew () # create new document
-
-		grid_enabled = getDefaultValue ( app_settings, 'WorkArea', 'grid_enabled' )
-		grid_snap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' )
-		grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
-		reverse_flow = getDefaultValue ( app_settings, 'WorkArea', 'reverse_flow' )
-		straight_links = getDefaultValue ( app_settings, 'WorkArea', 'straight_links' )
-
-		#self.ui.workArea.gridSize = grid_size
-		#self.ui.workArea.gridSnap = grid_snap
-		self.workArea.drawGrid = grid_enabled
-		#self.ui.workArea.reverseFlow = reverse_flow
-		#self.ui.workArea.straightLinks = straight_links
-
-		self.ui.actionShowGrid.setChecked ( grid_enabled )
-		self.ui.actionSnapGrid.setChecked ( grid_snap )
-		self.ui.actionReverseFlow.setChecked ( reverse_flow )
-		self.ui.actionStraightLinks.setChecked ( straight_links )
 
 		self.ui.nodeList_ctl.setLibrary ( app_global_vars [ 'NodesPath' ] )
 		self.ui.project_ctl.setLibrary ( app_global_vars [ 'ProjectNetworks' ] )
 
-		#self.ui.dockNodes.setWindowTitle ( 'Library: %s' % app_global_vars [ 'NodesPath' ] )
-		#self.ui.dockProject.setWindowTitle ( 'Project: %s' % app_global_vars [ 'ProjectNetworks' ] )
-
 		self.connectSignals ()
-		self.setupActions ()
+		self.validateActions ()
 		self.setupWindowTitle ()
 	#
 	# connectSignals
@@ -354,11 +326,11 @@ class MainWindow ( QtModule.QMainWindow ) :
 						self.recentNetworks.pop ()
 					app_settings.setValue ( 'RecentNetworks', self.recentNetworks )
 	#
-	# setupActions
+	# validateActions
 	#
-	def setupActions ( self ) :
+	def validateActions ( self ) :
 		#
-		#if DEBUG_MODE : print '>> MainWindow.setupActions'
+		#if DEBUG_MODE : print '>> MainWindow.validateActions'
 		import sys
 		numNodes = 0
 		numSelectedNodes = 0
@@ -403,6 +375,11 @@ class MainWindow ( QtModule.QMainWindow ) :
 		self.ui.actionPaste.setEnabled ( enableForPaste )
 		self.ui.actionFitAll.setEnabled ( numNodes > 0 )
 		self.ui.actionFitSelected.setEnabled ( numSelectedNodes > 0 )
+		
+		self.ui.actionShowGrid.setChecked ( self.workArea.drawGrid )
+		self.ui.actionSnapGrid.setChecked ( self.workArea.gridSnap )
+		self.ui.actionReverseFlow.setChecked ( self.workArea.reverseFlow )
+		self.ui.actionStraightLinks.setChecked ( self.workArea.straightLinks )
 	#
 	# onProjectSetup
 	#
@@ -481,7 +458,6 @@ class MainWindow ( QtModule.QMainWindow ) :
 		app_settings.endGroup ()
 
 		self.workArea.resetCachedContent ()
-		#self.ui.workArea.update()
 	#
 	# onSnapGrid
 	#
@@ -538,13 +514,14 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def onGetNode ( self, itemFilename, pos ) :
 		#
-		if self.activeNodeList != None : self.activeNodeList.onGetNode ( itemFilename, pos )
+		if self.activeNodeList != None : 
+			self.activeNodeList.onGetNode ( itemFilename, pos )
 	#
 	# onAddGfxNode
 	#
 	def onAddGfxNode ( self, gfxNode ) :
 		#
-		#print ">> MainWindow: onAddGfxNode = %s" % gfxNode.node.label
+		print ( ">> MainWindow: onAddGfxNode = %s" % gfxNode.node.label )
 		if gfxNode.node.format == 'image' : 
 			if gfxNode.node.thisIs () == 'image_render_node' :
 				self.ui.imageView_ctl.addViewer ( gfxNode )
@@ -690,14 +667,14 @@ class MainWindow ( QtModule.QMainWindow ) :
 	def onCopy ( self ) :
 		if DEBUG_MODE : print ( '>> MainWindow.onCopy' )
 		self.workArea.copyNodes ( self.clipboard, cutNodes = False )
-		self.setupActions ()
+		self.validateActions ()
 	#
 	# onCut
 	#
 	def onCut ( self ) :
 		 if DEBUG_MODE : print ( '>> MainWindow.onCut' )
 		 self.workArea.copyNodes ( self.clipboard, cutNodes = True )
-		 self.setupActions ()
+		 self.validateActions ()
 	#
 	# onPaste
 	#
@@ -717,7 +694,8 @@ class MainWindow ( QtModule.QMainWindow ) :
 	#
 	def onSelectGfxNodes ( self, gfxNodes = [], gfxLinks = [] ) :
 		#
-		self.setupActions ()
+		if DEBUG_MODE : print ( '>> MainWindow.onSelectGfxNodes' )
+		self.validateActions ()
 		self.workArea.inspectedNode = None
 		if len ( gfxNodes ) == 1 : 
 			gfxNode =  gfxNodes [ 0 ]

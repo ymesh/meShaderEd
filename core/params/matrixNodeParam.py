@@ -35,6 +35,7 @@ class MatrixNodeParam ( NodeParam ) :
 	#
 	def valueFromStr ( self, strValue ) :
 		#
+		strValue = str ( strValue )
 		matrix16_pattern_str = 'matrix\(([-+]?([0-9]*\.)?[0-9]+,){15}[-+]?([0-9]*\.)?[0-9]+\)'
 		matrix1_pattern_str  = 'matrix\(([-+]?([0-9]*\.)?[0-9]+\))'
 		matrix16_space_pattern_str = 'matrix"[A-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){15}[-+]?([0-9]*\.)?[0-9]+\)'

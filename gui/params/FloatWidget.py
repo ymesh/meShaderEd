@@ -403,7 +403,7 @@ class Ui_FloatWidget_slider ( object ) :
 	def onFloatEditEditingFinished ( self ) :
 		#
 		floatStr = self.floatEdit.text ()
-		if  not usePyQt5 :
+		if usePyQt4 :
 			floatValue = floatStr.toFloat () [ 0 ] 
 		else :
 			floatValue = float ( floatStr )

@@ -37,6 +37,7 @@ class NormalNodeParam ( NodeParam ) :
 	# 
 	def valueFromStr ( self, strValue ) :
 		#
+		strValue = str ( strValue )
 		normal3_pattern_str = 'normal\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'
 		normal1_pattern_str = 'normal\(([-+]?([0-9]*\.)?[0-9]+\))'
 		normal3_space_pattern_str = 'normal"[A-z]*"\(([-+]?([0-9]*\.)?[0-9]+,){2}[-+]?([0-9]*\.)?[0-9]+\)'

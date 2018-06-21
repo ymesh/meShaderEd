@@ -9,8 +9,8 @@
     <property name="DisplayDriver" label="Display Driver" type="string" default="tiff" provider="attribute"
       subtype="selector" range="tiff:framebuffer:it" />
     
-    <property name="Width" label="Image width" type="int" default="512" provider="attribute"/>
-    <property name="Height" label="Image height" type="int" default="512" provider="attribute"/>  
+    <property name="Width" label="Image width" type="int" default="256" provider="attribute"/>
+    <property name="Height" label="Image height" type="int" default="256" provider="attribute"/>  
     
     <property name="Secondary" label="Secondary Displays" type="rib" default=""/>
     
@@ -18,13 +18,10 @@
     <property name="EnvMap" label="Environment Map" type="string" default="kitchen_LL.hdr.${TEX}" provider="attribute"
       subtype="file" range="All files=*.*:TEX=*.tex:TDL=*.tdl:TIFF=*.tif" />    
     
-    
     <property name="Color" type="color" default="0 0 1" provider="attribute"/>  
     <property name="Opacity" type="color" default="1 1 1" provider="attribute"/>  
       
     <property name="DisplaceBound" label="Displacement Bound" type="float" default="0.5" provider="attribute"/>
-
-    
     <property name="rib_input" label="rib_input" type="rib" default="Displacement &quot;null&quot;" />
   
   </input>

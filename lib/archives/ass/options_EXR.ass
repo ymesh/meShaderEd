@@ -1,0 +1,106 @@
+### exported: Thu Oct 30 13:15:16 2014
+### from:     Arnold 4.2.0.6 windows icc-14.0.2 oiio-1.2.2 rlm-10.1.2 2014/07/16 13:10:09
+### host app: MtoA 1.1.0.4 ada1eb56ff99+ (Master) MtoA-1.1.0.4 Maya 2015
+
+
+
+options
+{
+ name options
+ AA_samples 3
+ AA_seed 1
+ AA_sample_clamp_affects_aovs off
+ abort_on_error on
+ abort_on_license_fail off
+ skip_license_check off
+ error_color_bad_texture 1 0 0
+ error_color_bad_pixel 0 0 1
+ outputs 
+  "RGBA RGBA defaultArnoldFilter@gaussian_filter defaultArnoldDriver@driver_exr.RGBA"
+ xres 512
+ yres 512
+ region_min_x -1
+ region_min_y -1
+ region_max_x -1
+ region_max_y -1
+ aspect_ratio 1
+ bucket_size 64
+ bucket_scanning "spiral"
+ ignore_textures off
+ ignore_shaders off
+ ignore_atmosphere off
+ ignore_lights off
+ ignore_shadows off
+ ignore_subdivision off
+ ignore_displacement off
+ ignore_bump off
+ ignore_motion_blur off
+ ignore_dof off
+ ignore_smoothing off
+ ignore_sss off
+ auto_transparency_depth 10
+ auto_transparency_threshold 0.99000001
+ texture_max_open_files 100
+ texture_max_memory_MB 1024
+ texture_per_file_stats on
+ texture_searchpath "D:/code/meTools/maya/projects/meShaderEd/sourceimages"
+ texture_automip on
+ texture_autotile 64
+ texture_accept_untiled on
+ texture_accept_unmipped on
+ texture_conservative_lookups on
+ texture_glossy_blur 0
+ texture_diffuse_blur 0.03125
+ texture_max_sharpen 1.5
+ camera "cameraShape1"
+ background NULL
+ atmosphere NULL
+ low_light_threshold 0.00100000005
+ shadow_terminator_fix on
+ sss_bssrdf_samples 3
+ sss_use_autobump off
+ volume_indirect_samples 0
+ reference_time 0
+ shader_nan_checks off
+ max_subdivisions 999
+ procedural_searchpath "D:/code/meTools/maya/projects/meShaderEd/"
+ shader_searchpath ""
+ preserve_scene_data off
+ texture_gamma 2.20000005
+ light_gamma 2.20000005
+ shader_gamma 2.20000005
+ GI_diffuse_depth 1
+ GI_glossy_depth 1
+ GI_reflection_depth 2
+ GI_refraction_depth 2
+ GI_total_depth 10
+ GI_diffuse_samples 2
+ GI_glossy_samples 2
+ GI_refraction_samples 2
+ enable_aov_composition on
+ declare frame constant FLOAT
+ frame 1
+ declare render_layer constant STRING
+ render_layer "ARNOLD"
+ declare fps constant FLOAT
+ fps 24
+}
+
+gaussian_filter
+{
+ name defaultArnoldFilter@gaussian_filter
+ width 2
+}
+
+driver_exr
+{
+ name defaultArnoldDriver@driver_exr.RGBA
+ filename "D:/code/meTools/maya/projects/meShaderEd/images/ARNOLD/models.exr"
+ compression "zip"
+ half_precision off
+ tiled off
+ preserve_layer_name off
+ autocrop off
+ append off
+}
+

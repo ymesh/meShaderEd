@@ -17,8 +17,10 @@ from gfx.gfxNodeConnector import GfxNodeConnector
 from gfx.gfxLink import GfxLink
 from gfx.gfxNote import GfxNote
 from gfx.gfxSwatchNode import GfxSwatchNode
+from gfx.gfxNodeGroup import GfxNodeGroup
 
 from meShaderEd import app_settings
+from meShaderEd import getDefaultValue, setDefaultValue
 from global_vars import DEBUG_MODE
 
 if not usePyQt5 :
@@ -63,6 +65,7 @@ class WorkAreaScene ( QtModule.QGraphicsScene ) :
 	def connectSignals ( self ) :
 		if usePyQt4 :
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'selectionChanged()' ), self.view.onSelectionChanged )
+			
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'startNodeLink' ), self.view.onStartNodeLink )
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'traceNodeLink' ), self.view.onTraceNodeLink )
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'endNodeLink' ), self.view.onEndNodeLink )
@@ -73,6 +76,7 @@ class WorkAreaScene ( QtModule.QGraphicsScene ) :
 			QtCore.QObject.connect ( self, QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self.view.onRemoveLink )
 		else :
 			self.selectionChanged.connect ( self.view.onSelectionChanged )
+			
 			self.startNodeLink.connect ( self.view.onStartNodeLink )
 			self.traceNodeLink.connect ( self.view.onTraceNodeLink )
 			self.endNodeLink.connect ( self.view.onEndNodeLink )
@@ -81,6 +85,32 @@ class WorkAreaScene ( QtModule.QGraphicsScene ) :
 			self.endNodeConnector.connect ( self.view.onEndNodeConnector )
 			self.onGfxNodeRemoved.connect ( self.view.onRemoveNode )
 			self.onGfxLinkRemoved.connect ( self.view.onRemoveLink )
+	#
+	# disconnectSignals
+	#
+	def disconnectSignals ( self ) :
+		if usePyQt4 :
+			QtCore.QObject.disconnect ( self, QtCore.SIGNAL ( 'selectionChanged()' ), self.view.onSelectionChanged )
+			
+			QtCore.QObject.disconnect ( self, QtCore.SIGNAL ( 'startNodeLink' ), self.view.onStartNodeLink )
+			QtCore.QObject.disconnect ( self, QtCore.SIGNAL ( 'traceNodeLink' ), self.view.onTraceNodeLink )
+			QtCore.QObject.disconnect ( self, QtCore.SIGNAL ( 'endNodeLink' ), self.view.onEndNodeLink )
+			QtCore.QObject.disconnect ( self, QtCore.SIGNAL ( 'startNodeConnector' ), self.view.onStartNodeConnector )
+			QtCore.QObject.disconnect ( self, QtCore.SIGNAL ( 'traceNodeConnector' ), self.view.onTraceNodeConnector )
+			QtCore.QObject.disconnect ( self, QtCore.SIGNAL ( 'endNodeConnector' ), self.view.onEndNodeConnector )
+			QtCore.QObject.disconnect ( self, QtCore.SIGNAL ( 'onGfxNodeRemoved' ), self.view.onRemoveNode )
+			QtCore.QObject.disconnect ( self, QtCore.SIGNAL ( 'onGfxLinkRemoved' ), self.view.onRemoveLink )
+		else :
+			self.selectionChanged.disconnect ( self.view.onSelectionChanged )
+			
+			self.startNodeLink.disconnect ( self.view.onStartNodeLink )
+			self.traceNodeLink.disconnect ( self.view.onTraceNodeLink )
+			self.endNodeLink.disconnect ( self.view.onEndNodeLink )
+			self.startNodeConnector.disconnect ( self.view.onStartNodeConnector )
+			self.traceNodeConnector.disconnect ( self.view.onTraceNodeConnector )
+			self.endNodeConnector.disconnect ( self.view.onEndNodeConnector )
+			self.onGfxNodeRemoved.disconnect ( self.view.onRemoveNode )
+			self.onGfxLinkRemoved.disconnect ( self.view.onRemoveLink )	
 #
 # WorkArea
 #
@@ -102,12 +132,13 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			self.gfxNodeAdded = Signal () #( QtModule.QGraphicsObject )
 			self.gfxNodeRemoved = Signal () #( QtModule.QGraphicsObject )
 			#
-		self.drawGrid = True
-		self.gridSnap = False
-		self.straightLinks = False
-		self.reverseFlow = False
+		
+		self.drawGrid = getDefaultValue ( app_settings, 'WorkArea', 'grid_enabled', True )
+		self.gridSnap = getDefaultValue ( app_settings, 'WorkArea', 'grid_snap', True )
+		self.straightLinks = getDefaultValue ( app_settings, 'WorkArea', 'straight_links', False )
+		self.reverseFlow = getDefaultValue ( app_settings, 'WorkArea', 'straight_links', False )
+		self.gridSize = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size', 10 ) )
 
-		self.gridSize = 10
 		self.minGap = 120
 		self.current_Z = 1
 
@@ -157,12 +188,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		"""
 		self.viewBrush = QtGui.QBrush ( QtGui.QColor ( 148, 148, 148 ) )
 		self.setBackgroundBrush ( self.viewBrush )
-
 		# self.connectSignals ()
-
-
-
-
 		if DEBUG_MODE : print ">> WorkArea. __init__"
 	#
 	# connectSignals
@@ -196,8 +222,9 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		#
 		resultList = []
 		for item in self.scene ().items () :
-			if ( isinstance ( item, GfxNode ) or
-					 isinstance ( item, GfxSwatchNode ) or 
+			if ( isinstance ( item, GfxNode ) or \
+					 isinstance ( item, GfxSwatchNode ) or \
+					 isinstance ( item, GfxNote ) or \
 					 ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
 				if type is None or item.node.type == type :
 					resultList.append ( item )
@@ -210,8 +237,9 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		#
 		resultList = []
 		for item in self.scene ().items () :
-			if ( isinstance ( item, GfxNode ) or
-					 isinstance ( item, GfxSwatchNode ) or 
+			if ( isinstance ( item, GfxNode ) or \
+					 isinstance ( item, GfxSwatchNode ) or \
+					 isinstance ( item, GfxNote ) or \
 					 ( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
 				if format is None or item.node.format == format :
 					resultList.append ( item )
@@ -223,8 +251,9 @@ class WorkArea ( QtModule.QGraphicsView ) :
 		#
 		gfxNode = None
 		for item in self.scene ().items () :
-			if ( isinstance ( item, GfxNode ) or
-					 isinstance ( item, GfxSwatchNode ) or 
+			if ( isinstance ( item, GfxNode ) or \
+					 isinstance ( item, GfxSwatchNode ) or \
+					 isinstance ( item, GfxNote ) or  \
 					( isinstance ( item, GfxNodeConnector ) and item.isNode () ) ) :
 				if item.node == node :
 					gfxNode = item
@@ -239,13 +268,19 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def selectAllNodes ( self ) :
 		#
-		for item in self.getAllGfxNodes () : item.setSelected ( True )
+		self.selectGfxNodes ( self.getAllGfxNodes () )
+	#
+	# selectAllNodes
+	#
+	def selectGfxNodes ( self, nodes ) :
+		#
+		for item in nodes : item.setSelected ( True )
 	#
 	# selectAbove
 	#
 	def selectAbove ( self, upperGfxNode ) :
 		#
-		if DEBUG_MODE : print '>> WorkArea::selectAbove node (%s) links:' % upperGfxNode.node.label
+		if DEBUG_MODE : print ( '>> WorkArea::selectAbove node (%s) links:' % upperGfxNode.node.label )
 		for link_list in upperGfxNode.node.outputLinks.values () :
 			for link in link_list :
 				# link.printInfo ()
@@ -260,7 +295,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def updateBelow ( self, upperGfxNode, removeLinks = False ) :
 		#
-		if DEBUG_MODE : print '>> WorkArea::updateBelow upperGfxNode.node (%s) children:' % upperGfxNode.node.label
+		if DEBUG_MODE : print ( '>> WorkArea::updateBelow upperGfxNode.node (%s) children:' % upperGfxNode.node.label )
 		for node in upperGfxNode.node.childs :
 			if DEBUG_MODE : print '* %s' % node.label
 			gfxNode = self.getGfxNodesByNode ( node )
@@ -271,7 +306,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def selectBelow ( self, upperGfxNode ) :
 		#
-		if DEBUG_MODE : print '>> WorkArea::selectBelow upperGfxNode.node (%s) children:' % upperGfxNode.node.label
+		if DEBUG_MODE : print ( '>> WorkArea::selectBelow upperGfxNode.node (%s) children:' % upperGfxNode.node.label )
 		for node in upperGfxNode.node.childs :
 			if DEBUG_MODE : print '* %s' % node.label
 			gfxNode = self.getGfxNodesByNode ( node )
@@ -286,7 +321,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def clear ( self ):
 		#
-		if DEBUG_MODE : print '>> WorkArea:: clearing nodes ...'
+		if DEBUG_MODE : print ( '>> WorkArea:: clearing nodes ...' )
 		for item in self.scene ().items () : self.scene ().removeItem ( item )
 		self.nodeNet.clear ()
 		self.state = 'idle'
@@ -299,7 +334,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def addGfxLink ( self, link ) :
 		#
-		if DEBUG_MODE : print '>> WorkArea::addGfxLink (id=%d)' % link.id
+		if DEBUG_MODE : print ( '>> WorkArea::addGfxLink (id=%d)' % link.id )
 		gfxLink = GfxLink ( link )
 		( srcNode, srcParam ) = link.getSrc ()
 		( dstNode, dstParam ) = link.getDst ()
@@ -327,24 +362,28 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def addGfxNode ( self, node, pos = None ) :
 		#
-		#print ( ">> WorkArea: addGfxNode %s" % node.label )
+		print ( ">> WorkArea: addGfxNode %s" % node.label )
 		if node.type == 'connector' :
 			gfxNode = GfxNodeConnector ( node.inputParams [ 0 ], node = node )
 		elif node.type == 'note' :
 			gfxNode = GfxNote ( node )
 		elif node.type == 'swatch' :
 			gfxNode = GfxSwatchNode ( node )
+		elif node.type == 'nodegroup' :
+			gfxNode = GfxNodeGroup ( node )
 		else :
 			gfxNode = GfxNode ( node )
 		scene = self.scene ()
 		if pos != None : gfxNode.moveBy ( pos.x(), pos.y() )
 		#for item in scene.selectedItems (): item.setSelected ( False )
 		scene.addItem ( gfxNode )
-		gfxNode.setSelected ( True )
+		
 		if usePyQt4 :
 			self.emit ( QtCore.SIGNAL ( 'gfxNodeAdded' ), gfxNode )
 		else :
 			self.gfxNodeAdded.emit ( gfxNode )
+		
+		return gfxNode
 	#
 	# adjustLinks
 	#
@@ -370,22 +409,27 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def onSelectionChanged ( self ) :
 		#
-		#print ">> WorkArea: onSelectionChanged "
+		print ( ">> WorkArea: onSelectionChanged " )
 		self.selectedNodes = []
 		self.selectedLinks = []
 		selected = self.scene ().selectedItems ()
+		
+		if len ( selected ) > 0 :
+			for item in selected:
+				if   isinstance ( item, GfxNode ) : self.selectedNodes.append ( item )
+				elif isinstance ( item, GfxNote ) : self.selectedNodes.append ( item )
+				elif isinstance ( item, GfxNodeConnector ) : self.selectedNodes.append ( item )
+				elif isinstance ( item, GfxSwatchNode ) : self.selectedNodes.append ( item )
+				elif isinstance ( item, GfxLink ) : self.selectedLinks.append ( item )
+	
+			#print
+			#print self.selectedNodes
+			#print self.selectedLinks
 
-		for item in selected:
-			if   isinstance ( item, GfxNode ) : self.selectedNodes.append ( item )
-			elif isinstance ( item, GfxNote ) : self.selectedNodes.append ( item )
-			elif isinstance ( item, GfxNodeConnector ) : self.selectedNodes.append ( item )
-			elif isinstance ( item, GfxSwatchNode ) : self.selectedNodes.append ( item )
-			elif isinstance ( item, GfxLink ) : self.selectedLinks.append ( item )
-
-		if usePyQt4 :
-			self.emit ( QtCore.SIGNAL ( 'selectNodes' ), self.selectedNodes, self.selectedLinks )
-		else :
-			self.selectNodes.emit ( self.selectedNodes, self.selectedLinks )
+			if usePyQt4 :
+				self.emit ( QtCore.SIGNAL ( 'selectNodes' ), self.selectedNodes, self.selectedLinks )
+			else :
+				self.selectNodes.emit ( self.selectedNodes, self.selectedLinks )
 	#
 	# lastConnectCandidateReset
 	#
@@ -701,7 +745,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def removeSelected ( self ) :
 		#
-		if DEBUG_MODE : print '>> WorkArea.removeSelected: (before) nodes = %d links = %d' % ( len (  self.nodeNet.nodes.values () ), len ( self.nodeNet.links.values () ) )
+		if DEBUG_MODE : print ( '>> WorkArea.removeSelected: (before) nodes = %d links = %d' % ( len (  self.nodeNet.nodes.values () ), len ( self.nodeNet.links.values () ) ) )
 		selected = self.scene().selectedItems()
 
 		for item in selected:
@@ -717,7 +761,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	#
 	def dragEnterEvent ( self, event ) :
 		#
-		print '>> WorkArea.onDragEnterEvent'
+		print ( '>> WorkArea.onDragEnterEvent' )
 		#for form_str in event.mimeData().formats():
 		#  print str ( form_str )
 		#  if form_str == 'text/uri-list' :
@@ -745,7 +789,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	def dropEvent ( self, event ) :
 		#
 		import os
-		if DEBUG_MODE : print ">> WorkArea.dropEvent"
+		if DEBUG_MODE : print ( ">> WorkArea.dropEvent" )
 		file_list = []
 		mimedata = event.mimeData ()
 
@@ -765,7 +809,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			else :
 				filename = stream.readBytes ()
 
-			if DEBUG_MODE : print '* read itemFilename = %s' % ( filename )
+			if DEBUG_MODE : print ( '* read itemFilename = %s' % ( filename ) )
 
 			file_list.append ( filename )
 			event.setDropAction ( QtCore.Qt.CopyAction )
@@ -901,16 +945,35 @@ class WorkArea ( QtModule.QGraphicsView ) :
 	# deselectAllNodes
 	#
 	def deselectAllNodes ( self ) :
+		#
 		selected = self.scene().selectedItems()
-		for item in selected : item.setSelected ( False )
+		for item in selected : 
+			item.setSelected ( False )
+	#
+	# openNodeNet
+	#
+	def addNodesToWorkArea ( self, nodes, links, pos = None, select = True ) :
+		#
+		self.scene ().disconnectSignals ()
+			
+		self.deselectAllNodes ()
+		
+		gfxNodes = []
+		
+		for node in nodes : gfxNodes.append ( self.addGfxNode ( node, pos ) ) 
+		for link in links : self.addGfxLink ( link )	
+		
+		self.scene ().connectSignals ()
+		
+		if select : 
+			self.selectGfxNodes ( gfxNodes )
 	#
 	# openNodeNet
 	#
 	def openNodeNet ( self, filename, pos = None ) :
 		#
 		( nodes, links ) = self.nodeNet.open ( normPath ( filename ) )
-		for node in nodes : self.addGfxNode ( node )
-		for link in links : self.addGfxLink ( link )
+		self.addNodesToWorkArea ( nodes, links, pos )
 	#
 	# insertNodeNet
 	#
@@ -928,10 +991,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 				x_offset = sceneBound.x() - self.minGap
 				pos = QtCore.QPointF ( x_offset, 0 )
 
-		self.deselectAllNodes ()
-
-		for node in nodes : self.addGfxNode ( node, pos )
-		for link in links : self.addGfxLink ( link )
+		self.addNodesToWorkArea ( nodes, links, pos, True )
 
 		if DEBUG_MODE : print ( '>> WorkArea.insertNodeNet (after) nodes = %d links = %d' % ( len ( self.nodeNet.nodes.values ()), len ( self.nodeNet.links.values () ) ) )
 	#
@@ -998,10 +1058,9 @@ class WorkArea ( QtModule.QGraphicsView ) :
 			return
 			
 		offsetPos = QtCore.QPointF ( self.minGap, self.minGap / 2 )
-		self.deselectAllNodes ()
 
-		for node in nodes : self.addGfxNode ( node, offsetPos )
-		for link in links : self.addGfxLink ( link )
+		self.addNodesToWorkArea ( nodes, links, offsetPos )
+
 	#
 	# duplicateNodes
 	#
@@ -1047,10 +1106,7 @@ class WorkArea ( QtModule.QGraphicsView ) :
 
 		offsetPos = QtCore.QPointF ( self.minGap, self.minGap / 2 )
 
-		self.deselectAllNodes ()
-
-		for node in nodes : self.addGfxNode ( node, offsetPos )
-		for link in links : self.addGfxLink ( link )
+		self.addNodesToWorkArea ( nodes, links, offsetPos, False )
 	#
 	# newNodeNetFromList
 	#

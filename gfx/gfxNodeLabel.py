@@ -58,6 +58,11 @@ class GfxNodeLabel ( QtModule.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 		
 		self.rect = QtCore.QRectF ()
 	#
+	# __del__
+	#
+	def __del__ ( self ) :
+		print ( '>>> GfxNodeLabel( %s ).__del__' % ( self.text ))
+	#
 	# type
 	#
 	def type ( self ) : return GfxNodeLabel.Type
@@ -186,7 +191,7 @@ class GfxNodeLabel ( QtModule.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 	def mousePressEvent ( self, event ) :
 		#
 		if self.processEvents :
-			#print ">> GfxNodeLabel.mousePressEvent"
+			print ( ">> GfxNodeLabel.mousePressEvent" )
 			inWhatsThisMode = QtModule.QWhatsThis.inWhatsThisMode ()
 			#if inWhatsThisMode :
 			#  print '** inWhatsThisMode active'
@@ -221,7 +226,7 @@ class GfxNodeLabel ( QtModule.QGraphicsItem ) : # QGraphicsWidget QGraphicsItem
 						return
 			QtCore.QEvent.ignore ( event )
 			return
-		QtModule.QGraphicsItem.mousePressEvent ( self, event )
+		return QtModule.QGraphicsItem.mousePressEvent ( self, event )
 	"""
 	#
 	# mouseMoveEvent

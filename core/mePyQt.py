@@ -34,8 +34,9 @@ except ImportError:
 			PythonQtType = 'PyQt4'
 			usePyQt4 = True
 		except ImportError:
-			pass
+			print ( '!!! No PyQt module imported !!!' )
 
+if PythonQtType is not None :
 print ( '* ' + PythonQtType + ' module imported' )
 
 if usePySide :
@@ -51,3 +52,4 @@ QtOpenGL 	= PythonQt.QtOpenGL
 if usePyQt5 :
 	QtWidgets = PythonQt.QtWidgets
 
+	exit()

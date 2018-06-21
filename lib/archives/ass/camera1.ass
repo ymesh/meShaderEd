@@ -1,0 +1,36 @@
+### exported: Thu Oct 30 13:11:06 2014
+### from:     Arnold 4.2.0.6 windows icc-14.0.2 oiio-1.2.2 rlm-10.1.2 2014/07/16 13:10:09
+### host app: MtoA 1.1.0.4 ada1eb56ff99+ (Master) MtoA-1.1.0.4 Maya 2015
+
+
+
+persp_camera
+{
+ name cameraShape1
+ fov 26.9914665
+ focus_distance 1
+ aperture_size 0
+ aperture_blades 0
+ aperture_rotation 0
+ aperture_blade_curvature 0
+ aperture_aspect_ratio 1
+ uv_remap 0 0 0 0
+ matrix
+ 1 0 -0 0
+ -0 0.992546141 -0.121869341 0
+ 0 0.121869341 0.992546141 0
+ 0 9 35 1
+ near_clip 0.100000001
+ far_clip 10000
+ shutter_start 0
+ shutter_end 1
+ shutter_type "box"
+ rolling_shutter "off"
+ rolling_shutter_duration 0
+ screen_window_min -1 -1
+ screen_window_max 1 1
+ exposure 0
+}
+
+
+

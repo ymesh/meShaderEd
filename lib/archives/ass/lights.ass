@@ -1,0 +1,65 @@
+### exported: Thu Oct 30 13:13:44 2014
+### from:     Arnold 4.2.0.6 windows icc-14.0.2 oiio-1.2.2 rlm-10.1.2 2014/07/16 13:10:09
+### host app: MtoA 1.1.0.4 ada1eb56ff99+ (Master) MtoA-1.1.0.4 Maya 2015
+
+
+
+point_light
+{
+ name pointLightShape1
+ radius 0
+ decay_type "quadratic"
+ matrix
+ 1 0 0 0
+ 0 1 0 0
+ 0 0 1 0
+ 22.5415344 8.12688255 11.9393721 1
+ color 1 1 1
+ intensity 1
+ exposure 0
+ cast_shadows on
+ cast_volumetric_shadows on
+ shadow_density 1
+ shadow_color 0 0 0
+ samples 1
+ normalize on
+ affect_diffuse on
+ affect_specular on
+ affect_volumetrics on
+ diffuse 1
+ specular 1
+ sss 1
+ indirect 1
+ max_bounces 999
+ volume_samples 2
+}
+
+distant_light
+{
+ name directionalLightShape1
+ angle 0
+ matrix
+ 0.712153018 -1.38777878e-017 0.702024221 0
+ 0.193330258 0.961332679 -0.196119636 0
+ -0.674878836 0.275389731 0.68461597 0
+ -15.2524977 9.91498852 11.9872932 1
+ color 1 1 1
+ intensity 1
+ exposure 0
+ cast_shadows on
+ cast_volumetric_shadows on
+ shadow_density 1
+ shadow_color 0 0 0
+ samples 1
+ normalize on
+ affect_diffuse on
+ affect_specular on
+ affect_volumetrics on
+ diffuse 1
+ specular 1
+ sss 1
+ indirect 1
+ max_bounces 999
+ volume_samples 2
+}
+

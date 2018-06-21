@@ -21,7 +21,7 @@ else :
 #
 # GfxNode
 #
-class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGraphicsItem
+class GfxNode ( QtModule.QGraphicsItem ) : 
 	#
 	Type = GFX_NODE_TYPE
 	#
@@ -80,15 +80,7 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		self.BrushShadow = QtGui.QBrush ( self.shadowColor )
 		self.PenShadow = QtGui.QPen ( self.shadowColor )
 
-		
-
 		self.collapse = None # 'input' 'output' 'all'
-
-		if self.node is not None :
-			self.connectSignals ()
-			self.updateGfxNode ()
-			( x, y ) = self.node.offset
-			self.setPos ( x, y )
 
 		# flag (new from QT 4.6...)
 		self.setFlag ( QtModule.QGraphicsItem.ItemSendsScenePositionChanges )
@@ -98,6 +90,17 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		self.setFlag ( QtModule.QGraphicsItem.ItemIsMovable )
 		self.setFlag ( QtModule.QGraphicsItem.ItemIsSelectable )
 		self.setZValue ( 1 )
+		
+		if self.node is not None :
+			self.connectSignals ()
+			self.updateGfxNode ()
+			( x, y ) = self.node.offset
+			self.setPos ( x, y )
+	#
+	# __del__
+	#
+	def __del__ ( self ) :
+		print ( '>>> GfxNode( %s ).__del__' % ( self.node.label ))
 	#
 	# connectSignals
 	#
@@ -479,7 +482,6 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 		if not param.isInput : 
 			connector.singleLinkOnly = False
 		connectors.append ( connector )
-		print '**** append conector'
 	#
 	# removeGfxNodeParam
 	#
@@ -547,6 +549,8 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 	def itemChange ( self, change, value ) :
 		#
 		if change == QtModule.QGraphicsItem.ItemSelectedHasChanged : #ItemSelectedChange: QGraphicsItem
+			#if DEBUG_MODE : print ( '>>> GfxNode( %s ).itemChange' % ( self.node.label ) )
+			#print ( '** selection ' )
 			if self.node.type != 'variable' :
 				# variable node has not header
 				#if  not usePyQt5 :
@@ -556,12 +560,12 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 				#self.header['swatch'].isNodeSelected = self.isNodeSelected
 			if value == 1 :
 				items = self.scene ().items ()
-				for i in range ( len ( items ) - 1, -1, -1 ) :
+				for i in range ( len ( items ) - 1, 0, -1 ) :
 					if items [ i ].parentItem() is None :
 						if items [ i ] != self :
 							items [ i ].stackBefore ( self )
-				#scene.setFocusItem ( self )
 		elif change == QtModule.QGraphicsItem.ItemPositionHasChanged :
+			#print ( '** position ' )
 			from meShaderEd import getDefaultValue
 			grid_snap = bool ( getDefaultValue ( app_settings, 'WorkArea', 'grid_snap' ) )
 			grid_size = int ( getDefaultValue ( app_settings, 'WorkArea', 'grid_size' )  )
@@ -575,17 +579,18 @@ class GfxNode ( QtModule.QGraphicsItem ) : # QtModule.QGraphicsItem QtModule.QGr
 			#if DEBUG_MODE : print '* GfxNode.itemChange = ItemPositionHasChanged (%f, %f)' % ( x, y )
 			self.node.offset = ( x, y )
 			self.adjustLinks ()
-			#return QtCore.QPointF ( x, y )
+			return QtCore.QPointF ( x, y )
+		#else :
+		#	return value
 		#return super( GfxNode, self ).itemChange ( change, value )
 		return QtModule.QGraphicsItem.itemChange ( self, change, value )
 	#
 	# paint
 	#
 	def paint ( self, painter, option, widget ) :
-		# print ( ">> GfxNode.paint" )
+		#print ( ">> GfxNode.paint" )
 		painter.setRenderHint ( QtGui.QPainter.Antialiasing )
 		painter.setRenderHint ( QtGui.QPainter.SmoothPixmapTransform )
-
 		self.paintShadow ( painter )
 		self.paintFrame ( painter )
 	#

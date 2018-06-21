@@ -25,9 +25,9 @@ class NodeGroup ( Node ) :
 		
 		Node.__init__ ( self, xml_node )
 		
-		if xml_node != None :
-			self.parseFromXML ( xml_node )
-		else :
+		if xml_node is None :
+		#	self.parseFromXML ( xml_node )
+		#else :
 			self.type = 'nodegroup'
 			self.name = self.label = self.type
 			self.nodenet = NodeNetwork ( self.name )
@@ -65,12 +65,29 @@ class NodeGroup ( Node ) :
 		#
 		print ( '>> NodeGroup.parseFromXML ...' )
 		Node.parseFromXML ( self, xml_node )
+		xml_state = xml_node.namedItem ( 'state' )
+		if not xml_state.isNull () :
+			state = str ( xml_state.toElement ().text () )
+			# print (  '>> NodeGroup.parseFromXML state = %s' % state )
+			if state in [ 'closed', 'open' ] :
+				self.state = state
 		xml_nodenet = xml_node.namedItem ( 'nodenet' )
 		if not xml_nodenet.isNull () :
 			print ( ':: NodeNetwork available ! (%s)' % str ( xml_nodenet.nodeName () )  )
-			#print xml_node.nodeType ()
-			#print xml_nodenet.nodeType ()
 			self.nodenet = NodeNetwork ( self.name, xml_nodenet.toElement () )
+			# init link parameters with nodes values
+			for param in self.inputParams :
+				if param.type == 'link' :
+					linked_node_id = int ( param.linked_node )
+					linked_param_name = param.linked_param
+					param.linked_node = self.nodenet.getNodeByID ( linked_node_id )
+					param.linked_param = param.linked_node.getInputParamByName ( linked_param_name )
+			for param in self.outputParams :
+				if param.type == 'link' :
+					linked_node_id = int ( param.linked_node )
+					linked_param_name = param.linked_param
+					param.linked_node = self.nodenet.getNodeByID ( linked_node_id )
+					param.linked_param = param.linked_node.getOutputParamByName ( linked_param_name )
 	#
 	# parseToXML
 	#

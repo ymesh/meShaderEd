@@ -550,6 +550,7 @@ class Node ( QtCore.QObject ) :
 		#
 		# try to convert from old format nodes
 		#
+		if self.type != 'nodegroup' :
 		if self.version == '' or self.version is None :
 			if self.format == '' or self.format is None :
 				( self.type, self.format ) = translateOldType ( self.type )

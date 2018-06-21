@@ -18,12 +18,17 @@ class NoteNode( Node ) :
 	def __init__ ( self, xml_node = None ) :
 		#
 		Node.__init__( self, xml_node )
-		if DEBUG_MODE : print ( '>> NoteNode __init__' )
+		if DEBUG_MODE : print ( '>> NoteNode( %s ).__init__' % self.label )
+	#
+	# __del__
+	#
+	def __del__ ( self ) :
+		print ( '>>> NoteNode( %s ).__del__' % ( self.node.label ))
 	#
 	# copy
 	#
 	def copy ( self ) :
-		if DEBUG_MODE : print ( '>> NoteNode::copy (%s)' % self.label )
+		if DEBUG_MODE : print ( '>> NoteNode( %s ).copy' % self.label )
 		newNode = NoteNode ()
 		self.copySetup ( newNode )
 		return newNode   

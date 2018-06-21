@@ -141,7 +141,7 @@ ${PARAMS}
 	]]></code>
    <offset x="-200.0" y="-110.0"/>
   </node>
-  <node name="note" icon="" format="note" parent="" version="" author="mesh" id="10" type="note" label="note">
+  <node name="note" icon="" format="note" parent="" version="" author="mesh" id="4" type="note" label="note">
    <help>Text note</help>
    <input>
     <property name="text_color" provider="attribute" value="color(0.700,0.000,0.000)" default="color(0.700,0.000,0.000)" type="color" label="Text Color"/>
@@ -156,7 +156,7 @@ ${PARAMS}
    <include/>
    <offset x="30.0" y="30.0"/>
   </node>
-  <node name="imageViewer" icon="" format="image" parent="" version="2.0" author="mesh" id="12" type="node" label="imageViewer">
+  <node name="imageViewer" icon="" format="image" parent="" version="2.0" author="mesh" id="1" type="node" label="imageViewer">
    <help>Image viewer with dynamicaly added inputs</help>
    <input>
     <property name="add_image" provider="attribute" value="" default="" btext="Add" subtype="button" type="control" label="Image input">
@@ -221,7 +221,7 @@ selector.removeItemFromRange ( param.label )
   </node>
  </nodes>
  <links>
-  <link srcParam="ImageFile" dstParam="image" dstNode_id="12" srcNode_id="2" id="1"/>
+  <link srcParam="ImageFile" dstParam="image" dstNode_id="1" srcNode_id="2" id="1"/>
   <link srcParam="surface" dstParam="FG_surf" dstNode_id="2" srcNode_id="3" id="2"/>
  </links>
 </nodenet>

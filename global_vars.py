@@ -58,6 +58,7 @@ GFX_NODE_LABEL_TYPE     = QtModule.QGraphicsItem.UserType + 3
 GFX_NODE_CONNECTOR_TYPE = QtModule.QGraphicsItem.UserType + 4
 GFX_SWATCH_NODE_TYPE    = QtModule.QGraphicsItem.UserType + 5
 GFX_NOTE_TYPE           = QtModule.QGraphicsItem.UserType + 6
+GFX_NODE_GROUP_TYPE     = QtModule.QGraphicsItem.UserType + 7
 
 VALID_NODE_TYPES = [ 'rib', 
                      'rib_code', 
@@ -69,6 +70,7 @@ VALID_NODE_TYPES = [ 'rib',
                      'volume', 
                      'variable', 
                      'connector', 
+                     'note', 
                      'swatch', 
                      'geom' ]
                      

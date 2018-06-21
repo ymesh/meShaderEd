@@ -447,6 +447,7 @@ def createNodeFromXML ( xml_node ) :
 	#
 	# try to convert from old format nodes
 	#
+	if node_type != 'nodegroup' :
 	if node_version == '' or node_version is None :
 		if node_format == '' or node_format is None :
 			( node_type, node_format ) = translateOldType ( node_type )

@@ -1,6 +1,9 @@
 <RCC>
   <qresource prefix="file_icons">
     <file>resources/recentFile.png</file>
+    <file>resources/meShed_logo.png</file>
+    <file>resources/meShaderEd_v001a.png</file>
+    <file>resources/meShaderEd_v001a.svg</file>
     <file>resources/open.png</file>
     <file>resources/save.png</file>
     <file>resources/new.png</file>
