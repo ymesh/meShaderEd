@@ -1,0 +1,31 @@
+version BMRT 2.6.0beta
+surface sttexture
+param	string	texturename		""
+local	string	$_str_0 	""
+local	string	$_str_1 	".rdc"
+local	string	tn	""
+initcode 0
+	return
+code
+	pushs	$_str_1 
+	pushs	texturename 
+	pushif	2 
+	concat
+	pops	tn 
+	pushs	$_str_0 
+	pushs	texturename 
+	sne
+	ifz	0
+	pushf	t 
+	pushf	s 
+	pushif	0 
+	pushs	tn 
+	pushif	2 
+	pushif	2 
+	ctexture
+	jump	1
+label 0
+	pushiv	1 1 1 
+label 1
+	popc	Ci 
+	return
