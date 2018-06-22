@@ -40,7 +40,7 @@ __version__ = '0.3.6b ' + branchName
 
 app_settings = QtCore.QSettings ( 
 	QtCore.QSettings.IniFormat, 
-																	QtCore.QSettings.UserScope,
+	QtCore.QSettings.UserScope,
 	'mesh', 
 	'meShaderEd_' + branchName )
 #
