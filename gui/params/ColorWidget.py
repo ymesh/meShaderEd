@@ -242,7 +242,7 @@ class Ui_ColorWidget_array ( object ) :
 		for i in range ( self.widget.param.arraySize ) :
 			elem = self.controls [ i ]
 			if usePyQt4 :
-				ColorWidget.connect ( elem [ 0 ], QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
+				ColorWidget.connect ( elem [ 0 ], QtCore.SIGNAL ( 'clicked(int)' ), self.onClicked )
 				ColorWidget.connect ( elem [ 1 ], QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged ) 
 			else :
 				elem [ 0 ].clicked.connect ( self.onClicked )
@@ -255,7 +255,7 @@ class Ui_ColorWidget_array ( object ) :
 		for i in range ( self.widget.param.arraySize ) :
 			elem = self.controls [ i ]
 			if usePyQt4 : 
-				ColorWidget.disconnect ( elem [ 0 ], QtCore.SIGNAL ( 'clicked()' ), self.onClicked )
+				ColorWidget.disconnect ( elem [ 0 ], QtCore.SIGNAL ( 'clicked(int)' ), self.onClicked )
 				ColorWidget.disconnect ( elem [ 1 ], QtCore.SIGNAL ( 'activated(int)' ), self.onCurrentIndexChanged )
 			else :
 				elem [ 0 ].clicked.disconnect ( self.onClicked )
