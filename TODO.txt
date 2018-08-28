@@ -1,0 +1,13 @@
+meShaderEd TODO
+
+v0.3.7 29 (Aug 2018)
++ create "devel" branch on GitHub
++ remove "textures", "archives" branches
+- Node: 
+  - add input/output Data
+  - add input/output Message
+- Nodes:
+  - Render
+  - Compiler
+  - Viewer
+  - Globals 
