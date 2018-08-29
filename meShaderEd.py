@@ -4,7 +4,7 @@
  meShaderEd.py
 
  meShaderEd main programm
- version 0.3.6b (?? Mar 2016)
+ version 0.3.7b (29 Aug 2018)
 
  Author: Yuri Meshalkin (aka mesh) (mesh@kpp.kiev.ua)
 
