@@ -277,7 +277,7 @@ ${PARAMS}
    <include/>
    <code><![CDATA[
 
-$(output) = $(C);
+$(outColor) = $(inColor);
 	]]></code>
    <offset x="-490.0" y="-260.0"/>
   </node>
