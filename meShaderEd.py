@@ -309,10 +309,15 @@ if __name__ == "__main__":
     else :
       print ( '* PySide Version = %s' % QtCore.__version__ )
 
+  style = 'System'
   if not usePyQt5 :
     style = 'System' # Plastique' #'Cleanlooks'
-    #if sys.platform.startswith ( 'win') :
-    #  style =  'Plastique'
+    if sys.platform.startswith ( 'win') :
+      style =  'Plastique'
+    QtModule.QApplication.setStyle ( QtModule.QStyleFactory.create ( style ) )
+    QtModule.QApplication.setPalette ( QtModule.QApplication.style ().standardPalette () )
+  else :
+    style = 'Cleanlooks' #'Plastique' #'Cleanlooks'
     QtModule.QApplication.setStyle ( QtModule.QStyleFactory.create ( style ) )
     #QtModule.QApplication.setPalette ( QtModule.QApplication.style ().standardPalette () )
 

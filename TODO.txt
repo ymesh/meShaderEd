@@ -1,8 +1,10 @@
 meShaderEd TODO
 
-v0.3.7 29 (Aug 2018)
+v0.3.7b 29 (Aug 2018)
 + create "devel" branch on GitHub
 + remove "textures", "archives" branches
+
+v0.3.7
 - Node: 
   - add input/output Data
   - add input/output Message
@@ -11,3 +13,6 @@ v0.3.7 29 (Aug 2018)
   - Compiler
   - Viewer
   - Globals 
+- Interface
+  - Breadcrumbs for Groups
+- Replace mePyQt module by Qt
