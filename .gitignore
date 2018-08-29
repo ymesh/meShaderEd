@@ -1,4 +1,7 @@
 # 
-*.pyc
 .DS_Store
+.vscode
 tmp
+*.pyc
+*.cmd
+*.sh
