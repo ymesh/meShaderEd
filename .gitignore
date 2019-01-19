@@ -3,6 +3,6 @@
 .vscode
 tmp
 *.pyc
-*.cmd
-*.sh
+# *.cmd
+# *.sh
 
