@@ -5,4 +5,4 @@ tmp
 *.pyc
 *.cmd
 *.sh
-
+env*
