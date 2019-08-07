@@ -1,6 +1,6 @@
 """
 
-	surfaceNodeParam.py
+    surfaceNodeParam.py
 
 """
 from core.node import Node
@@ -11,22 +11,22 @@ from core.meCommon import parseGlobalVars
 # SurfaceNodeParam
 #
 class SurfaceNodeParam ( NodeParam ) :
-	#
-	# __init__
-	#
-	def __init__ ( self, xml_param = None, isRibParam = False ) :
-		#
-		NodeParam.__init__ ( self, xml_param, isRibParam )
-		self.type = 'surface'
-	#
-	# encodedTypeStr
-	#
-	def encodedTypeStr ( self ): return 'S'
-	#
-	# copy
-	#
-	def copy ( self ) :
-		#
-		newParam = SurfaceNodeParam ()
-		self.copySetup ( newParam )
-		return newParam
+    #
+    # __init__
+    #
+    def __init__ ( self, xml_param = None, isRibParam = False ) :
+        #
+        NodeParam.__init__ ( self, xml_param, isRibParam )
+        self.type = 'surface'
+    #
+    # encodedTypeStr
+    #
+    def encodedTypeStr ( self ): return 'S'
+    #
+    # copy
+    #
+    def copy ( self ) :
+        #
+        newParam = SurfaceNodeParam ()
+        self.copySetup ( newParam )
+        return newParam

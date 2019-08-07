@@ -19,58 +19,58 @@ from codeSyntaxHighlighter import CodeSyntaxHighlighter
 from ui_nodeCodeEditor import Ui_NodeCodeEditor
 
 if  not usePyQt5 :
-	QtModule = QtGui
+    QtModule = QtGui
 else :
-	from core.mePyQt import QtWidgets
-	QtModule = QtWidgets
-	
+    from core.mePyQt import QtWidgets
+    QtModule = QtWidgets
+    
 #
 # NodeCodeEditor
 #
 class NodeCodeEditor ( QtModule.QWidget ):
-	#
-	# __init__
-	#
-	def __init__ ( self, parent, editNodeCode = None ) :
-		#
-		QtModule.QWidget.__init__ ( self, parent )
-		
-		self.editNodeCode = editNodeCode
-		 
-		#self.debugPrint()
-		self.buildGui()
-	#
-	# buildGui
-	#
-	def buildGui ( self ) :
-		# build the gui created with QtDesigner
-		self.ui = Ui_NodeCodeEditor ( )
-		self.ui.setupUi ( self )
-		
-	#
-	# setNodeCode
-	#
-	def setNodeCode ( self, editNodeCode, mode = 'SL', readOnly = False ) :
-		#
-		self.editNodeCode = editNodeCode
-		
-		if self.editNodeCode is not None : 
-			code = self.editNodeCode
-			
-			doc = QtGui.QTextDocument ()
-			
-			font = QtGui.QFont( 'Monospace' )
-			font.setFixedPitch ( True )
-			font.setPointSize ( UI.FONT_HEIGHT )
-	
-			codeSyntax = CodeSyntaxHighlighter ( doc, mode )
-			
-			self.ui.textEdit.setDocument ( doc )  
-			self.ui.textEdit.setTabStopWidth ( UI.TAB_SIZE )
-			self.ui.textEdit.setFont ( font )
-			self.ui.textEdit.setLineWrapMode ( QtModule.QTextEdit.NoWrap )
-			self.ui.textEdit.setReadOnly ( readOnly )
-		else :
-			code = ''
-		self.ui.textEdit.setPlainText ( code )
+    #
+    # __init__
+    #
+    def __init__ ( self, parent, editNodeCode = None ) :
+        #
+        QtModule.QWidget.__init__ ( self, parent )
+        
+        self.editNodeCode = editNodeCode
+         
+        #self.debugPrint()
+        self.buildGui()
+    #
+    # buildGui
+    #
+    def buildGui ( self ) :
+        # build the gui created with QtDesigner
+        self.ui = Ui_NodeCodeEditor ( )
+        self.ui.setupUi ( self )
+        
+    #
+    # setNodeCode
+    #
+    def setNodeCode ( self, editNodeCode, mode = 'SL', readOnly = False ) :
+        #
+        self.editNodeCode = editNodeCode
+        
+        if self.editNodeCode is not None : 
+            code = self.editNodeCode
+            
+            doc = QtGui.QTextDocument ()
+            
+            font = QtGui.QFont( 'Monospace' )
+            font.setFixedPitch ( True )
+            font.setPointSize ( UI.FONT_HEIGHT )
+    
+            codeSyntax = CodeSyntaxHighlighter ( doc, mode )
+            
+            self.ui.textEdit.setDocument ( doc )  
+            self.ui.textEdit.setTabStopWidth ( UI.TAB_SIZE )
+            self.ui.textEdit.setFont ( font )
+            self.ui.textEdit.setLineWrapMode ( QtModule.QTextEdit.NoWrap )
+            self.ui.textEdit.setReadOnly ( readOnly )
+        else :
+            code = ''
+        self.ui.textEdit.setPlainText ( code )
 

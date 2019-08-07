@@ -3,11 +3,11 @@
 
 color meDesaturate ( color in_color; float dsat )
 {
-  float lum = .2125*comp(in_color, 0) + .7154*comp(in_color, 1) + .0721*comp(in_color, 2);
-	color out_color = mix(color(lum), in_color, dsat);
-	
-	return out_color;
-}	 
+    float lum = .2125*comp(in_color, 0) + .7154*comp(in_color, 1) + .0721*comp(in_color, 2);
+    color out_color = mix(color(lum), in_color, dsat);
+
+    return out_color;
+}
 
 color meCmix(color a; color b; color mixture)
 {
@@ -16,11 +16,11 @@ color meCmix(color a; color b; color mixture)
 
 normal meShadingNormal( normal n )
 {
-  extern vector I;
-  normal Nn = normalize( n );
-  normal Nf = faceforward( Nn, I, Nn );
-  normal Ns = normalize( Nf ); /* shading normal */
-  return Ns;
+    extern vector I;
+    normal Nn = normalize( n );
+    normal Nf = faceforward( Nn, I, Nn );
+    normal Ns = normalize( Nf ); /* shading normal */
+    return Ns;
 }
 
 /*
@@ -39,33 +39,29 @@ normal meShadingNormal( normal n )
  */
 
 float
-meCalculateEnvSampleArea(
-    float hemisphere;
-    float numSamples;
-    )
+meCalculateEnvSampleArea ( float hemisphere; float numSamples; )
 {
     return 0.5 * (hemisphere / numSamples);
 }
 
 void
-meBuildEnvironmentVectors(
+meBuildEnvironmentVectors (
     float spread;
     vector dir;
     output vector v1;
     output vector v2;
     output vector v3;
-    output vector v4;
-    )
+    output vector v4; )
 {
   vector udir, vdir, wdir;
 
   // construct basis vectors
   if (abs(xcomp(dir)) > 0 || abs(ycomp(dir)) > 0)
-	  // dir ^ z (if valid)
-	  udir = normalize(vector (ycomp(dir), -xcomp(dir), 0));
+    // dir ^ z (if valid)
+    udir = normalize(vector (ycomp(dir), -xcomp(dir), 0));
   else
-	  // dir ^ x
-	  udir = normalize(vector (0, zcomp(dir), -ycomp(dir)));
+    // dir ^ x
+    udir = normalize(vector (0, zcomp(dir), -ycomp(dir)));
 
   // vdir is dir ^ u
   vdir = normalize(dir ^ udir);

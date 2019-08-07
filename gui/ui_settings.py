@@ -5,10 +5,10 @@ import sys
 from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
 
 if  not usePyQt5 :
-	QtModule = QtGui
+    QtModule = QtGui
 else :
-	from core.mePyQt import QtWidgets
-	QtModule = QtWidgets
+    from core.mePyQt import QtWidgets
+    QtModule = QtWidgets
 
 CHECK_WIDTH = 20
 SPACING = 4
@@ -19,12 +19,12 @@ COMBO_HEIGHT = 22
 FONT_HEIGHT = 10
 
 if sys.platform == 'darwin' : 
-  CHECK_WIDTH = 25
-  SPACING = 2
-  FIELD_WIDTH = 80
-  COMBO_HEIGHT = 24
-  FONT_HEIGHT = 12
-  
+    CHECK_WIDTH = 25
+    SPACING = 2
+    FIELD_WIDTH = 80
+    COMBO_HEIGHT = 24
+    FONT_HEIGHT = 12
+    
 BROWSE_WIDTH = 24
 LABEL_WIDTH = 100
 NODE_LABEL_WIDTH = 40
@@ -32,7 +32,7 @@ EDIT_WIDTH = 160
 COLOR_WIDTH = 60
 
 HEIGHT = 20
-  
+    
 MAX = 16777215
 LT_SPACE = CHECK_WIDTH
 TAB_SIZE = 10

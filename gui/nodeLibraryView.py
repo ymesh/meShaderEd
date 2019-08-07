@@ -1,6 +1,6 @@
 """
 
-	nodeLibraryView.py
+    nodeLibraryView.py
 
 """
 from core.mePyQt import usePySide, usePyQt4, usePyQt5, QtCore, QtGui
@@ -18,48 +18,48 @@ from ui_nodeLibraryView import Ui_nodeLibraryView
 from core.node import Node
 from core.nodeLibrary import NodeLibrary
 if  not usePyQt5 :
-	QtModule = QtGui
+    QtModule = QtGui
 else :
-	from core.mePyQt import QtWidgets
-	QtModule = QtWidgets
+    from core.mePyQt import QtWidgets
+    QtModule = QtWidgets
 #
 # NodeLibraryView
 #
 class NodeLibraryView ( QtModule.QWidget ) :
-	#
-	# __init__
-	#
-	def __init__ ( self ) :
-		#
-		QtModule.QWidget.__init__ ( self )
+    #
+    # __init__
+    #
+    def __init__ ( self ) :
+        #
+        QtModule.QWidget.__init__ ( self )
 
-		# This is always the same
-		self.ui=Ui_nodeLibraryView () 
-		self.ui.setupUi ( self )
-		self.updateGui ()
-	#
-	# setLibrary
-	#
-	def setLibrary ( self, dirName ) : self.ui.nodeList.setLibrary ( dirName )
-	#  
-	# onReload
-	#
-	def onReload ( self ) : self.ui.nodeList.reloadLibrary ()  
-	#   
-	# updateGui
-	#
-	def updateGui ( self ) :
-		#
-		pass    
-		#if ( self.nodesLib != '' ) :
-			# self.ui.treeView.setupModel( self.nodesLib.model )
-			
-			#self.ui.treeView.reset ()
-			#self.ui.treeView.setModel ( self.nodesLib.model ) 
-			
-			#self.ui.infoText.clear ()
-			#self.ui.infoText.setText( "<i>Node:</i><br /><i>Author:</i><br />" )
-			
-		
+        # This is always the same
+        self.ui=Ui_nodeLibraryView () 
+        self.ui.setupUi ( self )
+        self.updateGui ()
+    #
+    # setLibrary
+    #
+    def setLibrary ( self, dirName ) : self.ui.nodeList.setLibrary ( dirName )
+    #  
+    # onReload
+    #
+    def onReload ( self ) : self.ui.nodeList.reloadLibrary ()  
+    #   
+    # updateGui
+    #
+    def updateGui ( self ) :
+        #
+        pass    
+        #if ( self.nodesLib != '' ) :
+            # self.ui.treeView.setupModel( self.nodesLib.model )
+            
+            #self.ui.treeView.reset ()
+            #self.ui.treeView.setModel ( self.nodesLib.model ) 
+            
+            #self.ui.infoText.clear ()
+            #self.ui.infoText.setText( "<i>Node:</i><br /><i>Author:</i><br />" )
+            
+        
 
  

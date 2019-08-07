@@ -43,7 +43,7 @@
  * the Nyquist limit.
  */
 #define fadeout(g,g_avg,featuresize,fwidth) \
-        mix (g, g_avg, smoothstep(.2,.6,fwidth/featuresize))
+    mix (g, g_avg, smoothstep(.2,.6,fwidth/featuresize))
 
 
 #endif /* FILTERWIDTH_H */

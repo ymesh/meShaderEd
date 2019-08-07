@@ -70,8 +70,8 @@ float fBm (point p; float filtwidth;
 
     for (i = 0;  i < octaves;  i += 1) {
 #pragma nolint
-	sum += amp * filteredsnoise (pp, fw);
-	amp *= gain;  pp *= lacunarity;  fw *= lacunarity;
+    sum += amp * filteredsnoise (pp, fw);
+    amp *= gain;  pp *= lacunarity;  fw *= lacunarity;
     }
     return sum;
 }
@@ -96,8 +96,8 @@ vfBm (point p; float filtwidth;
     uniform float i;
 
     for (i = 0;  i < octaves;  i += 1) {
-	sum += amp * filteredvsnoise (pp, fw);
-	amp *= gain;  pp *= lacunarity;  fw *= lacunarity;
+    sum += amp * filteredvsnoise (pp, fw);
+    amp *= gain;  pp *= lacunarity;  fw *= lacunarity;
     }
     return sum;
 }
@@ -126,8 +126,8 @@ VLfBm (point p; float filtwidth;
 
     for (i = 0;  i < octaves;  i += 1) {
 #pragma nolint
-	sum += amp * filteredVLNoise (pp, fw, scale);
-	amp *= gain;  pp *= lacunarity;  fw *= lacunarity;
+    sum += amp * filteredVLNoise (pp, fw, scale);
+    amp *= gain;  pp *= lacunarity;  fw *= lacunarity;
     }
     return sum;
 }
@@ -153,10 +153,10 @@ float turbulence (point p; float filtwidth;
 
     for (i = 0;  i < octaves;  i += 1) {
 #pragma nolint
-	float n = filteredsnoise (pp, fw);
-	float dn = filterwidth(n);
-	sum += amp * filteredabs (n, dn);
-	amp *= gain;  pp *= lacunarity;  fw *= lacunarity;
+    float n = filteredsnoise (pp, fw);
+    float dn = filterwidth(n);
+    sum += amp * filteredabs (n, dn);
+    amp *= gain;  pp *= lacunarity;  fw *= lacunarity;
     }
     return sum;
 }
@@ -193,28 +193,28 @@ float turbulence (point p; float filtwidth;
 /* Voronoi cell noise (a.k.a. Worley noise) -- 3-D, 1-feature version. */
 void
 voronoi_f1_3d (point P;
-	       float jitter;
-	       output float f1;
-	       output point pos1;
+           float jitter;
+           output float f1;
+           output point pos1;
     )
 {
     point thiscell = point (floor(xcomp(P))+0.5, floor(ycomp(P))+0.5,
-			    floor(zcomp(P))+0.5);
+                floor(zcomp(P))+0.5);
     f1 = 1000;
     uniform float i, j, k;
     for (i = -1;  i <= 1;  i += 1) {
         for (j = -1;  j <= 1;  j += 1) {
             for (k = -1;  k <= 1;  k += 1) {
-		point testcell = thiscell + vector(i,j,k);
+        point testcell = thiscell + vector(i,j,k);
                 point pos = testcell + 
-		            jitter * (vector cellnoise (testcell) - 0.5);
-		vector offset = pos - P;
+                    jitter * (vector cellnoise (testcell) - 0.5);
+        vector offset = pos - P;
                 float dist = offset . offset; /* actually dist^2 */
                 if (dist < f1) {
                     f1 = dist;  pos1 = pos;
                 }
             }
-	}
+    }
     }
     f1 = sqrt(f1);
 }
@@ -223,31 +223,31 @@ voronoi_f1_3d (point P;
 /* Voronoi cell noise (a.k.a. Worley noise) -- 3-D, 2-feature version. */
 void
 voronoi_f1f2_3d (point P;
-		 float jitter;
-		 output float f1;  output point pos1;
-		 output float f2;  output point pos2;
+         float jitter;
+         output float f1;  output point pos1;
+         output float f2;  output point pos2;
     )
 {
     point thiscell = point (floor(xcomp(P))+0.5, floor(ycomp(P))+0.5,
-			    floor(zcomp(P))+0.5);
+                floor(zcomp(P))+0.5);
     f1 = f2 = 1000;
     uniform float i, j, k;
     for (i = -1;  i <= 1;  i += 1) {
         for (j = -1;  j <= 1;  j += 1) {
             for (k = -1;  k <= 1;  k += 1) {
-		point testcell = thiscell + vector(i,j,k);
+        point testcell = thiscell + vector(i,j,k);
                 point pos = testcell + 
-		            jitter * (vector cellnoise (testcell) - 0.5);
-		vector offset = pos - P;
+                    jitter * (vector cellnoise (testcell) - 0.5);
+        vector offset = pos - P;
                 float dist = offset . offset; /* actually dist^2 */
                 if (dist < f1) {
                     f2 = f1;  pos2 = pos1;
                     f1 = dist;  pos1 = pos;
                 } else if (dist < f2) {
                     f2 = dist;  pos2 = pos;
-		}
+        }
             }
-	}
+    }
     }
     f1 = sqrt(f1);  f2 = sqrt(f2);
 }
@@ -256,30 +256,30 @@ voronoi_f1f2_3d (point P;
 /* Voronoi cell noise (a.k.a. Worley noise) -- 2-D, 1-feature version. */
 void
 voronoi_f1_2d (float ss, tt;
-	       float jitter;
-	       output float f1;
-	       output float spos1, tpos1;
+           float jitter;
+           output float f1;
+           output float spos1, tpos1;
     )
 {
     float sthiscell = floor(ss)+0.5, tthiscell = floor(tt)+0.5;
     f1 = 1000;
     uniform float i, j;
     for (i = -1;  i <= 1;  i += 1) {
-	float stestcell = sthiscell + i;
+    float stestcell = sthiscell + i;
         for (j = -1;  j <= 1;  j += 1) {
-	    float ttestcell = tthiscell + j;
-	    float spos = stestcell +
-		     jitter * (float cellnoise(stestcell, ttestcell) - 0.5);
-	    float tpos = ttestcell +
-		 jitter * (float cellnoise(stestcell+23, ttestcell-87) - 0.5);
-	    float soffset = spos - ss;
-	    float toffset = tpos - tt;
-	    float dist = soffset*soffset + toffset*toffset;
-	    if (dist < f1) {
-		f1 = dist;
-		spos1 = spos;  tpos1 = tpos;
-	    }
-	}
+        float ttestcell = tthiscell + j;
+        float spos = stestcell +
+             jitter * (float cellnoise(stestcell, ttestcell) - 0.5);
+        float tpos = ttestcell +
+         jitter * (float cellnoise(stestcell+23, ttestcell-87) - 0.5);
+        float soffset = spos - ss;
+        float toffset = tpos - tt;
+        float dist = soffset*soffset + toffset*toffset;
+        if (dist < f1) {
+        f1 = dist;
+        spos1 = spos;  tpos1 = tpos;
+        }
+    }
     }
     f1 = sqrt(f1);
 }
@@ -288,35 +288,35 @@ voronoi_f1_2d (float ss, tt;
 /* Voronoi cell noise (a.k.a. Worley noise) -- 2-D, 2-feature version. */
 void
 voronoi_f1f2_2d (float ss, tt;
-		 float jitter;
-		 output float f1;
-		 output float spos1, tpos1;
-		 output float f2;
-		 output float spos2, tpos2;
+         float jitter;
+         output float f1;
+         output float spos1, tpos1;
+         output float f2;
+         output float spos2, tpos2;
     )
 {
     float sthiscell = floor(ss)+0.5, tthiscell = floor(tt)+0.5;
     f1 = f2 = 1000;
     uniform float i, j;
     for (i = -1;  i <= 1;  i += 1) {
-	float stestcell = sthiscell + i;
+    float stestcell = sthiscell + i;
         for (j = -1;  j <= 1;  j += 1) {
-	    float ttestcell = tthiscell + j;
-	    float spos = stestcell +
-		   jitter * (cellnoise(stestcell, ttestcell) - 0.5);
-	    float tpos = ttestcell +
-		   jitter * (cellnoise(stestcell+23, ttestcell-87) - 0.5);
-	    float soffset = spos - ss;
-	    float toffset = tpos - tt;
-	    float dist = soffset*soffset + toffset*toffset;
-	    if (dist < f1) {
-		f2 = f1;  spos2 = spos1;  tpos2 = tpos1;
-		f1 = dist;  spos1 = spos;  tpos1 = tpos;
-	    } else if (dist < f2) {
-		f2 = dist;
-		spos2 = spos;  tpos2 = tpos;
-	    }
-	}
+        float ttestcell = tthiscell + j;
+        float spos = stestcell +
+           jitter * (cellnoise(stestcell, ttestcell) - 0.5);
+        float tpos = ttestcell +
+           jitter * (cellnoise(stestcell+23, ttestcell-87) - 0.5);
+        float soffset = spos - ss;
+        float toffset = tpos - tt;
+        float dist = soffset*soffset + toffset*toffset;
+        if (dist < f1) {
+        f2 = f1;  spos2 = spos1;  tpos2 = tpos1;
+        f1 = dist;  spos1 = spos;  tpos1 = tpos;
+        } else if (dist < f2) {
+        f2 = dist;
+        spos2 = spos;  tpos2 = tpos;
+        }
+    }
     }
     f1 = sqrt(f1);  f2 = sqrt(f2);
 }

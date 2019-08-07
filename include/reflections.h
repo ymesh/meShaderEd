@@ -68,7 +68,7 @@ color Environment ( string envname, envspace;  uniform float envrad;
         Psp = point (envrad * normalize (vector Psp));
     float t0, t1;
     if (raysphere (Psp, Rsp, envrad, 1.0e-4, t0, t1) > 0)
-	Rsp = vector (Psp + t0 * Rsp);
+    Rsp = vector (Psp + t0 * Rsp);
     alpha = float environment (envname[3], Rsp, "blur", blur, "fill", 1);
     return color environment (envname, Rsp, "blur", blur);
 }
@@ -119,7 +119,7 @@ RayTrace (point P;  vector Rdir;  float Kr, blur, jitter;
     vector Tu = Du(P) * (1.5 * du); /* overblur just a tad... */
     vector Tv = Dv(P) * (1.5 * dv);
     if (Kr < 0.0001) {
-	C = 0;
+    C = 0;
     } else if (bluramt > 0 || nrays > 1) {
         /* Construct orthogonal components to Rdir */
         vector uoffset = blur * normalize (vector (zcomp(Rdir) - ycomp(Rdir),
@@ -133,20 +133,20 @@ RayTrace (point P;  vector Rdir;  float Kr, blur, jitter;
                 /* Add a random offset to the smooth reflection vector */
                 vector R = Rdir + ((i + rand())/nrays - 0.5) * uoffset +
                                   ((j + rand())/nrays - 0.5) * voffset;
-		R = normalize(R);
+        R = normalize(R);
                 point Pray = P +  ((j + rand())/nrays - 0.5) * Tu +
                                   ((i + rand())/nrays - 0.5) * Tv;
-		fulltrace (Pray, R, Ct, hitdist, Phit, Nhit, Pmiss, Rmiss);
-		C += Ct;
-		alpha += 1 - step(1.0e10,hitdist);
+        fulltrace (Pray, R, Ct, hitdist, Phit, Nhit, Pmiss, Rmiss);
+        C += Ct;
+        alpha += 1 - step(1.0e10,hitdist);
             }
         }
-	uniform float totrays = nrays*nrays;
+    uniform float totrays = nrays*nrays;
         C /= totrays;   alpha /= totrays;
     } else {
         /* No blur or curvature, just do a simple trace */
-	fulltrace (P, Rdir, C, hitdist, Phit, Nhit, Pmiss, Rmiss);
-	alpha = 1 - step(1.0e10,hitdist);
+    fulltrace (P, Rdir, C, hitdist, Phit, Nhit, Pmiss, Rmiss);
+    alpha = 1 - step(1.0e10,hitdist);
     }
     return C;
 #else
@@ -177,10 +177,10 @@ SampleEnvironment (point P;  vector R;  float Kr, blur;  DECLARE_ENVPARAMS;)
     color C = 0;
     float alpha;
     if (envname != "") {
-	if (envspace == "NDC")
-	    C = ReflMap (envname, P, blur, alpha);
-	else
-	    C = Environment (envname, envspace, envrad, P, R, blur, alpha);
+    if (envspace == "NDC")
+        C = ReflMap (envname, P, blur, alpha);
+    else
+        C = Environment (envname, envspace, envrad, P, R, blur, alpha);
     }
 #if (defined(BMRT) || defined(RAYSERVER_H))
     color Cray = RayTrace (P, R, Kr, sqrt(blur), rayjitter, raysamples, alpha);

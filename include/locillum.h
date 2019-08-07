@@ -39,20 +39,20 @@ LocIllumOrenNayar (normal N;  vector V;  float roughness;)
     color  C = 0;
     extern point P;
     illuminance (P, N, PI/2) {
-	/* Must declare extern L & Cl because we're in a function */
-	extern vector L;  extern color Cl;
-	float nondiff = 0;
-	lightsource ("__nondiffuse", nondiff);
-	if (nondiff < 1) {
-	    vector LN = normalize(L);
-	    float cos_theta_i = LN . N;
-	    float cos_phi_diff = V_perp_N . normalize(LN - N*cos_theta_i);
-	    float theta_i = acos (cos_theta_i);
-	    float alpha = max (theta_i, theta_r);
-	    float beta = min (theta_i, theta_r);
-	    C += (1-nondiff) * Cl * cos_theta_i * 
-		(A + B * max(0,cos_phi_diff) * sin(alpha) * tan(beta));
-	}
+    /* Must declare extern L & Cl because we're in a function */
+    extern vector L;  extern color Cl;
+    float nondiff = 0;
+    lightsource ("__nondiffuse", nondiff);
+    if (nondiff < 1) {
+        vector LN = normalize(L);
+        float cos_theta_i = LN . N;
+        float cos_phi_diff = V_perp_N . normalize(LN - N*cos_theta_i);
+        float theta_i = acos (cos_theta_i);
+        float alpha = max (theta_i, theta_r);
+        float beta = min (theta_i, theta_r);
+        C += (1-nondiff) * Cl * cos_theta_i * 
+        (A + B * max(0,cos_phi_diff) * sin(alpha) * tan(beta));
+    }
     }
     return C;
 
@@ -93,20 +93,20 @@ LocIllumWardAnisotropic (normal N;  vector V;
     color C = 0;
     extern point P;
     illuminance (P, N, PI/2) {
-	/* Must declare extern L & Cl because we're in a function */
-	extern vector L;  extern color Cl; 
-	float nonspec = 0;
-	lightsource ("__nonspecular", nonspec);
-	if (nonspec < 1) {
-	    vector LN = normalize (L);
-	    float cos_theta_i = LN . N;
-	    if (cos_theta_i > 0.0) {
-		vector H = normalize (V + LN);
-		float rho = exp (-2 * (sqr(X.H) + sqr(Y.H)) / (1 + H.N))
-		    / sqrt (cos_theta_i * cos_theta_r);
-		C += Cl * ((1-nonspec) * cos_theta_i * rho);
-	    }
-	}
+    /* Must declare extern L & Cl because we're in a function */
+    extern vector L;  extern color Cl; 
+    float nonspec = 0;
+    lightsource ("__nonspecular", nonspec);
+    if (nonspec < 1) {
+        vector LN = normalize (L);
+        float cos_theta_i = LN . N;
+        if (cos_theta_i > 0.0) {
+        vector H = normalize (V + LN);
+        float rho = exp (-2 * (sqr(X.H) + sqr(Y.H)) / (1 + H.N))
+            / sqrt (cos_theta_i * cos_theta_r);
+        C += Cl * ((1-nonspec) * cos_theta_i * rho);
+        }
+    }
     }
     return C / (4 * xroughness * yroughness);
 }
@@ -128,16 +128,16 @@ color LocIllumGlossy ( normal N;  vector V;
     float w = .18 * (1-sharpness);
     extern point P;
     illuminance (P, N, PI/2) {
-	/* Must declare extern L & Cl because we're in a function */
-	extern vector L;  extern color Cl; 
-	float nonspec = 0;
-	lightsource ("__nonspecular", nonspec);
-	if (nonspec < 1) {
-	    vector H = normalize(normalize(L)+V);
-	    C += Cl * ((1-nonspec) * 
-		       smoothstep (.72-w, .72+w,
-				   pow(max(0,N.H), 1/roughness)));
-	}
+    /* Must declare extern L & Cl because we're in a function */
+    extern vector L;  extern color Cl; 
+    float nonspec = 0;
+    lightsource ("__nonspecular", nonspec);
+    if (nonspec < 1) {
+        vector H = normalize(normalize(L)+V);
+        C += Cl * ((1-nonspec) * 
+               smoothstep (.72-w, .72+w,
+                   pow(max(0,N.H), 1/roughness)));
+    }
     }
     return C;
 }

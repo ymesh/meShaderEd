@@ -23,12 +23,12 @@ pxslFloatGain( float gg; float t; )
     gain = clamp(gg, .0001, .9999);
     if( t < .5 )
     {
-	tg = t / ((1/gain - 2) * (1 - 2*t) + 1);
+    tg = t / ((1/gain - 2) * (1 - 2*t) + 1);
     }
     else
     {
-	tg = ((1/gain - 2) * (1 - 2*t) - t) /
-		((1/gain - 2) * (1 - 2*t) - 1);
+    tg = ((1/gain - 2) * (1 - 2*t) - t) /
+        ((1/gain - 2) * (1 - 2*t) - 1);
     }
     return tg;
 }

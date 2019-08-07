@@ -76,7 +76,7 @@ color MaterialThinPlastic (normal Nf;  vector V;  color basecolor;
 color
 MaterialShinyPlastic (normal Nf; color basecolor;
                       float Ka, Kd, Ks, roughness, Kr, blur, ior;
-		      uniform float twosided;
+              uniform float twosided;
                       DECLARE_ENVPARAMS; )
 {
     extern vector I;
@@ -87,10 +87,10 @@ MaterialShinyPlastic (normal Nf; color basecolor;
     fresnel (IN, Nf, 1/ior, fkr, fkt, R, T);
     fkt = 1-fkr;
     if (twosided == 0 && N.I > 0)
-	fkr = 0;
+    fkr = 0;
     return  fkt * basecolor * (Ka*ambient() + Kd*diffuse(Nf))
           + (Ks) * specular(Nf,V,roughness)
-	  + SampleEnvironment (P, R, fkr*Kr, blur, ENVPARAMS);
+      + SampleEnvironment (P, R, fkr*Kr, blur, ENVPARAMS);
 }
 
 
@@ -105,7 +105,7 @@ MaterialShinyPlastic (normal Nf; color basecolor;
  */
 color MaterialShinyMetal (normal Nf;  color basecolor;
                           float Ka, Kd, Ks, roughness, Kr, blur;
-			  uniform float twosided;
+              uniform float twosided;
                           DECLARE_ENVPARAMS;)
 {
     extern point P;
@@ -113,7 +113,7 @@ color MaterialShinyMetal (normal Nf;  color basecolor;
     extern normal N;
     float kr = Kr;
     if (twosided == 0 && N.I > 0)
-	kr = 0;
+    kr = 0;
     vector IN = normalize(I), V = -IN;
     vector R = reflect (IN, Nf);
     return basecolor * (Ka*ambient() + Kd*diffuse(Nf) +
@@ -131,7 +131,7 @@ color MaterialClay (normal Nf;  color basecolor;
 {
     extern vector I;
     return basecolor * (Ka*ambient() + 
-			Kd*LocIllumOrenNayar(Nf,-normalize(I),roughness));
+            Kd*LocIllumOrenNayar(Nf,-normalize(I),roughness));
 }
 
 
@@ -146,7 +146,7 @@ color MaterialBrushedMetal (normal Nf;  color basecolor;
 {
     extern vector I;
     color spec = LocIllumWardAnisotropic (Nf, -normalize(I), 
-					  xdir, uroughness, vroughness);
+                      xdir, uroughness, vroughness);
     return basecolor * (Ka*ambient() + Kd*diffuse(Nf) + Ks*spec);
 }
 
@@ -170,10 +170,10 @@ color MaterialCeramic (normal Nf;  color basecolor;
  */
 color MaterialGlass (normal Nf;  color basecolor;
                      float Ka, Kd, Ks, roughness, Kr, reflblur;
-		     float Kt, refrblur, eta;
-		     color transmitcolor;
-		     uniform float refrrayjitter, refrraysamples;
-		     DECLARE_ENVPARAMS;)
+             float Kt, refrblur, eta;
+             color transmitcolor;
+             uniform float refrrayjitter, refrraysamples;
+             DECLARE_ENVPARAMS;)
 {
     extern point P;
     extern vector I;
@@ -191,25 +191,25 @@ color MaterialGlass (normal Nf;  color basecolor;
 #if (defined(BMRT) || defined(RAYSERVER_H))
     /* Speedup -- at deep ray levels, reflection is unimportant */
     if (raylevel() > 0)
-	kr = 0;
+    kr = 0;
 #endif
 #ifndef BMRT
     /* Speedup for PRMan -- don't shade back sides, but you HAVE to be sure
      * that normals correctly face outward.
      */
     if (N.I > 0)
-	kr = kt = 0;
+    kr = kt = 0;
 #endif
 
     /* Calculate the reflection & refraction color */
     color Crefl = SampleEnvironment (P, normalize(Rfldir), kr, reflblur,
-				     ENVPARAMS);
+                     ENVPARAMS);
     color Crefr = SampleEnvironment (P, normalize(Rfrdir), kt, refrblur,
-				     envname, envspace, envrad, 
-				     refrrayjitter, refrraysamples);
+                     envname, envspace, envrad, 
+                     refrrayjitter, refrraysamples);
     return (basecolor * (Ka*ambient() + Kd*diffuse(Nf)) +
-	    (Crefl + Ks*LocIllumGlossy(Nf,-IN,roughness,0.5)) +
-	    transmitcolor * Crefr);
+        (Crefl + Ks*LocIllumGlossy(Nf,-IN,roughness,0.5)) +
+        transmitcolor * Crefr);
 }
 
 

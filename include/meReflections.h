@@ -63,7 +63,7 @@ color meEnvironment ( string envname;  varying vector R;
                     string envspace;  uniform float envrad;
                     float blur, samples, Kr;
                     uniform string filter;
-		    uniform float lerp;)
+            uniform float lerp;)
 {
     
 #if SLIM_SHADERTYPEID == SLIM_TYPEID_light
@@ -76,32 +76,32 @@ color meEnvironment ( string envname;  varying vector R;
 
     color C = 0;
     if (envspace == "NDC") {
-    	/* envspace "NDC" signifies the special case of a flat refl map */
-    	point Pndc = transform ("NDC", Q);
-    	C = color texture (envname, xcomp(Pndc), ycomp(Pndc), "blur", blur);
+        /* envspace "NDC" signifies the special case of a flat refl map */
+        point Pndc = transform ("NDC", Q);
+        C = color texture (envname, xcomp(Pndc), ycomp(Pndc), "blur", blur);
     } else {
-    	vector Rsp;
-    	if (envspace != "" && envname != "reflection") {
-    	     Rsp = normalize (vtransform (envspace, R));
-    	     if (envrad != 0) {
-        		 /* Transform to the space of the environment map */
-        		 point Psp = transform (envspace, Q);
-        		 uniform float r2 = envrad * envrad;
-        		 /* Clamp the position to be *inside* the environment sphere */
-        		 if ((vector Psp).(vector Psp) > r2)
-        		     Psp = point (envrad * normalize (vector Psp));
-        		 float t0, t1;
-        		 if (raysphere (Psp, Rsp, envrad, 1.0e-4, t0, t1) > 0)
-        		     Rsp = vector (Psp + t0 * Rsp);
-    	    }
-  	  } else 
-  	    Rsp = R;
-    	/*if ( Kr > 0.0001 ) {*/
-    	    C = color environment (envname, Rsp, 
-    				   "blur", blur, 
-    				   "samples", samples,
-    				   "filter", filter,
-    					"lerp", lerp);
+        vector Rsp;
+        if (envspace != "" && envname != "reflection") {
+             Rsp = normalize (vtransform (envspace, R));
+             if (envrad != 0) {
+                 /* Transform to the space of the environment map */
+                 point Psp = transform (envspace, Q);
+                 uniform float r2 = envrad * envrad;
+                 /* Clamp the position to be *inside* the environment sphere */
+                 if ((vector Psp).(vector Psp) > r2)
+                     Psp = point (envrad * normalize (vector Psp));
+                 float t0, t1;
+                 if (raysphere (Psp, Rsp, envrad, 1.0e-4, t0, t1) > 0)
+                     Rsp = vector (Psp + t0 * Rsp);
+            }
+        } else 
+          Rsp = R;
+        /*if ( Kr > 0.0001 ) {*/
+            C = color environment (envname, Rsp, 
+                       "blur", blur, 
+                       "samples", samples,
+                       "filter", filter,
+                        "lerp", lerp);
         
           
      /* } */

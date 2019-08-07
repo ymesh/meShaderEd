@@ -11,18 +11,18 @@ from objReader import ObjReader
 # ObjToGeom
 #
 class ObjToGeom ( ObjReader ) :
-  #
-  # __init__
-  #
-  def __init__ ( self, objFileName = None ) :
     #
-    ObjReader.__init__ ( self, objFileName )
-    
-    self.geom = None
+    # __init__
+    #
+    def __init__ ( self, objFileName = None ) :
+        #
+        ObjReader.__init__ ( self, objFileName )
+        
+        self.geom = None
 
-  #
-  # readObj
-  #
-  def readObj ( self ) :
     #
-    if DEBUG_MODE : print '>> ObjToGeom.readObj ( %s )' % self.objFileName
+    # readObj
+    #
+    def readObj ( self ) :
+        #
+        if DEBUG_MODE : print '>> ObjToGeom.readObj ( %s )' % self.objFileName

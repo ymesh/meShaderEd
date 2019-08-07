@@ -1,6 +1,6 @@
 """
 
-	volumeNodeParam.py
+    volumeNodeParam.py
 
 """
 from core.node import Node
@@ -11,22 +11,22 @@ from core.meCommon import parseGlobalVars
 # VolumeNodeParam
 #
 class VolumeNodeParam ( NodeParam ) :
-	#
-	# __init__
-	#
-	def __init__ ( self, xml_param = None, isRibParam = False ) :
-		#
-		NodeParam.__init__ ( self, xml_param, isRibParam )
-		self.type = 'volume'
-	#
-	# encodedTypeStr
-	#
-	def encodedTypeStr ( self ): return 'V'
-	#
-	# copy
-	#
-	def copy ( self ):
-		#
-		newParam = VolumeNodeParam()
-		self.copySetup ( newParam )
-		return newParam
+    #
+    # __init__
+    #
+    def __init__ ( self, xml_param = None, isRibParam = False ) :
+        #
+        NodeParam.__init__ ( self, xml_param, isRibParam )
+        self.type = 'volume'
+    #
+    # encodedTypeStr
+    #
+    def encodedTypeStr ( self ): return 'V'
+    #
+    # copy
+    #
+    def copy ( self ):
+        #
+        newParam = VolumeNodeParam()
+        self.copySetup ( newParam )
+        return newParam

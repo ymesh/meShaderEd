@@ -37,7 +37,7 @@ float sqr (float x)
 float filteredabs (float x, dx)
 {
     float integral (float t) {
-	return sign(t) * 0.5 * t*t;
+    return sign(t) * 0.5 * t*t;
     }
 
     float x0 = x - 0.5*dx;
@@ -58,7 +58,7 @@ float filteredabs (float x, dx)
 float filteredsmoothstep (float e0, e1, x, dx)
 {
     float integral (float t) {
-	return -0.5*t*t * (t*t + t);
+    return -0.5*t*t * (t*t + t);
     }
 
     /* Compute x0, x1 bounding region of integration, and normalize so that
@@ -74,10 +74,10 @@ float filteredsmoothstep (float e0, e1, x, dx)
     float int = 0;
     /* Region 2 - compute integral in region between 0 and 1 */
     if (x0 < 1 && x1 > 0)
-	int += integral(min(x1,1)) - integral(max(x0,0));
+    int += integral(min(x1,1)) - integral(max(x0,0));
     /* Region 3 - is 1.0 */
     if (x1 > 1)
-	int += x1-max(1,x0);
+    int += x1-max(1,x0);
     return int / fw;
 }
 
@@ -190,9 +190,9 @@ color varyEach (color Cin; float index, varyhue, varysat, varylum;)
  */
 float
 tilepattern (float ss, tt, ds, dt;
-	     float groovewidth, grooveheight;
-	     output float swhichtile, twhichtile;
-	     output float stile, ttile;)
+         float groovewidth, grooveheight;
+         output float swhichtile, twhichtile;
+         output float stile, ttile;)
 {
     swhichtile = floor (ss);
     twhichtile = floor (tt);
@@ -218,21 +218,21 @@ tilepattern (float ss, tt, ds, dt;
  *      xtile, ytile            position within this tile (0-1)
  */
 void basicbrick (float x, y;
-		uniform float tilewidth, tileheight;
-		uniform float rowstagger, rowstaggervary;
-		uniform float jaggedfreq, jaggedamp;
-		output float column, row;
-		output float xtile, ytile;
+        uniform float tilewidth, tileheight;
+        uniform float rowstagger, rowstaggervary;
+        uniform float jaggedfreq, jaggedamp;
+        output float column, row;
+        output float xtile, ytile;
     )
 {
     point PP;
     float scoord = x, tcoord = y;
 
     if (jaggedamp != 0.0) {
-	/* Make the shapes of the bricks vary just a bit */
-	PP = point noise (x*jaggedfreq/tilewidth, y*jaggedfreq/tileheight);
-	scoord += jaggedamp * xcomp (PP);
-	tcoord += jaggedamp * ycomp (PP);
+    /* Make the shapes of the bricks vary just a bit */
+    PP = point noise (x*jaggedfreq/tilewidth, y*jaggedfreq/tileheight);
+    scoord += jaggedamp * xcomp (PP);
+    tcoord += jaggedamp * ycomp (PP);
     }
 
     xtile = scoord / tilewidth;

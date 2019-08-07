@@ -14,33 +14,37 @@ from meShaderEd import app_settings
 import gui.ui_settings as UI
 
 if not usePyQt5 :
-	QtModule = QtGui
+    QtModule = QtGui
 else :
-	from core.mePyQt import QtWidgets
-	QtModule = QtWidgets
+    from core.mePyQt import QtWidgets
+    QtModule = QtWidgets
 #
 # GfxNode
 #
 class GfxNodeGroup ( GfxNode ) : 
-	#
-	Type = GFX_NODE_GROUP_TYPE
-	#
-	# __init__
-	#
-	def __init__ ( self, node ) :
-		#
-		GfxNode.__init__ ( self, node )
-		
-		self.PenBorderNormal = QtGui.QPen ( QtGui.QBrush ( self.normalColor ),
-																	 3.0,
-																	 QtCore.Qt.SolidLine,
-																	 QtCore.Qt.RoundCap,
-																	 QtCore.Qt.RoundJoin )
+    #
+    Type = GFX_NODE_GROUP_TYPE
+    #
+    # __init__
+    #
+    def __init__ ( self, node ) :
+        #
+        GfxNode.__init__ ( self, node )
+        
+        self.PenBorderNormal = QtGui.QPen ( 
+            QtGui.QBrush ( self.normalColor ),
+            3.0,
+            QtCore.Qt.SolidLine,
+            QtCore.Qt.RoundCap,
+            QtCore.Qt.RoundJoin 
+        )
 
-		self.PenBorderSelected = QtGui.QPen ( QtGui.QBrush ( self.selectedColor ),
-																	 3.0,
-																	 QtCore.Qt.SolidLine,
-																	 QtCore.Qt.RoundCap,
-																	 QtCore.Qt.RoundJoin )
+        self.PenBorderSelected = QtGui.QPen (
+            QtGui.QBrush ( self.selectedColor ),
+            3.0,
+            QtCore.Qt.SolidLine,
+            QtCore.Qt.RoundCap,
+            QtCore.Qt.RoundJoin 
+        )
 
 

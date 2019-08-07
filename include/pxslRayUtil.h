@@ -10,110 +10,110 @@ pxslGetRaySamples(uniform float samples)
     uniform float outsamples;
     if( option("user:tracebreadthfactor", factor) == 1 )
     {
-	outsamples = floor(samples * factor + .5);
+    outsamples = floor(samples * factor + .5);
     }
     else
-	outsamples = samples;
+    outsamples = samples;
     if( option("user:tracedepthfactor", factor) == 1 &&
-	factor != 1 )
+    factor != 1 )
     {
-	uniform float depth;
-	rayinfo("depth", depth);
-	if( depth > 0 )
-	{
-	    factor = pow(factor, depth);
-	    outsamples = floor(factor * outsamples + .5);
-	}
+    uniform float depth;
+    rayinfo("depth", depth);
+    if( depth > 0 )
+    {
+        factor = pow(factor, depth);
+        outsamples = floor(factor * outsamples + .5);
+    }
     }
     return outsamples;
 }
 
 void
 pxslShapeSamples(
-		string shape; 
-		uniform float samples;
-		uniform float length;
-		uniform float radiusheight;
-		output uniform float nsamples;
-		output uniform float msamples;
-		)
+        string shape; 
+        uniform float samples;
+        uniform float length;
+        uniform float radiusheight;
+        output uniform float nsamples;
+        output uniform float msamples;
+        )
 {
     if (shape == "disk")
     {
-	nsamples = floor(sqrt(samples));
-	msamples = floor(samples/nsamples);
+    nsamples = floor(sqrt(samples));
+    msamples = floor(samples/nsamples);
     } 
     else 
     if (shape == "line")
     {
-	nsamples = samples;
-	msamples = 1;
+    nsamples = samples;
+    msamples = 1;
     } 
     else
     if (shape == "cylinder")
     {
-	/* Choose stratification: angle, z, or both.  (If the light source is
-	   undergoing a non-uniform scaling, this choice might not be optimal.) */
-	if (length < 0.2 * radiusheight) 
-	{
-	    /* cylinder is rather flat */
-	    nsamples = samples;
-	    msamples = 1;
-	} 
-	else 
-	if (length > 5 * radiusheight) 
-	{
-	    /* cylinder is rather skinny */
-	    nsamples = 1;
-	    msamples = samples;
-	}
-	else
-	{
-	    /* cylinder neither flat nor skinny */
-	    nsamples = floor(sqrt(samples));
-	    msamples = floor(samples/nsamples);
-	}
+    /* Choose stratification: angle, z, or both.  (If the light source is
+       undergoing a non-uniform scaling, this choice might not be optimal.) */
+    if (length < 0.2 * radiusheight) 
+    {
+        /* cylinder is rather flat */
+        nsamples = samples;
+        msamples = 1;
+    } 
+    else 
+    if (length > 5 * radiusheight) 
+    {
+        /* cylinder is rather skinny */
+        nsamples = 1;
+        msamples = samples;
+    }
+    else
+    {
+        /* cylinder neither flat nor skinny */
+        nsamples = floor(sqrt(samples));
+        msamples = floor(samples/nsamples);
+    }
     } 
     else
     if (shape == "rectangle")
     {
-	/* Choose best stratification: x, y, or both.  (If the light source is
-	   undergoing a non-uniform scaling, this choice might not be optimal.) */
-	if (length > 4 * radiusheight) 
-	{
-	    nsamples = samples;
-	    msamples = 1;
-	}
-	else 
-	if (radiusheight > 4 * length)
-	{
-	    nsamples = 1;
-	    msamples = samples;
-	}
-	else
-	{
-	    nsamples = floor(sqrt(samples));
-	    msamples = floor(samples/nsamples);
-	}
+    /* Choose best stratification: x, y, or both.  (If the light source is
+       undergoing a non-uniform scaling, this choice might not be optimal.) */
+    if (length > 4 * radiusheight) 
+    {
+        nsamples = samples;
+        msamples = 1;
+    }
+    else 
+    if (radiusheight > 4 * length)
+    {
+        nsamples = 1;
+        msamples = samples;
     }
     else
     {
-	/* sphere */
-	nsamples = floor(sqrt(samples));
-	msamples = floor(samples/nsamples);
+        nsamples = floor(sqrt(samples));
+        msamples = floor(samples/nsamples);
+    }
+    }
+    else
+    {
+    /* sphere */
+    nsamples = floor(sqrt(samples));
+    msamples = floor(samples/nsamples);
     }
 }
 
 point
 pxslPointOnShape(
-		string shape; 
-		uniform float length;
-		uniform float radiusheight;
-		uniform float n; 
-		uniform float nsamps; 
-		uniform float m; 
-		uniform float msamps;
-		)
+        string shape; 
+        uniform float length;
+        uniform float radiusheight;
+        uniform float n; 
+        uniform float nsamps; 
+        uniform float m; 
+        uniform float msamps;
+        )
 {
     point p;
     if (shape == "disk")
@@ -142,18 +142,18 @@ pxslPointOnShape(
     else
     if (shape == "rectangle")
     {
-	float x, y;
-	x = (n + random()) / nsamps; 
+    float x, y;
+    x = (n + random()) / nsamps; 
         y = (m + random()) / msamps;
         /* Compute point p on rectangle */
         p = point "shader" ((x - 0.5) * length, (y - 0.5) * radiusheight, 0);
     }
     else
     {
-	/* sphere */
+    /* sphere */
         /* Compute stratified random angle in [0,2pi] */
-	float angle = 2 * PI * (n + random()) / nsamps;
-	/* Compute stratified random z in [-1,1] */
+    float angle = 2 * PI * (n + random()) / nsamps;
+    /* Compute stratified random z in [-1,1] */
         float z = 2 * ((m + random()) / msamps) - 1;
         /* Compute point p on sphere */
         float r = radiusheight * sqrt(1 - z*z);
@@ -196,7 +196,7 @@ pxslUtilShadingNormal(normal n;)
     attribute("Sides", sides);
     rayinfo("depth", raydepth);
     if (sides == 2 || raydepth > 0)
-	Ns = faceforward(Ns, I, Ns);
+    Ns = faceforward(Ns, I, Ns);
     return Ns;
 }
 
@@ -238,11 +238,11 @@ pxslBuildEnvironmentVectors(
 
     // construct basis vectors
     if (abs(xcomp(dir)) > 0 || abs(ycomp(dir)) > 0)
-	// dir ^ z (if valid)
-	udir = normalize(vector (ycomp(dir), -xcomp(dir), 0));
+    // dir ^ z (if valid)
+    udir = normalize(vector (ycomp(dir), -xcomp(dir), 0));
     else
-	// dir ^ x
-	udir = normalize(vector (0, zcomp(dir), -ycomp(dir)));
+    // dir ^ x
+    udir = normalize(vector (0, zcomp(dir), -ycomp(dir)));
 
     // vdir is dir ^ u
     vdir = normalize(dir ^ udir);

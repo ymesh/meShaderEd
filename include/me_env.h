@@ -11,31 +11,31 @@
  
  */
 vector meRayEnvSphere( 
-      point Q;
-      uniform string envspace;
-      varying vector R;
-      uniform float envrad;
-)
+        point Q;
+        uniform string envspace;
+        varying vector R;
+        uniform float envrad;
+    )
 {
-  vector Rsp = R;
-  if ( envspace != ""  )
-  {
-    Rsp = normalize (vtransform (envspace, R));
-    if ( envrad != 0 ) 
+    vector Rsp = R;
+    if ( envspace != ""  )
     {
-      /* Transform to the space of the environment map */
-      point Psp = transform (envspace, Q);
-      uniform float r2 = envrad * envrad;
-      /* Clamp the position to be *inside* the environment sphere */
-      if ((vector Psp).(vector Psp) > r2)
-        Psp = point (envrad * normalize (vector Psp));
-      float t0, t1;
-      float intersect_number = raysphere (Psp, Rsp, envrad, 1.0e-4, t0, t1);
-      if (  intersect_number > 0 )
-        Rsp = vector (Psp + t0 * Rsp);
+        Rsp = normalize (vtransform (envspace, R));
+        if ( envrad != 0 ) 
+        {
+            /* Transform to the space of the environment map */
+            point Psp = transform (envspace, Q);
+            uniform float r2 = envrad * envrad;
+            /* Clamp the position to be *inside* the environment sphere */
+            if ((vector Psp).(vector Psp) > r2)
+                Psp = point (envrad * normalize (vector Psp));
+            float t0, t1;
+            float intersect_number = raysphere (Psp, Rsp, envrad, 1.0e-4, t0, t1);
+            if (  intersect_number > 0 )
+                Rsp = vector (Psp + t0 * Rsp);
+        }
     }
-  }
-  return Rsp;
+    return Rsp;
 }
 
 #endif 	    

@@ -1,37 +1,37 @@
 <RCC>
-  <qresource prefix="file_icons">
-    <file>resources/recentFile.png</file>
-    <file>resources/meShed_logo.png</file>
-    <file>resources/meShaderEd_v001a.png</file>
-    <file>resources/meShaderEd_v001a.svg</file>
-    <file>resources/open.png</file>
-    <file>resources/save.png</file>
-    <file>resources/new.png</file>
-  </qresource>
-  <qresource prefix="show_icons">
-    <file>resources/show_connect.png</file>
-    <file>resources/fit_all.png</file>
-    <file>resources/fit_selected.png</file>
-    <file>resources/check_off.png</file>
-    <file>resources/check_on.png</file>
-    <file>resources/straight_off.png</file>
-    <file>resources/straight_on.png</file>
-    <file>resources/zoom_reset.png</file>
-    <file>resources/snap_off.png</file>
-    <file>resources/snap_on.png</file>
-    <file>resources/grid_off.png</file>
-    <file>resources/grid_on.png</file>
-    <file>resources/bg_pattern.png</file>
-  </qresource>
-  <qresource prefix="edit_icons">
-    <file>resources/del.png</file>
-    <file>resources/add_list.png</file>
-    <file>resources/del_list.png</file>
-    <file>resources/minus.png</file>
-    <file>resources/plus.png</file>
-    <file>resources/delete.png</file>
-    <file>resources/paste.png</file>
-    <file>resources/copy.png</file>
-    <file>resources/editcut1.png</file>
-  </qresource>
+    <qresource prefix="file_icons">
+        <file>resources/recentFile.png</file>
+        <file>resources/meShed_logo.png</file>
+        <file>resources/meShaderEd_v001a.png</file>
+        <file>resources/meShaderEd_v001a.svg</file>
+        <file>resources/open.png</file>
+        <file>resources/save.png</file>
+        <file>resources/new.png</file>
+    </qresource>
+    <qresource prefix="show_icons">
+        <file>resources/show_connect.png</file>
+        <file>resources/fit_all.png</file>
+        <file>resources/fit_selected.png</file>
+        <file>resources/check_off.png</file>
+        <file>resources/check_on.png</file>
+        <file>resources/straight_off.png</file>
+        <file>resources/straight_on.png</file>
+        <file>resources/zoom_reset.png</file>
+        <file>resources/snap_off.png</file>
+        <file>resources/snap_on.png</file>
+        <file>resources/grid_off.png</file>
+        <file>resources/grid_on.png</file>
+        <file>resources/bg_pattern.png</file>
+    </qresource>
+    <qresource prefix="edit_icons">
+        <file>resources/del.png</file>
+        <file>resources/add_list.png</file>
+        <file>resources/del_list.png</file>
+        <file>resources/minus.png</file>
+        <file>resources/plus.png</file>
+        <file>resources/delete.png</file>
+        <file>resources/paste.png</file>
+        <file>resources/copy.png</file>
+        <file>resources/editcut1.png</file>
+    </qresource>
 </RCC>

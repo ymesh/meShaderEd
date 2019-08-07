@@ -11,17 +11,17 @@ from objReader import ObjReader
 # ObjToRib
 #
 class ObjToRib ( ObjReader ) :
-  #
-  # __init__
-  #
-  def __init__ ( self, objFileName = None ) :
     #
-    ObjReader.__init__ ( self, objFileName )
-    
-    self.rib = None
-  #
-  # readObjFile
-  #
-  def readObjFile ( self ) :
+    # __init__
     #
-    if DEBUG_MODE : print '>> ObjToRib.readObjFile ( %s )' % self.objFileName
+    def __init__ ( self, objFileName = None ) :
+        #
+        ObjReader.__init__ ( self, objFileName )
+        
+        self.rib = None
+    #
+    # readObjFile
+    #
+    def readObjFile ( self ) :
+        #
+        if DEBUG_MODE : print '>> ObjToRib.readObjFile ( %s )' % self.objFileName

@@ -38,11 +38,11 @@
  */
 float
 oaktexture (point Pshad;  float dPshad;
-	    float ringfreq, ringunevenness, grainfreq;
-	    float ringnoise, ringnoisefreq;
-	    float trunkwobble, trunkwobblefreq;
-	    float angularwobble, angularwobblefreq;
-	    float ringy, grainy;)
+        float ringfreq, ringunevenness, grainfreq;
+        float ringnoise, ringnoisefreq;
+        float trunkwobble, trunkwobblefreq;
+        float angularwobble, angularwobblefreq;
+        float ringy, grainy;)
 {
     /* We shade based on Pshad, but we add several layers of warping: */
     /* Some general warping of the domain */
@@ -57,7 +57,7 @@ oaktexture (point Pshad;  float dPshad;
     float r = sqrt(r2) * ringfreq;
     /* Add some noise around the trunk */
     r += angularwobble * smoothstep(0,5,r)
-	   * snoise (angularwobblefreq*(Pring)*vector(1,1,0.1));
+       * snoise (angularwobblefreq*(Pring)*vector(1,1,0.1));
 
     /* Now add some noise so all rings are not equal width */
     extern float du, dv;
@@ -71,19 +71,19 @@ oaktexture (point Pshad;  float dPshad;
     float grain = 0;
     float i, amp=1;
     for (i = 0;  i < 2;  i += 1) {
-	float grain1valid = 1-smoothstep(.2,.6,dPgrain);
-	if (grain1valid > 0) {
-	    float g = grain1valid * snoise (Pgrain);
-	    g *= (0.3 + 0.7*inring);
-	    g = pow(clamp(0.8 - (g),0,1),2);
-	    g = grainy * smoothstep (0.5, 1, g);
-	    if (i == 0)
-		inring *= (1-0.4*grain1valid);
-	    grain = max (grain, g);
-	}
-	Pgrain *= 2;
-	dPgrain *= 2;
-	amp *= 0.5;
+    float grain1valid = 1-smoothstep(.2,.6,dPgrain);
+    if (grain1valid > 0) {
+        float g = grain1valid * snoise (Pgrain);
+        g *= (0.3 + 0.7*inring);
+        g = pow(clamp(0.8 - (g),0,1),2);
+        g = grainy * smoothstep (0.5, 1, g);
+        if (i == 0)
+        inring *= (1-0.4*grain1valid);
+        grain = max (grain, g);
+    }
+    Pgrain *= 2;
+    dPgrain *= 2;
+    amp *= 0.5;
     }
 
     return mix (inring*ringy, 1, grain);

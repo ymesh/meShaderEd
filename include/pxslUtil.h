@@ -2,8 +2,8 @@
 #define _H_pxslUtil
 
 /* utility functions derived from, Apodaca/Gritze: 
-   	"Advanced RenderMan: Creating CGI for Motion Pictures"
-   	by Tony Apodaca and Larry Gritz cc 1999.
+       "Advanced RenderMan: Creating CGI for Motion Pictures"
+       by Tony Apodaca and Larry Gritz cc 1999.
  
    $Revision: #3 $
 */
@@ -62,27 +62,27 @@ vector pxslEnvDirCorrect(uniform string corr; vector R)
     vector result;
     if( corr == "none" )
     {
-	result = R;
+    result = R;
     }
     else
     if(corr == "XtoY")
     {
-	result = vector(-ycomp(R), xcomp(R), zcomp(R));
+    result = vector(-ycomp(R), xcomp(R), zcomp(R));
     }
     else
     if(corr == "YtoX")
     {
-	result = vector(ycomp(R), -xcomp(R), zcomp(R));
+    result = vector(ycomp(R), -xcomp(R), zcomp(R));
     }
     else
     if(corr == "XtoZ")
     {
-	result = vector(-zcomp(R), ycomp(R), xcomp(R));
+    result = vector(-zcomp(R), ycomp(R), xcomp(R));
     }
     else
     if(corr == "ZtoX")
     {
-	result = vector(zcomp(R), ycomp(R), -xcomp(R));
+    result = vector(zcomp(R), ycomp(R), -xcomp(R));
     }
     else
     if(corr == "YtoZ")
@@ -95,15 +95,15 @@ vector pxslEnvDirCorrect(uniform string corr; vector R)
         result = vector(xcomp(R), zcomp(R), -ycomp(R));
     }
     else
-	result = R;
+    result = R;
     return result;
 }
 
 float pxslLuminance(color c)
 {
     return .3 * comp(c, 0) + 
-	.59 * comp(c, 1) + 
-	.11 * comp(c, 2);
+    .59 * comp(c, 1) + 
+    .11 * comp(c, 2);
 }
 
 #endif
